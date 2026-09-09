@@ -1,0 +1,14 @@
+*.py text eol=lf
+*.cpp text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.glb binary
+*.npz binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.mp4 binary
+*.pdf binary
+# Current assets are stored as normal Git blobs, not unresolved LFS pointers.

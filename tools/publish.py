@@ -1,31 +1,41 @@
-"""Publish an extracted full workspace with ordinary local Git credentials.
+"""Push the committed release to an explicitly chosen NEW branch, never force.
 
-Default is a plan only. --push clones the existing repository, verifies the
-full delivery, copies files, commits, and fast-forward pushes. No force push,
-credential scraping, secret upload, or repository creation is performed.
+Uses the operator's existing Git authentication. It does not create repositories,
+handle access tokens, or assume authorization to overwrite an existing branch.
 """
 from pathlib import Path
-import argparse,shutil,subprocess,tempfile,re
-from audit_delivery import ROOT,audit
-EXCLUDE={'.git','.venv','__pycache__','.pytest_cache','.cache','build','dist','.publication','.publication2'}
-def files():
- return [p for p in ROOT.rglob('*') if p.is_file() and not any(s in EXCLUDE for s in p.relative_to(ROOT).parts) and p.suffix not in {'.pyc','.nbc','.nbi','.ttf','.otf'}]
+import argparse
+import re
+import subprocess
+
+
+def git(*args, cwd, capture=False):
+    return subprocess.run(['git',*args],cwd=cwd,check=True,text=True,
+                          stdout=subprocess.PIPE if capture else None)
+
+
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--repository',default='cybrdelic/cybr-geo');p.add_argument('--branch',default='master');p.add_argument('--push',action='store_true');p.add_argument('--message',default='Publish complete verified geometry workshop and media');a=p.parse_args()
- if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',a.repository):p.error('Use owner/repository')
- if a.branch.startswith('-') or '..' in a.branch:p.error('Invalid branch')
- items=files();print(f'{len(items)} files, {sum(f.stat().st_size for f in items):,} bytes -> {a.repository}:{a.branch}')
- if not a.push:print('Plan only. Add --push after authenticating Git on this machine.');return
- if audit()['errors']:raise RuntimeError('Full delivery is missing or modified; inspect the audit before publication')
- with tempfile.TemporaryDirectory(prefix='cybrgeo-publish-') as td:
-  dst=Path(td)/'repo';subprocess.run(['git','clone','--branch',a.branch,'--single-branch',f'https://github.com/{a.repository}.git',str(dst)],check=True)
-  for src in items:
-   rel=src.relative_to(ROOT)
-   if rel==Path('LICENSE') and (dst/rel).exists():continue # Preserve existing repository license bytes.
-   target=dst/rel;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(src,target)
-  subprocess.run(['git','add','--all'],cwd=dst,check=True)
-  if subprocess.run(['git','diff','--cached','--quiet'],cwd=dst).returncode==0:print('No differences');return
-  subprocess.run(['git','commit','-m',a.message],cwd=dst,check=True)
-  subprocess.run(['git','push','origin',f'HEAD:{a.branch}'],cwd=dst,check=True)
-  print(subprocess.check_output(['git','rev-parse','HEAD'],cwd=dst,text=True).strip())
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--repo',required=True,help='Exact OWNER/REPOSITORY')
+    parser.add_argument('--branch',required=True,help='New remote branch name')
+    args=parser.parse_args()
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',args.repo):
+        parser.error('Use an exact OWNER/REPOSITORY, not a URL or guessed destination')
+    root=Path(__file__).resolve().parents[1]
+    git('check-ref-format','--branch',args.branch,cwd=root,capture=True)
+    status=git('status','--porcelain',cwd=root,capture=True).stdout.strip()
+    if status:
+        raise SystemExit('Working tree is not clean. Review and commit the intended release before publishing.')
+    sha=git('rev-parse','HEAD',cwd=root,capture=True).stdout.strip()
+    remote='https://github.com/'+args.repo+'.git'
+    branches=git('ls-remote','--heads',remote,cwd=root,capture=True).stdout
+    if any(line.endswith('\trefs/heads/'+args.branch) for line in branches.splitlines()):
+        raise SystemExit('That remote branch already exists; refusing to update it. Choose a new branch or review the existing history.')
+    git('push',remote,sha+':refs/heads/'+args.branch,cwd=root)
+    received=git('ls-remote',remote,'refs/heads/'+args.branch,cwd=root,capture=True).stdout.split()[0]
+    if received!=sha:
+        raise SystemExit('Remote verification failed: branch does not resolve to the expected local commit')
+    print('Verified remote commit:',sha)
+    print('Repository:',args.repo,'Branch:',args.branch)
+
 if __name__=='__main__':main()

@@ -1,0 +1,6 @@
+[
+  {"view": "hero", "duration": 4, "action": "orbit", "orbit_degrees": 45},
+  {"view": "exploded", "duration": 6, "action": "explode"},
+  {"view": "internal", "duration": 5, "action": "motion"},
+  {"view": "section", "duration": 4, "action": "motion"}
+]

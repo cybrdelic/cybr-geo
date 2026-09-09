@@ -1,43 +1,78 @@
-# Reproduction
+# Reproduce, extend and package
 
-Install FFmpeg, a C++17 compiler with OpenMP, OpenGL/EGL libraries and the Python package. An Ubuntu example is in `Dockerfile`; local tests were performed in the environment recorded in `environment.json`. Platform GPU drivers may differ, so the container recipe is a deployment aid, not a claim that every OS was tested.
+## Tested environment and installation
 
-## New CAD model
+This release was exercised locally on Linux with Python 3.13.5, CadQuery/OCP, VTK 9.6.2 offscreen Mesa EGL, NumPy, trimesh, Shapely, SciPy, Numba, Pillow, CairoSVG, ezdxf, FFmpeg and the included C++17/OpenMP renderer. Exact installed Python versions are in `validation/environment.json` and `requirements-tested.txt`. Local pytest and smoke outputs are recorded; the provided Dockerfile and GitHub workflow have not been executed on their remote services.
 
-Implement `build() -> cybrgeo.Assembly`; keep model parameters and provenance in its metadata. Run the CLI sequence in the root README. `examples/template_part.py` is a complete working example, not pseudocode.
-
-## Manufacturer motor
-
-Place the official STEP at `references/neo_vortex/NEO_Vortex_SPARK_Flex_8mm.STEP`. `tools/fetch_references.py` downloads only the recorded manufacturer URLs and checks HTTP failures. Original manufacturer rights remain with REV Robotics.
+Install system dependencies before the Python package. On Debian/Ubuntu, the supplied Dockerfile shows the required package set, including `ffmpeg`, `g++`, `cmake`, `libcairo2`, `libegl1`, Mesa GL drivers and `libglib2.0-0`. The command-line package's pinned major rendering/CAD dependencies match the tested environment. The source tree and its `assets/` directory must stay together. A standalone Python wheel does not contain the large historical model assets or native tracer.
 
 ```bash
-python tools/fetch_references.py
-python tools/import_motor.py
-python -c "from tools.build_motor_study import prepare_motor; prepare_motor()"
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -e '.[dev]'
+lab doctor
+python -m pytest -q
 ```
 
-The raw import is retained in `examples/neo_vortex/geometry`; the styled, semantically named study is a separate scene at `examples/neo_vortex/study`. All raw vertex arrays are checked unchanged during preparation.
+Windows/macOS native installations were not exercised in this release. Linux/WSL or the supplied Linux container definition is the documented reproduction path, not a claim of tested native-platform parity. Set `OMP_NUM_THREADS=4`, `LP_NUM_THREADS=4` and `OPENBLAS_NUM_THREADS=1` to limit oversubscription on a workstation.
 
-## Drive and full study outputs
-
-The full delivery includes the exact v3 differential input caches, which must be present before building this mixed assembly. A source-only checkout cannot silently replace those missing caches with a generic differential.
+## Build exact reference inputs and new models
 
 ```bash
-python tools/build_motor_study.py
-python tools/validate_drive.py
-python tools/render_motor_study.py
+lab build differential_reference
+lab build differential_core
+lab build differential_working
+lab build m8325s --step
+lab build drivetrain --step
 ```
 
-`--resume` skips the motor's already-completed still/video/part-catalogue stage; it rebuilds drawings, drive footage and path-traced motor stills. Remove that switch for a complete run.
+The three differential recipes load preserved arrays; they do not approximate the old object by making a generic replacement. The motor is built procedurally from declared parameters. Its STEP contains only its 141 analytic components; its complete 181-component mesh is in GLB. The combined drivetrain STEP is also partial, with its own explicit coverage JSON. Historical CAD remains available under `assets/`.
 
-## Earlier projects
-
-Their source and existing assets are preserved under `archive` and `examples/differential`; use each stage's own README. The v3 baseline is loaded from exact saved arrays. Its historical procedural generator is available, but rebuilding CAD need not reproduce old triangle ordering bit for bit.
-
-## Verify a downloaded full delivery
+## Render, animate and make catalogues
 
 ```bash
-python tools/audit_delivery.py
+lab render m8325s --view hero
+lab render m8325s --view stator --renderer pathtrace --spp 64 --threads 4
+lab render differential_reference --view exploded
+lab render drivetrain --view internal --time 1.2
+lab video m8325s --shots examples/inspection_shots.json
+lab video differential_reference --view exploded --action explode --seconds 12
+lab video drivetrain --view drive_face --action motion --seconds 8
+lab animate drivetrain --seconds 8
+lab animate m8325s --mode explode --seconds 8
+lab catalogue m8325s
+lab gif outputs/drivetrain/videos/drivetrain.mp4 --out outputs/drivetrain/preview.gif
 ```
 
-That audit checks the inventory's file sizes and SHA256 hashes. It is a packaging check, not mechanical certification. `tools/publish.py` can merge the complete extracted workspace into the existing repository with normal local Git credentials; it never force-pushes.
+`python tools/build_release_media.py` runs the delivered motor/drivetrain sequence, including geometry exports, partial STEP, stills, 22/16-second films, GIFs and all 181 motor-part renders. Path-traced stills can then be regenerated with `lab render --renderer pathtrace`; their shared renderer is compiled automatically with CMake. The movie renderer remains PBR rasterization, not offline path tracing.
+
+Exact pixel identity across GPU/driver/library versions is not promised. Model coordinates, parameters and source provenance are deterministic inputs; each rendering records its selected settings. Geometry caches are safe to delete and rebuild, while the exact original differential input arrays in `assets/differential_v3/geometry/` must be retained.
+
+## New geometry and import
+
+```bash
+lab build examples/custom_flange.py --step --stl
+lab render examples/custom_flange.py
+lab blueprint examples/custom_flange.py
+lab import model.step --name imported_body
+lab render examples/imported/imported_body/imported_body.json
+lab import model.glb --name imported_assembly
+lab import model.stl --name imported_mesh --units mm --up-axis Z
+```
+
+GLB/glTF units are metres and up is Y; these values are not guesses. OBJ/STL/PLY requires an explicit unit choice. STEP imports keep separate solid bodies but do not promise retention of every proprietary CAD feature/history/name. The CAD importer normalizes STEP units to millimetres. Imported drawings can only use analytic hidden-line removal when actual CAD is present. See `docs/WHITEPRINTS.md` for the mesh fallback.
+
+## Offline viewing and archives
+
+Open the root `index.html` for an entirely local image/video gallery. Open `outputs/m8325s/parts/index.html` for all named motor components and GLB download links. A local HTTP server is optional for browsers that restrict file URLs:
+
+```bash
+python -m http.server 8000
+# Open http://localhost:8000/
+lab pack --out dist/cybr-mechanism-lab-full.zip
+lab pack --source-only --out dist/cybr-mechanism-lab-regeneration-kit.zip
+```
+
+The full archive preserves old and new media, source and geometry. The smaller regeneration kit contains toolkit source, documents/tests and exact differential mesh inputs, but omits already rendered media and archived historical CAD. It has its own README explaining those omissions. Neither archive includes private environment files, credentials, font files, virtual environments or generated native build directories. The full manifest records paths, byte sizes and SHA-256 hashes; it explicitly excludes its own checksum.
+
+Git publication is a separate explicit step. See `docs/PUBLICATION.md`. An archive, local commit or prepared README is not a remote upload.

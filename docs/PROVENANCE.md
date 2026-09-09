@@ -1,22 +1,23 @@
-# Provenance
+# Provenance and license scope
 
-## Retained user project
+## Preserved project assets
 
-The differential input packages supplied in this conversation are preserved as extracted directory trees: `TORSEN_X_internal_exploded_motion_v3.zip` -> `examples/differential`, `TORSEN_X_reference_rebuild.zip` -> `archive/reference_v2`, and `torque_biasing_differential_package.zip` -> `archive/concept_v1`. Redundant transport ZIPs are not nested into the repository. The generated reference illustration is labeled and stored separately; it is not a recovered commercial differential specification.
+`assets/legacy_v1/torquebias_diff/` contains the first modeled differential package. `assets/reference_v2/` contains the subsequent reference-fidelity rebuild. `assets/differential_v3/` contains the unchanged reference, separately labeled kinematic core, original internal/exploded/individual views, films and source. Original extracted payload files are preserved; the full release does not repeat the redundant ZIP wrappers because their contents are already included.
 
-## REV Robotics motor sources
+The earliest generic mounting-bracket concept image and later TORSEN-X concept poster are retained as clearly labeled reference images. These were generated earlier in the conversation, not by this release's geometry renderer. They are not used as a rendering texture or video frame. Every newly labeled motor/drive render is computed from actual geometry.
 
-Accessed 2026-09-09. These are primary manufacturer sources, not inferred product specifications:
+Historical sources may contain original-session absolute paths. They are archival evidence, not the new cross-model API. The reusable loader reads the preserved exact mesh arrays by project-relative paths and the current toolkit source avoids session-specific absolute paths. The original image's invented specifications are not adopted as validated mechanical data.
 
-* Product: https://www.revrobotics.com/rev-21-1652/
-* Technical documentation: https://docs.revrobotics.com/brushless/neo/vortex
-* Dimensioned drawing: https://www.revrobotics.com/content/docs/REV-21-1652-REV-11-2159-DR.pdf
-* Mechanical STEP: https://www.revrobotics.com/content/cad/NEO-Vortex-Moter-and-SPARK-Flex-Motor-Controller-with-8mm-Shaft.STEP
+## New project code and models
 
-The vendor STEP and documentation were downloaded by the repository's manufacturer-reference acquisition workflow. Original URLs, supplied notes and checksums accompany the reference files. The typo `Moter` is part of the actual vendor URL.
+The `mechanism_lab` package, source-based M8325s reconstruction, custom adapter/drive study, generic command line, import/export, media, drawing and packaging tools are part of this project's development. The new native tracer adaptation retains and generalizes the earlier project tracer rather than replacing it with an image service. Geometric invariants and export conventions are tested in the supplied suite.
 
-The manufacturer's CAD contains 75 solid bodies plus one surface body in the retained import. The conversion preserves all of them. Semantic names, inspection offsets, approximate materials, animation and the custom carrier drive are new work. Detailed stator winding geometry, magnets and PCB circuitry are not disclosed by that mechanical export and are not fabricated as manufacturer facts.
+No new project-wide redistribution license has been selected on the owner's behalf. Existing original notices are retained with their files. Publishing the repository does not itself turn unlabeled files into MIT/GPL-licensed material. The owner should explicitly choose license scope before claiming an open-source license.
 
-## Rights
+Third-party Python/system dependencies are installed separately, not copied wholesale into this repository. They retain their own licenses. No font files, credential files, environment secrets or private account records are bundled. PDF font embedding performed by the renderer is not a redistributed standalone font file.
 
-Project software follows the existing repository GPL-2.0 license. REV Robotics owns its supplied CAD, drawings, photographs and trademarks; their inclusion is not a relicensing or a claim of endorsement. Obtain the manufacturer's permission where a intended redistribution or commercial use requires it. Drawings made here are labeled design studies, not official REV production drawings.
+## Manufacturer boundaries
+
+The motor's published external interface and inspected photos are attributed in `MOTOR_SOURCES.md`. Manufacturer photos and native Onshape CAD are not vendored. The new model is not an official ODrive CAD release, and the modeled internals should not be represented as a teardown-derived or factory-verified assembly.
+
+ODrive and Torsen names are used descriptively. There is no manufacturer endorsement, trademark grant, certified load rating or implied approval for production hardware.

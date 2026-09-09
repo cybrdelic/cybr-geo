@@ -1,11 +1,11 @@
 __pycache__/
 *.py[cod]
-*.nbc
-*.nbi
+.pytest_cache/
 .venv/
-.cache/
+venv/
+*.egg-info/
 build/
 dist/
-*.egg-info/
-.pytest_cache/
-.DS_Store
+.cache/
+.env
+.env.*

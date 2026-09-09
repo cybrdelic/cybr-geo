@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "kind": "geometry-import",
+  "source": "example_flange_analytic.step",
+  "name": "imported_example",
+  "units": "mm",
+  "up_axis": "Z"
+}

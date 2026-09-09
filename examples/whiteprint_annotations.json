@@ -1,0 +1,9 @@
+{
+  "auto_dimensions": true,
+  "annotations": [
+    {"kind":"circle", "view":"end", "radius":33},
+    {"kind":"leader", "view":"end", "point":[33,0],
+     "elbow_paper_mm":[12,-13], "end_paper_mm":[22,-13],
+     "text":"6 x DIA 6.6 / BCD 66"}
+  ]
+}
