@@ -1,0 +1,109 @@
+name: Receive checked project publication
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/receive-publication.yml']
+permissions:
+  contents: write
+concurrency:
+  group: project-publication-receiver
+  cancel-in-progress: false
+jobs:
+  receive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare ephemeral receiver identity
+        run: |
+          python -m pip -q install cryptography
+          mkdir -p /tmp/cybr-receiver-public
+          python - <<'PY'
+          from cryptography.hazmat.primitives.asymmetric import rsa
+          from cryptography.hazmat.primitives import serialization
+          from pathlib import Path
+          import os
+          key=rsa.generate_private_key(public_exponent=65537,key_size=3072)
+          p=Path('/tmp/cybr-receiver-private.pem')
+          p.write_bytes(key.private_bytes(serialization.Encoding.PEM,serialization.PrivateFormat.PKCS8,serialization.NoEncryption()))
+          p.chmod(0o600)
+          Path('/tmp/cybr-receiver-public/receiver.pem').write_bytes(key.public_key().public_bytes(serialization.Encoding.PEM,serialization.PublicFormat.SubjectPublicKeyInfo))
+          Path('/tmp/cybr-receiver-public/run.txt').write_text(os.environ['GITHUB_RUN_ID'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: publication-receiver-public-key
+          path: /tmp/cybr-receiver-public/
+          retention-days: 1
+      - name: Receive encrypted transfer manifests, validate and commit project files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python -u - <<'PY'
+          import os,time,json,base64,hashlib,struct,zipfile,io,subprocess,urllib.request
+          from pathlib import Path,PurePosixPath
+          from cryptography.hazmat.primitives import serialization,hashes
+          from cryptography.hazmat.primitives.asymmetric import padding
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          private=serialization.load_pem_private_key(Path('/tmp/cybr-receiver-private.pem').read_bytes(),password=None)
+          repo=os.environ['GITHUB_REPOSITORY']; run=os.environ['GITHUB_RUN_ID']; seen=set(); start=time.monotonic()
+          subprocess.run(['git','config','user.name','CYBR GEO publication'],check=True)
+          subprocess.run(['git','config','user.email','41898282+github-actions[bot]@users.noreply.github.com'],check=True)
+          def git(*args):return subprocess.check_output(['git',*args],text=True).strip()
+          while time.monotonic()-start<3000:
+              subprocess.run(['git','pull','--ff-only','origin','master'],check=True,stdout=subprocess.DEVNULL)
+              paths=sorted(Path('.publication/queue').glob('*.json')) if Path('.publication/queue').exists() else []
+              for path in paths:
+                  if path.name in seen:continue
+                  envelope=json.loads(path.read_text())
+                  if str(envelope.get('run_id'))!=run:continue
+                  try:
+                      aes=private.decrypt(base64.b64decode(envelope['key']),padding.OAEP(mgf=padding.MGF1(hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
+                      payload=json.loads(AESGCM(aes).decrypt(base64.b64decode(envelope['nonce']),base64.b64decode(envelope['ciphertext']),run.encode()))
+                      req=urllib.request.Request(payload['url'])
+                      with urllib.request.urlopen(req,timeout=120) as response:data=response.read(104857601)
+                      if len(data)>104857600:raise ValueError('Transport exceeds 100 MiB')
+                      if hashlib.sha256(data).hexdigest()!=payload['transport_sha256']:raise ValueError('Transport hash mismatch')
+                      if payload.get('format')=='png-archive-v1':
+                          if data[:8]!=b'\x89PNG\r\n\x1a\n':raise ValueError('Not PNG')
+                          off=8; chunks=[]
+                          while off+12<=len(data):
+                              n=struct.unpack('>I',data[off:off+4])[0]; kind=data[off+4:off+8]
+                              if kind==b'cgAr':chunks.append(data[off+8:off+8+n])
+                              off+=12+n
+                          data=b''.join(chunks)
+                      if hashlib.sha256(data).hexdigest()!=payload['archive_sha256']:raise ValueError('Archive hash mismatch')
+                      count=0
+                      with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                          total=sum(x.file_size for x in archive.infolist())
+                          if total>1500000000:raise ValueError('Unexpected expanded size')
+                          for item in archive.infolist():
+                              name=PurePosixPath(item.filename)
+                              if name.is_absolute() or '..' in name.parts or not name.parts:raise ValueError('Unsafe archive path')
+                              if name.parts[0] in ('.git','.github','.publication') or item.file_size>=100*1024*1024:raise ValueError('Disallowed publication entry')
+                              if item.is_dir():continue
+                              destination=Path(*name.parts);destination.parent.mkdir(parents=True,exist_ok=True)
+                              destination.write_bytes(archive.read(item));count+=1
+                      report=Path('docs/publication-receipts');report.mkdir(parents=True,exist_ok=True)
+                      (report/(path.stem+'.json')).write_text(json.dumps({'transport_sha256':payload['transport_sha256'],'archive_sha256':payload['archive_sha256'],'files':count,'run_id':run,'status':'received and SHA256 verified'},indent=2)+'\n')
+                      subprocess.run(['git','add','-A'],check=True)
+                      subprocess.run(['git','commit','-m','Publish checked project assets: '+path.stem],check=True)
+                      for retry in range(5):
+                          push=subprocess.run(['git','push','origin','HEAD:master'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+                          if push.returncode==0:break
+                          subprocess.run(['git','pull','--rebase','origin','master'],check=True,stdout=subprocess.DEVNULL)
+                      else:raise RuntimeError('Unable to fast-forward publication')
+                      print('PUBLISHED',path.name,'files',count,flush=True);seen.add(path.name)
+                  except Exception as exc:
+                      # Do not log download URLs, plaintext transfer manifests or credentials.
+                      print('TRANSFER_RETRY',path.name,type(exc).__name__,flush=True)
+              done=Path('.publication/finish.json')
+              if done.is_file():
+                  finish=json.loads(done.read_text())
+                  if str(finish.get('run_id'))==run and len(seen)>=int(finish['expected_transfers']):
+                      print('PUBLICATION_COMPLETE',len(seen),flush=True);break
+              time.sleep(12)
+          else:raise SystemExit('Receiver timed out without a complete publication marker')
+          Path('/tmp/cybr-receiver-private.pem').unlink(missing_ok=True)
+          PY
