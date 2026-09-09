@@ -1,0 +1,688 @@
+{
+  "title": "TORSEN-X: principal-reference visual reconstruction",
+  "units": "millimeters",
+  "axis": "X",
+  "source_of_shape": "Principal hero rendering in the user-provided generated board",
+  "status": "Visual concept mesh, not a validated differential or a reverse-engineered commercial product",
+  "changes_from_previous": [
+    "Removed center mounting ring",
+    "Removed front solid spline stub",
+    "New asymmetric flanges and short bored hub",
+    "Sculpted continuous cage and rounded windows",
+    "Larger exposed helical gears",
+    "Path-traced studio metal lighting"
+  ],
+  "materials": [
+    {
+      "name": "Satin machined carrier",
+      "color": [
+        0.53,
+        0.55,
+        0.56
+      ],
+      "metal": 1.0,
+      "rough": 0.27,
+      "pattern": 2
+    },
+    {
+      "name": "Turned flange steel",
+      "color": [
+        0.64,
+        0.66,
+        0.67
+      ],
+      "metal": 1.0,
+      "rough": 0.22,
+      "pattern": 1
+    },
+    {
+      "name": "Ground gear steel",
+      "color": [
+        0.32,
+        0.33,
+        0.34
+      ],
+      "metal": 1.0,
+      "rough": 0.25,
+      "pattern": 3
+    },
+    {
+      "name": "Polished bearing steel",
+      "color": [
+        0.69,
+        0.71,
+        0.73
+      ],
+      "metal": 1.0,
+      "rough": 0.16,
+      "pattern": 1
+    },
+    {
+      "name": "Blackened retainer steel",
+      "color": [
+        0.095,
+        0.11,
+        0.125
+      ],
+      "metal": 0.88,
+      "rough": 0.26,
+      "pattern": 1
+    },
+    {
+      "name": "Bronze clutch separator",
+      "color": [
+        0.29,
+        0.215,
+        0.105
+      ],
+      "metal": 0.93,
+      "rough": 0.29,
+      "pattern": 1
+    },
+    {
+      "name": "Engraved dark marking",
+      "color": [
+        0.022,
+        0.026,
+        0.029
+      ],
+      "metal": 0.55,
+      "rough": 0.39,
+      "pattern": 0
+    },
+    {
+      "name": "Black elastomer seal",
+      "color": [
+        0.014,
+        0.017,
+        0.019
+      ],
+      "metal": 0.0,
+      "rough": 0.48,
+      "pattern": 0
+    }
+  ],
+  "groups": [
+    "carrier",
+    "front_flange",
+    "rear_flange",
+    "front_hub",
+    "shaft",
+    "rear_hub",
+    "gears",
+    "clutch",
+    "bearing",
+    "marking"
+  ],
+  "components": [
+    {
+      "name": "Sculpted_windowed_carrier",
+      "material": 0,
+      "group": "carrier",
+      "vertices": 113957,
+      "triangles": 220658
+    },
+    {
+      "name": "Front_eight_hole_flange",
+      "material": 1,
+      "group": "front_flange",
+      "vertices": 40336,
+      "triangles": 47760
+    },
+    {
+      "name": "Rear_eight_hole_drive_flange",
+      "material": 1,
+      "group": "rear_flange",
+      "vertices": 42176,
+      "triangles": 51440
+    },
+    {
+      "name": "Front_outer_witness_groove",
+      "material": 4,
+      "group": "front_flange",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_outer_witness_groove",
+      "material": 4,
+      "group": "rear_flange",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_stepped_hollow_hub",
+      "material": 1,
+      "group": "front_hub",
+      "vertices": 7099,
+      "triangles": 7328
+    },
+    {
+      "name": "Front_hollow_32_spline_socket",
+      "material": 1,
+      "group": "front_hub",
+      "vertices": 3880,
+      "triangles": 3112
+    },
+    {
+      "name": "Front_turning_line_0",
+      "material": 4,
+      "group": "front_hub",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_turning_line_1",
+      "material": 4,
+      "group": "front_hub",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_turning_line_2",
+      "material": 4,
+      "group": "front_hub",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_shaft_inner_sleeve",
+      "material": 4,
+      "group": "shaft",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_bore_rear_rim",
+      "material": 3,
+      "group": "shaft",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_short_output_hub",
+      "material": 1,
+      "group": "rear_hub",
+      "vertices": 4809,
+      "triangles": 5038
+    },
+    {
+      "name": "Rear_inner_output_sleeve",
+      "material": 4,
+      "group": "shaft",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_helical_gear",
+      "material": 2,
+      "group": "gears",
+      "vertices": 39936,
+      "triangles": 61920
+    },
+    {
+      "name": "Rear_helical_gear",
+      "material": 2,
+      "group": "gears",
+      "vertices": 42744,
+      "triangles": 67080
+    },
+    {
+      "name": "Front_gear_collar",
+      "material": 3,
+      "group": "gears",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Central_black_separator",
+      "material": 4,
+      "group": "gears",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_gear_collar",
+      "material": 3,
+      "group": "gears",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_thrust_ring",
+      "material": 4,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_thrust_ring",
+      "material": 4,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_01",
+      "material": 4,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_02",
+      "material": 5,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_03",
+      "material": 4,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_04",
+      "material": 5,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_05",
+      "material": 4,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_06",
+      "material": 5,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_clutch_plate_07",
+      "material": 4,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Bronze_wave_preload_spring",
+      "material": 5,
+      "group": "clutch",
+      "vertices": 8832,
+      "triangles": 17620
+    },
+    {
+      "name": "Rear_clutch_retainer",
+      "material": 3,
+      "group": "clutch",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_bearing_outer_race",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_bearing_inner_race",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_bearing_ball_00",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_01",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_02",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_03",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_04",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_05",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_06",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_07",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_08",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_09",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_10",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_11",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_12",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_13",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_14",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_15",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_16",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_17",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_18",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_ball_19",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Front_bearing_retainer",
+      "material": 5,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_bearing_outer_race",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_bearing_inner_race",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_bearing_ball_00",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_01",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_02",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_03",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_04",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_05",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_06",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_07",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_08",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_09",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_10",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_11",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_12",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_13",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_14",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_15",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_16",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_17",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_18",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_ball_19",
+      "material": 3,
+      "group": "bearing",
+      "vertices": 162,
+      "triangles": 320
+    },
+    {
+      "name": "Rear_bearing_retainer",
+      "material": 5,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Front_oil_seal",
+      "material": 7,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Rear_oil_seal",
+      "material": 7,
+      "group": "bearing",
+      "vertices": 4096,
+      "triangles": 4096
+    },
+    {
+      "name": "Marking_TORSEN-X",
+      "material": 6,
+      "group": "marking",
+      "vertices": 3714,
+      "triangles": 3624
+    },
+    {
+      "name": "Marking_TB-250",
+      "material": 6,
+      "group": "marking",
+      "vertices": 4020,
+      "triangles": 4004
+    },
+    {
+      "name": "Marking_S-N_0047",
+      "material": 6,
+      "group": "marking",
+      "vertices": 4086,
+      "triangles": 4052
+    }
+  ],
+  "triangle_count": 625220,
+  "vertex_count": 440853
+}

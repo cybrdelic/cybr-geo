@@ -1,0 +1,11 @@
+numpy==2.3.5
+trimesh==4.11.1
+cadquery==2.8.0
+vtk==9.6.2
+Pillow==12.3.0
+scipy==1.17.0
+cairosvg==2.8.2
+ezdxf==1.4.4
+numba==0.65.1
+pytest==9.0.2
+shapely==2.1.2
