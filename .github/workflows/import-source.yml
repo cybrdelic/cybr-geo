@@ -1,0 +1,61 @@
+name: Publish verified source
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.source_import/**/ready.json']
+permissions:
+  contents: write
+concurrency:
+  group: verified-source-import
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Decode, checksum and safely unpack complete source
+        run: |
+          python - <<'PY'
+          import base64,hashlib,io,json,pathlib,shutil,tarfile
+          P=pathlib.Path
+          manifests=sorted(P('.source_import').glob('*/ready.json'))
+          if not manifests: raise RuntimeError('No complete source payload')
+          for manifest in manifests:
+            meta=json.loads(manifest.read_text())
+            chunks=[]
+            for name in meta['chunks']:
+              assert P(name).name==name
+              chunks.append((manifest.parent/name).read_bytes())
+            data=base64.b64decode(b''.join(chunks),validate=True)
+            assert hashlib.sha256(data).hexdigest()==meta['sha256'], 'Source checksum mismatch'
+            with tarfile.open(fileobj=io.BytesIO(data),mode='r:xz') as archive:
+              entries=archive.getmembers()
+              assert len(entries)==meta['files']
+              assert sum(m.size for m in entries)<100*1024*1024
+              for entry in entries:
+                path=P(entry.name)
+                assert entry.isfile() and not path.is_absolute() and '..' not in path.parts
+                assert path.parts and path.parts[0] not in ('.git','.github','.source_import')
+                assert entry.size<25*1024*1024
+              for entry in entries:
+                path=P(entry.name);path.parent.mkdir(parents=True,exist_ok=True)
+                path.write_bytes(archive.extractfile(entry).read())
+            receipt=P('docs/publication_receipts')/(manifest.parent.name+'.json')
+            receipt.parent.mkdir(parents=True,exist_ok=True)
+            receipt.write_text(json.dumps({'archive_sha256':meta['sha256'],'files':meta['files'],'method':'verified native GitHub blob transfer'},indent=2))
+            shutil.rmtree(manifest.parent)
+            print('EXTRACTED',meta['files'],'verified project files')
+          PY
+          python -m compileall -q src tools tests
+      - name: Commit actual project files
+        run: |
+          git config user.name 'CYBR GEO publication'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          git commit -m 'Publish checksum-verified geometry toolkit source and retained previews'
+          git pull --rebase origin master
+          git push origin HEAD:master
+          git log -1 --format='%H %s'
