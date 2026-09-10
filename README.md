@@ -24,6 +24,14 @@ The 81-part reference reconstruction and 44-part alternative kinematic core are 
 
 Both models remain available; one does not silently replace the other. Motor/differential compatibility is a custom-adapter concept, not a validated physical pairing.
 
+## Nitinol fiber actuator
+
+The built-in `nitinol_fiber_actuator` recipe is a 12-fiber straight-wire SMA linear actuator with a guided output carriage, central return spring, fixed/moving crimp carriers, folded series/parallel copper routing, output rod and independent travel stops. The default source-guided configuration uses 0.20 mm actuator wire, 140 mm active length and 3.5% modeled strain for a 4.90 mm nominal stroke.
+
+The 12 fibers are mechanically parallel but electrically arranged as three parallel strings of four fibers in series. The series path alternates between fixed- and moving-end jumpers, returning both main power terminals to the stationary rear plate. Published Dynalloy 0.20 mm wire data anchors the default resistance/current/force/cooling estimates; the frame, spring, crimps, guides and electrical routing are original conceptual geometry rather than vendor CAD.
+
+See [actuator recipe](src/mechanism_lab/models/nitinol_actuator.py) and [design/source notes](docs/NITINOL_ACTUATOR.md). The included numbers are design guides, not thermal, fatigue, structural or load qualification.
+
 ## Install
 
 Python 3.11–3.13; Linux/WSL is the documented environment. Install FFmpeg, a C++17/OpenMP compiler, CMake, Cairo, EGL/OpenGL and Mesa system libraries first. Keep the source checkout and its `assets/` and `native/` directories together.
@@ -52,6 +60,13 @@ lab build m8325s --step
 lab render m8325s --view stator --renderer pathtrace --spp 64 --threads 4
 lab video m8325s --view internal --action motion --seconds 8
 lab catalogue m8325s
+
+# Parametric Nitinol fiber actuator.
+lab build nitinol_fiber_actuator --step --stl
+lab render nitinol_fiber_actuator --view fiber_bundle --renderer pathtrace --spp 64
+lab render nitinol_fiber_actuator --view electrical
+lab video nitinol_fiber_actuator --view hero --action motion --seconds 6
+lab blueprint nitinol_fiber_actuator
 
 # Restore original NPZ inputs from a prior package, OR regenerate them explicitly.
 python tools/rebuild_differential_inputs.py
@@ -92,11 +107,11 @@ The source import is checksum-verified and unpacked into ordinary tracked files.
 Run the source-only smoke tests without requiring the original output archives:
 
 ```bash
-python -m pytest -q tests/test_core.py tests/test_drawings_media.py tests_legacy -k "not individual_motor_parts"
+python -m pytest -q tests/test_core.py tests/test_drawings_media.py tests/test_nitinol_actuator.py tests_legacy -k "not individual_motor_parts"
 # Full suite, after building inputs and the optional release artifacts:
 python -m pytest -q
 ```
 
-The tests cover analytic geometry, cache integrity, units, import/export, transforms, decoded GLB animations, belt-path continuity, vectors in drawings, actual changing video frames, and README asset paths. A test definition or historical report is not itself proof of a fresh successful run.
+The tests cover analytic geometry, cache integrity, units, import/export, transforms, decoded GLB animations, belt-path continuity, vectors in drawings, actual changing video frames, the Nitinol actuator's electrical/kinematic invariants, and README asset paths. A test definition or historical report is not itself proof of a fresh successful run.
 
 The repository's GPL-2.0 license is retained for project code. Manufacturer CAD, photographs, drawings and trademarks retain their own rights. No mechanical, electromagnetic, thermal or load qualification is claimed.
