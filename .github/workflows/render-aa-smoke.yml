@@ -1,0 +1,41 @@
+name: Render AA Smoke
+
+on:
+  push:
+    branches:
+      - feature/renderer-antialiasing
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends g++ cmake make libgomp1 ffmpeg libegl1 libgl1 libgl1-mesa-dri libcairo2 libglib2.0-0 libxrender1 libsm6 libxext6
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: AA unit and PBR render smoke
+        run: |
+          pytest -q tests/test_antialiasing.py
+          lab render example_flange --size 320x240 --aa ssaa2 --out /tmp/aa.png
+          python - <<'PY'
+          from PIL import Image
+          im=Image.open('/tmp/aa.png')
+          assert im.size==(320,240)
+          PY
+      - name: Video AA smoke
+        run: |
+          lab video example_flange --view hero --action orbit --seconds 0.5 --fps 8 --size 320x240 --aa ssaa2 --out /tmp/aa.mp4
+          ffprobe -v error -show_entries stream=width,height -of default=noprint_wrappers=1 /tmp/aa.mp4
+      - name: Path tracer integrated AA smoke
+        run: |
+          lab render example_flange --renderer pathtrace --size 192x128 --spp 16 --threads 2 --out /tmp/pathtrace_aa.png
+          test -s /tmp/pathtrace_aa.png
