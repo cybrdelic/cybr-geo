@@ -2,6 +2,8 @@
 
 A material sidecar replaces the old hard-coded differential material palette.
 Raw and classically filtered images are retained; no neural image generation.
+The native tracer already anti-aliases geometry by jittering every camera sample
+inside its output pixel, so edge integration improves directly with SPP.
 """
 from __future__ import annotations
 from pathlib import Path
@@ -51,8 +53,10 @@ def render_pathtrace(assembly,output,view_name='hero',size=(1600,1100),spp=64,th
         for i in range(3):arr,variance=filt.atrous(arr,guides,variance,2**i,i)
         clean=Image.fromarray(filt.tonemap(arr,exposure=exposure));clean.save(output.with_name(output.stem+'_clean.png'))
         labelled(clean,view.title or assembly.name.upper(),view.note,
-                 f'{spp} samples/pixel / {depth}-bounce limit / classical geometry-guided filtering',
+                 f'{spp} samples/pixel / stochastic subpixel AA / {depth}-bounce limit / classical geometry-guided filtering',
                  tag='CYBR MECHANISM LAB / PATH-TRACED GEOMETRY').save(output)
     report=dict(file=output.name,model=assembly.name,view=view_name,resolution=list(size),spp=spp,bounce_limit=depth,
-                triangles=sum(len(p.faces) for p in parts),seconds=time.time()-start,exposure=exposure,lighting='camera-relative procedural studio',renderer='C++ BVH/GGX/MIS path tracer; no neural filtering')
+                triangles=sum(len(p.faces) for p in parts),seconds=time.time()-start,exposure=exposure,lighting='camera-relative procedural studio',
+                antialiasing='stochastic subpixel camera jitter integrated across every path-traced sample',
+                renderer='C++ BVH/GGX/MIS path tracer; no neural filtering')
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');return report
