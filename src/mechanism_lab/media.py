@@ -6,7 +6,7 @@ import hashlib,json,math,subprocess,time,html
 import numpy as np
 from PIL import Image,ImageDraw
 from .core import Assembly,View
-from .render import Studio,labelled,font,render_still
+from .render import Studio,labelled,font,render_still,antialias_description
 from .exporters import export_glb
 
 @dataclass
@@ -29,7 +29,7 @@ def make_gif(video,output,width=640,fps=10,seconds=6.,start=0.):
                     '-loop','0',str(output)],check=True)
     return output
 
-def render_video(assembly,output,shots=None,size=(1280,720),fps=24):
+def render_video(assembly,output,shots=None,size=(1280,720),fps=24,aa='ssaa2'):
     if fps<=0 or any(n<=0 or n%2 for n in size):raise ValueError('fps must be positive and H.264 dimensions must be even')
     if shots is None:shots=[Shot('hero',8,'motion')]
     if any(s.duration<=0 or round(s.duration*fps)<1 or s.view not in assembly.views or s.action not in ('motion','orbit','explode','still') for s in shots):raise ValueError('Invalid shot duration, action or view')
@@ -37,9 +37,10 @@ def render_video(assembly,output,shots=None,size=(1280,720),fps=24):
     command=['ffmpeg','-y','-v','error','-threads','2','-f','rawvideo','-pix_fmt','rgb24','-s',f'{size[0]}x{size[1]}','-r',str(fps),'-i','-',
              '-an','-c:v','libx264','-threads','2','-preset','medium','-crf','19','-pix_fmt','yuv420p','-movflags','+faststart',str(part)]
     proc=subprocess.Popen(command,stdin=subprocess.PIPE);rows=[];globalframe=0;start=time.time()
+    aa_text=antialias_description(aa)
     try:
         for si,shot in enumerate(shots):
-            view=assembly.views[shot.view];n=round(shot.duration*fps);studio=Studio(assembly,size=size,section=view.section)
+            view=assembly.views[shot.view];n=round(shot.duration*fps);studio=Studio(assembly,size=size,section=view.section,aa=aa)
             try:
                 studio.visible(lambda p:p.group not in view.hide)
                 for f in range(n):
@@ -50,7 +51,7 @@ def render_video(assembly,output,shots=None,size=(1280,720),fps=24):
                     studio.pose(t if shot.action in ['motion','orbit'] else 0,explosion)
                     studio.set_camera(angle,view.el,view.scale,view.target)
                     im=studio.render();digest=hashlib.sha256(im.tobytes()).hexdigest()
-                    footer=f'{t:05.2f} s  |  {fps} fps  |  {shot.action.upper()}  |  prescribed geometry motion, not a force simulation'
+                    footer=f'{t:05.2f} s  |  {fps} fps  |  {shot.action.upper()}  |  {aa_text}  |  prescribed geometry motion'
                     im=labelled(im,shot.title or view.title or assembly.name.upper(),view.note,footer)
                     proc.stdin.write(np.ascontiguousarray(im,dtype=np.uint8).tobytes())
                     rows.append(dict(frame=globalframe,shot=si,time=t,explosion=explosion,azimuth=angle,pixel_sha256_before_caption=digest))
@@ -66,23 +67,23 @@ def render_video(assembly,output,shots=None,size=(1280,720),fps=24):
         proc.kill();proc.wait();part.unlink(missing_ok=True);raise
     report=dict(model=assembly.name,frames=globalframe,unique_frames=len({r['pixel_sha256_before_caption'] for r in rows}),
                 duration=globalframe/fps,resolution=list(size),fps=fps,seconds_to_render=time.time()-start,
-                method='VTK EGL PBR, frame-by-frame geometry rendering; not path-traced',probe=probe(output),frames_log=rows)
+                antialiasing=aa_text,method='VTK EGL PBR, frame-by-frame geometry rendering with supersampled edge resolve; not path-traced',probe=probe(output),frames_log=rows)
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n')
     return report
 
-def catalogue(assembly,directory,size=(640,480)):
+def catalogue(assembly,directory,size=(640,480),aa='ssaa2'):
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True);models=directory/'models';models.mkdir(exist_ok=True)
-    studio=Studio(assembly,size=size);items=[];cards=[]
+    studio=Studio(assembly,size=size,aa=aa);items=[];cards=[]
     try:
         for i,p in enumerate(assembly.parts):
             studio.visible(lambda q:q.name==p.name);studio.pose(0,0)
             T=assembly.pose(p);v=p.vertices@T[:3,:3].T+T[:3,3];lo,hi=v.min(0),v.max(0);target=(lo+hi)/2
             scale=max(6.,np.linalg.norm(hi-lo)*.52);studio.set_camera(45,26,scale,target)
-            im=studio.render();card=labelled(im,f'{i+1:03} / '+p.name,'',p.provenance)
+            im=studio.render();card=labelled(im,f'{i+1:03} / '+p.name,'',p.provenance+' / '+antialias_description(aa))
             filename=f'{i+1:03}_{p.name}.png';card.save(directory/filename)
             sub=replace(assembly,parts=[p]);glb=models/(p.name+'.glb');export_glb(sub,glb)
             items.append(dict(index=i+1,name=p.name,group=p.group,provenance=p.provenance,image=filename,geometry='models/'+glb.name,role=p.role))
-            thumb=card.resize((320,240));cards.append(thumb)
+            thumb=card.resize((320,240),Image.Resampling.LANCZOS);cards.append(thumb)
         for page in range(math.ceil(len(cards)/20)):
             sheet=Image.new('RGB',(1280,1200),(13,18,24))
             for k,card in enumerate(cards[page*20:(page+1)*20]):sheet.paste(card,((k%4)*320,(k//4)*240))
