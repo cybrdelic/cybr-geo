@@ -4,12 +4,15 @@ from pathlib import Path
 import hashlib,importlib,importlib.util,json
 from .core import Assembly,project_root,save_cache,load_cache,validate
 
-BUILTINS=('m8325s','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+BUILTINS=('m8325s','nitinol_fiber_actuator','differential_reference','differential_core','differential_working','drivetrain','example_flange')
 
 def factory(name):
     if name=='m8325s':
         from .models.motor import build,motor_pose
         return build,motor_pose
+    if name=='nitinol_fiber_actuator':
+        from .models.nitinol_actuator import build,pose
+        return build,pose
     if name.startswith('differential_'):
         from .models.differential import build,pose
         kind=name.split('_',1)[1]
