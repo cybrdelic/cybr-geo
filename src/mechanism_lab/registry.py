@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib,importlib,importlib.util,json
 from .core import Assembly,project_root,save_cache,load_cache,validate
 
-BUILTINS=('m8325s','nitinol_fiber_actuator','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+BUILTINS=('m8325s','nitinol_fiber_actuator','nitinol_compact','nitinol_high_force','nitinol_antagonistic','nitinol_rotary','nitinol_cartridge','differential_reference','differential_core','differential_working','drivetrain','example_flange')
 
 def factory(name):
     if name=='m8325s':
@@ -13,6 +13,16 @@ def factory(name):
     if name=='nitinol_fiber_actuator':
         from .models.nitinol_actuator import build,pose
         return build,pose
+    if name.startswith('nitinol_'):
+        from .models import nitinol_family as nf
+        table={
+            'nitinol_compact':(nf.build_compact,nf.pose_compact),
+            'nitinol_high_force':(nf.build_high_force,nf.pose_high_force),
+            'nitinol_antagonistic':(nf.build_antagonistic,nf.pose_antagonistic),
+            'nitinol_rotary':(nf.build_rotary,nf.pose_rotary),
+            'nitinol_cartridge':(nf.build_cartridge,nf.pose_cartridge),
+        }
+        if name in table:return table[name]
     if name.startswith('differential_'):
         from .models.differential import build,pose
         kind=name.split('_',1)[1]
@@ -43,14 +53,12 @@ def fingerprint(name):
     if name.endswith('.json'):
         path=Path(name).resolve();raw=path.read_bytes();h.update(raw)
         spec=json.loads(raw);source=path.parent/spec['source'];h.update(source.read_bytes())
-        # External glTF buffers/images also affect geometry/provenance invalidation.
         if source.suffix.lower()=='.gltf':
             gltf=json.loads(source.read_text())
             for record in gltf.get('buffers',[])+gltf.get('images',[]):
                 uri=record.get('uri','')
                 if uri and not uri.startswith('data:'):
                     h.update((source.parent/uri).read_bytes())
-    # Preserved reference inputs also participate in invalidation, not just code.
     if 'differential' in name or name=='drivetrain':
         for p in sorted((root/'assets/differential_v3/geometry').glob('*parts.*')):h.update(p.read_bytes())
     return h.hexdigest()
