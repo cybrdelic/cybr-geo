@@ -22,6 +22,23 @@ from .geometry import *
 FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 BOLD='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 BG=(13,18,24);FG=(220,230,236);MUTED=(140,156,168);BLUE=(104,192,233);GOLD=(225,177,102)
+AA_FACTORS={'none':1,'fxaa':1,'ssaa2':2,'ssaa3':3,'ssaa4':4}
+
+
+def normalize_aa(mode):
+    mode=str(mode).lower()
+    if mode not in AA_FACTORS:
+        raise ValueError(f'Unknown antialiasing mode {mode}; choose {tuple(AA_FACTORS)}')
+    return mode
+
+
+def antialias_description(mode):
+    mode=normalize_aa(mode)
+    if mode=='none':return 'antialiasing disabled'
+    if mode=='fxaa':return 'FXAA'
+    factor=AA_FACTORS[mode]
+    return f'{factor}x SSAA / Lanczos resolve / FXAA'
+
 
 def font(sz,bold=False):
     try:return ImageFont.truetype(BOLD if bold else FONT,sz)
@@ -70,10 +87,14 @@ def clip_closed(data,normal=(0,1,0),origin=(0,0,0)):
 
 
 class Studio:
-    def __init__(self,assembly:Assembly,size=(1280,720),ao=True,section=None):
+    def __init__(self,assembly:Assembly,size=(1280,720),ao=True,section=None,aa='ssaa2'):
         self.assembly=assembly;parts=assembly.parts;self.parts=parts;self.actors=[];self.buffers=[]
+        self.output_size=tuple(int(v) for v in size);self.aa=normalize_aa(aa);self.supersample=AA_FACTORS[self.aa]
+        self.render_size=tuple(v*self.supersample for v in self.output_size)
+        if min(self.output_size)<=0 or max(self.render_size)>16384:
+            raise ValueError(f'Invalid AA render size {self.render_size}; resolved output is {self.output_size}')
         self.ren=vtk.vtkRenderer();self.ren.SetBackground(.060,.070,.085);self.ren.SetBackground2(.095,.11,.13);self.ren.GradientBackgroundOn()
-        self.win=vtk.vtkEGLRenderWindow();self.win.SetOffScreenRendering(1);self.win.SetSize(*size);self.win.SetMultiSamples(0);self.win.SetAlphaBitPlanes(1);self.win.AddRenderer(self.ren)
+        self.win=vtk.vtkEGLRenderWindow();self.win.SetOffScreenRendering(1);self.win.SetSize(*self.render_size);self.win.SetMultiSamples(0);self.win.SetAlphaBitPlanes(1);self.win.AddRenderer(self.ren)
         self.ren.UseImageBasedLightingOn();self.ren.AutomaticLightCreationOff();self.tex=studio_texture();self.ren.SetEnvironmentTexture(self.tex,False);self.ren.SetEnvironmentUp(0,0,1);self.ren.SetEnvironmentRight(1,0,0)
         self.ren.UseSphericalHarmonicsOn()
         # A modest direct component gives readable glancing edges without a white wash.
@@ -92,7 +113,9 @@ class Studio:
         if ao:
             ssao=vtk.vtkSSAOPass();ssao.SetDelegatePass(steps);ssao.SetRadius(3.8);ssao.SetBias(.035);ssao.SetKernelSize(48);ssao.BlurOn();delegate=ssao;self.passes.append(ssao)
         tone=vtk.vtkToneMappingPass();tone.SetToneMappingType(vtk.vtkToneMappingPass.GenericFilmic);tone.SetGenericFilmicDefaultPresets();tone.SetExposure(1.15);tone.SetDelegatePass(delegate);self.passes.append(tone);self.ren.SetPass(tone)
-        self.ren.UseFXAAOn();self.ren.GetFXAAOptions().SetRelativeContrastThreshold(.08)
+        if self.aa=='none':self.ren.UseFXAAOff()
+        else:
+            self.ren.UseFXAAOn();self.ren.GetFXAAOptions().SetRelativeContrastThreshold(.08)
         self.cam=self.ren.GetActiveCamera();self.cam.SetViewUp(0,0,1);self.cam.ParallelProjectionOn();self.capture=vtk.vtkWindowToImageFilter();self.capture.SetInput(self.win);self.capture.SetInputBufferTypeToRGB();self.capture.ReadFrontBufferOff()
         self.set_camera()
 
@@ -115,7 +138,10 @@ class Studio:
 
     def render(self):
         self.win.Render();self.capture.Modified();self.capture.Update();im=self.capture.GetOutput();w,h,_=im.GetDimensions();a=vtk_to_numpy(im.GetPointData().GetScalars()).reshape(h,w,3)
-        return Image.fromarray(np.flipud(a).copy())
+        image=Image.fromarray(np.flipud(a).copy())
+        if self.supersample>1:
+            image=image.resize(self.output_size,Image.Resampling.LANCZOS)
+        return image
 
     def close(self):self.win.Finalize()
 
@@ -131,17 +157,16 @@ def labelled(im,title,subtitle='',footer='',tag='CYBR MECHANISM LAB / GEOMETRY R
     return im
 
 
-
-def render_still(assembly, output, view_name='hero', size=(1600,1100), time_seconds=0., captions=True):
+def render_still(assembly, output, view_name='hero', size=(1600,1100), time_seconds=0., captions=True, aa='ssaa2'):
     view=assembly.views[view_name]
-    studio=Studio(assembly,size=size,section=view.section)
+    studio=Studio(assembly,size=size,section=view.section,aa=aa)
     try:
         studio.visible(lambda p:p.group not in view.hide)
         studio.pose(time_seconds,view.explode)
         studio.set_camera(view.az,view.el,view.scale,view.target)
         im=studio.render()
         if captions:im=labelled(im,view.title or assembly.name.upper(),view.note,
-                              'Actual 3D geometry / PBR inspection rendering / '+str(len(assembly.parts))+' named components')
+                              'Actual 3D geometry / PBR inspection / '+antialias_description(aa)+' / '+str(len(assembly.parts))+' named components')
         output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);im.save(output)
         return output
     finally:studio.close()
