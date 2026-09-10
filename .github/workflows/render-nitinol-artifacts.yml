@@ -1,0 +1,98 @@
+name: Render Nitinol Actuator Artifacts
+
+on:
+  push:
+    branches:
+      - render/nitinol-actuator-artifacts
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MECHANISM_LAB_ROOT: ${{ github.workspace }}
+      PYTHONUNBUFFERED: "1"
+      LP_NUM_THREADS: "4"
+      OMP_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: System rendering dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            g++ cmake make libgomp1 ffmpeg \
+            libegl1 libgl1 libgl1-mesa-dri mesa-utils \
+            libcairo2 libglib2.0-0 libxrender1 libsm6 libxext6 \
+            fonts-dejavu-core
+
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+          lab doctor || true
+
+      - name: Build and validate actuator
+        run: |
+          mkdir -p deliverables/{build,renders,videos,gifs,drawings,validation,animated}
+          lab validate nitinol_fiber_actuator --expensive --out deliverables/validation/nitinol_fiber_actuator.json
+          lab build nitinol_fiber_actuator --step --stl --rebuild --out deliverables/build
+
+      - name: Render geometry views
+        run: |
+          lab render nitinol_fiber_actuator --view hero --size 1920x1080 --out deliverables/renders/01_hero_pbr.png
+          lab render nitinol_fiber_actuator --view fiber_bundle --size 1920x1080 --out deliverables/renders/02_fiber_bundle_pbr.png
+          lab render nitinol_fiber_actuator --view electrical --size 1920x1080 --out deliverables/renders/03_electrical_pbr.png
+          lab render nitinol_fiber_actuator --view section --size 1920x1080 --out deliverables/renders/04_section_pbr.png
+          lab render nitinol_fiber_actuator --view exploded --size 1920x1080 --out deliverables/renders/05_exploded_pbr.png
+          lab render nitinol_fiber_actuator --view hero --time 0.65 --size 1920x1080 --out deliverables/renders/06_hot_state_pbr.png
+
+      - name: Offline path traced hero
+        continue-on-error: true
+        run: |
+          lab render nitinol_fiber_actuator --view hero --renderer pathtrace --size 1280x720 --spp 64 --threads 4 --out deliverables/renders/07_hero_pathtrace.png
+
+      - name: Render real kinematic videos
+        run: |
+          lab video nitinol_fiber_actuator --view hero --action motion --seconds 8 --size 1280x720 --fps 24 --out deliverables/videos/nitinol_contraction_cycle.mp4
+          lab video nitinol_fiber_actuator --view exploded --action explode --seconds 7 --size 1280x720 --fps 24 --out deliverables/videos/nitinol_exploded_inspection.mp4
+          lab video nitinol_fiber_actuator --view fiber_bundle --action orbit --seconds 7 --size 1280x720 --fps 24 --out deliverables/videos/nitinol_fiber_bundle_orbit.mp4
+
+      - name: GIF previews
+        run: |
+          lab gif deliverables/videos/nitinol_contraction_cycle.mp4 --out deliverables/gifs/nitinol_contraction_cycle.gif --seconds 8 --width 800 --fps 12
+          lab gif deliverables/videos/nitinol_exploded_inspection.mp4 --out deliverables/gifs/nitinol_exploded_inspection.gif --seconds 7 --width 800 --fps 12
+
+      - name: Geometry-derived whiteprint papers
+        run: |
+          lab blueprint nitinol_fiber_actuator --out deliverables/drawings/nitinol_fiber_actuator_whiteprint
+          cp deliverables/drawings/nitinol_fiber_actuator_whiteprint.png deliverables/renders/08_whiteprint_preview.png
+
+      - name: Animated geometry exports
+        run: |
+          lab animate nitinol_fiber_actuator --mode motion --seconds 8 --fps 24 --out deliverables/animated/nitinol_fiber_actuator_motion.glb
+          lab animate nitinol_fiber_actuator --mode explode --seconds 7 --fps 24 --out deliverables/animated/nitinol_fiber_actuator_explode.glb
+
+      - name: Inventory
+        if: always()
+        run: |
+          find deliverables -type f -printf '%p\t%s bytes\n' | sort | tee deliverables/INVENTORY.txt
+
+      - name: Upload source-derived deliverables
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nitinol-actuator-source-renders
+          path: deliverables
+          if-no-files-found: error
+          compression-level: 6
