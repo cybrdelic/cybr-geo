@@ -1,0 +1,152 @@
+name: Render Nitinol Family Full
+on:
+  push:
+    branches: [render/nitinol-family-full]
+    paths: [.github/workflows/render-nitinol-family-full.yml]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: System rendering dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends g++ cmake make libgomp1 ffmpeg libegl1 libgl1 libgl1-mesa-dri libcairo2 libglib2.0-0 libxrender1 libsm6 libxext6
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Build validated family
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+          LP_NUM_THREADS: '4'
+          OMP_NUM_THREADS: '4'
+        run: |
+          set -euo pipefail
+          mkdir -p deliverables
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            mkdir -p "deliverables/$m"/{build,renders,pathtrace,videos,gifs,drawings,animated,validation}
+            lab build "$m" --step --out "deliverables/$m/build"
+            lab validate "$m" --out "deliverables/$m/validation/$m.json"
+          done
+      - name: Multi-angle PBR with supersampled antialiasing
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+          LP_NUM_THREADS: '4'
+          OMP_NUM_THREADS: '4'
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            d="deliverables/$m/renders"
+            for v in opposite side top end bundle electrical section; do
+              lab render "$m" --view "$v" --renderer pbr --size 1280x720 --aa ssaa2 --out "$d/${v}_pbr_ssaa2.png"
+            done
+            lab render "$m" --view hero --renderer pbr --size 1440x810 --aa ssaa3 --out "$d/hero_pbr_ssaa3.png"
+            lab render "$m" --view exploded --renderer pbr --size 1440x810 --aa ssaa3 --out "$d/exploded_pbr_ssaa3.png"
+            lab render "$m" --view hot --renderer pbr --size 1440x810 --aa ssaa3 --time 0.95 --out "$d/hot_pbr_ssaa3.png"
+          done
+      - name: High-SPP native path tracing
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+          LP_NUM_THREADS: '4'
+          OMP_NUM_THREADS: '4'
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            d="deliverables/$m/pathtrace"
+            lab render "$m" --view hero --renderer pathtrace --size 1280x720 --spp 256 --threads 4 --out "$d/hero_pathtrace_256spp.png"
+            lab render "$m" --view exploded --renderer pathtrace --size 960x540 --spp 128 --threads 4 --out "$d/exploded_pathtrace_128spp.png"
+          done
+      - name: Motion exploded and orbit videos
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+          LP_NUM_THREADS: '4'
+          OMP_NUM_THREADS: '4'
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            d="deliverables/$m/videos"
+            lab video "$m" --view hero --action motion --seconds 6 --size 1280x720 --fps 18 --aa ssaa2 --out "$d/motion_ssaa2.mp4"
+            lab video "$m" --view exploded --action explode --seconds 6 --size 1280x720 --fps 18 --aa ssaa2 --out "$d/exploded_ssaa2.mp4"
+            lab video "$m" --view bundle --action orbit --seconds 6 --size 960x540 --fps 18 --aa ssaa2 --out "$d/bundle_orbit_ssaa2.mp4"
+          done
+      - name: Piece by piece subassembly inspection videos
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+          LP_NUM_THREADS: '4'
+          OMP_NUM_THREADS: '4'
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            python tools/render_subassembly_reel.py "$m" --size 960x540 --fps 18 --seconds 8 --aa ssaa2 --out "deliverables/$m/videos/subassembly_reel_ssaa2.mp4"
+          done
+      - name: GIF previews
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            lab gif "deliverables/$m/videos/motion_ssaa2.mp4" --out "deliverables/$m/gifs/motion.gif" --seconds 6 --width 720 --fps 10
+            lab gif "deliverables/$m/videos/exploded_ssaa2.mp4" --out "deliverables/$m/gifs/exploded.gif" --seconds 6 --width 720 --fps 10
+          done
+      - name: Geometry-derived whiteprints
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            lab blueprint "$m" --out "deliverables/$m/drawings/${m}_whiteprint"
+          done
+      - name: Animated geometry exports
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            lab animate "$m" --seconds 6 --fps 24 --mode motion --out "deliverables/$m/animated/${m}_motion.glb"
+            lab animate "$m" --seconds 6 --fps 24 --mode explode --out "deliverables/$m/animated/${m}_explode.glb"
+          done
+      - name: Family comparison plates and video
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageOps,ImageDraw
+          from pathlib import Path
+          names=['nitinol_compact','nitinol_high_force','nitinol_antagonistic','nitinol_rotary','nitinol_cartridge']
+          Path('deliverables/comparison').mkdir(parents=True,exist_ok=True)
+          cards=[]
+          for name in names:
+              im=Image.open(f'deliverables/{name}/renders/hero_pbr_ssaa3.png').convert('RGB')
+              im=ImageOps.fit(im,(720,405),method=Image.Resampling.LANCZOS)
+              cards.append(im)
+          sheet=Image.new('RGB',(2160,810),(10,14,19))
+          for i,im in enumerate(cards):sheet.paste(im,((i%3)*720,(i//3)*405))
+          sheet.save('deliverables/comparison/family_hero_grid.jpg',quality=94)
+          PY
+          ffmpeg -y -v error \
+            -i deliverables/nitinol_compact/videos/motion_ssaa2.mp4 \
+            -i deliverables/nitinol_high_force/videos/motion_ssaa2.mp4 \
+            -i deliverables/nitinol_antagonistic/videos/motion_ssaa2.mp4 \
+            -i deliverables/nitinol_rotary/videos/motion_ssaa2.mp4 \
+            -i deliverables/nitinol_cartridge/videos/motion_ssaa2.mp4 \
+            -filter_complex "[0:v]scale=480:270[v0];[1:v]scale=480:270[v1];[2:v]scale=480:270[v2];[3:v]scale=480:270[v3];[4:v]scale=480:270[v4];[v0][v1][v2][v3][v4]xstack=inputs=5:layout=0_0|480_0|960_0|0_270|480_270:fill=black[out]" \
+            -map '[out]' -an -c:v libx264 -crf 18 -pix_fmt yuv420p -movflags +faststart deliverables/comparison/family_motion_comparison.mp4
+      - name: Inventory
+        run: |
+          find deliverables -type f -printf '%p\t%s bytes\n' | sort > deliverables/INVENTORY.txt
+          du -sh deliverables
+          sed -n '1,240p' deliverables/INVENTORY.txt
+      - name: Upload complete source-derived family
+        uses: actions/upload-artifact@v4
+        with:
+          name: nitinol-family-full-source-renders
+          path: deliverables
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 90
