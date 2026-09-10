@@ -1,0 +1,29 @@
+name: Export Local Checkout
+on:
+  push:
+    branches: [workspace/export-local-checkout]
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Package working tree
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/cybr-geo-export
+          tar \
+            --exclude='./.git' \
+            --exclude='./outputs' \
+            --exclude='./.build' \
+            --exclude='./__pycache__' \
+            --exclude='./.pytest_cache' \
+            -czf /tmp/cybr-geo-export/cybr-geo-working-tree.tar.gz .
+          sha256sum /tmp/cybr-geo-export/cybr-geo-working-tree.tar.gz | tee /tmp/cybr-geo-export/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-geo-working-tree
+          path: /tmp/cybr-geo-export/
+          if-no-files-found: error
+          retention-days: 1
