@@ -1,0 +1,44 @@
+name: Nitinol Family Smoke
+on:
+  push:
+    branches: [render/nitinol-family-full]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends g++ cmake make libgomp1 ffmpeg libegl1 libgl1 libgl1-mesa-dri libcairo2 libglib2.0-0 libxrender1 libsm6 libxext6
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Family tests
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+          LP_NUM_THREADS: '4'
+          OMP_NUM_THREADS: '4'
+        run: python -m pytest -q tests/test_nitinol_family.py
+      - name: Build and validate all five
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+        run: |
+          for m in nitinol_compact nitinol_high_force nitinol_antagonistic nitinol_rotary nitinol_cartridge; do
+            lab build "$m" --rebuild
+            lab validate "$m"
+          done
+      - name: AA PBR render sanity
+        env:
+          MECHANISM_LAB_ROOT: ${{ github.workspace }}
+        run: |
+          lab render nitinol_compact --view hero --size 640x360 --aa ssaa2 --out /tmp/compact.png
+          lab render nitinol_rotary --view top --size 640x360 --aa ssaa2 --out /tmp/rotary.png
