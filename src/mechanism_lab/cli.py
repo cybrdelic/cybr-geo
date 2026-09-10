@@ -8,6 +8,8 @@ from pathlib import Path
 import shutil
 import sys
 
+AA_CHOICES=['none','fxaa','ssaa2','ssaa3','ssaa4']
+
 
 def resolution(text):
     try:
@@ -33,6 +35,7 @@ def parser():
     q.add_argument('recipe'); q.add_argument('--view', default='hero')
     q.add_argument('--renderer', choices=['pbr','pathtrace'], default='pbr')
     q.add_argument('--size', type=resolution, default=(1600,1100))
+    q.add_argument('--aa', choices=AA_CHOICES, default='ssaa2', help='PBR AA mode; path tracing uses stratified stochastic subpixel rays')
     q.add_argument('--spp', type=int, default=64); q.add_argument('--threads', type=int, default=4)
     q.add_argument('--time', type=float, default=0.); q.add_argument('--out', type=Path)
     q = sub.add_parser('video', help='Render every video frame using model poses and a shot list')
@@ -40,6 +43,7 @@ def parser():
     q.add_argument('--view', default='hero'); q.add_argument('--seconds', type=float, default=8.)
     q.add_argument('--action', choices=['motion','orbit','explode','still'], default='motion')
     q.add_argument('--size', type=resolution, default=(1280,720)); q.add_argument('--fps', type=int, default=24)
+    q.add_argument('--aa', choices=AA_CHOICES, default='ssaa2')
     q.add_argument('--out', type=Path)
     q = sub.add_parser('gif', help='Make a palette-optimized looping GIF from a video')
     q.add_argument('video', type=Path); q.add_argument('--out', type=Path, required=True)
@@ -50,7 +54,7 @@ def parser():
     q.add_argument('--fps', type=int, default=24); q.add_argument('--mode', choices=['motion','explode'], default='motion')
     q.add_argument('--out', type=Path)
     q = sub.add_parser('catalogue', help='Render/export every named part and an offline HTML index')
-    q.add_argument('recipe'); q.add_argument('--size', type=resolution, default=(640,480)); q.add_argument('--out', type=Path)
+    q.add_argument('recipe'); q.add_argument('--size', type=resolution, default=(640,480)); q.add_argument('--aa', choices=AA_CHOICES, default='ssaa2'); q.add_argument('--out', type=Path)
     q = sub.add_parser('blueprint', aliases=['whiteprint'], help='Create white-background SVG/PDF/DXF drawings')
     q.add_argument('recipe'); q.add_argument('--part', action='append', help='Select exact part name; repeatable')
     q.add_argument('--annotations', type=Path, help='Recipe-independent JSON dimension/leader anchors')
@@ -146,13 +150,13 @@ def run(args):
             render_pathtrace(assembly,output,args.view,args.size,args.spp,args.threads)
         else:
             from .render import render_still
-            render_still(assembly,output,args.view,args.size,args.time)
+            render_still(assembly,output,args.view,args.size,args.time,aa=args.aa)
         print(output)
     elif args.command=='video':
         from .media import Shot,render_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
         output=args.out or out/'videos'/(assembly.name+'.mp4')
-        report=render_video(assembly,output,shots,args.size,args.fps)
+        report=render_video(assembly,output,shots,args.size,args.fps,args.aa)
         print(json.dumps({k:v for k,v in report.items() if k!='frames_log'},indent=2))
     elif args.command=='animate':
         from .exporters import export_animated_glb
@@ -160,7 +164,7 @@ def run(args):
         print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))
     elif args.command=='catalogue':
         from .media import catalogue
-        output=args.out or out/'parts';items=catalogue(assembly,output,args.size)
+        output=args.out or out/'parts';items=catalogue(assembly,output,args.size,args.aa)
         print(json.dumps({'parts':len(items),'catalogue':str(output/'index.html')},indent=2))
     elif args.command in ('blueprint','whiteprint'):
         from .whiteprint import whiteprint
