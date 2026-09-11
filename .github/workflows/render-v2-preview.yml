@@ -28,18 +28,23 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-tested.txt
           python -m pip install --no-deps -e .
-      - name: Validate concept provenance
-        run: |
-          lab --root "$GITHUB_WORKSPACE" validate nitinol_fiber_actuator --out artifacts/validation.json
-      - name: Render upgraded hero from actual geometry
+      - name: Validate concept provenance and geometry
         run: |
           mkdir -p artifacts
-          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator \
+          lab --root "$GITHUB_WORKSPACE" validate nitinol_fiber_actuator_v2 --out artifacts/validation.json
+      - name: Render upgraded hero from actual geometry
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator_v2 \
             --renderer pbr --view hero --size 1600x1000 --supersample 2 \
             --intent concept --out artifacts/nitinol_v2_hero.png
-      - name: Render close fiber-bundle view
+      - name: Render close carriage view
         run: |
-          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator \
+          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator_v2 \
+            --renderer pbr --view carriage_macro --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/nitinol_v2_carriage.png
+      - name: Render internal bundle inspection
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator_v2 \
             --renderer pbr --view fiber_bundle --size 1600x1000 --supersample 2 \
             --intent concept --out artifacts/nitinol_v2_fibers.png
       - uses: actions/upload-artifact@v4
