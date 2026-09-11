@@ -11,13 +11,18 @@ NATIVE_TO_GLTF=np.array([[.001,0,0,0],[0,0,.001,0],[0,-.001,0,0],[0,0,0,1]],floa
 
 # Procedural microgeometry in the native tracer must be an explicit material
 # choice. It is never inferred from metallicity: doing that silently invented
-# machining marks on every metal.
+# machining marks on every metal. Pattern ids 5-7 are consumed only by the
+# photographic tracer; the legacy renderer safely treats unknown ids as plain.
 MICROFINISH_PATTERNS={
     'none':0,
     'machined':1,
     'turned':1,
     'bead-blasted':2,
+    'brushed':3,
     'polymer':4,
+    'drawn-wire':5,
+    'copper-wire':6,
+    'anodized':7,
 }
 
 def linear_to_srgb(x):
@@ -116,14 +121,10 @@ def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion'):
         idx=len(doc['accessors']);doc['accessors'].append(ac);return idx
     times=np.linspace(0,duration,round(duration*fps)+1,dtype=np.float32);time_id=accessor(times,'SCALAR',True)
     samplers=[];channels=[];residual=0.
-    # Root owns mm -> m basis conversion; local nodes remain in mm under it.
     lookup={n.get('name'):i for i,n in enumerate(doc['nodes'])}
     roots=doc['scenes'][doc.get('scene',0)]['nodes']
     if len(roots)!=1 or doc['nodes'][roots[0]].get('mesh') is not None:
         raise ValueError('Expected a single non-mesh world root')
-    # trimesh bakes Scene.apply_transform onto CHILD matrices, not the world node.
-    # Move the basis conversion to the root before replacing child matrices with TRS.
-    # This is essential: otherwise animated exports would be 1000x too large and Z-up.
     root=doc['nodes'][roots[0]]
     for key in ('translation','rotation','scale'):root.pop(key,None)
     root['matrix']=NATIVE_TO_GLTF.T.reshape(-1).tolist()
