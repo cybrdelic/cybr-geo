@@ -1,0 +1,55 @@
+name: photoreal-preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/photoreal-film'
+    paths:
+      - 'native/**'
+      - 'src/mechanism_lab/**'
+      - 'tools/photoreal.py'
+      - '.github/workflows/photoreal-preview.yml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install native and EGL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Compile photographic tracer
+        run: |
+          cmake -S native -B .build/native -DCMAKE_BUILD_TYPE=Release
+          cmake --build .build/native --target mechanism_photoreal --parallel 4
+      - name: Validate source geometry
+        run: |
+          lab --root "$GITHUB_WORKSPACE" validate nitinol_fiber_actuator_v2 --out artifacts-validation.json
+      - name: Render photoreal hero
+        run: |
+          mkdir -p artifacts
+          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view hero --size 1280x800 --spp 128 --depth 12 --threads 4 --f-stop 5.6 --out artifacts/hero_photoreal.png
+      - name: Render carriage macro with shallow DOF
+        run: |
+          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view carriage_macro --size 1280x800 --spp 128 --depth 12 --threads 4 --f-stop 4.0 --out artifacts/carriage_photoreal.png
+      - name: Render internal bundle
+        run: |
+          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view fiber_bundle --size 1280x800 --spp 128 --depth 12 --threads 4 --f-stop 5.6 --out artifacts/fibers_photoreal.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-geo-photoreal-preview
+          path: |
+            artifacts/
+            artifacts-validation.json
+          if-no-files-found: error
