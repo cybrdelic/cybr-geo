@@ -1,0 +1,49 @@
+name: render-v2-preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'fix/truth-rendering-v2'
+    paths:
+      - 'src/mechanism_lab/**'
+      - 'native/**'
+      - '.github/workflows/render-v2-preview.yml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install EGL and build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+      - name: Install renderer dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Validate concept provenance
+        run: |
+          lab --root "$GITHUB_WORKSPACE" validate nitinol_fiber_actuator --out artifacts/validation.json
+      - name: Render upgraded hero from actual geometry
+        run: |
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator \
+            --renderer pbr --view hero --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/nitinol_v2_hero.png
+      - name: Render close fiber-bundle view
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render nitinol_fiber_actuator \
+            --renderer pbr --view fiber_bundle --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/nitinol_v2_fibers.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-geo-v2-render-preview
+          path: artifacts/
+          if-no-files-found: error
