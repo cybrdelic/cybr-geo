@@ -18,7 +18,7 @@ from pathlib import Path
 AUTHORITATIVE={
     'measured','manufacturer-cad','manufacturer-reference','dimensioned-drawing',
     'reconstructed-from-drawings','reconstructed-from-photos','reference-reconstruction',
-    'imported-analytic-cad','imported-mesh','physically-derived',
+    'preserved-v3-geometry','imported-analytic-cad','imported-mesh','physically-derived',
 }
 DESIGNED={'designed-concept','source-guided-concept'}
 ESTIMATE_MARKERS=('estimate','estimated','inferred','illustrative','placeholder','representative','assumed','proxy','mock','generic')
