@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
-import hashlib,json,math,subprocess,tempfile,time
+import json,math,subprocess,tempfile,time
 import numpy as np
 from PIL import Image
 from .core import project_root
@@ -27,16 +27,16 @@ def _invoke(exe,assembly,view,mesh,ppm,size,spp,threads,depth,seed,time_seconds=
             f_stop=None,focus_distance=None):
     export_meshbin(assembly,mesh,time_seconds=time_seconds,explode=view.explode if explode is None else explode)
     distance=_camera_distance(view,size)
-    fstop=float(f_stop if f_stop is not None else getattr(view,'f_stop',5.6))
-    focus=float(focus_distance if focus_distance is not None else (getattr(view,'focus_distance_mm',None) or distance))
+    fstop=float(f_stop if f_stop is not None else view.f_stop)
+    focus=float(focus_distance if focus_distance is not None else (view.focus_distance_mm or distance))
     cmd=[str(exe),str(mesh),str(ppm),'--materials',str(mesh.with_suffix('.materials')),
          '--w',str(size[0]),'--h',str(size[1]),'--spp',str(spp),'--depth',str(depth),'--threads',str(threads),'--seed',str(seed),
          '--az',str(view.az),'--el',str(view.el),'--tx',str(view.target[0]),'--ty',str(view.target[1]),'--tz',str(view.target[2]),
          '--focal-length',str(view.focal_length_mm),'--sensor-width',str(view.sensor_width_mm),'--camera-distance',str(distance),
          '--fstop',str(fstop),'--focus-distance',str(focus),
-         '--env-strength',str(getattr(view,'environment_strength',.24)),'--background-strength',str(getattr(view,'background_strength',1.0)),
-         '--light-size',str(getattr(view,'light_size',1.35)),'--floor-gap',str(getattr(view,'floor_gap_mm',2.0)),
-         '--floor-roughness',str(getattr(view,'floor_roughness',.82)),'--exposure',str(view.exposure)]
+         '--env-strength',str(view.environment_strength),'--background-strength',str(view.background_strength),
+         '--light-size',str(view.light_size),'--light-intensity',str(view.light_intensity),
+         '--floor-gap',str(view.floor_gap_mm),'--floor-roughness',str(view.floor_roughness),'--exposure',str(view.exposure)]
     if view.projection=='orthographic':cmd.extend(['--ortho','--scale',str(2*view.scale)])
     if not view.floor:cmd.append('--no-floor')
     subprocess.run(cmd,check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -54,9 +54,10 @@ def render_photoreal(assembly,output,view_name='hero',size=(1920,1080),spp=512,t
         td=Path(td);mesh=td/'scene.meshbin';ppm=td/'render.ppm'
         _invoke(exe,subset,view,mesh,ppm,size,spp,threads,depth,2026,time_seconds,f_stop=f_stop,focus_distance=focus_distance)
         arr=filt.read_pfm(str(ppm)+'.pfm')
-        # At final sample counts retain the native path detail; only one conservative
-        # edge-aware pass is used below 384 spp.
         raw=Image.fromarray(filt.tonemap(arr,exposure=view.exposure));raw.save(output.with_name(output.stem+'_linear-tonemapped.png'))
+        # Preview sample counts receive exactly one conservative edge-aware pass.
+        # >=384 spp is left completely native so material-scale highlight detail is
+        # never replaced by a denoiser's guess.
         if spp<384:
             with open(str(ppm)+'.guides','rb') as f:
                 w,h=np.fromfile(f,'<u4',2);guides=np.fromfile(f,'<f4').reshape(h,w,9)
@@ -65,12 +66,13 @@ def render_photoreal(assembly,output,view_name='hero',size=(1920,1080),spp=512,t
         if captions:
             counts=truth['tier_counts'];line=f"{truth['resolved_intent'].upper()} / "+', '.join(f'{k}:{v}' for k,v in counts.items())
             labelled(clean,view.title or assembly.name.upper(),view.note,
-                     f'{spp} spp / {depth} bounces / thin-lens f/{f_stop or getattr(view,"f_stop",5.6):g} / {line}',
+                     f'{spp} spp / {depth} bounces / thin-lens f/{f_stop or view.f_stop:g} / {line}',
                      tag='CYBR MECHANISM LAB / PHOTOGRAPHIC PATH TRACE').save(output.with_name(output.stem+'_card.png'))
     report={'file':output.name,'model':assembly.name,'view':view_name,'resolution':list(size),'spp':spp,'bounce_limit':depth,
             'projection':view.projection,'focal_length_mm':view.focal_length_mm,'sensor_width_mm':view.sensor_width_mm,
-            'camera_distance_mm':_camera_distance(view,size),'f_stop':f_stop or getattr(view,'f_stop',5.6),
-            'focus_distance_mm':focus_distance or getattr(view,'focus_distance_mm',None) or _camera_distance(view,size),
+            'camera_distance_mm':_camera_distance(view,size),'f_stop':f_stop or view.f_stop,
+            'focus_distance_mm':focus_distance or view.focus_distance_mm or _camera_distance(view,size),
+            'environment_strength':view.environment_strength,'light_size':view.light_size,'floor_roughness':view.floor_roughness,
             'seconds':time.time()-start,'renderer':'native thin-lens BVH/GGX/MIS path tracer','truth':truth}
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');write_truth_report(truth,output.with_suffix('.truth.json'));return report
 
