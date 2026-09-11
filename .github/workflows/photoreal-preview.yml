@@ -8,13 +8,14 @@ on:
     paths:
       - 'native/**'
       - 'src/mechanism_lab/**'
+      - 'tests/test_photoreal_contract.py'
       - 'tools/photoreal.py'
       - '.github/workflows/photoreal-preview.yml'
 
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,22 +34,26 @@ jobs:
         run: |
           cmake -S native -B .build/native -DCMAKE_BUILD_TYPE=Release
           cmake --build .build/native --target mechanism_photoreal --parallel 4
+      - name: Test photographic and truth contracts
+        run: |
+          python -m compileall -q src tools
+          python -m pytest -q tests/test_photoreal_contract.py tests/test_truth_rendering.py
       - name: Validate source geometry
         run: |
           lab --root "$GITHUB_WORKSPACE" validate nitinol_fiber_actuator_v2 --out artifacts-validation.json
-      - name: Render photoreal hero
+      - name: Render final hero without denoising
         run: |
           mkdir -p artifacts
-          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view hero --size 1280x800 --spp 128 --depth 12 --threads 4 --f-stop 5.6 --out artifacts/hero_photoreal.png
+          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view hero --size 1600x1000 --spp 384 --depth 14 --threads 4 --out artifacts/hero_photoreal_final.png
       - name: Render carriage macro with shallow DOF
         run: |
-          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view carriage_macro --size 1280x800 --spp 128 --depth 12 --threads 4 --f-stop 4.0 --out artifacts/carriage_photoreal.png
+          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view carriage_macro --size 1280x800 --spp 160 --depth 14 --threads 4 --out artifacts/carriage_photoreal.png
       - name: Render internal bundle
         run: |
-          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view fiber_bundle --size 1280x800 --spp 128 --depth 12 --threads 4 --f-stop 5.6 --out artifacts/fibers_photoreal.png
+          python tools/photoreal.py still nitinol_fiber_actuator_v2 --view fiber_bundle --size 1280x800 --spp 160 --depth 14 --threads 4 --out artifacts/fibers_photoreal.png
       - uses: actions/upload-artifact@v4
         with:
-          name: cybr-geo-photoreal-preview
+          name: cybr-geo-photoreal-final
           path: |
             artifacts/
             artifacts-validation.json
