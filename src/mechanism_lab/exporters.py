@@ -9,6 +9,17 @@ from .core import Assembly,Part,validate,pose_cad
 # Native mm / Z-up -> standard glTF metres / Y-up.
 NATIVE_TO_GLTF=np.array([[.001,0,0,0],[0,0,.001,0],[0,-.001,0,0],[0,0,0,1]],float)
 
+# Procedural microgeometry in the native tracer must be an explicit material
+# choice. It is never inferred from metallicity: doing that silently invented
+# machining marks on every metal.
+MICROFINISH_PATTERNS={
+    'none':0,
+    'machined':1,
+    'turned':1,
+    'bead-blasted':2,
+    'polymer':4,
+}
+
 def linear_to_srgb(x):
     x=np.clip(np.asarray(x),0,1)
     return np.where(x<=.0031308,12.92*x,1.055*np.power(x,1/2.4)-.055)
@@ -16,7 +27,7 @@ def linear_to_srgb(x):
 def scene(assembly, time_seconds=0,explode=0):
     s=trimesh.Scene();materials=[]
     for m in assembly.materials:
-        rgba=np.r_[np.round(linear_to_srgb(m.color)*255).astype(np.uint8),255]
+        rgba=np.r_[np.round(linear_to_srgb(m.color)*255).astype(np.uint8),round(m.opacity*255)]
         materials.append(trimesh.visual.material.PBRMaterial(name=m.name,baseColorFactor=rgba,metallicFactor=m.metal,roughnessFactor=m.rough))
     for p in assembly.parts:
         mesh=trimesh.Trimesh(p.vertices,p.faces,vertex_normals=p.normals,process=False)
@@ -78,7 +89,12 @@ def export_meshbin(assembly,path, time_seconds=0,explode=0):
             records=np.c_[v[p.faces].reshape(-1,9),norm[p.faces].reshape(-1,9),np.full(len(p.faces),p.material),np.full(len(p.faces),10)]
             f.write(records.astype('<f4').tobytes())
     with path.with_suffix('.materials').open('w') as f:
-        for m in assembly.materials:f.write(' '.join(map(str,(*m.color,m.metal,m.rough,1 if m.metal>.7 else 0)))+'\n')
+        for m in assembly.materials:
+            finish=str(m.microfinish).strip().lower()
+            if finish not in MICROFINISH_PATTERNS:
+                raise ValueError(f'Unknown microfinish {m.microfinish!r} on material {m.name!r}; use {sorted(MICROFINISH_PATTERNS)}')
+            pattern=MICROFINISH_PATTERNS[finish]
+            f.write(' '.join(map(str,(*m.color,m.metal,m.rough,pattern)))+'\n')
 
 # A tiny standard glTF writer adds node TRS animation to the exported static GLB.
 # Geometry stays immutable, only prescribed rigid transforms change.
