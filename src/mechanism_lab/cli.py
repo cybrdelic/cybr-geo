@@ -35,13 +35,20 @@ def parser():
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
     q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
     q=sub.add_parser('render',help='Render a named view from actual geometry')
-    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['pbr','pathtrace'],default='pbr')
+    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['pbr','pathtrace','photoreal'],default='pbr')
     q.add_argument('--size',type=resolution,default=(1600,1100));q.add_argument('--spp',type=int,default=256);q.add_argument('--depth',type=int,default=10);q.add_argument('--threads',type=int,default=4)
     q.add_argument('--supersample',type=int,choices=[1,2,3],default=2,help='PBR raster supersampling factor')
+    q.add_argument('--f-stop',type=float,help='Photoreal thin-lens aperture; lower values give shallower depth of field')
+    q.add_argument('--focus-distance',type=float,help='Photoreal focus distance in scene millimetres; defaults to camera distance')
     q.add_argument('--time',type=float,default=0.);q.add_argument('--out',type=Path);_truth_args(q)
-    q=sub.add_parser('video',help='Render every video frame using model poses and a shot list')
+    q=sub.add_parser('video',help='Render every video frame using fast PBR model poses and a shot list')
     q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=8.)
     q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=(1280,720));q.add_argument('--fps',type=int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
+    q=sub.add_parser('film',help='Final-quality thin-lens path-traced film with temporal shutter sampling')
+    q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=4.)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=(1920,1080));q.add_argument('--fps',type=int,default=24)
+    q.add_argument('--spp',type=int,default=144);q.add_argument('--depth',type=int,default=12);q.add_argument('--threads',type=int,default=4)
+    q.add_argument('--shutter-angle',type=float,default=180.);q.add_argument('--shutter-samples',type=int,default=3);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('gif',help='Make a palette-optimized looping GIF from a video')
     q.add_argument('video',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--start',type=float,default=0.);q.add_argument('--seconds',type=float,default=6.);q.add_argument('--width',type=int,default=640);q.add_argument('--fps',type=int,default=10)
     q=sub.add_parser('animate',help='Export a standard node-animated GLB')
@@ -112,9 +119,12 @@ def run(args):
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
         if args.renderer=='pathtrace':
-            if args.time!=0:raise ValueError('Offline pathtrace views currently use time zero; use PBR for a nonzero animation time')
+            if args.time!=0:raise ValueError('Legacy offline pathtrace views use time zero; use PBR or photoreal for nonzero time')
             from .pathtrace import render_pathtrace
             render_pathtrace(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,None,args.intent,args.allow_estimates)
+        elif args.renderer=='photoreal':
+            from .photoreal import render_photoreal
+            render_photoreal(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,args.intent,args.allow_estimates,args.time,args.f_stop,args.focus_distance,False)
         else:
             from .render import render_still
             render_still(assembly,output,args.view,args.size,args.time,True,args.intent,args.allow_estimates,args.supersample)
@@ -126,6 +136,13 @@ def run(args):
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
         output=args.out or out/'videos'/(assembly.name+'.mp4');report=render_video(assembly,output,shots,args.size,args.fps);write_truth_report(truth,output.with_suffix('.truth.json'))
         print(json.dumps({k:v for k,v in report.items() if k!='frames_log'},indent=2))
+    elif args.command=='film':
+        from .media import Shot
+        from .photoreal import render_photoreal_video
+        shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
+        output=args.out or out/'films'/(assembly.name+'_photoreal.mp4')
+        report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,args.shutter_angle,args.shutter_samples,args.intent,args.allow_estimates)
+        print(json.dumps({k:v for k,v in report.items() if k!='truth'},indent=2))
     elif args.command=='animate':
         from .exporters import export_animated_glb
         output=args.out or out/(assembly.name+'_'+args.mode+'.glb');print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))

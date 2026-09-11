@@ -115,6 +115,16 @@ class View:
     focal_length_mm: float = 58.0
     sensor_width_mm: float = 36.0
     camera_distance_mm: float | None = None
+    # Photographic controls. They are ignored by the fast engineering raster
+    # renderer but consumed by the final-quality thin-lens path tracer.
+    f_stop: float = 5.6
+    focus_distance_mm: float | None = None
+    environment_strength: float = 0.24
+    background_strength: float = 1.0
+    light_size: float = 1.35
+    light_intensity: float = 1.0
+    floor_gap_mm: float = 2.0
+    floor_roughness: float = 0.82
     floor: bool = True
     exposure: float = 1.0
 
@@ -261,6 +271,12 @@ def validate(assembly: Assembly, expensive=False):
             raise ValueError(f'Invalid projection on view {name}: {view.projection}')
         if view.scale <= 0 or view.focal_length_mm <= 0 or view.sensor_width_mm <= 0:
             raise ValueError(f'Invalid camera parameters on view {name}')
+        if view.f_stop <= 0 or view.environment_strength < 0 or view.background_strength < 0:
+            raise ValueError(f'Invalid photographic camera/environment parameters on view {name}')
+        if view.light_size <= 0 or view.light_intensity < 0 or view.floor_gap_mm < 0 or not 0 < view.floor_roughness <= 1:
+            raise ValueError(f'Invalid photographic studio parameters on view {name}')
+        if view.focus_distance_mm is not None and view.focus_distance_mm <= 0:
+            raise ValueError(f'Invalid focus distance on view {name}')
 
     import trimesh
     results = []

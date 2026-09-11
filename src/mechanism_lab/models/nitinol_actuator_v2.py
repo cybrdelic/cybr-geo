@@ -4,9 +4,9 @@ This is deliberately an ORIGINAL CONCEPT, not recovered manufacturer hardware.
 It replaces several low-detail visual proxies from the first actuator study with
 continuous source geometry: a true helical spring path, continuous 0.20 mm NiTi
 wires, explicit crimp envelopes, routed copper jumpers, softened CAD edges and
-visible fastener geometry.  No hidden factory internals are claimed.
+visible fastener geometry. No hidden factory internals are claimed.
 
-The v2 recipe is currently a static engineering-visualization assembly.  It does
+The v2 recipe is currently a static engineering-visualization assembly. It does
 not fake a thermal contraction animation; coupled SMA motion belongs in a later
 solver rather than a prescribed visual deformation.
 """
@@ -24,7 +24,7 @@ MATERIALS = [
     Material(
         'Black anodized aluminium', (0.018, 0.022, 0.030), .72, .28,
         ior=1.48, coat=.10, coat_rough=.20, anisotropy=.10,
-        microfinish='bead-blasted', material_source='original concept finish',
+        microfinish='anodized', material_source='original concept finish',
     ),
     Material(
         'Machined aluminium', (0.52, 0.56, 0.62), .92, .20,
@@ -39,12 +39,12 @@ MATERIALS = [
     Material(
         'Nitinol actuator wire', (0.39, 0.43, 0.47), .94, .22,
         ior=1.50, coat=.015, coat_rough=.20,
-        microfinish='none', material_source='0.20 mm source-guided wire concept',
+        microfinish='drawn-wire', material_source='0.20 mm source-guided wire concept',
     ),
     Material(
         'Copper electrical jumper', (0.66, 0.24, 0.075), .96, .19,
         ior=1.50, coat=.02, coat_rough=.16,
-        microfinish='none', material_source='original concept conductor routing',
+        microfinish='copper-wire', material_source='original concept conductor routing',
     ),
     Material(
         'PEEK / ceramic-like insulator', (0.55, 0.42, 0.19), .02, .38,
@@ -86,35 +86,24 @@ def _fastener(x0, length, y, z, head_radius=2.6, shaft_radius=1.45):
     shaft = _cylinder(x0, x0 + length, y, z, shaft_radius)
     head = _cylinder(x0 - 2.6, x0, y, z, head_radius)
     shape = shaft.fuse(head)
-    # A real geometric socket prevents the head from reading as a featureless pin.
     socket = cq.Workplane('YZ', origin=(x0 - 2.8, y, z)).polygon(6, 2.2).extrude(1.25).val()
     return _soften(shape.cut(socket), .16)
 
 
 def _mesh_tube(name, points, radius, material, *, group, role, provenance='designed-concept', sides=14):
     vertices, faces = tube_mesh(points, radius, sides)
-    return mesh_part(
-        name, vertices, faces, material,
-        group=group, role=role, provenance=provenance,
-    )
+    return mesh_part(name, vertices, faces, material, group=group, role=role, provenance=provenance)
 
 
 def _circle_points(radius, count, phase=0.0):
-    return [
-        (radius * math.cos(phase + math.tau * i / count), radius * math.sin(phase + math.tau * i / count))
-        for i in range(count)
-    ]
+    return [(radius * math.cos(phase + math.tau * i / count), radius * math.sin(phase + math.tau * i / count)) for i in range(count)]
 
 
 def build() -> Assembly:
     parts = []
 
     def add_cad(name, shape, material, group, role, provenance='designed-concept', **kw):
-        parts.append(cad_part(
-            name, shape, material,
-            tolerance=.035, angular=.055,
-            group=group, role=role, provenance=provenance, **kw,
-        ))
+        parts.append(cad_part(name, shape, material, tolerance=.035, angular=.055, group=group, role=role, provenance=provenance, **kw))
 
     guides = _circle_points(18.0, 4, math.pi / 4)
     fibers = _circle_points(10.5, 12, math.pi / 12)
@@ -140,7 +129,6 @@ def build() -> Assembly:
     add_cad('V2_10_Spring_fixed_seat', _annulus(20, 23, 0, 0, 7.5, 2.2), 1, 'spring', 'Return-spring fixed seat')
     add_cad('V2_11_Spring_moving_seat', _annulus(148, 152, 0, 0, 7.5, 2.2), 1, 'spring', 'Return-spring moving seat')
 
-    # One continuous helical centerline, not a row of torus/ring stand-ins.
     helix = []
     turns = 15.5
     for i in range(560):
@@ -148,23 +136,13 @@ def build() -> Assembly:
         x = 24.0 + u * (148.0 - 24.0)
         a = math.tau * turns * u
         helix.append((x, 6.0 * math.cos(a), 6.0 * math.sin(a)))
-    parts.append(_mesh_tube(
-        'V2_12_Return_spring', helix, .46, 2,
-        group='spring', role='Continuous original-design helical return spring geometry', sides=14,
-    ))
+    parts.append(_mesh_tube('V2_12_Return_spring', helix, .46, 2, group='spring', role='Continuous original-design helical return spring geometry', sides=14))
 
-    # Continuous real-diameter concept wires. Static v2 intentionally does not
-    # pretend these rigid meshes are a coupled thermomechanical deformation.
     for i, (y, z) in enumerate(fibers):
-        parts.append(_mesh_tube(
-            f'V2_13_Nitinol_{i+1:02}', [(12, y, z), (152, y, z)], .10, 3,
-            group='fibers', role='0.20 mm nominal NiTi active wire',
-            provenance='source-guided-concept', sides=12,
-        ))
+        parts.append(_mesh_tube(f'V2_13_Nitinol_{i+1:02}', [(12, y, z), (152, y, z)], .10, 3, group='fibers', role='0.20 mm nominal NiTi active wire', provenance='source-guided-concept', sides=12))
         add_cad(f'V2_14_Fixed_crimp_{i+1:02}', _soften(_cylinder(9.4, 12.4, y, z, .62), .08), 2, 'electrical', 'Original-design crimp barrel envelope')
         add_cad(f'V2_15_Moving_crimp_{i+1:02}', _soften(_cylinder(151.6, 154.6, y, z, .62), .08), 2, 'electrical', 'Original-design moving crimp barrel envelope')
 
-    # Three parallel strings x four series wires, explicitly original routing.
     for s in range(3):
         ids = [s * 4 + j for j in range(4)]
         for j in range(3):
@@ -173,11 +151,7 @@ def build() -> Assembly:
             moving = (j % 2 == 0)
             x_end = 152.8 if moving else 11.0
             x_mid = 155.2 if moving else 8.1
-            parts.append(_mesh_tube(
-                f'V2_16_String_{s+1}_jumper_{j+1}',
-                [(x_end, ya, za), (x_mid, (ya+yb)/2, (za+zb)/2), (x_end, yb, zb)],
-                .38, 4, group='electrical', role='Original-design copper series jumper', sides=14,
-            ))
+            parts.append(_mesh_tube(f'V2_16_String_{s+1}_jumper_{j+1}', [(x_end, ya, za), (x_mid, (ya+yb)/2, (za+zb)/2), (x_end, yb, zb)], .38, 4, group='electrical', role='Original-design copper series jumper', sides=14))
 
     bolt_points = _circle_points(20.0, 4, math.pi / 4)
     for i, (y, z) in enumerate(bolt_points):
@@ -188,24 +162,31 @@ def build() -> Assembly:
         'hero': View(
             az=218, el=18, scale=72, target=(101, 0, 0),
             focal_length_mm=62, sensor_width_mm=36, camera_distance_mm=360,
+            f_stop=5.6, environment_strength=.20, background_strength=.80,
+            light_size=1.55, floor_gap_mm=1.5, floor_roughness=.88, exposure=.96,
             title='NITINOL FIBER ACTUATOR / V2 CONCEPT',
             note='Continuous 12-wire bundle / real helical spring path / explicit electrical routing',
         ),
         'carriage_macro': View(
             az=155, el=14, scale=48, target=(152, 0, 0),
             focal_length_mm=72, sensor_width_mm=36, camera_distance_mm=255,
+            f_stop=4.0, environment_strength=.18, background_strength=.75,
+            light_size=1.7, floor_gap_mm=1.5, floor_roughness=.90, exposure=.98,
             title='MOVING CARRIAGE / FIBER TERMINATION',
             note='Crimps, bushings, guide rods and output interface remain visible at close range',
         ),
         'fiber_bundle': View(
             az=226, el=15, scale=62, target=(87, 0, 0),
             focal_length_mm=68, sensor_width_mm=36, camera_distance_mm=315,
+            f_stop=6.3, environment_strength=.20, background_strength=.78,
+            light_size=1.55, floor_gap_mm=1.5, floor_roughness=.88, exposure=.98,
             hide=('structure',),
             title='ACTIVE BUNDLE / INTERNAL INSPECTION',
             note='12 continuous 0.20 mm design wires; no segmented contraction proxy',
         ),
         'engineering': View(
             az=45, el=20, scale=118, target=(101, 0, 0), projection='orthographic', floor=False,
+            f_stop=16., environment_strength=.28,
             title='V2 ACTUATOR / ORTHOGRAPHIC INSPECTION',
             note='Engineering view remains orthographic by explicit choice',
         ),
