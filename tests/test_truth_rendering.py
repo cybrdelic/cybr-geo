@@ -25,6 +25,14 @@ def test_clean_original_design_auto_labels_as_concept():
     assert report['tier_counts']=={'designed':1}
 
 
+def test_preserved_reference_geometry_remains_authoritative():
+    a=assembly(part('preserved','preserved-v3-geometry'))
+    report=assert_renderable(a,'auto')
+    assert report['passed']
+    assert report['resolved_intent']=='reference'
+    assert report['tier_counts']=={'authoritative':1}
+
+
 def test_estimated_internal_is_blocked_by_auto_gate():
     a=assembly(part('known','manufacturer-cad'),part('guessed','inferred-internal'))
     with pytest.raises(ValueError,match='guessed'):
