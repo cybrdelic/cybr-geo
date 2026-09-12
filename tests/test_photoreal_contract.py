@@ -1,5 +1,5 @@
 from mechanism_lab.core import View
-from mechanism_lab.photoreal import _camera_distance
+from mechanism_lab.photoreal import _camera_distance,_render_scratch_paths,_cleanup_render_scratch
 
 
 def test_explicit_camera_distance_is_respected():
@@ -20,3 +20,23 @@ def test_photographic_view_remains_perspective_by_default():
     assert view.projection=='perspective'
     assert view.focal_length_mm>0
     assert view.sensor_width_mm>0
+
+
+def test_film_sample_scratch_is_complete_and_deleted_immediately(tmp_path):
+    mesh=tmp_path/'sample.meshbin';ppm=tmp_path/'sample.ppm'
+    paths=_render_scratch_paths(mesh,ppm)
+    assert set(p.name for p in paths)=={
+        'sample.meshbin','sample.materials','sample.ppm','sample.ppm.pfm','sample.ppm.guides'
+    }
+    for p in paths:p.write_bytes(b'scratch')
+    keep=tmp_path/'000001.png';keep.write_bytes(b'frame')
+    _cleanup_render_scratch(mesh,ppm)
+    assert not any(p.exists() for p in paths)
+    # Encoded-frame inputs are intentionally not part of native sample scratch.
+    assert keep.exists()
+
+
+def test_film_scratch_cleanup_is_idempotent(tmp_path):
+    mesh=tmp_path/'sample.meshbin';ppm=tmp_path/'sample.ppm'
+    _cleanup_render_scratch(mesh,ppm)
+    _cleanup_render_scratch(mesh,ppm)
