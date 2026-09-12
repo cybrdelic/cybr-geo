@@ -54,11 +54,16 @@ jobs:
           lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
             --renderer pbr --view geometry_macro --size 1600x1000 --supersample 2 \
             --intent concept --out artifacts/morphic_wrist_geometry_macro.png
-      - name: Render lattice and organic spine macro
+      - name: Render analytic lattice and organic spine macro
         run: |
           lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
             --renderer pbr --view lattice_macro --size 1600x1000 --supersample 2 \
             --intent concept --out artifacts/morphic_wrist_lattice_macro.png
+      - name: Render implicit TPMS field-geometry macro
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
+            --renderer pbr --view implicit_macro --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/morphic_wrist_implicit_macro.png
       - name: Render exploded geometry study
         run: |
           lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
