@@ -21,11 +21,25 @@ from dataclasses import replace
 import cadquery as cq
 
 from ..advanced_geometry import gyroid_sheet_mesh
-from ..core import mesh_part
+from ..core import Material, mesh_part
 from . import morphic_wrist as _base
 
-MATERIALS = _base.MATERIALS
 SPEC = _base.SPEC
+SINTERED_TITANIUM = len(_base.MATERIALS)
+SATIN_BLACK_ANODIZED = SINTERED_TITANIUM + 1
+MATERIALS = [
+    *_base.MATERIALS,
+    Material(
+        'Sintered titanium / additive finish', (0.34, 0.36, 0.38), .70, .43,
+        ior=1.50, coat=.015, coat_rough=.30, anisotropy=.02,
+        microfinish='bead-blasted', material_source='original benchmark additive finish',
+    ),
+    Material(
+        'Satin black hard-anodized aluminium', (0.045, 0.052, 0.062), .46, .35,
+        ior=1.48, coat=.08, coat_rough=.25, anisotropy=.05,
+        microfinish='anodized', material_source='original benchmark exterior finish',
+    ),
+]
 
 
 def _ruled_gusset(index: int):
@@ -110,9 +124,6 @@ def _build_verified_base():
             kw['tolerance'] = max(float(kw.get('tolerance', .03)), .08)
             kw['angular'] = max(float(kw.get('angular', .05)), .10)
         elif name.startswith(routed_prefixes):
-            # These are genuine analytic BREP spline sweeps.  0.08 mm is below a
-            # pixel in the 1600x1000 benchmark frame at this model scale, while
-            # avoiding millions of redundant tessellation triangles.
             kw['tolerance'] = max(float(kw.get('tolerance', .03)), .08)
             kw['angular'] = max(float(kw.get('angular', .05)), .12)
         return original_cad_part(name, shape, material, **kw)
@@ -124,6 +135,78 @@ def _build_verified_base():
     finally:
         _base.cad_part = original_cad_part
         _base.helical_sweep = original_helix
+
+
+def _polish_parts(parts):
+    """Presentation-only material refinement; geometry and provenance are unchanged."""
+    out = []
+    for p in parts:
+        if p.name == 'MW_01_Freeform_exoskeleton':
+            p = replace(p, material=SATIN_BLACK_ANODIZED)
+        elif p.name == 'MW_03_BCC_lattice_core':
+            p = replace(p, material=SINTERED_TITANIUM)
+        elif p.name == 'MW_26_Drafted_connector_shell':
+            # The previous tan PEEK block visually dominated the hero.  A dark
+            # strain-relief shell is still an authored material assignment, not a
+            # geometry substitution.
+            p = replace(p, material=8)
+        out.append(p)
+    return out
+
+
+def _polish_views(views):
+    """Use the Nitinol V2 PBR composition as the minimum visual-quality floor."""
+    v = dict(views)
+    v['hero'] = replace(
+        v['hero'], az=236, el=16, scale=98, target=(94, 0, 0),
+        focal_length_mm=72, camera_distance_mm=468, f_stop=6.3,
+        environment_strength=.22, background_strength=.78,
+        light_size=1.68, light_intensity=1.03, exposure=.99,
+        hide=('implicit',),
+        title='CYBR MORPHIC WRIST / HYBRID GEOMETRY BENCHMARK',
+        note='Lofted BREP shell / spline routing / lattice core / antagonistic SMA banks / 2-DOF wrist architecture',
+    )
+    v['cutaway'] = replace(
+        v['cutaway'], az=232, el=17, scale=92, target=(94, 0, 0),
+        focal_length_mm=72, camera_distance_mm=445, f_stop=6.3,
+        environment_strength=.23, background_strength=.77,
+        light_size=1.68, light_intensity=1.04, exposure=1.0,
+        hide=('shell', 'overmold'),
+    )
+    v['geometry_macro'] = replace(
+        v['geometry_macro'], az=245, el=18, scale=56, target=(132, 0, 1),
+        focal_length_mm=82, camera_distance_mm=318, f_stop=5.6,
+        environment_strength=.24, background_strength=.75,
+        light_size=1.75, light_intensity=1.05, exposure=1.01,
+        hide=('shell', 'overmold', 'electronics', 'connector', 'implicit'),
+        title='FREEFORM 2-DOF JOINT / BREP ROUTING MACRO',
+        note='Nested lofted cradle / orthogonal bearing bores / spline tendons and flexures / revolved encoder hub',
+    )
+    v['lattice_macro'] = replace(
+        v['lattice_macro'], az=228, el=22, scale=48, target=(58, 0, 0),
+        focal_length_mm=78, camera_distance_mm=286, f_stop=6.3,
+        environment_strength=.24, background_strength=.75,
+        light_size=1.74, light_intensity=1.05, exposure=1.01,
+        hide=('shell', 'overmold', 'sma_fibers', 'implicit', 'electronics', 'connector', 'sensor'),
+        title='ANALYTIC BREP LATTICE / ORGANIC LOAD SPINE',
+        note='OpenCascade BCC struts and nodes / lofted load path / ruled tapered gussets / spline service routing',
+    )
+    v['implicit_macro'] = replace(
+        v['geometry_macro'], az=224, el=17, scale=30, target=(60, -23.5, 0),
+        focal_length_mm=86, camera_distance_mm=205, f_stop=7.1,
+        environment_strength=.25, background_strength=.74,
+        light_size=1.80, light_intensity=1.06, exposure=1.02,
+        hide=('shell', 'overmold', 'structure', 'lattice', 'sma_fibers', 'tendons', 'flexures', 'joint', 'output', 'bearings', 'sensor', 'electronics', 'connector', 'fasteners'),
+        title='IMPLICIT TPMS / FIELD-GEOMETRY MACRO',
+        note='Gyroid-sheet scalar field / VTK FlyingEdges extraction / intentionally non-BREP porous geometry',
+    )
+    v['exploded'] = replace(
+        v['exploded'], az=232, el=22, scale=142, target=(92, 0, 0),
+        focal_length_mm=72, camera_distance_mm=610, f_stop=9.0,
+        environment_strength=.23, background_strength=.78,
+        light_size=1.65, light_intensity=1.03, exposure=.99,
+    )
+    return v
 
 
 def build():
@@ -138,7 +221,7 @@ def build():
         'MW_28_Implicit_gyroid_insert',
         vertices,
         faces,
-        2,
+        SINTERED_TITANIUM,
         group='implicit',
         role='Implicit TPMS gyroid heat-spreader / damping insert benchmark',
         provenance='designed-concept',
@@ -169,7 +252,13 @@ def build():
         'Precision surfaces keep 0.03-0.04 mm chord tolerance; long routed BREP '
         'curves use 0.08 mm because it remains sub-pixel at the benchmark frame scale.'
     )
-    return replace(assembly, parts=[*assembly.parts, tpms], metadata=metadata)
+    metadata['presentation_policy'] = (
+        'Exterior hero hides only the implicit TPMS insert for silhouette/readability; '
+        'cutaway and dedicated implicit macro expose it. Geometry remains in the assembly.'
+    )
+    parts = _polish_parts([*assembly.parts, tpms])
+    views = _polish_views(assembly.views)
+    return replace(assembly, parts=parts, materials=MATERIALS, views=views, metadata=metadata)
 
 
 __all__ = ['SPEC', 'MATERIALS', 'build']
