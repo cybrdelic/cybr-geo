@@ -17,7 +17,7 @@ def factory(name):
         from .models.nitinol_actuator_v2 import build
         return build,None
     if name=='morphic_wrist':
-        from .models.morphic_wrist import build
+        from .models.morphic_wrist_benchmark import build
         return build,None
     if name.startswith('differential_'):
         from .models.differential import build,pose
@@ -49,14 +49,12 @@ def fingerprint(name):
     if name.endswith('.json'):
         path=Path(name).resolve();raw=path.read_bytes();h.update(raw)
         spec=json.loads(raw);source=path.parent/spec['source'];h.update(source.read_bytes())
-        # External glTF buffers/images also affect geometry/provenance invalidation.
         if source.suffix.lower()=='.gltf':
             gltf=json.loads(source.read_text())
             for record in gltf.get('buffers',[])+gltf.get('images',[]):
                 uri=record.get('uri','')
                 if uri and not uri.startswith('data:'):
                     h.update((source.parent/uri).read_bytes())
-    # Preserved reference inputs also participate in invalidation, not just code.
     if 'differential' in name or name=='drivetrain':
         for p in sorted((root/'assets/differential_v3/geometry').glob('*parts.*')):h.update(p.read_bytes())
     return h.hexdigest()
