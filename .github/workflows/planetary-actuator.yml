@@ -1,0 +1,88 @@
+name: planetary-actuator
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/planetary-actuator'
+    paths:
+      - 'src/mechanism_lab/gears/**'
+      - 'src/mechanism_lab/models/planetary_actuator.py'
+      - 'src/mechanism_lab/registry.py'
+      - 'tests/test_planetary_*.py'
+      - 'tools/render_planetary_film.py'
+      - '.github/workflows/planetary-actuator.yml'
+
+jobs:
+  planetary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install native and EGL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Test involute geometry, exact kinematics and interfaces
+        run: |
+          pytest -q tests/test_planetary_geometry.py tests/test_planetary_kinematics.py tests/test_planetary_interfaces.py
+      - name: Validate full planetary assembly
+        run: |
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" validate planetary_actuator --out artifacts/planetary_validation.json
+      - name: Fast PBR shot-development renders
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer pbr --view exterior --size 1280x800 --supersample 2 --intent concept --out artifacts/planetary_exterior_pbr.png
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer pbr --view hero --size 1280x800 --supersample 2 --intent concept --out artifacts/planetary_hero_pbr.png
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer pbr --view gear_macro --size 1280x800 --supersample 2 --intent concept --out artifacts/planetary_gear_macro_pbr.png
+      - name: Photoreal planetary hero
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer photoreal --view hero --size 1280x800 --spp 128 --depth 12 --threads 4 --intent concept --out artifacts/planetary_hero_photoreal.png
+      - name: Working planetary photoreal proof film
+        run: |
+          python tools/render_planetary_film.py --preset proof --threads 4 --out artifacts/planetary_photoreal_proof.mp4
+          lab --root "$GITHUB_WORKSPACE" gif artifacts/planetary_photoreal_proof.mp4 --out artifacts/planetary_photoreal_proof.gif --width 640 --fps 12 --seconds 2.75
+      - uses: actions/upload-artifact@v4
+        with:
+          name: planetary-actuator-proof
+          path: artifacts/
+          if-no-files-found: error
+
+  nitinol-film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install native and EGL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Validate V2 actuator truth and geometry
+        run: |
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" validate nitinol_fiber_actuator_v2 --out artifacts/nitinol_validation.json
+      - name: Render thin-lens photoreal actuator film
+        run: |
+          lab --root "$GITHUB_WORKSPACE" film nitinol_fiber_actuator_v2 --view hero --action orbit --seconds 2.5 --size 960x540 --fps 24 --spp 64 --depth 12 --threads 4 --shutter-angle 180 --shutter-samples 3 --intent concept --out artifacts/nitinol_v2_photoreal_film.mp4
+          lab --root "$GITHUB_WORKSPACE" gif artifacts/nitinol_v2_photoreal_film.mp4 --out artifacts/nitinol_v2_photoreal_film.gif --width 640 --fps 12 --seconds 2.5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nitinol-v2-photoreal-film
+          path: artifacts/
+          if-no-files-found: error
