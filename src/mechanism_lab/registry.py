@@ -38,8 +38,7 @@ def factory(name):
         return module.build,getattr(module,'pose',None)
     if ':' in name:
         mod,fn=name.split(':',1);module=importlib.import_module(mod)
-        return getattr(module,fn),getattr(module,'pose',None
-        )
+        return getattr(module,fn),getattr(module,'pose',None)
     raise ValueError(f'Unknown recipe {name}; choose {BUILTINS} or supply a trusted local .py plugin')
 
 def fingerprint(name):
