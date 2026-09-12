@@ -7,6 +7,7 @@ on:
       - 'feat/planetary-actuator'
     paths:
       - '.github/workflows/planetary-hero-now.yml'
+      - 'src/mechanism_lab/models/planetary_actuator.py'
 
 jobs:
   render:
