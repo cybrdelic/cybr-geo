@@ -8,6 +8,7 @@ on:
     paths:
       - 'src/mechanism_lab/advanced_geometry.py'
       - 'src/mechanism_lab/models/morphic_wrist.py'
+      - 'src/mechanism_lab/models/morphic_wrist_benchmark.py'
       - 'src/mechanism_lab/registry.py'
       - 'tests/test_morphic_wrist.py'
       - '.github/workflows/morphic-wrist-benchmark.yml'
