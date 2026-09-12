@@ -35,8 +35,8 @@ def test_required_modern_techniques_are_declared_and_present(assembly):
         'technique:additive-manufacturing',
         'technique:freeform-loft',
         'technique:drafted-extrusion',
-        'technique:true-helix',
-        'technique:brep-sweep',
+        'technique:segmented-brep-helix',
+        'technique:analytic-compound',
         'technique:revolve',
         'technique:multi-material-overmold',
         'technique:mixed-mesh-routing',
@@ -47,6 +47,9 @@ def test_required_modern_techniques_are_declared_and_present(assembly):
     assert expected <= tags
     assert len(assembly.metadata['geometry_techniques']) >= 18
     assert 'Analytic OpenCascade BREP' in assembly.metadata['hybrid_geometry_contract']
+    assert 'not a continuous swept-helix surface' in next(
+        p.role for p in assembly.parts if p.name == 'MW_07_Helical_service_thread'
+    )
 
 
 def test_showcase_parts_remain_real_analytic_brep(assembly):
