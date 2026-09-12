@@ -11,7 +11,7 @@ features that were poor production citizens in this OpenCascade build:
 - a segmented analytic BREP helix replaces a mathematically valid swept helix
   whose NURBS surface tessellated pathologically.  It is explicitly *not* called
   a true continuous helical surface.
-Drafted extrusion and true continuous BREP sweeps remain exercised elsewhere.
+Drafted extrusion and true continuous BREP spline sweeps remain exercised elsewhere.
 """
 from __future__ import annotations
 
@@ -56,12 +56,7 @@ def _ruled_gusset(index: int):
 
 
 def _segmented_brep_helix(*, x0, length, helix_radius, pitch, section_radius, lefthand=False):
-    """Efficient BREP compound following a helical centerline.
-
-    The path is sampled into analytic cylinders with spherical junctions.  This
-    keeps every primitive an OpenCascade BREP while avoiding the pathological
-    tessellation cost of the continuous swept-helix NURBS face in this runtime.
-    """
+    """Efficient BREP compound following a helical centerline."""
     turns = length / pitch
     segments = max(40, int(math.ceil(turns * 18)))
     sign = -1.0 if lefthand else 1.0
@@ -78,8 +73,6 @@ def _segmented_brep_helix(*, x0, length, helix_radius, pitch, section_radius, le
     for a, b in zip(points, points[1:]):
         d = b - a
         solids.append(cq.Solid.makeCylinder(section_radius, d.Length, a, d.normalized()))
-    # Spherical junctions make the sampled BREP path visually/volumetrically
-    # continuous without an expensive global boolean fuse.
     solids.extend(cq.Solid.makeSphere(section_radius, p) for p in points[1:-1])
     result = cq.Compound.makeCompound(solids)
     if not result.isValid():
@@ -91,6 +84,13 @@ def _build_verified_base():
     """Build the base while replacing only verified-problematic study geometry."""
     original_cad_part = _base.cad_part
     original_helix = _base.helical_sweep
+
+    routed_prefixes = (
+        'MW_02_Conformal_channel_liner_',
+        'MW_18_Spline_tendon_',
+        'MW_19_Spline_flexure_',
+        'MW_23_Copper_bus_',
+    )
 
     def verified_cad_part(name, shape, material=0, **kw):
         if name.startswith('MW_05_Drafted_rib_'):
@@ -109,6 +109,12 @@ def _build_verified_base():
             kw['role'] = 'Sampled analytic BREP helical service ridge; not a continuous swept-helix surface'
             kw['tolerance'] = max(float(kw.get('tolerance', .03)), .08)
             kw['angular'] = max(float(kw.get('angular', .05)), .10)
+        elif name.startswith(routed_prefixes):
+            # These are genuine analytic BREP spline sweeps.  0.08 mm is below a
+            # pixel in the 1600x1000 benchmark frame at this model scale, while
+            # avoiding millions of redundant tessellation triangles.
+            kw['tolerance'] = max(float(kw.get('tolerance', .03)), .08)
+            kw['angular'] = max(float(kw.get('angular', .05)), .12)
         return original_cad_part(name, shape, material, **kw)
 
     _base.cad_part = verified_cad_part
@@ -148,6 +154,7 @@ def build():
         'segmented analytic BREP helical path',
         'implicit TPMS / field modeling',
         'VTK FlyingEdges iso-surface extraction',
+        'scale-aware BREP tessellation policy',
     ])
     metadata['geometry_techniques'] = techniques
     metadata['hybrid_geometry_contract'] = (
@@ -157,6 +164,10 @@ def build():
     metadata['helix_fidelity'] = (
         'Service ridge uses a truth-labeled segmented BREP helix because the '
         'continuous swept-helix NURBS face is pathological to tessellate in this OCP build.'
+    )
+    metadata['tessellation_policy'] = (
+        'Precision surfaces keep 0.03-0.04 mm chord tolerance; long routed BREP '
+        'curves use 0.08 mm because it remains sub-pixel at the benchmark frame scale.'
     )
     return replace(assembly, parts=[*assembly.parts, tpms], metadata=metadata)
 
