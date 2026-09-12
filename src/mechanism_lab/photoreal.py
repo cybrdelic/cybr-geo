@@ -23,6 +23,13 @@ def _camera_distance(view,size):
     return float(view.scale)/max(1e-6,math.tan(vfov/2))
 
 
+def _temporal_spp_schedule(spp,samples):
+    """Distribute an exact per-frame SPP budget across shutter samples."""
+    if samples<1 or spp<samples:raise ValueError('spp must be >= positive shutter sample count')
+    q,r=divmod(int(spp),int(samples))
+    return tuple(q+(1 if i<r else 0) for i in range(samples))
+
+
 def _render_scratch_paths(mesh,ppm):
     """All large native-render scratch files produced for one temporal sample."""
     mesh=Path(mesh);ppm=Path(ppm)
@@ -115,7 +122,9 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
 
     Native scratch is streamed per shutter sample. This keeps temporary storage
     bounded even for multi-million-triangle assemblies instead of retaining every
-    exported mesh, PFM and guide buffer for the entire movie.
+    exported mesh, PFM and guide buffer for the entire movie. At preview film SPP
+    below 384, the same single conservative guide-aware à-trous pass used by stills
+    is applied to the temporally averaged frame using center-shutter guides.
     """
     from .truth import assert_renderable,write_truth_report
     from .media import probe
@@ -123,6 +132,7 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
     truth=assert_renderable(assembly,intent,allow_estimates)
     if fps<=0 or shutter_samples<1 or spp<shutter_samples:raise ValueError('Invalid film sampling settings')
     if not 0<shutter_angle<=360:raise ValueError('shutter_angle must be in (0,360]')
+    spp_schedule=_temporal_spp_schedule(spp,shutter_samples)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);exe=compile_renderer();start=time.time();frames=[];global_frame=0
     with tempfile.TemporaryDirectory(prefix='mechanism_film_') as td:
         td=Path(td);mesh=td/'sample.meshbin';ppm=td/'sample.ppm'
@@ -131,8 +141,8 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
             n=round(shot.duration*fps);frame_dt=1/fps;shutter_dt=frame_dt*shutter_angle/360
             shot_span=max(frame_dt,(n-1)*frame_dt)
             for f in range(n):
-                base_t=global_frame/fps;accum=None
-                for ss in range(shutter_samples):
+                base_t=global_frame/fps;accum=None;center_guides=None;center_variance=None
+                for ss,sample_spp in enumerate(spp_schedule):
                     offset=((ss+.5)/shutter_samples-.5)*shutter_dt
                     local_t=min(shot_span,max(0.,f*frame_dt+offset));u=local_t/shot_span
                     sample_time=max(0.,base_t+offset) if shot.action in ('motion','orbit') else 0.
@@ -140,15 +150,22 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
                     explosion=(.5-.5*math.cos(math.tau*u)) if shot.action=='explode' else view.explode
                     sample_view=replace(view,az=angle)
                     try:
-                        _invoke(exe,subset,sample_view,mesh,ppm,size,max(1,spp//shutter_samples),threads,depth,
+                        _invoke(exe,subset,sample_view,mesh,ppm,size,sample_spp,threads,depth,
                                 2026+global_frame*17+ss,sample_time,explosion)
                         sample=filt.read_pfm(str(ppm)+'.pfm')
                         if accum is None:accum=sample.astype(np.float64,copy=True)
                         else:accum+=sample
+                        if spp<384 and ss==shutter_samples//2:
+                            with open(str(ppm)+'.guides','rb') as g:
+                                w,h=np.fromfile(g,'<u4',2);center_guides=np.fromfile(g,'<f4').reshape(h,w,9).copy()
+                            center_variance=center_guides[:,:,7].copy()
                     finally:
                         _cleanup_render_scratch(mesh,ppm)
                 if accum is None:raise RuntimeError('No temporal samples rendered for film frame')
-                arr=accum/shutter_samples;im=Image.fromarray(filt.tonemap(arr,exposure=view.exposure));path=td/f'{global_frame:06}.png';im.save(path)
+                arr=accum/shutter_samples
+                if spp<384 and center_guides is not None:
+                    arr,_=filt.atrous(arr,center_guides,center_variance,1,0)
+                im=Image.fromarray(filt.tonemap(arr,exposure=view.exposure));path=td/f'{global_frame:06}.png';im.save(path)
                 frames.append(path);global_frame+=1
         if not frames:raise ValueError('Film shot list produced no frames')
         # Numbered-image input avoids the concat demuxer's required duplicate-last-
@@ -156,6 +173,7 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
         subprocess.run(['ffmpeg','-y','-v','error','-framerate',str(fps),'-start_number','0','-i',str(td/'%06d.png'),
                         '-an','-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-movflags','+faststart',str(output)],check=True)
     report={'model':assembly.name,'frames':global_frame,'duration':global_frame/fps,'resolution':list(size),'fps':fps,'spp_per_frame':spp,
-            'depth':depth,'shutter_angle':shutter_angle,'shutter_samples':shutter_samples,'seconds_to_render':time.time()-start,
+            'spp_schedule':list(spp_schedule),'depth':depth,'shutter_angle':shutter_angle,'shutter_samples':shutter_samples,
+            'denoise':'one conservative guide-aware atrous pass' if spp<384 else 'none','seconds_to_render':time.time()-start,
             'method':'thin-lens path tracing + streamed temporal geometry/camera/explode supersampling','probe':probe(output),'truth':truth}
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');write_truth_report(truth,output.with_suffix('.truth.json'));return report
