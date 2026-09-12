@@ -1,0 +1,70 @@
+name: morphic-wrist-benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/morphic-wrist-benchmark'
+    paths:
+      - 'src/mechanism_lab/advanced_geometry.py'
+      - 'src/mechanism_lab/models/morphic_wrist.py'
+      - 'src/mechanism_lab/registry.py'
+      - 'tests/test_morphic_wrist.py'
+      - '.github/workflows/morphic-wrist-benchmark.yml'
+
+concurrency:
+  group: morphic-wrist-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install EGL and build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Verify modern geometry contract
+        run: pytest -q tests/test_morphic_wrist.py
+      - name: Validate full assembly and truth report
+        run: |
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" validate morphic_wrist --out artifacts/morphic_wrist_validation.json
+      - name: Render Nitinol-quality-floor hero
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
+            --renderer pbr --view hero --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/morphic_wrist_hero.png
+      - name: Render internal cutaway
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
+            --renderer pbr --view cutaway --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/morphic_wrist_cutaway.png
+      - name: Render freeform joint macro
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
+            --renderer pbr --view geometry_macro --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/morphic_wrist_geometry_macro.png
+      - name: Render lattice and organic spine macro
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
+            --renderer pbr --view lattice_macro --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/morphic_wrist_lattice_macro.png
+      - name: Render exploded geometry study
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render morphic_wrist \
+            --renderer pbr --view exploded --size 1600x1000 --supersample 2 \
+            --intent concept --out artifacts/morphic_wrist_exploded.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: morphic-wrist-modern-geometry-benchmark
+          path: artifacts/
+          if-no-files-found: error
