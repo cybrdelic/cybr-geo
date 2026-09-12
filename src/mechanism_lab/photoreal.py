@@ -81,37 +81,44 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
                            shutter_angle=180.,shutter_samples=3,intent='auto',allow_estimates=False):
     """Slow final-film renderer. Every encoded frame is freshly path traced.
 
-    Motion blur is real temporal supersampling of geometry poses across the shutter
-    interval; thin-lens DOF is sampled inside each native subframe.
+    Each temporal subframe samples the actual authored state at a point inside the
+    shutter interval: mechanism pose for motion/orbit shots, camera azimuth for
+    orbit shots, and explosion amount for exploded shots. Thin-lens DOF is sampled
+    inside every native subframe. The final pixel is the linear-HDR temporal mean,
+    so motion blur is neither screen-space nor a post-process velocity blur.
     """
     from .truth import assert_renderable,write_truth_report
     from .media import probe
     from . import finish_render as filt
     truth=assert_renderable(assembly,intent,allow_estimates)
     if fps<=0 or shutter_samples<1 or spp<shutter_samples:raise ValueError('Invalid film sampling settings')
+    if not 0<shutter_angle<=360:raise ValueError('shutter_angle must be in (0,360]')
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);exe=compile_renderer();start=time.time();frames=[];global_frame=0
     with tempfile.TemporaryDirectory(prefix='mechanism_film_') as td:
         td=Path(td)
         for si,shot in enumerate(shots):
             view=assembly.views[shot.view];parts=[p for p in assembly.parts if p.group not in view.hide];subset=replace(assembly,parts=parts)
             n=round(shot.duration*fps);frame_dt=1/fps;shutter_dt=frame_dt*shutter_angle/360
+            shot_span=max(frame_dt,(n-1)*frame_dt)
             for f in range(n):
-                u=f/max(1,n-1);base_t=global_frame/fps
-                angle=view.az+shot.orbit_degrees*(u-.5) if shot.action=='orbit' else view.az
-                explosion=(.5-.5*math.cos(math.tau*u)) if shot.action=='explode' else view.explode
-                v=replace(view,az=angle)
+                base_t=global_frame/fps
                 hdr=[]
                 for ss in range(shutter_samples):
                     offset=((ss+.5)/shutter_samples-.5)*shutter_dt
-                    t=max(0.,base_t+offset) if shot.action in ('motion','orbit') else 0.
+                    local_t=min(shot_span,max(0.,f*frame_dt+offset));u=local_t/shot_span
+                    sample_time=max(0.,base_t+offset) if shot.action in ('motion','orbit') else 0.
+                    angle=view.az+shot.orbit_degrees*(u-.5) if shot.action=='orbit' else view.az
+                    explosion=(.5-.5*math.cos(math.tau*u)) if shot.action=='explode' else view.explode
+                    sample_view=replace(view,az=angle)
                     mesh=td/f'mesh_{global_frame}_{ss}.meshbin';ppm=td/f'frame_{global_frame}_{ss}.ppm'
-                    _invoke(exe,subset,v,mesh,ppm,size,max(1,spp//shutter_samples),threads,depth,2026+global_frame*17+ss,t,explosion)
+                    _invoke(exe,subset,sample_view,mesh,ppm,size,max(1,spp//shutter_samples),threads,depth,
+                            2026+global_frame*17+ss,sample_time,explosion)
                     hdr.append(filt.read_pfm(str(ppm)+'.pfm'))
-                arr=np.mean(hdr,axis=0);im=Image.fromarray(filt.tonemap(arr,exposure=v.exposure));path=td/f'{global_frame:06}.png';im.save(path)
+                arr=np.mean(hdr,axis=0);im=Image.fromarray(filt.tonemap(arr,exposure=view.exposure));path=td/f'{global_frame:06}.png';im.save(path)
                 frames.append(path);global_frame+=1
         listfile=td/'frames.txt';listfile.write_text(''.join(f"file '{p.as_posix()}'\nduration {1/fps}\n" for p in frames)+f"file '{frames[-1].as_posix()}'\n")
         subprocess.run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(listfile),'-r',str(fps),'-an','-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-movflags','+faststart',str(output)],check=True)
     report={'model':assembly.name,'frames':global_frame,'duration':global_frame/fps,'resolution':list(size),'fps':fps,'spp_per_frame':spp,
             'depth':depth,'shutter_angle':shutter_angle,'shutter_samples':shutter_samples,'seconds_to_render':time.time()-start,
-            'method':'thin-lens path tracing + temporal geometry supersampling','probe':probe(output),'truth':truth}
+            'method':'thin-lens path tracing + temporal geometry/camera/explode supersampling','probe':probe(output),'truth':truth}
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');write_truth_report(truth,output.with_suffix('.truth.json'));return report
