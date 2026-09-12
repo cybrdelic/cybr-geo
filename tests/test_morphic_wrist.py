@@ -1,7 +1,7 @@
 import pytest
 
 from mechanism_lab.core import validate
-from mechanism_lab.models import morphic_wrist
+from mechanism_lab.models import morphic_wrist_benchmark as morphic_wrist
 
 
 @pytest.fixture(scope='module')
@@ -15,13 +15,11 @@ def test_builds_and_validates(assembly):
 
 
 def test_is_complex_by_geometry_not_repeated_gears(assembly):
-    # The benchmark is intentionally a mixed analytic assembly with dozens of
-    # distinct construction operations, not a tooth-count complexity proxy.
-    assert len(assembly.parts) >= 90
+    assert len(assembly.parts) >= 91
     analytic = [p for p in assembly.parts if p.cad is not None]
-    routed_mesh = [p for p in assembly.parts if p.cad is None]
+    routed_or_implicit = [p for p in assembly.parts if p.cad is None]
     assert len(analytic) >= 55
-    assert len(routed_mesh) >= 32
+    assert len(routed_or_implicit) >= 33
     assert not any('gear' in p.name.lower() for p in assembly.parts)
 
 
@@ -42,10 +40,13 @@ def test_required_modern_techniques_are_declared_and_present(assembly):
         'technique:revolve',
         'technique:multi-material-overmold',
         'technique:mixed-mesh-routing',
+        'technique:implicit-tpms',
+        'technique:field-modeling',
     }
     tags = {tag for p in assembly.parts for tag in p.tags}
     assert expected <= tags
-    assert len(assembly.metadata['geometry_techniques']) >= 16
+    assert len(assembly.metadata['geometry_techniques']) >= 18
+    assert 'Analytic OpenCascade BREP' in assembly.metadata['hybrid_geometry_contract']
 
 
 def test_showcase_parts_remain_real_analytic_brep(assembly):
@@ -70,6 +71,14 @@ def test_showcase_parts_remain_real_analytic_brep(assembly):
         part = table[name]
         assert part.cad is not None, name
         assert part.cad.isValid(), name
+
+
+def test_implicit_tpms_is_native_field_geometry(assembly):
+    part = next(p for p in assembly.parts if p.name == 'MW_28_Implicit_gyroid_insert')
+    assert part.cad is None
+    assert 'technique:implicit-tpms' in part.tags
+    assert len(part.vertices) > 1000
+    assert len(part.faces) > 1000
 
 
 def test_fine_sma_geometry_is_continuous_and_truth_labeled(assembly):
