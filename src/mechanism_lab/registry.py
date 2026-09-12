@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib,importlib,importlib.util,json
 from .core import Assembly,project_root,save_cache,load_cache,validate
 
-BUILTINS=('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+BUILTINS=('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','morphic_wrist','differential_reference','differential_core','differential_working','drivetrain','example_flange')
 
 def factory(name):
     if name=='m8325s':
@@ -15,6 +15,9 @@ def factory(name):
         return build,pose
     if name=='nitinol_fiber_actuator_v2':
         from .models.nitinol_actuator_v2 import build
+        return build,None
+    if name=='morphic_wrist':
+        from .models.morphic_wrist import build
         return build,None
     if name.startswith('differential_'):
         from .models.differential import build,pose
