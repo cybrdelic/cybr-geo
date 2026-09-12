@@ -1,5 +1,5 @@
 from mechanism_lab.core import View
-from mechanism_lab.photoreal import _camera_distance,_render_scratch_paths,_cleanup_render_scratch
+from mechanism_lab.photoreal import _camera_distance,_temporal_spp_schedule,_render_scratch_paths,_cleanup_render_scratch
 
 
 def test_explicit_camera_distance_is_respected():
@@ -20,6 +20,12 @@ def test_photographic_view_remains_perspective_by_default():
     assert view.projection=='perspective'
     assert view.focal_length_mm>0
     assert view.sensor_width_mm>0
+
+
+def test_temporal_spp_schedule_preserves_exact_requested_budget():
+    assert _temporal_spp_schedule(48,3)==(16,16,16)
+    assert _temporal_spp_schedule(64,3)==(22,21,21)
+    assert sum(_temporal_spp_schedule(193,5))==193
 
 
 def test_film_sample_scratch_is_complete_and_deleted_immediately(tmp_path):
