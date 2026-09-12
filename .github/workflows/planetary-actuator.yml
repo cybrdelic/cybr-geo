@@ -12,6 +12,7 @@ on:
       - 'src/mechanism_lab/photoreal.py'
       - 'src/mechanism_lab/registry.py'
       - 'tests/test_planetary_*.py'
+      - 'tests/test_photoreal_contract.py'
       - 'tools/render_planetary_film.py'
       - '.github/workflows/planetary-actuator.yml'
 
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   planetary:
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,9 +38,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-tested.txt
           python -m pip install --no-deps -e .
-      - name: Test involute geometry, exact kinematics and interfaces
+      - name: Test involute geometry, exact kinematics, interfaces and film streaming
         run: |
-          pytest -q tests/test_planetary_geometry.py tests/test_planetary_kinematics.py tests/test_planetary_interfaces.py
+          pytest -q tests/test_planetary_geometry.py tests/test_planetary_kinematics.py tests/test_planetary_interfaces.py tests/test_photoreal_contract.py
       - name: Validate full planetary assembly
         run: |
           mkdir -p artifacts
