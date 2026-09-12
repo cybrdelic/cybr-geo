@@ -151,8 +151,10 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
                 arr=accum/shutter_samples;im=Image.fromarray(filt.tonemap(arr,exposure=view.exposure));path=td/f'{global_frame:06}.png';im.save(path)
                 frames.append(path);global_frame+=1
         if not frames:raise ValueError('Film shot list produced no frames')
-        listfile=td/'frames.txt';listfile.write_text(''.join(f"file '{p.as_posix()}'\nduration {1/fps}\n" for p in frames)+f"file '{frames[-1].as_posix()}'\n")
-        subprocess.run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(listfile),'-r',str(fps),'-an','-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-movflags','+faststart',str(output)],check=True)
+        # Numbered-image input avoids the concat demuxer's required duplicate-last-
+        # frame trick, so an N-frame render produces exactly N encoded frames.
+        subprocess.run(['ffmpeg','-y','-v','error','-framerate',str(fps),'-start_number','0','-i',str(td/'%06d.png'),
+                        '-an','-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-movflags','+faststart',str(output)],check=True)
     report={'model':assembly.name,'frames':global_frame,'duration':global_frame/fps,'resolution':list(size),'fps':fps,'spp_per_frame':spp,
             'depth':depth,'shutter_angle':shutter_angle,'shutter_samples':shutter_samples,'seconds_to_render':time.time()-start,
             'method':'thin-lens path tracing + streamed temporal geometry/camera/explode supersampling','probe':probe(output),'truth':truth}
