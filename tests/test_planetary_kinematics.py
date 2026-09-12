@@ -8,7 +8,8 @@ from mechanism_lab.models.planetary_actuator import pose
 
 
 def _phase_mod(v):
-    return v%(2*math.pi)
+    q=v%(2*math.pi)
+    return 0.0 if math.isclose(q,2*math.pi,rel_tol=0,abs_tol=1e-12) else q
 
 
 def test_willis_ratio_and_planet_speed():
