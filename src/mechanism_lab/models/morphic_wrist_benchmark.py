@@ -5,11 +5,13 @@ base model.  This intentionally demonstrates that modern geometry is hybrid:
 BREP for interfaces/manufacturable surfaces, field geometry for porous TPMS, and
 fine mesh routing for very small fibers.
 
-The wrapper also substitutes a verified ruled two-section BREP gusset for the
-base study's experimental drafted triangular rib.  The original 4-degree draft
-collapsed its thin triangular profile in OpenCascade; the replacement retains a
-true tapered CAD rib without weakening validation.  Drafted extrusion remains
-independently exercised by the service collar and connector shell.
+The wrapper substitutes two verified constructions for exploratory base-study
+features that were poor production citizens in this OpenCascade build:
+- ruled two-section BREP gussets replace a self-intersecting drafted triangle;
+- a segmented analytic BREP helix replaces a mathematically valid swept helix
+  whose NURBS surface tessellated pathologically.  It is explicitly *not* called
+  a true continuous helical surface.
+Drafted extrusion and true continuous BREP sweeps remain exercised elsewhere.
 """
 from __future__ import annotations
 
@@ -30,8 +32,6 @@ def _ruled_gusset(index: int):
     """Stable convex two-section tapered BREP rib oriented in the YZ plane."""
     angles = (math.pi/4, 3*math.pi/4, 5*math.pi/4, 7*math.pi/4)
     a = angles[index]
-    # Radial direction follows the same elliptic structural envelope as the base
-    # study.  A perpendicular vector gives each profile finite width.
     ry, rz = 19.0 * math.cos(a), 15.0 * math.sin(a)
     n = math.hypot(ry, rz)
     uy, uz = ry/n, rz/n
@@ -55,9 +55,42 @@ def _ruled_gusset(index: int):
     return shape
 
 
+def _segmented_brep_helix(*, x0, length, helix_radius, pitch, section_radius, lefthand=False):
+    """Efficient BREP compound following a helical centerline.
+
+    The path is sampled into analytic cylinders with spherical junctions.  This
+    keeps every primitive an OpenCascade BREP while avoiding the pathological
+    tessellation cost of the continuous swept-helix NURBS face in this runtime.
+    """
+    turns = length / pitch
+    segments = max(40, int(math.ceil(turns * 18)))
+    sign = -1.0 if lefthand else 1.0
+    points = []
+    for i in range(segments + 1):
+        u = i / segments
+        a = sign * math.tau * turns * u
+        points.append(cq.Vector(
+            x0 + length*u,
+            helix_radius*math.cos(a),
+            helix_radius*math.sin(a),
+        ))
+    solids = []
+    for a, b in zip(points, points[1:]):
+        d = b - a
+        solids.append(cq.Solid.makeCylinder(section_radius, d.Length, a, d.normalized()))
+    # Spherical junctions make the sampled BREP path visually/volumetrically
+    # continuous without an expensive global boolean fuse.
+    solids.extend(cq.Solid.makeSphere(section_radius, p) for p in points[1:-1])
+    result = cq.Compound.makeCompound(solids)
+    if not result.isValid():
+        raise ValueError('segmented BREP helix is invalid')
+    return result
+
+
 def _build_verified_base():
-    """Build the base while replacing only the known invalid experimental ribs."""
-    original = _base.cad_part
+    """Build the base while replacing only verified-problematic study geometry."""
+    original_cad_part = _base.cad_part
+    original_helix = _base.helical_sweep
 
     def verified_cad_part(name, shape, material=0, **kw):
         if name.startswith('MW_05_Drafted_rib_'):
@@ -69,13 +102,22 @@ def _build_verified_base():
                     tags.append(tag)
             kw['tags'] = tuple(tags)
             kw['role'] = 'Ruled two-section tapered load-transfer gusset'
-        return original(name, shape, material, **kw)
+        elif name == 'MW_07_Helical_service_thread':
+            tags = [t for t in kw.get('tags', ()) if t not in ('technique:true-helix', 'technique:brep-sweep')]
+            tags.extend(('technique:segmented-brep-helix', 'technique:analytic-compound'))
+            kw['tags'] = tuple(dict.fromkeys(tags))
+            kw['role'] = 'Sampled analytic BREP helical service ridge; not a continuous swept-helix surface'
+            kw['tolerance'] = max(float(kw.get('tolerance', .03)), .08)
+            kw['angular'] = max(float(kw.get('angular', .05)), .10)
+        return original_cad_part(name, shape, material, **kw)
 
     _base.cad_part = verified_cad_part
+    _base.helical_sweep = _segmented_brep_helix
     try:
         return _base.build()
     finally:
-        _base.cad_part = original
+        _base.cad_part = original_cad_part
+        _base.helical_sweep = original_helix
 
 
 def build():
@@ -97,9 +139,13 @@ def build():
         tags=('technique:implicit-tpms', 'technique:field-modeling', 'technique:flying-edges'),
     )
     metadata = dict(assembly.metadata)
-    techniques = list(metadata.get('geometry_techniques', ()))
+    techniques = [
+        t for t in metadata.get('geometry_techniques', ())
+        if t != 'true OpenCascade helical sweep'
+    ]
     techniques.extend([
         'ruled two-section tapered BREP gussets',
+        'segmented analytic BREP helical path',
         'implicit TPMS / field modeling',
         'VTK FlyingEdges iso-surface extraction',
     ])
@@ -107,6 +153,10 @@ def build():
     metadata['hybrid_geometry_contract'] = (
         'Analytic OpenCascade BREP for precision/interface geometry; implicit TPMS '
         'for porous field geometry; fine triangle tubes for 0.20 mm SMA fibers.'
+    )
+    metadata['helix_fidelity'] = (
+        'Service ridge uses a truth-labeled segmented BREP helix because the '
+        'continuous swept-helix NURBS face is pathological to tessellate in this OCP build.'
     )
     return replace(assembly, parts=[*assembly.parts, tpms], metadata=metadata)
 
