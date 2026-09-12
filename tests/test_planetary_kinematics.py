@@ -3,8 +3,12 @@ from types import SimpleNamespace
 import numpy as np
 
 from mechanism_lab.gears import PlanetarySpec, planetary_angles, planet_centers, mesh_residuals
-from mechanism_lab.gears.planetary import planet_initial_phases
+from mechanism_lab.gears.planetary import planet_initial_phases,ring_initial_phase
 from mechanism_lab.models.planetary_actuator import pose
+
+
+def _phase_mod(v):
+    return v%(2*math.pi)
 
 
 def test_willis_ratio_and_planet_speed():
@@ -22,6 +26,37 @@ def test_external_and_internal_mesh_phase_residuals_stay_zero():
         residuals=mesh_residuals(s,float(t))
         assert max(abs(v) for v in residuals['sun_planet']) < 2e-12
         assert max(abs(v) for v in residuals['ring_planet']) < 2e-12
+
+
+def test_zero_angle_profile_phases_are_actual_tooth_space_complements():
+    s=PlanetarySpec()
+    p0=planet_initial_phases(s)[0]
+    r0=ring_initial_phase(s)
+    # external_profile() authors TOOTH centers at phase 0. With the first planet
+    # on +Y (alpha=0 in the model's YZ polar convention), the sun contact is a
+    # tooth center while the planet's opposite-facing contact must be a SPACE
+    # center (normalized phase pi), not another tooth center.
+    sun_contact=_phase_mod(s.sun_teeth*(0.0-0.0))
+    planet_inward=_phase_mod(s.planet_teeth*(math.pi-p0))
+    assert math.isclose(sun_contact,0.0,abs_tol=1e-12)
+    assert math.isclose(planet_inward,math.pi,abs_tol=1e-12)
+    # internal_space_profile() authors SPACE centers at the ring phase. On the
+    # outward side the same planet presents a tooth center into that ring space.
+    planet_outward=_phase_mod(s.planet_teeth*(0.0-p0))
+    ring_space=_phase_mod(s.ring_teeth*(0.0-r0))
+    assert math.isclose(planet_outward,0.0,abs_tol=1e-12)
+    assert math.isclose(ring_space,0.0,abs_tol=1e-12)
+
+
+def test_even_planet_tooth_count_gets_required_half_pitch_ring_offset():
+    # A separate valid topology exercises the parity branch instead of relying on
+    # the current odd 27T planet count forever.
+    s=PlanetarySpec(sun_teeth=20,planet_teeth=26,ring_teeth=72,planets=4)
+    s.validate()
+    assert math.isclose(ring_initial_phase(s),math.pi/s.ring_teeth,abs_tol=1e-12)
+    residuals=mesh_residuals(s,0)
+    assert max(abs(v) for v in residuals['sun_planet']) < 2e-12
+    assert max(abs(v) for v in residuals['ring_planet']) < 2e-12
 
 
 def test_planet_centers_remain_equal_radius_and_spacing():
@@ -56,5 +91,6 @@ def test_initial_planet_phases_are_not_arbitrary_visual_tuning():
     phases=planet_initial_phases(s)
     residuals=mesh_residuals(s,0)
     assert len(set(round(v,12) for v in phases)) == 3
+    assert math.isclose(phases[0],0.0,abs_tol=1e-12)
     assert max(abs(v) for v in residuals['sun_planet']) < 1e-12
     assert max(abs(v) for v in residuals['ring_planet']) < 1e-12
