@@ -1,13 +1,13 @@
-"""Advanced analytic geometry helpers for Mechanism Lab.
+"""Advanced geometry helpers for Mechanism Lab.
 
-These helpers intentionally return CadQuery/OpenCascade shapes.  They are used by
-benchmark models that need more than primitive extrusion/revolution while keeping
-analytic CAD available for STEP/HLR/inspection workflows.
+BREP helpers intentionally return CadQuery/OpenCascade shapes.  The implicit
+helper deliberately returns a triangle mesh because TPMS/field geometry is a case
+where an implicit representation is the modern native construction method rather
+than a failed approximation of a simple CAD solid.
 """
 from __future__ import annotations
 
-import math
-from typing import Iterable, Sequence
+from typing import Sequence
 
 import cadquery as cq
 
@@ -46,7 +46,6 @@ def lofted_elliptic_shell(
 
     outer = _loft(0.0)
     inner = _loft(wall)
-    # Extend the cavity slightly through both ends so there are no accidental caps.
     return outer.cut(inner)
 
 
@@ -97,8 +96,6 @@ def helical_sweep(
         dir=cq.Vector(1, 0, 0),
         lefthand=lefthand,
     )
-    # At the zero-angle helix point, the tangent is predominantly +Z with a small
-    # +X component.  XY is therefore a robust starting section plane.
     return (
         cq.Workplane('XY', origin=(x0, helix_radius, 0))
         .circle(section_radius)
@@ -137,12 +134,7 @@ def bcc_lattice(
     strut_radius: float,
     node_radius: float | None = None,
 ):
-    """BREP compound body-centred-cubic lattice.
-
-    Struts and nodes remain analytic OpenCascade solids inside one compound.  This
-    avoids converting a lattice showcase into a triangulated placeholder while
-    also avoiding an unnecessarily expensive global fuse operation.
-    """
+    """BREP compound body-centred-cubic lattice."""
     nx, ny, nz = cells
     if min(nx, ny, nz) < 1:
         raise ValueError('lattice needs at least one cell in each axis')
@@ -179,3 +171,57 @@ def toroidal_groove(major_radius: float, minor_radius: float, center=(0, 0, 0), 
         cq.Vector(*center),
         cq.Vector(*axis),
     )
+
+
+def gyroid_sheet_mesh(
+    bounds: tuple[float, float, float, float, float, float],
+    resolution: tuple[int, int, int] = (42, 30, 30),
+    periods: tuple[float, float, float] = (1.4, 1.2, 1.2),
+    thickness: float = .26,
+):
+    """Generate an implicit TPMS gyroid-sheet mesh with VTK FlyingEdges.
+
+    The scalar field is ``abs(gyroid)-thickness``.  Boundary voxels are forced
+    outside the iso-volume so the extracted sheet closes inside the requested
+    box instead of depending on clipping behavior at the sample boundary.
+    """
+    import numpy as np
+    import vtk
+    from vtk.util.numpy_support import numpy_to_vtk, vtk_to_numpy
+
+    xmin, xmax, ymin, ymax, zmin, zmax = bounds
+    nx, ny, nz = resolution
+    if min(nx, ny, nz) < 8 or min(xmax-xmin, ymax-ymin, zmax-zmin) <= 0:
+        raise ValueError('invalid implicit grid')
+    xs = np.linspace(xmin, xmax, nx)
+    ys = np.linspace(ymin, ymax, ny)
+    zs = np.linspace(zmin, zmax, nz)
+    X, Y, Z = np.meshgrid(xs, ys, zs, indexing='ij')
+    px = (X-xmin)/(xmax-xmin) * (2*np.pi*periods[0])
+    py = (Y-ymin)/(ymax-ymin) * (2*np.pi*periods[1])
+    pz = (Z-zmin)/(zmax-zmin) * (2*np.pi*periods[2])
+    g = np.sin(px)*np.cos(py) + np.sin(py)*np.cos(pz) + np.sin(pz)*np.cos(px)
+    field = np.abs(g) - thickness
+    outside = float(np.max(field) + 1.0)
+    field[[0, -1], :, :] = outside
+    field[:, [0, -1], :] = outside
+    field[:, :, [0, -1]] = outside
+
+    image = vtk.vtkImageData()
+    image.SetDimensions(nx, ny, nz)
+    image.SetOrigin(xmin, ymin, zmin)
+    image.SetSpacing((xmax-xmin)/(nx-1), (ymax-ymin)/(ny-1), (zmax-zmin)/(nz-1))
+    scalars = numpy_to_vtk(field.astype(np.float32).ravel(order='F'), deep=True)
+    image.GetPointData().SetScalars(scalars)
+
+    contour = vtk.vtkFlyingEdges3D()
+    contour.SetInputData(image)
+    contour.SetValue(0, 0.0)
+    contour.ComputeNormalsOff()
+    contour.Update()
+    poly = contour.GetOutput()
+    if poly.GetNumberOfPoints() == 0 or poly.GetNumberOfPolys() == 0:
+        raise ValueError('implicit extraction produced no surface')
+    vertices = vtk_to_numpy(poly.GetPoints().GetData()).copy()
+    faces = vtk_to_numpy(poly.GetPolys().GetConnectivityArray()).reshape(-1, 3).copy()
+    return vertices, faces
