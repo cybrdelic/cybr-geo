@@ -1,0 +1,17 @@
+{
+  "sha256": "7a72d98a859fa74b0606a03fb784daa09147e3f2e66e24dfe32e4daa543e6e9f",
+  "files": 10,
+  "chunks": ["chunk_00.b64", "chunk_01.b64", "chunk_02.b64", "chunk_03.b64", "chunk_04.b64"],
+  "paths": [
+    "README.md",
+    "native/photoreal.cpp",
+    "src/mechanism_lab/advanced_geometry.py",
+    "examples/aeris/README.md",
+    "examples/aeris/build_assets.py",
+    "examples/aeris/draw_assets.py",
+    "examples/aeris/recipe.py",
+    "examples/aeris/render_assets.py",
+    "examples/aeris/verify.py",
+    "examples/aeris/video_assets.py"
+  ]
+}
