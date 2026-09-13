@@ -1,0 +1,20 @@
+{
+  "model": "atlas_fixture",
+  "parts": 126,
+  "triangles": 507448,
+  "analytic_parts": 122,
+  "mesh_only_parts": [
+    "AT_081_Implicit_gyroid_insert",
+    "AT_093_Conductor_1",
+    "AT_093_Conductor_2",
+    "AT_093_Conductor_3"
+  ],
+  "all_watertight": true,
+  "all_consistent_winding": true,
+  "atlas_geometry_tests": ".......                                                                  [100%]\n7 passed in 63.32s (0:01:03)",
+  "limits": "Geometric checks and prescribed kinematics only; no load, contact force, fatigue or manufacturing qualification.",
+  "earlier_combined_run": {
+    "result": "............................                                             [100%]\n28 passed in 58.16s",
+    "scope": "Core, truth, photoreal contract and the five ATLAS checks present before the final keyed-interface refinement. The final seven ATLAS checks are reported separately above."
+  }
+}

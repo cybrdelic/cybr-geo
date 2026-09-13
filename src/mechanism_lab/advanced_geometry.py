@@ -96,8 +96,14 @@ def helical_sweep(
         dir=cq.Vector(1, 0, 0),
         lefthand=lefthand,
     )
+    # makeHelix chooses its own transverse axes.  For an X-axis helix the
+    # first point is NOT (x0, radius, 0).  Anchor the profile to the actual
+    # centerline and orient it perpendicular to the actual initial tangent.
+    # The previous arbitrary XY profile made a skewed, displaced pipe and
+    # caused pathological tessellation on some OpenCascade builds.
+    plane = cq.Plane(origin=helix.startPoint(), normal=helix.Edges()[0].tangentAt(0))
     return (
-        cq.Workplane('XY', origin=(x0, helix_radius, 0))
+        cq.Workplane(plane)
         .circle(section_radius)
         .sweep(helix, isFrenet=True, transition='round')
         .val()

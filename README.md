@@ -1,5 +1,19 @@
 # CYBR GEO / Mechanism Lab
 
+## ATLAS / self-centering inspection fixture
+
+A new functional-geometry showcase combines a three-jaw spiral cam, a 44:16
+involute fine-adjustment input, sculpted BREP housing and jaws, continuous spline
+and helix sweeps, a BCC pedestal, and an implicit gyroid insert. The same assembly
+exports to analytic STEP and animated GLB, and is photographed with the native
+CYBR GEO path tracer.
+
+![ATLAS rendered by CYBR GEO](media/atlas/hero.jpg)
+
+[Gallery, geometry capability map, verification, and reproduction commands](docs/ATLAS_FIXTURE.md)
+
+---
+
 Procedural geometry, named CAD/mesh assemblies, internal and exploded inspection, geometry-rendered video, individual-part catalogues, and whiteprint engineering drawings.
 
 **Both source toolkits are published here:** the newer `lab` CLI (`src/mechanism_lab`) and the original `cybrgeo` CLI (`src/cybrgeo`). Model recipes supply geometry, materials, named parts, camera views and motion transforms. The shared infrastructure handles export, rendering, animation, catalogues and drawings; a new part does not need a new renderer.

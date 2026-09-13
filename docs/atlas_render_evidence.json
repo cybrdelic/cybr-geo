@@ -1,0 +1,86 @@
+{
+  "model": "atlas_fixture",
+  "source_commit": "5465d0b9e2239141d013ce1de4068397db0eed6b",
+  "renderer": "CYBR GEO native thin-lens BVH/GGX/MIS path tracer",
+  "denoising": "none; all stills have at least 384 samples per pixel",
+  "views": [
+    {
+      "file": "atlas_hero.png",
+      "view": "hero",
+      "resolution": [
+        1800,
+        1200
+      ],
+      "spp": 512,
+      "bounce_limit": 14,
+      "f_stop": 11,
+      "seconds": 755.4972350597382,
+      "png_sha256": "678bc1fa42570ecfe0482f071bac4b811af4d471a2fb56ecb37f58ac3b0dbc35"
+    },
+    {
+      "file": "atlas_cutaway.png",
+      "view": "cutaway",
+      "resolution": [
+        1800,
+        1200
+      ],
+      "spp": 384,
+      "bounce_limit": 14,
+      "f_stop": 11,
+      "seconds": 588.2368879318237,
+      "png_sha256": "9b87e265a4ca23463a16cbe403de240d519a051bc97f5fce66a0510362f3ac9d"
+    },
+    {
+      "file": "atlas_exploded.png",
+      "view": "exploded",
+      "resolution": [
+        1800,
+        1200
+      ],
+      "spp": 384,
+      "bounce_limit": 14,
+      "f_stop": 11,
+      "seconds": 821.2531158924103,
+      "png_sha256": "b88eede87be04972a9c5b77d062a3089c239750877fbd3a5633c956994b2886e"
+    },
+    {
+      "file": "atlas_materials_macro.png",
+      "view": "materials_macro",
+      "resolution": [
+        1600,
+        1066
+      ],
+      "spp": 384,
+      "bounce_limit": 14,
+      "f_stop": 11,
+      "seconds": 446.1542193889618,
+      "png_sha256": "814392a4a177bb330a0b00fd4c21a4dbbf04d5cc7473bce7ccc09fa16c4cb2e5"
+    },
+    {
+      "file": "atlas_gear_macro.png",
+      "view": "gear_macro",
+      "resolution": [
+        1600,
+        1066
+      ],
+      "spp": 384,
+      "bounce_limit": 14,
+      "f_stop": 11,
+      "seconds": 184.15575408935547,
+      "png_sha256": "fb0d3371cd994e58ffdb40ee81dae2bf84d1dec449666fab52b3079a48570ee7"
+    },
+    {
+      "file": "atlas_lattice_macro.png",
+      "view": "lattice_macro",
+      "resolution": [
+        1200,
+        800
+      ],
+      "spp": 384,
+      "bounce_limit": 14,
+      "f_stop": 11,
+      "seconds": 1249.9165210723877,
+      "png_sha256": "70c3793eb8aac5e880ce6f10e9e788e33c90da196c4c26d91bc3a623fab1bab3"
+    }
+  ]
+}
