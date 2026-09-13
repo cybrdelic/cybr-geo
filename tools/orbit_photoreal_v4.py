@@ -80,20 +80,21 @@ def photographic_views(assembly):
         background_color=(.0065, .0085, .0115),
         tone_mapping="neutral",
     )
+    hero_settings = dict(common)
+    internal_settings = {**common, "environment_strength": .20, "light_intensity": .90}
+    macro_settings = {**common, "environment_strength": .19, "light_size": 1.25}
     views["hero"] = replace(
-        views["hero"], **common, az=31, el=22.5, scale=94,
+        views["hero"], **hero_settings, az=31, el=22.5, scale=94,
         target=(34, 6, 61), focal_length_mm=82, f_stop=9.0,
     )
     views["internal"] = replace(
-        views["internal"], **common, az=48, el=26, scale=95,
+        views["internal"], **internal_settings, az=48, el=26, scale=95,
         target=(30, 8, 63), focal_length_mm=78, f_stop=10.0,
-        environment_strength=.20, light_intensity=.90,
     )
     views["macro"] = replace(
-        views["macro"], **common, az=10, el=18, scale=34,
+        views["macro"], **macro_settings, az=10, el=18, scale=34,
         focal_length_mm=105, f_stop=7.1,
         camera_distance_mm=264.0, focus_distance_mm=249.0,
-        environment_strength=.19, light_size=1.25,
     )
     return replace(assembly, views=views)
 
