@@ -51,6 +51,16 @@ def check_frames(assembly,path):
         values=array(doc,data,sampler['output'])
         mapping[(channel['target']['node'],channel['target']['path'])]=(times,values)
     sampled_times=next(iter(mapping.values()))[0]
+    positions={}
+    for p in assembly.parts:
+        node=doc['nodes'][named[p.name]]
+        primitives=doc['meshes'][node['mesh']]['primitives']
+        assert len(primitives)==1
+        vertices=array(doc,data,primitives[0]['attributes']['POSITION'])
+        assert vertices.shape==p.vertices.shape
+        # Check the actual serialized mesh, including float32 quantization.
+        assert np.max(abs(vertices-p.vertices))<2e-5
+        positions[p.name]=vertices
     maximum=0.
     for sample_index in sorted({0,len(sampled_times)//3,len(sampled_times)//2,len(sampled_times)-1}):
         t=float(sampled_times[sample_index]);nodes=[dict(node) for node in doc['nodes']]
@@ -62,9 +72,9 @@ def check_frames(assembly,path):
             while ni in parents:
                 ni=parents[ni];actual=matrix(nodes[ni])@actual
             expected=NATIVE_TO_GLTF@assembly.pose(p,t)
-            probe=p.vertices[[0,len(p.vertices)//2,-1]]
-            av=probe@actual[:3,:3].T+actual[:3,3]
-            ev=probe@expected[:3,:3].T+expected[:3,3]
+            indices=[0,len(p.vertices)//2,-1]
+            av=positions[p.name][indices]@actual[:3,:3].T+actual[:3,3]
+            ev=p.vertices[indices]@expected[:3,:3].T+expected[:3,3]
             maximum=max(maximum,float(np.max(abs(av-ev))))
             assert np.max(abs(av-ev))<2e-7
     return maximum
@@ -76,6 +86,22 @@ def test_exported_animation_has_real_world_units_and_pivots(flange,tmp_path):
     path=tmp_path/'moving.glb'
     export_animated_glb(assembly,path,duration=2,fps=12)
     assert check_frames(assembly,path)<2e-7
+
+
+def test_nonuniform_service_keyframes_preserve_complete_revolutions(flange,tmp_path):
+    from mechanism_lab.assembly_process import AssemblyProcess,Move
+    plan=AssemblyProcess('threaded removal',[Move('turn','Unscrew',(flange.parts[0].name,),
+                           (6,0,0),duration=.75,turns=2,pivot=(0,0,0))]).bind(flange)
+    assembly=plan.assembly(flange);times=np.linspace(0,.75,25)
+    path=tmp_path/'service.glb'
+    export_animated_glb(assembly,path,duration=.75,sample_times=times)
+    assert check_frames(assembly,path)<2e-7
+    doc,data=read_glb(path);animation=doc['animations'][0]
+    channel=next(c for c in animation['channels'] if c['target']['path']=='rotation')
+    values=array(doc,data,animation['samplers'][channel['sampler']]['output'])
+    rotations=Rotation.from_quat(values)
+    swept=(rotations[:-1].inv()*rotations[1:]).magnitude().sum()
+    assert abs(swept-4*math.pi)<1e-5
 
 
 def test_delivered_motor_animation(motor,root):

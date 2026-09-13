@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cybr-geo"
-version = "0.4.1"
+version = "0.5.0"
 description = "Reusable CAD, mesh, mechanical inspection, animation, and whiteprint workshop"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
@@ -24,6 +24,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 cybrgeo = ["native/*.cpp"]
+mechanism_lab = ["native/*.cpp", "native/*.h"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "tests_legacy"]

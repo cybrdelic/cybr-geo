@@ -40,9 +40,18 @@ def factory(name):
 
 def fingerprint(name):
     root=project_root();h=hashlib.sha256(name.encode())
-    for p in sorted((root/'src/mechanism_lab').rglob('*.py')):
-        h.update(str(p.relative_to(root)).encode());h.update(p.read_bytes())
-    if name.endswith('.py'):h.update(Path(name).read_bytes())
+    for package in (Path(__file__).parent,Path(__file__).parent.parent/'cybrgeo'):
+        for p in sorted(package.rglob('*.py')):
+            h.update(str(p.relative_to(package.parent)).encode());h.update(p.read_bytes())
+    if name.endswith('.py'):
+        import ast
+        recipe=Path(name).resolve();raw=recipe.read_bytes();h.update(raw)
+        # Trusted local recipes may declare sibling geometry/motion inputs.
+        # Read literal path lists without executing the recipe a second time.
+        for node in ast.parse(raw).body:
+            if isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='CACHE_DEPENDENCIES' for t in node.targets):
+                for dependency in ast.literal_eval(node.value):
+                    file=(recipe.parent/dependency).resolve();h.update(str(file).encode());h.update(file.read_bytes())
     if name.endswith('.json'):
         path=Path(name).resolve();raw=path.read_bytes();h.update(raw)
         spec=json.loads(raw);source=path.parent/spec['source'];h.update(source.read_bytes())
@@ -65,7 +74,9 @@ def load(name, rebuild=False, analytic=False):
     root=project_root();out=root/'outputs'/slug;cache=out/'cache';sig=fingerprint(name)
     valid=(cache/'manifest.json').exists() and (cache/'fingerprint.txt').exists() and (cache/'fingerprint.txt').read_text()==sig
     if valid and not rebuild and not analytic:
-        assembly=load_cache(cache);assembly.motion_function=motion;return assembly
+        assembly=load_cache(cache)
+        assembly.motion_function=motion.bind(assembly) if callable(getattr(motion,'bind',None)) else motion
+        return assembly
     assembly=fn()
     if not isinstance(assembly,Assembly):raise TypeError('Recipe must return mechanism_lab.Assembly')
     validate(assembly);save_cache(assembly,cache);(cache/'fingerprint.txt').write_text(sig)

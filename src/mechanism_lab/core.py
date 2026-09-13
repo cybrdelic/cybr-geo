@@ -64,6 +64,8 @@ class Part:
     provenance: str = 'designed-concept'
     cad: Any = field(default=None, repr=False)
     tags: tuple[str, ...] = ()
+    finish_axis: tuple[float, float, float] = (1., 0., 0.)
+    finish_origin: tuple[float, float, float] | None = None
 
     @property
     def bounds(self):
@@ -77,6 +79,7 @@ class Part:
             name=prefix + self.name,
             vertices=self.vertices + offset,
             center=self.center + offset,
+            finish_origin=tuple(np.asarray(self.finish_origin) + offset) if self.finish_origin is not None else None,
             cad=self.cad.translate(tuple(offset)) if self.cad is not None else None,
         )
 
@@ -91,6 +94,8 @@ class Part:
             role=self.role,
             provenance=self.provenance,
             tags=list(self.tags),
+            finish_axis=list(self.finish_axis),
+            finish_origin=list(self.finish_origin) if self.finish_origin is not None else None,
             vertices=len(self.vertices),
             triangles=len(self.faces),
             has_analytic_cad=self.cad is not None,
@@ -117,16 +122,27 @@ class View:
     camera_distance_mm: float | None = None
     # Photographic controls. They are ignored by the fast engineering raster
     # renderer but consumed by the final-quality thin-lens path tracer.
-    f_stop: float = 5.6
+    f_stop: float = 11.0
     focus_distance_mm: float | None = None
     environment_strength: float = 0.24
     background_strength: float = 1.0
     light_size: float = 1.35
     light_intensity: float = 1.0
-    floor_gap_mm: float = 2.0
+    floor_gap_mm: float = 0.0
     floor_roughness: float = 0.82
     floor: bool = True
     exposure: float = 1.0
+    studio_style: str = 'product'
+    floor_color: tuple[float, float, float] = (.09, .095, .105)
+    background_color: tuple[float, float, float] = (.012, .016, .022)
+    # Fixed studio coordinates prevent camera cuts and moving/removing parts
+    # from moving the lights or floor. None is resolved once from the assembly.
+    studio_target: tuple[float, float, float] | None = None
+    studio_scale: float | None = None
+    studio_az: float | None = None
+    studio_el: float | None = None
+    floor_z_mm: float | None = None
+    tone_mapping: str = 'neutral'
 
 
 @dataclass
@@ -179,7 +195,10 @@ def project_root() -> Path:
         return candidate
     if (Path.cwd() / 'assets').exists():
         return Path.cwd().resolve()
-    raise RuntimeError('Set MECHANISM_LAB_ROOT to the extracted project directory containing assets/')
+    # Generic user recipes and installed photographic rendering do not require
+    # the historical differential assets. Asset-backed recipes resolve their
+    # own inputs and still fail explicitly when those inputs are absent.
+    return Path.cwd().resolve()
 
 
 def rotation_x(a):
@@ -234,12 +253,51 @@ def mesh_part(name, vertices, faces, material=0, **kw):
     return Part(name, v, f, n, material, **kw)
 
 
-def cad_part(name, shape, material=0, tolerance=.022, angular=.045, **kw):
+def cad_part(name, shape, material=0, tolerance=.022, angular=.045, analytic_normals=True, **kw):
     import cadquery as cq
     if isinstance(shape, cq.Workplane):
         shape = shape.val()
     if not shape.isValid():
         raise ValueError(f'{name}: OpenCascade returned invalid CAD')
+    if analytic_normals:
+        from OCP.BRep import BRep_Tool
+        from OCP.BRepLib import BRepLib_ToolTriangulatedShape
+        from OCP.TopAbs import TopAbs_REVERSED
+        from OCP.TopLoc import TopLoc_Location
+        shape.mesh(tolerance, angular)
+        vertices, normals, triangles = [], [], []
+        for face in shape.Faces():
+            location = TopLoc_Location()
+            poly = BRep_Tool.Triangulation_s(face.wrapped, location)
+            if poly is None:
+                raise ValueError(f'{name}: face has no tessellation')
+            BRepLib_ToolTriangulatedShape.ComputeNormals_s(face.wrapped, poly)
+            if not poly.HasNormals():
+                raise ValueError(f'{name}: could not compute CAD surface normals')
+            trsf = location.Transformation()
+            reverse = face.wrapped.Orientation() == TopAbs_REVERSED
+            offset = len(vertices)
+            for j in range(1, poly.NbNodes()+1):
+                p = poly.Node(j).Transformed(trsf)
+                n = poly.Normal(j).Transformed(trsf)
+                sign = -1. if reverse else 1.
+                vertices.append((p.X(), p.Y(), p.Z()))
+                normals.append((sign*n.X(), sign*n.Y(), sign*n.Z()))
+            for triangle in poly.Triangles():
+                order = (1, 3, 2) if reverse else (1, 2, 3)
+                triangles.append(tuple(triangle.Value(i)+offset-1 for i in order))
+        vertices = np.asarray(vertices)
+        triangles = np.asarray(triangles, dtype=np.int64)
+        # OCCT triangulates periodic seams and poles with collapsed triangles.
+        # Remove only numerically zero edges/areas; keep the face-boundary normals.
+        points = vertices[triangles]
+        edges = (points[:, 1]-points[:, 0], points[:, 2]-points[:, 0], points[:, 2]-points[:, 1])
+        keep = np.all(np.stack([np.linalg.norm(e, axis=1) > 1e-8 for e in edges]), axis=0)
+        keep &= np.linalg.norm(np.cross(edges[0], edges[1]), axis=1) > 1e-16
+        triangles = triangles[keep]
+        # Face boundaries keep distinct normals, including small real chamfers.
+        return Part(name, vertices, triangles,
+                    np.asarray(normals), material, cad=shape, **kw)
     v, f = shape.tessellate(tolerance, angular)
     return mesh_part(
         name,
@@ -261,12 +319,17 @@ def validate(assembly: Assembly, expensive=False):
             raise ValueError(f'Invalid linear base color for material {i}: {m.name}')
         if not 0 <= m.metal <= 1 or not 0 < m.rough <= 1:
             raise ValueError(f'Invalid metal/roughness for material {i}: {m.name}')
-        if m.ior <= 1 or not 0 <= m.coat <= 1 or not 0 < m.coat_rough <= 1:
+        if not np.isfinite(m.ior) or m.ior <= 1 or not 0 <= m.coat <= 1 or not 0 < m.coat_rough <= 1:
             raise ValueError(f'Invalid optical material parameters for {m.name}')
-        if not -1 <= m.anisotropy <= 1 or not 0 <= m.opacity <= 1:
+        if not -1 <= m.anisotropy <= 1 or not np.isfinite(m.anisotropy_rotation) or not 0 <= m.opacity <= 1:
             raise ValueError(f'Invalid anisotropy/opacity for {m.name}')
 
     for name, view in assembly.views.items():
+        if view.studio_style not in {'classic', 'product'}:
+            raise ValueError(f'Invalid studio style on view {name}')
+        for color in (view.floor_color, view.background_color):
+            if len(color) != 3 or not all(np.isfinite(color)) or any(c < 0 or c > 1 for c in color):
+                raise ValueError(f'Invalid studio color on view {name}')
         if view.projection not in {'perspective', 'orthographic'}:
             raise ValueError(f'Invalid projection on view {name}: {view.projection}')
         if view.scale <= 0 or view.focal_length_mm <= 0 or view.sensor_width_mm <= 0:
@@ -281,6 +344,13 @@ def validate(assembly: Assembly, expensive=False):
     import trimesh
     results = []
     for p in assembly.parts:
+        axis = np.asarray(p.finish_axis, float)
+        if axis.shape != (3,) or not np.isfinite(axis).all() or np.linalg.norm(axis) < 1e-8:
+            raise ValueError(f'Invalid finish axis: {p.name}')
+        if p.finish_origin is not None:
+            origin = np.asarray(p.finish_origin, float)
+            if origin.shape != (3,) or not np.isfinite(origin).all():
+                raise ValueError(f'Invalid finish origin: {p.name}')
         if p.vertices.ndim != 2 or p.vertices.shape[1] != 3 or p.faces.ndim != 2 or p.faces.shape[1] != 3:
             raise ValueError(f'Geometry arrays must be Nx3: {p.name}')
         if p.normals.shape != p.vertices.shape:
@@ -358,6 +428,7 @@ def load_cache(directory):
     for i, d in enumerate(info['parts']):
         kw = {k: d[k] for k in ['name', 'material', 'group', 'motion', 'center', 'explode', 'role', 'provenance', 'tags']}
         kw.update({k: a[f'p{i}_{k}'].copy() for k in ['vertices', 'faces', 'normals']})
+        kw.update({k:d[k] for k in ('finish_axis','finish_origin') if k in d})
         parts.append(Part(**kw))
     a.close()
     return Assembly(

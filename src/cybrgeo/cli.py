@@ -14,8 +14,8 @@ def main(argv=None):
     p=argparse.ArgumentParser(prog='cybrgeo');sub=p.add_subparsers(dest='command',required=True)
     q=sub.add_parser('import-step');q.add_argument('step');q.add_argument('--out',required=True);q.add_argument('--axis',default='native',choices=['native','motor-x']);q.add_argument('--tolerance',type=float,default=.08)
     q=sub.add_parser('build');q.add_argument('plugin');q.add_argument('--out',required=True)
-    q=sub.add_parser('render');q.add_argument('scene');q.add_argument('--out',required=True);q.add_argument('--explode',type=float,default=0);q.add_argument('--section',choices=['all','shell']);q.add_argument('--size',default='1600x1100');q.add_argument('--backend',default='pbr',choices=['pbr','pathtrace']);q.add_argument('--samples',type=int,default=64)
-    q=sub.add_parser('video');q.add_argument('scene');q.add_argument('--out',required=True);q.add_argument('--seconds',type=float,default=6);q.add_argument('--fps',type=int,default=24);q.add_argument('--mode',choices=['orbit','explode'],default='orbit')
+    q=sub.add_parser('render');q.add_argument('scene');q.add_argument('--out',required=True);q.add_argument('--explode',type=float,default=0);q.add_argument('--section',choices=['all','shell']);q.add_argument('--size',default='1600x1100');q.add_argument('--backend',default='photoreal',choices=['photoreal','pbr','pathtrace']);q.add_argument('--samples',type=int,default=512)
+    q=sub.add_parser('video');q.add_argument('scene');q.add_argument('--out',required=True);q.add_argument('--seconds',type=float,default=6);q.add_argument('--fps',type=int,default=24);q.add_argument('--mode',choices=['orbit','explode'],default='orbit');q.add_argument('--backend',choices=['photoreal','pbr'],default='photoreal');q.add_argument('--samples',type=int,default=128);q.add_argument('--size',default='1280x720')
     q=sub.add_parser('parts');q.add_argument('scene');q.add_argument('--out',required=True)
     q=sub.add_parser('whiteprint');q.add_argument('scene');q.add_argument('--out',required=True);q.add_argument('--part');q.add_argument('--title',default='CAD WHITEPRINT');q.add_argument('--number',default='CYBR-0001')
     q=sub.add_parser('validate');q.add_argument('scene');q.add_argument('--out')
@@ -33,9 +33,8 @@ def main(argv=None):
         if args.out:Path(args.out).write_text(text)
         print(text);return
     if args.command=='render':
-        from .render import Studio,labelled
         size=tuple(map(int,args.size.split('x')))
-        if args.backend=='pathtrace':
+        if args.backend in ('pathtrace','photoreal'):
             from .offline import render
             import numpy as np
             if args.section:raise ValueError('Path-traced section requires a pre-sectioned mesh scene')
@@ -43,11 +42,16 @@ def main(argv=None):
             poses={p.name:translation(p.explode*args.explode) for p in a.parts}
             render(a,args.out,*size,samples=args.samples,poses=poses,camera=(235,23,float(np.linalg.norm(np.ptp(a.bounds,axis=0))*.65*(1+args.explode)),a.bounds.mean(0).tolist()))
             return
+        from .render import Studio,labelled
         with Studio(a,size,section=args.section) as s:
             s.pose(explode=args.explode);s.fit(padding=1.35+args.explode)
             Path(args.out).parent.mkdir(parents=True,exist_ok=True)
             labelled(s.render(),a.name).save(args.out)
     elif args.command=='video':
+        if args.backend=='photoreal':
+            from .photoreal import film
+            film(a,args.out,args.seconds,args.fps,args.mode,tuple(map(int,args.size.split('x'))),args.samples)
+            return
         from .media import video
         import numpy as np
         b=a.bounds;rad=np.linalg.norm(np.ptp(b,axis=0))*.65
