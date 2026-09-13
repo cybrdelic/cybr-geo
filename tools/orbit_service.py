@@ -105,9 +105,12 @@ def service_films(a,out,args):
         ('Unthread left handed',('L02_',),52,30,34,'Unthread the left-hand nut','Thread the left-hand nut onto the screw'),
     ]
     rows=[];clips=[];last_time=(round(args.seconds*args.fps)-1)/args.fps
+    pipeline_files=['core.py','photoreal.py','finish_render.py','film_filter.py','exporters.py']
     source_key=hashlib.sha256(Path(__file__).read_bytes()+
         (ROOT/'examples/orbit_inspection_wrist.py').read_bytes()+
         (ROOT/'examples/orbit_service_process.py').read_bytes()+
+        b''.join((ROOT/'src/mechanism_lab'/name).read_bytes() for name in pipeline_files)+
+        hashlib.sha256((out/'cache/meshes.npz').read_bytes()).digest()+
         compile_renderer().read_bytes()).hexdigest()
     for shot_index,(prefix,context,scale,az,el,label,reverse_label) in enumerate(choices):
         index=next(i for i,m in enumerate(process.moves) if m.title.startswith(prefix));move=process.moves[index]
