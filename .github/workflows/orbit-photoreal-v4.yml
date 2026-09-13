@@ -1,0 +1,58 @@
+name: ORBIT Photoreal V4
+
+on:
+  push:
+    branches: [feat/orbit-photoreal-v4]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ ffmpeg libgl1 libegl1
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-orbit-v3-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Focused photographic regression tests
+        run: |
+          python -m pytest -q \
+            tests/test_photo_material_export.py \
+            tests/test_analytic_normals.py \
+            tests/test_shared_photo_pipeline.py
+      - name: Render ORBIT v4 hero, internal and macro
+        run: |
+          python tools/orbit_photoreal_v4.py \
+            --out /tmp/orbit-v4 \
+            --size 2560x1920 \
+            --deliver-size 1920x1440 \
+            --spp 640 \
+            --depth 16 \
+            --threads 4 \
+            --views hero internal macro
+      - name: Verify PNGs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          for p in sorted(Path('/tmp/orbit-v4').glob('ORBIT_v4_*.png')):
+              with Image.open(p) as im:
+                  im.verify()
+              print(p.name, p.stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ORBIT-photoreal-v4
+          path: /tmp/orbit-v4/
+          if-no-files-found: error
+          retention-days: 7
