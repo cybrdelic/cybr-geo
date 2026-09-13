@@ -1,0 +1,40 @@
+name: AERIS geometry showcase
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['feat/aeris-geometry-showcase']
+    paths:
+      - '.github/workflows/aeris-showcase.yml'
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/advanced_geometry.py'
+
+permissions:
+  contents: read
+
+jobs:
+  source-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact source revision
+        run: git rev-parse HEAD > SOURCE_REVISION.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aeris-source-checkout
+          path: |
+            src/
+            native/
+            examples/
+            assets/
+            docs/
+            tests/
+            tools/
+            pyproject.toml
+            requirements-tested.txt
+            LICENSE
+            README.md
+            SOURCE_REVISION.txt
+          if-no-files-found: error
+          retention-days: 30
