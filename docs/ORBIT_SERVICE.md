@@ -83,7 +83,7 @@ physical assembly trials.
 
 ## Reproduce
 
-From a checkout with the documented dependencies:
+From a checkout with the documented system dependencies. For the exact CAD kernel and Python versions used by this delivery, install `requirements-orbit-v3-tested.txt` (CadQuery 2.7 / OpenCascade 7.8.1 / VTK 9.3.1). Other supported package versions can produce different tessellation counts:
 
 ```bash
 python tools/orbit_service.py build --out outputs/orbit_service

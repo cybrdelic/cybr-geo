@@ -49,6 +49,8 @@ into glTF textures.
 
 ## Installation and native compilation
 
+Package dependency ranges include both the earlier repository pins and the versions used for this delivery. `requirements-orbit-v3-tested.txt` records the exact tested environment; the older `requirements-tested.txt` retains the previous repository environment.
+
 The wheel includes `mechanism_lab/native/{photoreal.cpp,pathtrace.cpp,photo_bsdf.h}`.
 The renderer compiles on first use with a C++17/OpenMP compiler. A hash of all
 three sources and compile flags keys its cache, so source upgrades cannot
