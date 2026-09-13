@@ -190,8 +190,23 @@ int main(int argc,char**argv){
 
  // Camera-relative softboxes. Sizes change independently from distance so shadow
  // softness is a controllable photographic property rather than a scene-scale accident.
+ // Keep the stock studio proportional to the model. The original fixed-mm
+ // placement could intersect large assemblies and put the lower part of a
+ // softbox below the floor. Scale positions AND dimensions together, preserving
+ // angular size / approximate irradiance rather than changing geometry units.
+ float studioScale=std::max(1.f,maxc(sceneBounds.hi-sceneBounds.lo)/180.f);
  auto addLight=[&](V center,float width,float height,V emission){
-  Light l(center,target,right,width*opt.lightSize,height*opt.lightSize,emission*opt.lightIntensity);lights.push_back(l);
+  center=target+(center-target)*studioScale;
+  width*=opt.lightSize*studioScale;height*=opt.lightSize*studioScale;
+  Light l(center,target,right,width,height,emission*opt.lightIntensity);
+  for(int attempt=0;enableFloor&&attempt<16;attempt++){
+   float lowest=l.c.z-std::fabs(l.u.z)-std::fabs(l.v.z);
+   float clearance=std::max(2.f,4.f*studioScale);
+   if(lowest>=floorZ+clearance)break;
+   center.z+=floorZ+clearance-lowest;
+   l=Light(center,target,right,width,height,emission*opt.lightIntensity);
+  }
+  lights.push_back(l);
  };
  V towardCamera=unit(camera-target);
  addLight(target+towardCamera*175.f-right*145.f+up*170.f,250.f,175.f,V(2.25f,2.32f,2.42f));

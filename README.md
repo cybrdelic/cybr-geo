@@ -115,3 +115,13 @@ python -m pytest -q
 The tests cover analytic geometry, cache integrity, units, import/export, transforms, decoded GLB animations, belt-path continuity, vectors in drawings, actual changing video frames, the Nitinol actuator's electrical/kinematic invariants, and README asset paths. A test definition or historical report is not itself proof of a fresh successful run.
 
 The repository's GPL-2.0 license is retained for project code. Manufacturer CAD, photographs, drawings and trademarks retain their own rights. No mechanical, electromagnetic, thermal or load qualification is claimed.
+
+## AERIS geometry showcase
+
+The [AERIS example](examples/aeris/README.md) is an original serviceable desktop
+extraction-turbine geometry concept: 215 named components, twisted BREP blades,
+a hollow freeform hood, one-solid open volute, real pleated medium, routed
+conductors, analytic BCC and implicit gyroid topology. It includes native
+photographic renders, explicit STEP coverage, animated GLBs, Boolean cutaways,
+whiteprints and executable verification. It is not a rated filtration or
+manufacturing-qualified product.
