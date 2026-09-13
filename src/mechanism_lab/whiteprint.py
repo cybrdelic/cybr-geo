@@ -178,8 +178,12 @@ def whiteprint(assembly,output,part_names=None,title=None,scale=None,annotation_
     if specification.get('auto_dimensions',True):
         lo,hi=all_bounds['side'];p=mappings['side']([[lo[0],lo[1]],[hi[0],lo[1]]])
         sheet.dimension(p[0],p[1],7,label=f'{hi[0]-lo[0]:.2f} REF')
-        lo,hi=all_bounds['end'];p=mappings['end']([[lo[0],0],[hi[0],0]])
-        sheet.dimension(p[0],p[1],(hi[1]-lo[1])*scale/2+7,label=f'{hi[0]-lo[0]:.2f} REF')
+        # Anchor the width dimension to the geometry's lower edge.  Model Z=0
+        # may be far from its centre (a mechanism on a raised pedestal, for
+        # example); using zero plus another half-height double-counted the
+        # offset and could put dimension lines inside the title block.
+        lo,hi=all_bounds['end'];p=mappings['end']([[lo[0],lo[1]],[hi[0],lo[1]]])
+        sheet.dimension(p[0],p[1],7,label=f'{hi[0]-lo[0]:.2f} REF')
     # Annotation anchors live in the recipe, never in the shared drawing engine.
     # Coordinates are model-space 2D projection coordinates; offsets are paper mm.
     for annotation in specification.get('annotations',[]):

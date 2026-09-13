@@ -35,13 +35,14 @@ def parser():
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
     q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
     q=sub.add_parser('render',help='Render a named view from actual geometry')
-    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['pbr','pathtrace','photoreal'],default='pbr')
-    q.add_argument('--size',type=resolution,default=(1600,1100));q.add_argument('--spp',type=int,default=256);q.add_argument('--depth',type=int,default=10);q.add_argument('--threads',type=int,default=4)
+    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['pbr','pathtrace','photoreal'],default='photoreal')
+    q.add_argument('--size',type=resolution,default=(1600,1100));q.add_argument('--spp',type=int,default=512);q.add_argument('--depth',type=int,default=14);q.add_argument('--threads',type=int,default=4)
     q.add_argument('--supersample',type=int,choices=[1,2,3],default=2,help='PBR raster supersampling factor')
     q.add_argument('--f-stop',type=float,help='Photoreal thin-lens aperture; lower values give shallower depth of field')
     q.add_argument('--focus-distance',type=float,help='Photoreal focus distance in scene millimetres; defaults to camera distance')
     q.add_argument('--time',type=float,default=0.);q.add_argument('--out',type=Path);_truth_args(q)
-    q=sub.add_parser('video',help='Render every video frame using fast PBR model poses and a shot list')
+    q=sub.add_parser('video',help='Photographic video; use --renderer pbr for fast engineering preview')
+    q.add_argument('--renderer',choices=['photoreal','pbr'],default='photoreal');q.add_argument('--spp',type=int,default=128);q.add_argument('--depth',type=int,default=12);q.add_argument('--threads',type=int,default=4)
     q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=8.)
     q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=(1280,720));q.add_argument('--fps',type=int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('film',help='Final-quality thin-lens path-traced film with temporal shutter sampling')
@@ -118,11 +119,7 @@ def run(args):
         print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out)},indent=2))
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
-        if args.renderer=='pathtrace':
-            if args.time!=0:raise ValueError('Legacy offline pathtrace views use time zero; use PBR or photoreal for nonzero time')
-            from .pathtrace import render_pathtrace
-            render_pathtrace(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,None,args.intent,args.allow_estimates)
-        elif args.renderer=='photoreal':
+        if args.renderer in ('photoreal','pathtrace'):
             from .photoreal import render_photoreal
             render_photoreal(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,args.intent,args.allow_estimates,args.time,args.f_stop,args.focus_distance,False)
         else:
@@ -134,7 +131,12 @@ def run(args):
         truth=assert_renderable(assembly,args.intent,args.allow_estimates)
         from .media import Shot,render_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'videos'/(assembly.name+'.mp4');report=render_video(assembly,output,shots,args.size,args.fps);write_truth_report(truth,output.with_suffix('.truth.json'))
+        output=args.out or out/'videos'/(assembly.name+'.mp4')
+        if args.renderer=='photoreal':
+            from .photoreal import render_photoreal_video
+            report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,intent=args.intent,allow_estimates=args.allow_estimates)
+        else:report=render_video(assembly,output,shots,args.size,args.fps)
+        write_truth_report(truth,output.with_suffix('.truth.json'))
         print(json.dumps({k:v for k,v in report.items() if k!='frames_log'},indent=2))
     elif args.command=='film':
         from .media import Shot

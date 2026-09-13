@@ -96,7 +96,7 @@ def _material_property(prop, material):
 
 def _floor_actor(bounds):
     center=np.mean(bounds,axis=0);extent=np.ptp(bounds,axis=0)
-    z=float(bounds[0,2]-max(3.0,.10*max(extent)))
+    z=float(bounds[0,2])
     half=max(180.,float(max(extent[:2]))*2.6,float(extent[0])*1.3)
     plane=vtk.vtkPlaneSource();plane.SetOrigin(center[0]-half,center[1]-half,z)
     plane.SetPoint1(center[0]+half,center[1]-half,z);plane.SetPoint2(center[0]-half,center[1]+half,z);plane.SetResolution(1,1);plane.Update()
@@ -140,7 +140,7 @@ class Studio:
 
         self.floor_actor=None;self.floor_z=None
         if floor:
-            self.floor_actor,self.floor_z=_floor_actor(assembly.bounds);self.ren.AddActor(self.floor_actor)
+            self.floor_actor,self.floor_z=_floor_actor(np.asarray(assembly.metadata.get('render_bounds_mm',assembly.bounds)));self.ren.AddActor(self.floor_actor)
 
         steps=vtk.vtkRenderStepsPass();delegate=steps;self.passes=[steps]
         if ao:

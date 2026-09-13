@@ -21,7 +21,7 @@ def compile_renderer():
     return exe
 
 
-def render_pathtrace(assembly,output,view_name='hero',size=(1920,1080),spp=256,threads=4,depth=10,exposure=None,intent='auto',allow_estimates=False):
+def render_pathtrace_legacy(assembly,output,view_name='hero',size=(1920,1080),spp=256,threads=4,depth=10,exposure=None,intent='auto',allow_estimates=False):
     from .render import labelled,clip_closed,polydata
     from .truth import assert_renderable,write_truth_report
     from vtk.util.numpy_support import vtk_to_numpy
@@ -76,3 +76,12 @@ def render_pathtrace(assembly,output,view_name='hero',size=(1920,1080),spp=256,t
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n')
     write_truth_report(truth,output.with_suffix('.truth.json'))
     return report
+
+
+def render_pathtrace(assembly,output,view_name='hero',size=(1920,1080),spp=512,threads=4,depth=14,exposure=None,intent='auto',allow_estimates=False):
+    """Compatibility name for the shared photographic renderer."""
+    from .photoreal import render_photoreal
+    if exposure is not None:
+        views=dict(assembly.views);views[view_name]=replace(views[view_name],exposure=exposure)
+        assembly=replace(assembly,views=views)
+    return render_photoreal(assembly,output,view_name,size,spp,threads,depth,intent,allow_estimates)
