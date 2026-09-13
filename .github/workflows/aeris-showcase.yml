@@ -5,36 +5,103 @@ on:
   push:
     branches: ['feat/aeris-geometry-showcase']
     paths:
-      - '.github/workflows/aeris-showcase.yml'
+      - '.aeris_import/ready.json'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/advanced_geometry.py'
+      - 'native/photoreal.cpp'
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: aeris-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  source-snapshot:
+  verify-render:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
-      - name: Record exact source revision
-        run: git rev-parse HEAD > SOURCE_REVISION.txt
-      - uses: actions/upload-artifact@v4
+      - name: Publish checksum-verified ordinary source files on this branch
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          python - <<'PY'
+          import base64,hashlib,io,json,pathlib,shutil,tarfile
+          P=pathlib.Path
+          manifest=P('.aeris_import/ready.json')
+          if manifest.exists():
+              meta=json.loads(manifest.read_text())
+              chunks=[]
+              for name in meta['chunks']:
+                  assert P(name).name==name
+                  chunks.append((manifest.parent/name).read_bytes())
+              data=base64.b64decode(b''.join(chunks),validate=True)
+              assert hashlib.sha256(data).hexdigest()==meta['sha256']
+              allowed=set(meta['paths'])
+              assert all(n.startswith('examples/aeris/') or n in ('README.md','native/photoreal.cpp','src/mechanism_lab/advanced_geometry.py') for n in allowed)
+              with tarfile.open(fileobj=io.BytesIO(data),mode='r:xz') as archive:
+                  entries=archive.getmembers()
+                  assert len(entries)==meta['files'] and {e.name for e in entries}==allowed
+                  assert sum(e.size for e in entries)<2_000_000
+                  for e in entries:
+                      p=P(e.name)
+                      assert e.isfile() and not p.is_absolute() and '..' not in p.parts and e.size<1_000_000
+                  for e in entries:
+                      p=P(e.name);p.parent.mkdir(parents=True,exist_ok=True)
+                      p.write_bytes(archive.extractfile(e).read())
+              receipt=P('docs/publication_receipts/aeris-showcase.json')
+              receipt.parent.mkdir(parents=True,exist_ok=True)
+              receipt.write_text(json.dumps({'archive_sha256':meta['sha256'],'files':meta['files'],'paths':meta['paths'],'method':'checksum-verified source transfer, extracted as ordinary tracked files'},indent=2)+'\n')
+              shutil.rmtree(manifest.parent)
+              print('Published',len(allowed),'verified source files')
+          PY
+          python -m compileall -q examples/aeris src/mechanism_lab
+          git config user.name 'CYBR GEO publication'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish verified AERIS geometry recipe, tests and photographic studio fix'
+            git push origin "HEAD:${TARGET_BRANCH}"
+          fi
+          git rev-parse HEAD > SOURCE_REVISION.txt
+      - uses: actions/setup-python@v5
         with:
-          name: aeris-source-checkout
+          python-version: '3.12'
+      - name: Install CAD, EGL and rendering dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++ libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Check shared core regression tests
+        run: python -m pytest -q tests/test_core.py
+      - name: Build complete analytic and mesh assemblies
+        run: python examples/aeris/build_assets.py --out build/aeris --exports
+      - name: Verify geometry, CAD contacts and actual animation buffers
+        run: python examples/aeris/verify.py --out build/aeris --cad
+      - name: Render native photographic proof
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris --views hero \
+            --size 1024x666 --spp 128 --threads 2 --depth 12
+      - name: Generate analytic whiteprints
+        run: python examples/aeris/draw_assets.py --out build/aeris
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aeris-geometry-verification
           path: |
-            src/
-            native/
-            examples/
-            assets/
-            docs/
-            tests/
-            tools/
-            pyproject.toml
-            requirements-tested.txt
-            LICENSE
-            README.md
+            build/aeris/validation.json
+            build/aeris/verification.json
+            build/aeris/*.coverage.json
+            build/aeris/*.animation.json
+            build/aeris/renders/
+            build/aeris/whiteprints/
+            build/aeris/*.glb
+            build/aeris/*.step
+            examples/aeris/
+            docs/publication_receipts/aeris-showcase.json
             SOURCE_REVISION.txt
           if-no-files-found: error
           retention-days: 30
