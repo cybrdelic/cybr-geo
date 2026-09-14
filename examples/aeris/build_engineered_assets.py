@@ -1,4 +1,9 @@
-"""Build AERIS-E1, retaining exact CAD and normal CYBR GEO exports."""
+"""Build AERIS-E1, retaining exact CAD and normal CYBR GEO export names.
+
+The revision identity lives in assembly metadata and the output directory. Export
+basenames intentionally match the established AERIS verification contract so the
+same validators exercise both the reference and engineering revisions.
+"""
 from pathlib import Path
 import sys, json, pickle, argparse
 ROOT=Path(__file__).resolve().parents[2]
@@ -26,16 +31,16 @@ def main():
     report['engineering_revision']=a.metadata['engineering_revision']
     report['bearing_interface']=a.metadata['bearing_interface']
     (out/'validation.json').write_text(json.dumps(report,indent=2))
-    export_glb(a,out/'aeris_e1.glb'); export_bom(a,out)
+    export_glb(a,out/'aeris.glb'); export_bom(a,out)
     print('AERIS_E1_CACHE_AND_GLB_READY',flush=True)
     section=cutaway_engineered(a); save_cache(section,out/'cutaway_cache')
-    export_glb(section,out/'aeris_e1_cutaway.glb')
+    export_glb(section,out/'aeris_cutaway.glb')
     with (out/'cutaway.pkl').open('wb') as f:
         pickle.dump(replace(section,motion_function=None),f,pickle.HIGHEST_PROTOCOL)
     if args.exports:
-        export_step(a,out/'aeris_e1_analytic.step',individual=False)
-        export_animated_glb(a,out/'aeris_e1_rotor_motion.glb',duration=4.,fps=24)
-        export_animated_glb(a,out/'aeris_e1_service_explosion.glb',duration=6.,fps=24,mode='explode')
+        export_step(a,out/'aeris_analytic.step',individual=False)
+        export_animated_glb(a,out/'aeris_rotor_motion.glb',duration=4.,fps=24)
+        export_animated_glb(a,out/'aeris_service_explosion.glb',duration=6.,fps=24,mode='explode')
     print('AERIS_E1_BUILD_COMPLETE',flush=True)
 
 if __name__=='__main__': main()
