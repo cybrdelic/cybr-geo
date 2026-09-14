@@ -64,7 +64,7 @@ PhotoOptions parsePhoto(int argc,char**argv){
   std::cerr<<"Invalid photographic render options\n";std::exit(1);
  }
  if(o.focusDistance<=0)o.focusDistance=o.cameraDistance;
- if(o.studio!="classic"&&o.studio!="product"){std::cerr<<"Unknown studio\n";std::exit(1);}
+ if(o.studio!="classic"&&o.studio!="product"&&o.studio!="outdoor"){std::cerr<<"Unknown studio\n";std::exit(1);}
  return o;
 }
 
@@ -88,6 +88,22 @@ V photoEnvironment(V d,bool camera){
  return (cool+bounce)*photoEnvStrength;
 }
 
+// Deterministic, authored millimetre-scale appearance. This modifies only
+// reflectance/roughness and a microscopic normal; structural geometry is unchanged.
+float parkHash(int x,int y,int z){
+ uint32_t h=uint32_t(x)*374761393u+uint32_t(y)*668265263u+uint32_t(z)*2246822519u;
+ h=(h^(h>>13))*1274126177u;h^=h>>16;return float(h&0x00ffffffu)/16777215.f;
+}
+float parkNoise(V p){
+ int ix=int(std::floor(p.x)),iy=int(std::floor(p.y)),iz=int(std::floor(p.z));
+ float x=p.x-ix,y=p.y-iy,z=p.z-iz;
+ x=x*x*(3-2*x);y=y*y*(3-2*y);z=z*z*(3-2*z);
+ float v=0;
+ for(int k=0;k<2;k++)for(int j=0;j<2;j++)for(int i=0;i<2;i++)
+  v+=parkHash(ix+i,iy+j,iz+k)*(i?x:1-x)*(j?y:1-y)*(k?z:1-z);
+ return v;
+}
+
 void photoPerturb(V p,V &n,Material &m,float footprint){
  // Authored finish coordinates follow each rigid part. Unresolved frequencies
  // fade into the BRDF roughness rather than sparkling independently per frame.
@@ -96,6 +112,30 @@ void photoPerturb(V p,V &n,Material &m,float footprint){
  float axial=dot(q,a),radius=len(q-a*axial);
  auto wave=[&](float position,float frequency){return std::sin(position*frequency)*std::exp(-.5f*sqr(frequency*footprint));};
  float grain=0;
+ if(m.pattern==9){
+  // Directional veneer fibres: elongated, non-periodic grain rather than
+  // a radial sine texture. Coordinates follow the part and surface tangent.
+  float across=dot(q,fr.b);
+  float seed=dot(m.grainOrigin,V(.000173f,.000291f,.000137f));
+  float warp=(parkNoise(V(across*.004f,axial*.0015f,seed))-.5f)*18.f;
+  float broad=parkNoise(V((across+warp)*.035f,axial*.0009f,seed+1.7f))-.5f;
+  float fibres=parkNoise(V((across+warp)*.65f,axial*.004f,seed+5.2f))-.5f;
+  fibres*=std::exp(-.5f*sqr(.65f*footprint));
+  float growth=wave(across+warp,.23f);
+  growth=std::pow(.5f+.5f*growth,8.f)-.2f;
+  float stain=1.f+.15f*broad+.07f*fibres-.06f*growth;
+  m.color*=clamp(stain,.80f,1.15f);
+  grain=.005f*fibres;m.rough=clamp(m.rough+.04f*broad,.3f,.96f);
+ }else if(m.pattern==10){
+  float cloud=parkNoise(q*.0008f)-.5f;
+  float trowel=parkNoise(V(q.x*.009f,q.y*.0012f,q.z*.003f))-.5f;
+  float micro=(parkNoise(q*.28f)-.5f)*std::exp(-.5f*sqr(.28f*footprint));
+  m.color*=1.f+.09f*cloud+.025f*trowel+.07f*micro;
+  grain=.014f*micro;m.rough=clamp(m.rough+.06f*cloud,.55f,.99f);
+ }else if(m.pattern==11){
+  float micro=(parkNoise(q*1.3f)-.5f)*std::exp(-.5f*sqr(1.3f*footprint));
+  m.color*=1.f+.12f*micro;grain=.04f*micro;
+ }
  if(m.pattern==1||m.pattern==8){
   float coordinate=std::fabs(dot(n,a))>.8f?radius:axial;
   grain=.009f*wave(coordinate,36.f)+.003f*wave(coordinate,105.f);
@@ -235,7 +275,11 @@ int main(int argc,char**argv){
   }
   lights.push_back(l);
  };
- if(opt.studio=="product"){
+ if(opt.studio=="outdoor"){
+  // A finite distant area emitter with a roughly solar angular diameter.
+  // RGB daylight approximation; not a spectral/meteorological sky model.
+  addLight(V(-90000.f,-70000.f,125000.f),1600.f,1600.f,V(32000.f,28500.f,23500.f));
+ }else if(opt.studio=="product"){
   addLight(towardCamera*380.f-lightRight*340.f+lightUp*420.f,500.f,350.f,V(6.5f,6.3f,6.0f));
   addLight(towardCamera*220.f+lightRight*440.f+lightUp*90.f,300.f,500.f,V(1.7f,1.85f,2.0f));
   addLight(-towardCamera*220.f+lightRight*250.f+lightUp*450.f,220.f,500.f,V(4.2f,4.5f,4.8f));
