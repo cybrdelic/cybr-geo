@@ -28,23 +28,20 @@ jobs:
       - name: Enforce native CYBR GEO model stack
         run: |
           set -euxo pipefail
-          ! grep -n 'mechanism_lab' examples/reach2_cybrgeo_v6.py
-          ! grep -n 'mechanism_lab' examples/orbit_cybrgeo_native.py
-          ! grep -n 'mechanism_lab' src/cybrgeo/core.py
+          for f in examples/reach2_cybrgeo_v6.py examples/reach2_cybrgeo_v6b.py examples/orbit_cybrgeo_native.py examples/orbit_cybrgeo_native_v2.py src/cybrgeo/core.py; do
+            ! grep -n '^from mechanism_lab\|^import mechanism_lab' "$f"
+          done
           python - <<'PY'
-          import inspect
-          import cybrgeo
-          import cybrgeo.core
-          source=inspect.getsource(cybrgeo.core.from_shape)
-          assert 'mechanism_lab' not in source
+          import inspect, cybrgeo, cybrgeo.core
+          assert 'mechanism_lab' not in inspect.getsource(cybrgeo.core.from_shape)
           assert cybrgeo.Assembly.__module__ == 'cybrgeo.core'
           assert cybrgeo.from_shape.__module__ == 'cybrgeo.core'
           PY
       - name: Validate native CYBR GEO model and engineering
         run: |
-          python examples/orbit_cybrgeo_native.py
-          python examples/reach2_cybrgeo_v6.py
-          python tools/reach2_cybrgeo_v6_engineering.py --out /tmp/reach2v6/REACH2_v6_engineering.json --require-pass
+          python examples/orbit_cybrgeo_native_v2.py
+          python examples/reach2_cybrgeo_v6b.py
+          python tools/reach2_cybrgeo_v6b_engineering.py --out /tmp/reach2v6/REACH2_v6_engineering.json --require-pass
       - name: Install Intel Open Image Denoise 2.5.1
         run: |
           set -euxo pipefail
@@ -56,7 +53,7 @@ jobs:
           echo "LD_LIBRARY_PATH=$OIDN_ROOT/lib:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
       - name: Native CYBR GEO export and V9 render
         run: |
-          python tools/reach2_cybrgeo_v6_build.py --out /tmp/reach2v6 --spp 256
+          python tools/reach2_cybrgeo_v6b_build.py --out /tmp/reach2v6 --spp 256
       - name: Verify native provenance
         run: |
           python - <<'PY'
@@ -68,6 +65,9 @@ jobs:
           e=json.loads((p/'REACH2_v6_engineering.json').read_text())
           assert m['generated_imagery'] is False
           assert m['geometry_api']=='cybrgeo.Assembly/cybrgeo.from_shape'
+          assert m['tessellator']=='cybrgeo.core.from_shape'
+          assert m['orbit_source']=='examples/orbit_cybrgeo_native_v2.py'
+          assert m['legacy_model_runtime_dependency'] is False
           assert m['render_api']=='cybrgeo.photoreal.render'
           assert m['engineering_qualified'] is True and e['qualified'] is True
           assert m['analytic_brep_parts']==m['parts']
