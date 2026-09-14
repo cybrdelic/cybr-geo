@@ -2,9 +2,9 @@
 
 AERIS is an original serviceable benchtop extraction-turbine concept built as a
 large CYBR GEO integration target. It is intended to exercise real mechanical
-geometry, assembly, cutaway, export, drawing, animation and photographic
-presentation workflows together. It is **not** a rated fume extractor or a
-respiratory-safety device.
+geometry, assembly, cutaway, export, drawing, animation, photographic rendering
+and engineering-screening workflows together. It is **not** a rated fume
+extractor or a respiratory-safety device.
 
 The 215 named components include a pocketed base and connected tilt yoke; an
 asymmetric hollow collection hood; removable filter cartridge; one-solid spiral
@@ -18,7 +18,39 @@ BCC support geometry plus an implicit gyroid sheet.
 are intentionally mesh-only and are explicitly omitted from STEP coverage rather
 than replaced with fake B-reps. The full GLB retains all named components.
 
-## Why AERIS is in the V9 branch
+## Engineering revision AERIS-E1
+
+The original concept used an ad-hoc bearing envelope whose modeled bore left a
+40 micrometre diametral clearance on the nominal 10 mm rotating shaft. That is
+not acceptable evidence for a production rotating-inner-ring fit. AERIS-E1 keeps
+the same stable assembly naming and architecture but replaces those envelopes and
+carrier seats with nominal 6000-series geometry: 10 mm bore, 26 mm OD, 8 mm
+width. This removes the hard nominal-geometry incompatibility without inventing a
+production tolerance.
+
+Manufacturer part number, shaft/housing tolerance classes, internal bearing
+clearance, preload and L10/contact qualification remain explicitly unassigned.
+Consequently AERIS-E1 can pass the deterministic computational screens while
+remaining **NOT RELEASE READY**.
+
+`engineering_validate_e1.py` performs deterministic first-order screens for mass,
+rotor centrifugal loading, shaft torsion/bending and critical speed, yoke/volute
+static loads, fan/duct/filter sensitivity, hood face velocity, nominal bearing
+geometry, winding resistance/current-density/thermal sensitivity and blade-pass
+frequency. It is not CFD, continuum FEA, electromagnetic FEA, certified filter
+validation or physical prototype testing.
+
+`export_cybr_physics_manifest.py` exports CAD-derived E1 mass/CG/bearing/shaft/
+hood/filter/outlet parameters for the separate CYBR PHYSICS repository. That
+repository runs deterministic CPU solid-FEM, thermal-FEM and D3Q19-LBM
+**reduced-order submodels**. The structural runner uses the actual impeller CG and
+49.5/100 mm bearing stations, while preserving the 10 mm circular shaft second
+moment in its equivalent tetrahedral section. The LBM case is deliberately a
+low-Mach local hood/coupling validation, not a CAD-resolved fan or capture CFD
+claim. Numerical passes do not promote the design to fabrication or safety
+qualification.
+
+## Why AERIS uses V9
 
 Small hero parts can hide presentation defects. AERIS cannot: its roughly
 366×240×302 mm envelope, internal reflective surfaces, fine conductors, blades,
@@ -27,7 +59,7 @@ antialiasing/detail retention, cutaway handling and large-assembly export at the
 same time. Ordinary CYBR GEO rendering uses the repository-wide V9 photographic
 contract; the VTK PBR renderer remains an explicit preview option.
 
-## Reproduce
+## Reproduce the reference geometry
 
 From the repository root in the documented Linux/WSL environment:
 
@@ -44,7 +76,16 @@ python examples/aeris/draw_assets.py --out build/aeris
 python examples/aeris/video_assets.py --out build/aeris --fps 24
 ```
 
-The render command above deliberately specifies a 384-spp delivery budget; it
+## Reproduce AERIS-E1 engineering geometry
+
+```bash
+python examples/aeris/build_engineered_assets.py --out build/aeris-e1 --exports
+python examples/aeris/verify.py --out build/aeris-e1 --cad
+python examples/aeris/engineering_validate_e1.py --out build/aeris-e1 --rpm 3600
+python examples/aeris/export_cybr_physics_manifest.py --out build/aeris-e1
+```
+
+The rendering command above deliberately specifies a 384-spp delivery budget; it
 still uses the same shared V9 renderer/material/studio/finishing implementation.
 Omit or change explicit quality flags when doing local studies. `--pbr` selects
 the separate fast engineering preview path.
@@ -66,8 +107,9 @@ half-section. The test report is evidence of those nominal geometry checks only.
 
 ## Engineering limits
 
-Rotor motion is prescribed for visualization. No CFD, fan curve, capture
-velocity, pressure drop, filtration efficacy, acoustics, structural stress,
-fatigue, balance, loaded bearing/contact behavior, electrical safety, thermal
-performance or fabrication release is claimed. Those require dedicated analysis
-and physical validation before AERIS could be treated as a real extractor.
+Rotor motion is prescribed for visualization. The first-order E1 screens and
+current CYBR PHYSICS adapters do not replace CAD-resolved external/internal CFD,
+continuum structural/modal/thermal FEA, electromagnetic motor analysis, bearing
+manufacturer life calculations, acoustic qualification, certified filter curves,
+GD&T/tolerance release, or physical validation. Those remain required before
+AERIS can be treated as a real extractor.
