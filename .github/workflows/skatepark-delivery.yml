@@ -20,7 +20,9 @@ jobs:
           root=pathlib.Path('.')
           marker=root/'.skatepark_transfer/ready.json'
           meta=json.loads(marker.read_text())
-          data=base64.b64decode(meta['payload'],validate=True)
+          chunks=sorted(marker.parent.glob('part-*.b64'))
+          payload=meta.get('payload') or ''.join(p.read_text().strip() for p in chunks)
+          data=base64.b64decode(payload,validate=True)
           assert hashlib.sha256(data).hexdigest()==meta['sha256']
           allowed=set(meta['paths'])
           assert all(p.startswith(('examples/diy_skatepark/','tests/test_diy_skatepark.py')) or p=='.skatepark_delivery.patch' for p in allowed)
@@ -39,13 +41,14 @@ jobs:
           receipt.parent.mkdir(parents=True,exist_ok=True)
           receipt.write_text(json.dumps({'archive_sha256':meta['sha256'],'files':meta['files'],'paths':meta['paths'],'method':'checksum-verified source and checked patch; isolated skatepark branch','base_geometry_commit':'ce83e1dc06a1258e524c8af82e298e82fc223a6d'},indent=2)+'\n')
           marker.unlink()
+          for p in chunks: p.unlink()
           PY
           python -m compileall -q src examples/diy_skatepark tests/test_diy_skatepark.py
       - name: Publish ordinary tracked source files
         run: |
           git config user.name 'CYBR GEO source publication'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add README.md src/mechanism_lab/core.py src/mechanism_lab/exporters.py src/mechanism_lab/native/photoreal.cpp examples/diy_skatepark tests/test_diy_skatepark.py docs/publication_receipts/diy-skatepark-v1.json .skatepark_transfer/ready.json
+          git add README.md src/mechanism_lab/core.py src/mechanism_lab/exporters.py src/mechanism_lab/native/photoreal.cpp examples/diy_skatepark tests/test_diy_skatepark.py docs/publication_receipts/diy-skatepark-v1.json .skatepark_transfer
           git commit -m 'Add CYBR YARD parametric skatepark, opt-in outdoor rendering and geometry inspector'
           git push origin HEAD:feat/diy-skatepark-v1
       - uses: actions/setup-python@v5
