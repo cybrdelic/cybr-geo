@@ -1,0 +1,23 @@
+name: Skatepark source snapshot
+on:
+  push:
+    branches: [feat/diy-skatepark-v1]
+    paths: [.github/workflows/skatepark-source.yml]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive source with provenance
+        run: |
+          mkdir -p /tmp/skatepark-source
+          git archive --format=tar HEAD | gzip > /tmp/skatepark-source/cybr-geo-source.tar.gz
+          git rev-parse HEAD > /tmp/skatepark-source/COMMIT.txt
+          sha256sum /tmp/skatepark-source/cybr-geo-source.tar.gz > /tmp/skatepark-source/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skatepark-source-snapshot
+          path: /tmp/skatepark-source/
+          retention-days: 7

@@ -32,9 +32,55 @@ The 12 fibers are mechanically parallel but electrically arranged as three paral
 
 See [actuator recipe](src/mechanism_lab/models/nitinol_actuator.py) and [design/source notes](docs/NITINOL_ACTUATOR.md). The included numbers are design guides, not thermal, fatigue, structural or load qualification.
 
+## ORBIT inspection wrist showcase
+
+![CYBR ORBIT photographic render](media/orbit_v3_hero.jpg)
+
+A 148-component geared inspection wrist with an opposed-screw parallel
+gripper, a hollow lofted palm, integral finger carriages, bearing raceways,
+keyed shaft, service conduit and removable housing. The model exercises the
+shared geometry, STEP/GLB export, kinematic animation, whiteprint and native
+photographic rendering pipelines.
+
+[Serviceable revision 3 and reproduction](docs/ORBIT_SERVICE.md) ·
+[Geometry capability coverage](docs/ORBIT_SHOWCASE.md) ·
+[Recipe](examples/orbit_inspection_wrist.py) ·
+[Build, validation and media tool](tools/orbit_service.py)
+
+Revision 3 uses analytic CAD for every component, including the spline conduit.
+Its 331-operation service procedure releases fasteners in order, keeps purchased
+bearings and bonded units intact, and withdraws shafts, guides and threaded nuts
+along explicit paths. The assembly animation follows those paths in reverse.
+The validation reports distinguish sampled nominal CAD clearance from physical
+prototype, manufacturing-tolerance and load qualification.
+
+## Shared photographic rendering in 0.5
+
+`lab render`, `lab video`, `lab film`, `cybrgeo render`, and `cybrgeo video`
+use the same native photographic implementation by default. Both Python APIs
+share the material model, thin-lens camera, fixed studio, color transfer and
+geometry-guided image finishing. New CAD parts use analytic surface normals
+by default. Use `--renderer pbr` with `lab`, or `--backend pbr` with `cybrgeo`,
+for the explicitly selected fast preview.
+
+See [shared defaults, installation and compatibility](docs/SHARED_PHOTOGRAPHY.md).
+
+The accompanying toolkit fixes repair high-tooth-count involute root
+self-intersections and drawing dimensions for models above the origin.
+Selected geometry/interface checks are recorded separately from unqualified
+load and manufacturing claims.
+
+## CYBR YARD / DIY skatepark
+
+A 22 × 16 m parametric skatepark with a layered timber mini ramp, bank, quarter pipe, low street obstacles, coping, framing and access stairs. The 1,404-part design uses the normal CYBR GEO assembly/export pipeline and the V9 native photographic renderer with explicitly selected outdoor lighting. Its added finishes do not change existing product-studio defaults.
+
+[Design, dimensions, reproduction and limitations](examples/diy_skatepark/README.md) · [Parametric recipe](examples/diy_skatepark/recipe.py) · [Geometry tests](tests/test_diy_skatepark.py)
+
+This is a geometry/rendering study, not construction-qualified plans or a rider/structural simulation. The offline native renders and the optional self-contained WebGL geometry inspector are distinct outputs.
+
 ## Install
 
-Python 3.11–3.13; Linux/WSL is the documented environment. Install FFmpeg, a C++17/OpenMP compiler, CMake, Cairo, EGL/OpenGL and Mesa system libraries first. Keep the source checkout and its `assets/` and `native/` directories together.
+Python 3.11–3.13; Linux/WSL is the documented environment. Install FFmpeg, a C++17/OpenMP compiler, CMake, Cairo, EGL/OpenGL and Mesa system libraries first. The wheel contains the native photographic source and can render independent recipes without a repository checkout. Historical built-in recipes still need their documented reference assets.
 
 ```bash
 git clone https://github.com/cybrdelic/cybr-geo.git

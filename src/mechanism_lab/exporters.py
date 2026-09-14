@@ -23,6 +23,9 @@ MICROFINISH_PATTERNS={
     'drawn-wire':5,
     'copper-wire':6,
     'anodized':7,
+    'wood':9,
+    'concrete':10,
+    'grip':11,
 }
 
 def linear_to_srgb(x):
@@ -84,26 +87,37 @@ def export_bom(assembly,directory):
         writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
     return rows
 
-def export_meshbin(assembly,path, time_seconds=0,explode=0):
+def export_meshbin(assembly,path, time_seconds=0,explode=0,photographic=False):
     path=Path(path);n=sum(len(p.faces) for p in assembly.parts)
     with path.open('wb') as f:
         f.write(struct.pack('<I',n))
-        for p in assembly.parts:
+        for index,p in enumerate(assembly.parts):
             T=assembly.pose(p,time_seconds,explode)
             v=p.vertices@T[:3,:3].T+T[:3,3];norm=p.normals@T[:3,:3].T
-            records=np.c_[v[p.faces].reshape(-1,9),norm[p.faces].reshape(-1,9),np.full(len(p.faces),p.material),np.full(len(p.faces),10)]
+            records=np.c_[v[p.faces].reshape(-1,9),norm[p.faces].reshape(-1,9),np.full(len(p.faces),index if photographic else p.material),np.full(len(p.faces),10)]
             f.write(records.astype('<f4').tobytes())
     with path.with_suffix('.materials').open('w') as f:
-        for m in assembly.materials:
+        if photographic:f.write('CYBR_PHOTO_MATERIALS 2\n')
+        rows=[(assembly.materials[p.material],p) for p in assembly.parts] if photographic else [(m,None) for m in assembly.materials]
+        for m,p in rows:
             finish=str(m.microfinish).strip().lower()
             if finish not in MICROFINISH_PATTERNS:
                 raise ValueError(f'Unknown microfinish {m.microfinish!r} on material {m.name!r}; use {sorted(MICROFINISH_PATTERNS)}')
             pattern=MICROFINISH_PATTERNS[finish]
-            f.write(' '.join(map(str,(*m.color,m.metal,m.rough,pattern)))+'\n')
+            if photographic and finish=='turned':pattern=8
+            values=(*m.color,m.metal,m.rough,pattern)
+            if photographic:
+                T=assembly.pose(p,time_seconds,explode)
+                axis=np.asarray(p.finish_axis,float);axis=axis/np.linalg.norm(axis)
+                axis=T[:3,:3]@axis
+                origin=np.asarray(p.finish_origin if p.finish_origin is not None else np.mean(p.bounds,axis=0))
+                origin=T[:3,:3]@origin+T[:3,3]
+                values=(*values,m.ior,m.coat,m.coat_rough,m.anisotropy,m.anisotropy_rotation,*axis,*origin)
+            f.write(' '.join(map(str,values))+'\n')
 
 # A tiny standard glTF writer adds node TRS animation to the exported static GLB.
 # Geometry stays immutable, only prescribed rigid transforms change.
-def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion'):
+def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion',sample_times=None):
     from scipy.spatial.transform import Rotation
     if duration<=0 or fps<=0:raise ValueError('duration and fps must be positive')
     raw=scene(assembly).export(file_type='glb')
@@ -119,7 +133,11 @@ def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion'):
         ac=dict(bufferView=vi,componentType=5126,count=len(a),type=type_)
         if bounds:ac.update(min=np.atleast_1d(a.min(axis=0)).tolist(),max=np.atleast_1d(a.max(axis=0)).tolist())
         idx=len(doc['accessors']);doc['accessors'].append(ac);return idx
-    times=np.linspace(0,duration,round(duration*fps)+1,dtype=np.float32);time_id=accessor(times,'SCALAR',True)
+    times=(np.linspace(0,duration,round(duration*fps)+1,dtype=np.float32) if sample_times is None
+           else np.asarray(sample_times,dtype=np.float32))
+    if times.ndim!=1 or len(times)<2 or not np.isfinite(times).all() or times[0]!=0 or not np.isclose(times[-1],duration) or np.any(np.diff(times)<=0):
+        raise ValueError('Animation sample times must strictly increase from zero to duration')
+    time_id=accessor(times,'SCALAR',True)
     samplers=[];channels=[];residual=0.
     lookup={n.get('name'):i for i,n in enumerate(doc['nodes'])}
     roots=doc['scenes'][doc.get('scene',0)]['nodes']

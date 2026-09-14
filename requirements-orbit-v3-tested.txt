@@ -1,0 +1,15 @@
+# Exact direct packages used for the ORBIT v3 CAD audit and V9 rendered delivery.
+numpy==2.3.5
+cadquery==2.7.0
+cadquery-ocp==7.8.1.1.post1
+vtk==9.3.1
+trimesh==5.1.0
+shapely==2.1.2
+scipy==1.17.0
+Pillow==12.3.0
+numba==0.65.1
+ezdxf==1.4.4
+CairoSVG==2.9.1
+mitsuba==3.7.1
+pytest==9.1.1
+setuptools==84.0.0

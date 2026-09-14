@@ -1,0 +1,95 @@
+name: V9 AERIS isolation
+
+on:
+  push:
+    branches: ['fix/true-v9-mitsuba-default']
+    paths:
+      - '.github/workflows/v9-aeris-isolation.yml'
+      - 'src/mechanism_lab/v9_dispatch.py'
+  workflow_dispatch:
+
+jobs:
+  isolate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install tested environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Build AERIS cache
+        run: python examples/aeris/build_assets.py --out build/aeris
+      - name: Test envmap initialization order against exact AERIS shaft
+        shell: bash --noprofile --norc {0}
+        run: |
+          cat >/tmp/aeris_isolate.py <<'PY'
+          import os,sys
+          from dataclasses import replace
+          from pathlib import Path
+          ROOT=Path.cwd();sys.path.insert(0,str(ROOT/'src'));sys.path.insert(0,str(ROOT/'examples/aeris'))
+          os.environ.setdefault('MECHANISM_LAB_ROOT',str(ROOT))
+          import drjit as dr
+          from recipe import coupled_pose
+          from mechanism_lab.core import load_cache
+          from mechanism_lab.v9 import ensure_assets
+          from mechanism_lab.v9_dispatch import _scalar_mitsuba,_generic_shapes,_procedural_mesh
+
+          mode=sys.argv[1]
+          a=load_cache(ROOT/'build/aeris/cache');a.motion_function=coupled_pose
+          part=next(p for p in a.parts if p.group=='shaft')
+          a=replace(a,name='aeris_isolate_shaft',parts=[part])
+          mi,variant=_scalar_mitsuba()
+
+          assets=None
+          env=None
+          if mode.startswith('envfirst') or mode=='envonly':
+              assets=ensure_assets()
+              env_spec={'type':'envmap','filename':str(assets['hdri']),'scale':.72,'mis_compensation':True}
+              print('ENV_FIRST_LOAD_START',mode,flush=True)
+              env=mi.load_dict(env_spec,parallel=False)
+              print('ENV_FIRST_LOAD_OK',mode,flush=True)
+              if mode=='envonly':
+                  print('ENVONLY_OK',env,flush=True)
+                  raise SystemExit(0)
+
+          r=_generic_shapes(a)[0]
+          print('RECORD',mode,'vertices',len(r['vertices']),'faces',len(r['faces']),flush=True)
+          mesh=_procedural_mesh(mi,r,a.materials[r['material']])
+          print('MESH_READY',mode,mesh,flush=True)
+          scene={
+              'type':'scene',
+              'integrator':{'type':'aov','aovs':'albedo:albedo,normal:sh_normal','beauty':{'type':'path','max_depth':2,'rr_depth':2}},
+              'sensor':{'type':'perspective','to_world':mi.ScalarTransform4f.look_at(origin=[150,-220,120],target=[90,0,50],up=[0,0,1]),'film':{'type':'hdrfilm','width':32,'height':24,'component_format':'float32'},'sampler':{'type':'independent','sample_count':1}},
+              'shaft':mesh,
+          }
+          if mode.startswith('envfirst'):
+              scene['environment']=env
+          elif mode.startswith('envlast'):
+              assets=ensure_assets()
+              scene['environment']={'type':'envmap','filename':str(assets['hdri']),'scale':.72,'mis_compensation':True}
+          else:
+              scene['light']={'type':'constant','radiance':1.0}
+          if mode.endswith('_sync'):
+              print('SYNC_BEFORE_SCENE',mode,flush=True)
+              dr.sync_thread()
+          print('LOAD_START',mode,flush=True)
+          s=mi.load_dict(scene,parallel=False)
+          print('LOAD_OK',mode,flush=True)
+          img=mi.render(s,spp=1);dr.eval(img)
+          print('RENDER_OK',mode,dr.width(img),flush=True)
+          PY
+          : >/tmp/results.txt
+          for mode in envonly constant envlast envlast_sync envfirst envfirst_sync; do
+            echo "=== $mode ==="
+            python /tmp/aeris_isolate.py "$mode"
+            code=$?
+            echo "$mode $code" | tee -a /tmp/results.txt
+          done
+          echo '=== RESULTS ==='; cat /tmp/results.txt

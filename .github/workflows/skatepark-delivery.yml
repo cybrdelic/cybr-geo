@@ -1,0 +1,73 @@
+name: CYBR YARD verified source and tests
+on:
+  push:
+    branches: [feat/diy-skatepark-v1]
+    paths: [.skatepark_transfer/ready.json]
+permissions:
+  contents: write
+jobs:
+  publish-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/diy-skatepark-v1
+      - name: Verify and unpack authored source
+        run: |
+          python - <<'PY'
+          import base64,hashlib,io,json,pathlib,subprocess,tarfile
+          root=pathlib.Path('.')
+          marker=root/'.skatepark_transfer/ready.json'
+          meta=json.loads(marker.read_text())
+          chunks=sorted(marker.parent.glob('part-*.b64'))
+          payload=meta.get('payload') or ''.join(p.read_text().strip() for p in chunks)
+          data=base64.b64decode(payload,validate=True)
+          assert hashlib.sha256(data).hexdigest()==meta['sha256']
+          allowed=set(meta['paths'])
+          assert all(p.startswith(('examples/diy_skatepark/','tests/test_diy_skatepark.py')) or p=='.skatepark_delivery.patch' for p in allowed)
+          with tarfile.open(fileobj=io.BytesIO(data),mode='r:xz') as archive:
+            entries=archive.getmembers()
+            assert len(entries)==meta['files'] and {e.name for e in entries}==allowed
+            for e in entries:
+              path=pathlib.Path(e.name)
+              assert e.isfile() and not path.is_absolute() and '..' not in path.parts and e.size<500000
+              path.parent.mkdir(parents=True,exist_ok=True)
+              path.write_bytes(archive.extractfile(e).read())
+          subprocess.run(['git','apply','--check','.skatepark_delivery.patch'],check=True)
+          subprocess.run(['git','apply','.skatepark_delivery.patch'],check=True)
+          pathlib.Path('.skatepark_delivery.patch').unlink()
+          receipt=root/'docs/publication_receipts/diy-skatepark-v1.json'
+          receipt.parent.mkdir(parents=True,exist_ok=True)
+          receipt.write_text(json.dumps({'archive_sha256':meta['sha256'],'files':meta['files'],'paths':meta['paths'],'method':'checksum-verified source and checked patch; isolated skatepark branch','base_geometry_commit':'ce83e1dc06a1258e524c8af82e298e82fc223a6d'},indent=2)+'\n')
+          marker.unlink()
+          for p in chunks: p.unlink()
+          PY
+          python -m compileall -q src examples/diy_skatepark tests/test_diy_skatepark.py
+      - name: Publish ordinary tracked source files
+        run: |
+          git config user.name 'CYBR GEO source publication'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md src/mechanism_lab/core.py src/mechanism_lab/exporters.py src/mechanism_lab/native/photoreal.cpp examples/diy_skatepark tests/test_diy_skatepark.py docs/publication_receipts/diy-skatepark-v1.json .skatepark_transfer
+          git commit -m 'Add CYBR YARD parametric skatepark, opt-in outdoor rendering and geometry inspector'
+          git push origin HEAD:feat/diy-skatepark-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install pinned test environment
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libgl1 libegl1 libglu1-mesa libcairo2 libxrender1 libsm6 g++ ffmpeg fonts-dejavu-core
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Run geometry and existing V9 regression gates
+        run: |
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 python -m pytest -q tests/test_diy_skatepark.py tests/test_v9_render_profile.py tests/test_photo_material_export.py tests/test_photoreal_contract.py tests/test_analytic_normals.py tests/test_truth_rendering.py --junitxml=skatepark-tests.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diy-skatepark-test-receipt
+          path: skatepark-tests.xml
+          if-no-files-found: ignore
+          retention-days: 14

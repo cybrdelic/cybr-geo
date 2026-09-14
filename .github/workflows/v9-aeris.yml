@@ -1,0 +1,169 @@
+name: True V9 + AERIS integration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/v9-aeris.yml'
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/v9.py'
+      - 'src/mechanism_lab/v9_dispatch.py'
+      - 'src/mechanism_lab/render_profiles.py'
+      - 'src/mechanism_lab/cli.py'
+      - 'src/cybrgeo/**'
+      - 'tests/test_v9_render_profile.py'
+      - 'tests/test_shared_photo_pipeline.py'
+      - 'docs/RENDER_V9.md'
+      - 'pyproject.toml'
+      - 'requirements-tested.txt'
+  push:
+    branches: ['fix/true-v9-mitsuba-default']
+    paths:
+      - '.github/workflows/v9-aeris.yml'
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/v9.py'
+      - 'src/mechanism_lab/v9_dispatch.py'
+      - 'src/mechanism_lab/render_profiles.py'
+      - 'src/mechanism_lab/cli.py'
+      - 'src/cybrgeo/**'
+      - 'tests/test_v9_render_profile.py'
+      - 'tests/test_shared_photo_pipeline.py'
+      - 'docs/RENDER_V9.md'
+      - 'pyproject.toml'
+      - 'requirements-tested.txt'
+
+concurrency:
+  group: true-v9-aeris-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install CAD, EGL and rendering dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++ libcairo2 curl
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Compile Python sources
+        run: python -m compileall -q src examples/aeris
+      - name: Gate the actual V9 defaults
+        run: python -m pytest -q tests/test_v9_render_profile.py tests/test_shared_photo_pipeline.py
+      - name: Check shared core regression tests
+        run: python -m pytest -q tests/test_core.py
+      - name: Build complete AERIS analytic and mesh assemblies
+        run: python examples/aeris/build_assets.py --out build/aeris --exports
+      - name: Verify geometry, CAD contacts and serialized animation
+        run: python examples/aeris/verify.py --out build/aeris --cad
+
+      # Produce a genuine V9 image from internal AERIS geometry first. This is a
+      # required render, so the workflow cannot claim V9 works from config alone.
+      - name: Render required V9 rotor detail
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris \
+            --views rotor_detail \
+            --size 1100x825 --spp 256 --depth 14 --threads 2
+
+      - name: Verify required V9 rotor image and provenance
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          root=Path('build/aeris/renders')
+          stem='aeris_rotor_detail'
+          final=root/f'{stem}.png';noisy=root/f'{stem}_noisy.png'
+          meta=json.loads((root/f'{stem}.json').read_text())
+          for path in (final,noisy):
+              assert path.is_file(),path
+              with Image.open(path) as image:
+                  image.verify();assert image.size==(1100,825)
+          with Image.open(final).convert('RGB') as a,Image.open(noisy).convert('RGB') as b:
+              assert sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)>.10
+          assert meta['render_profile']=='v9'
+          assert meta['backend']=='v9-mitsuba-hdri-oidn'
+          assert meta['renderer']=='Mitsuba 3 path + albedo/normal-guided Intel OIDN'
+          assert meta['generated_imagery'] is False
+          assert meta['environment']['asset']=='small_workshop'
+          assert meta['environment']['license']=='CC0'
+          assert meta['bench_surface']['asset']=='blue_metal_plate'
+          assert meta['bench_surface']['license']=='CC0'
+          assert meta['resolution']==[1100,825]
+          assert meta['spp']==256 and meta['max_depth']==14
+          PY
+
+      # Larger views are additional deliverables. Keep going if a third-party
+      # Mitsuba parser defect affects one class of geometry; successful outputs
+      # are still uploaded and independently provenance-checked.
+      - name: Render V9 exterior hero shell
+        continue-on-error: true
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris \
+            --views hero_shell \
+            --size 1100x825 --spp 256 --depth 14 --threads 2
+
+      - name: Render V9 topology detail
+        continue-on-error: true
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris \
+            --views topology_detail \
+            --size 1100x825 --spp 256 --depth 14 --threads 2
+
+      - name: Stress-render complete 1.657M-triangle AERIS hero
+        continue-on-error: true
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris --views hero \
+            --size 1100x825 --spp 256 --depth 14 --threads 2
+
+      - name: Verify optional V9 images when present
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          root=Path('build/aeris/renders')
+          for stem in ('aeris_hero_shell','aeris_topology_detail','aeris_hero'):
+              final=root/f'{stem}.png';noisy=root/f'{stem}_noisy.png'
+              if not final.is_file():
+                  print('OPTIONAL_RENDER_MISSING',stem)
+                  continue
+              meta=json.loads((root/f'{stem}.json').read_text())
+              with Image.open(final) as image:
+                  image.verify();assert image.size==(1100,825)
+              if noisy.is_file():
+                  with Image.open(final).convert('RGB') as a,Image.open(noisy).convert('RGB') as b:
+                      assert sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)>.10
+              assert meta['render_profile']=='v9'
+              assert meta['backend']=='v9-mitsuba-hdri-oidn'
+              assert meta['renderer']=='Mitsuba 3 path + albedo/normal-guided Intel OIDN'
+              assert meta['generated_imagery'] is False
+              assert meta['environment']['asset']=='small_workshop'
+              assert meta['bench_surface']['asset']=='blue_metal_plate'
+              print('OPTIONAL_RENDER_VERIFIED',stem)
+          PY
+
+      - name: Generate analytic whiteprints
+        run: python examples/aeris/draw_assets.py --out build/aeris
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: true-v9-aeris-verification
+          path: |
+            build/aeris/validation.json
+            build/aeris/verification.json
+            build/aeris/*.coverage.json
+            build/aeris/*.animation.json
+            build/aeris/renders/
+            build/aeris/whiteprints/
+            build/aeris/*.glb
+            build/aeris/*.step
+          if-no-files-found: error
+          retention-days: 30

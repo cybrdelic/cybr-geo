@@ -17,6 +17,14 @@ class Material:
     color: tuple[float, float, float] = (.48, .50, .53)
     metal: float = .9
     rough: float = .28
+    ior: float = 1.5
+    coat: float = 0.0
+    coat_rough: float = .2
+    anisotropy: float = 0.0
+    anisotropy_rotation: float = 0.0
+    opacity: float = 1.0
+    microfinish: str = 'none'
+    material_source: str = ''
 
 @dataclass
 class Part:
@@ -174,22 +182,12 @@ def translation(v) -> np.ndarray:
 def rotation(angle: float, axis=(1,0,0), center=(0,0,0)) -> np.ndarray:
     return trimesh.transformations.rotation_matrix(angle,axis,point=center)
 
-def from_shape(name: str, shape, material: int=0, tolerance: float=.08,
-               angular_tolerance: float=.16, **kwargs) -> Part:
+def from_shape(name: str, shape, material: int=0, tolerance: float=.022,
+               angular_tolerance: float=.045, **kwargs) -> Part:
     """Tessellate CAD and split normals at actual creases, retaining analytic input separately."""
-    vs,fs=shape.tessellate(tolerance,angular_tolerance)
-    v=np.array([p.toTuple() for p in vs]);f=np.array(fs)
-    if not len(f):raise ValueError(f"{name}: CAD has no tessellatable faces")
-    import vtk
-    from vtk.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray,vtk_to_numpy
-    pts=vtk.vtkPoints();pts.SetData(numpy_to_vtk(v,deep=True))
-    cells=vtk.vtkCellArray();cells.SetCells(len(f),numpy_to_vtkIdTypeArray(np.c_[np.full(len(f),3),f].astype(np.int64).ravel(),deep=True))
-    data=vtk.vtkPolyData();data.SetPoints(pts);data.SetPolys(cells)
-    clean=vtk.vtkCleanPolyData();clean.SetInputData(data);clean.SetTolerance(1e-8)
-    normals=vtk.vtkPolyDataNormals();normals.SetInputConnection(clean.GetOutputPort());normals.SetFeatureAngle(38);normals.ConsistencyOn();normals.SplittingOn();normals.Update();d=normals.GetOutput()
-    return Part(name,vtk_to_numpy(d.GetPoints().GetData()).copy(),
-                vtk_to_numpy(d.GetPolys().GetData()).reshape(-1,4)[:,1:].copy(),
-                vtk_to_numpy(d.GetPointData().GetNormals()).copy(),material=material,**kwargs)
+    from mechanism_lab.core import cad_part
+    native=cad_part(name,shape,material,tolerance=tolerance,angular=angular_tolerance,analytic_normals=True)
+    return Part(name,native.vertices,native.faces,native.normals,material=material,**kwargs)
 
 def safe_name(text: str) -> str:
     return re.sub(r'[^A-Za-z0-9_.-]+','_',text).strip('_') or 'part'

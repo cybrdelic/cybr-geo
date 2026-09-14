@@ -13,7 +13,7 @@ from PIL import Image
 from numba import njit,prange
 
 @njit(parallel=True,cache=True)
-def atrous(im,guide,variance,step,iteration):
+def atrous(im,guide,variance,step,iteration,floor_id=8):
     H,W,C=im.shape
     out=np.empty_like(im);vo=np.empty_like(variance)
     kernel=np.array([1.,4.,6.,4.,1.],np.float32)
@@ -40,7 +40,7 @@ def atrous(im,guide,variance,step,iteration):
                     nw=max(nd,0.)**48
                     dz=abs(guide[yy,xx,6]-centerDepth-gx*kx*step-gy*ky*step)
                     dw=np.exp(-dz/(.08+.15*step)) if centerDepth>0 else 1.
-                    if guide[y,x,8]==8:dw=1.
+                    if guide[y,x,8]<0 or guide[y,x,8]==floor_id:dw=1.
                     qlum=.2126*im[yy,xx,0]+.7152*im[yy,xx,1]+.0722*im[yy,xx,2]
                     sigma=variance[y,x]+variance[yy,xx]+.000005
                     # Broader early filtering estimates smooth reflected light;
@@ -57,11 +57,46 @@ def atrous(im,guide,variance,step,iteration):
                 out[y,x]=im[y,x];vo[y,x]=variance[y,x]
     return out,vo
 
-def tonemap(x,exposure=1.):
+def tonemap(x,exposure=1.,operator='neutral'):
     x=np.maximum(x*exposure,0.)
-    x=np.clip(x*(2.51*x+.03)/(x*(2.43*x+.59)+.14),0.,1.)
+    if operator=='aces':
+        x=np.clip(x*(2.51*x+.03)/(x*(2.43*x+.59)+.14),0.,1.)
+    elif operator=='neutral':
+        # CYBR's hue-preserving exponential shoulder. Linear Rec.709 values
+        # below 0.70 stay linear; a C1-continuous shoulder approaches 1.0.
+        # The coupled RGB scale preserves chromaticity through highlights.
+        # This is an appearance transform, not a measured camera response.
+        peak=np.max(x,axis=-1,keepdims=True)
+        new_peak=np.where(peak<=.70,peak,.70+.30*(-np.expm1(-np.maximum(peak-.70,0.)/.30)))
+        x=x*(new_peak/np.maximum(peak,1e-12))
+    else:raise ValueError(f'Unknown tone mapper: {operator}')
     x=np.where(x<=.0031308,12.92*x,1.055*x**(1/2.4)-.055)
     return np.uint8(np.clip(x*255+.5,0,255))
+
+def save_png(image,path):
+    """Atomically publish verified PNG bytes, including on hosted mounts."""
+    import io,uuid
+    path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
+    payload=io.BytesIO();image.save(payload,format='PNG');payload=payload.getvalue()
+    with Image.open(__import__('io').BytesIO(payload)) as check:check.verify()
+    temporary=path.with_name(f'{path.stem}.{uuid.uuid4().hex}.partial.png')
+    try:
+        with temporary.open('xb') as stream:
+            stream.write(payload);stream.flush();os.fsync(stream.fileno())
+        if temporary.stat().st_size!=len(payload):raise IOError('Incomplete PNG write')
+        with Image.open(temporary) as check:check.verify()
+        temporary.replace(path)
+    finally:temporary.unlink(missing_ok=True)
+
+def finish_frame(radiance,guides,exposure=1.,passes=2,operator='neutral'):
+    """One common linear-light finishing path for stills and film frames."""
+    if not np.isfinite(radiance).all() or np.min(radiance)<0:
+        raise ValueError('Non-finite or negative native radiance')
+    if not 0<=passes<=4:raise ValueError('Filtering passes must be 0..4')
+    variance=guides[:,:,7].copy()
+    for i in range(passes):
+        radiance,variance=atrous(radiance,guides,variance,2**i,i,floor_id=-2)
+    return Image.fromarray(tonemap(radiance,exposure,operator))
 
 def read_pfm(path):
     with open(path,'rb') as f:
@@ -72,6 +107,7 @@ def read_pfm(path):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('ppm');p.add_argument('--output');p.add_argument('--passes',type=int,default=3);p.add_argument('--exposure',type=float,default=1.)
+    p.add_argument('--floor-id',type=int,default=8,help='Use -2 for native photographic v2 guides; legacy guides use 8')
     args=p.parse_args();src=Path(args.ppm);dest=Path(args.output) if args.output else src.with_suffix('.png')
     im=read_pfm(str(src)+'.pfm')
     with open(str(src)+'.guides','rb') as f:
@@ -79,7 +115,7 @@ def main():
     Image.fromarray(tonemap(im,args.exposure)).save(dest.with_stem(dest.stem+'_raw'))
     v=guide[:,:,7].copy()
     for i in range(args.passes):
-        im,v=atrous(im,guide,v,2**i,i)
+        im,v=atrous(im,guide,v,2**i,i,floor_id=args.floor_id)
     Image.fromarray(tonemap(im,args.exposure)).save(dest)
     print(dest,flush=True)
 if __name__=='__main__':main()

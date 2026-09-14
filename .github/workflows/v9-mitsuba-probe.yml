@@ -1,0 +1,55 @@
+name: V9 Mitsuba AERIS probe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['fix/true-v9-mitsuba-default']
+    paths:
+      - '.github/workflows/v9-mitsuba-probe.yml'
+      - 'examples/aeris/v9_probe.py'
+      - 'src/mechanism_lab/v9.py'
+      - 'src/mechanism_lab/v9_dispatch.py'
+
+concurrency:
+  group: v9-mitsuba-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install exact tested environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Build AERIS cache
+        run: python examples/aeris/build_assets.py --out build/aeris
+      - name: Probe every authored group in isolated Mitsuba processes
+        shell: bash
+        run: |
+          set +e
+          mkdir -p build/aeris/v9_probe
+          : > build/aeris/v9_probe/group-results.txt
+          python examples/aeris/v9_probe.py --out build/aeris --list-groups > build/aeris/v9_probe/groups.txt
+          while IFS= read -r group; do
+            echo "=== GROUP $group ==="
+            python examples/aeris/v9_probe.py --out build/aeris --group "$group" --render
+            code=$?
+            echo "$group $code" | tee -a build/aeris/v9_probe/group-results.txt
+          done < build/aeris/v9_probe/groups.txt
+          echo "=== RESULTS ==="
+          cat build/aeris/v9_probe/group-results.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v9-aeris-probe
+          path: build/aeris/v9_probe/
+          retention-days: 7

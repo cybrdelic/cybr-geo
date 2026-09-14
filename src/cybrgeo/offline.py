@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image
 from .core import Assembly
 
-def render(assembly:Assembly, path, width=1400,height=1000,samples=64,depth=7,
+def render_legacy(assembly:Assembly, path, width=1400,height=1000,samples=64,depth=7,
            camera=(235,24,70,(-14,0,0)),threads=4,poses=None):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     cache=path.parent/'.cache';cache.mkdir(exist_ok=True)
@@ -57,3 +57,7 @@ def render(assembly:Assembly, path, width=1400,height=1000,samples=64,depth=7,
               filtering='Three geometric guide-aware atrous passes; raw image retained',
               limitation='Material appearance approximated, not measured optical properties')
     path.with_suffix('.json').write_text(json.dumps(meta,indent=2));return meta
+
+
+# Public offline entry point now uses the same photographic pipeline as lab.
+from .photoreal import render

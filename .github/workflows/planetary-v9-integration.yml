@@ -1,0 +1,55 @@
+name: planetary-v9-integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/planetary-actuator'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'tests_legacy/**'
+      - 'requirements-tested.txt'
+      - '.github/workflows/planetary-v9-integration.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: planetary-v9-integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-tested.txt
+      - name: Install native and headless dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Compile all current source
+        run: python -m compileall -q src tests tools/render_planetary_film.py
+      - name: Combined current regression suite
+        run: python -m pytest -q tests
+      - name: Legacy compatibility suite
+        run: python -m pytest -q tests_legacy
+      - name: Validate integrated planetary assembly
+        run: |
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" validate planetary_actuator --out artifacts/planetary_v9_validation.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: planetary-v9-integration-${{ github.run_id }}
+          path: artifacts/
+          if-no-files-found: warn
