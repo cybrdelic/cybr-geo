@@ -25,8 +25,24 @@ jobs:
           python -m pip install -r requirements-orbit-v3-tested.txt
           python -m pip install --no-deps -e .
           python -m pip install 'mitsuba>=3.6,<3.8'
+      - name: Enforce native CYBR GEO model stack
+        run: |
+          set -euxo pipefail
+          ! grep -n 'mechanism_lab' examples/reach2_cybrgeo_v6.py
+          ! grep -n 'mechanism_lab' examples/orbit_cybrgeo_native.py
+          ! grep -n 'mechanism_lab' src/cybrgeo/core.py
+          python - <<'PY'
+          import inspect
+          import cybrgeo
+          import cybrgeo.core
+          source=inspect.getsource(cybrgeo.core.from_shape)
+          assert 'mechanism_lab' not in source
+          assert cybrgeo.Assembly.__module__ == 'cybrgeo.core'
+          assert cybrgeo.from_shape.__module__ == 'cybrgeo.core'
+          PY
       - name: Validate native CYBR GEO model and engineering
         run: |
+          python examples/orbit_cybrgeo_native.py
           python examples/reach2_cybrgeo_v6.py
           python tools/reach2_cybrgeo_v6_engineering.py --out /tmp/reach2v6/REACH2_v6_engineering.json --require-pass
       - name: Install Intel Open Image Denoise 2.5.1
