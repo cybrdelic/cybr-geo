@@ -8,6 +8,8 @@ from pathlib import Path
 import shutil
 import sys
 
+from .render_profiles import V9
+
 
 def resolution(text):
     try:
@@ -34,21 +36,21 @@ def parser():
     sub.add_parser('doctor',help='Inspect installed dependencies and system tools')
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
     q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
-    q=sub.add_parser('render',help='Render a named view from actual geometry')
-    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['pbr','pathtrace','photoreal'],default='photoreal')
-    q.add_argument('--size',type=resolution,default=(1600,1100));q.add_argument('--spp',type=int,default=512);q.add_argument('--depth',type=int,default=14);q.add_argument('--threads',type=int,default=4)
+    q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
+    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
+    q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=int,default=V9.still_spp);q.add_argument('--depth',type=int,default=V9.still_depth);q.add_argument('--threads',type=int,default=4)
     q.add_argument('--supersample',type=int,choices=[1,2,3],default=2,help='PBR raster supersampling factor')
-    q.add_argument('--f-stop',type=float,help='Photoreal thin-lens aperture; lower values give shallower depth of field')
-    q.add_argument('--focus-distance',type=float,help='Photoreal focus distance in scene millimetres; defaults to camera distance')
+    q.add_argument('--f-stop',type=float,help='Thin-lens aperture; lower values give shallower depth of field')
+    q.add_argument('--focus-distance',type=float,help='Focus distance in scene millimetres; defaults to camera distance')
     q.add_argument('--time',type=float,default=0.);q.add_argument('--out',type=Path);_truth_args(q)
-    q=sub.add_parser('video',help='Photographic video; use --renderer pbr for fast engineering preview')
-    q.add_argument('--renderer',choices=['photoreal','pbr'],default='photoreal');q.add_argument('--spp',type=int,default=128);q.add_argument('--depth',type=int,default=12);q.add_argument('--threads',type=int,default=4)
+    q=sub.add_parser('video',help='V9 path-traced/OIDN video by default; use --renderer pbr for fast engineering preview')
+    q.add_argument('--renderer',choices=['v9','photoreal','pbr'],default='v9');q.add_argument('--spp',type=int,default=V9.video_spp);q.add_argument('--depth',type=int,default=V9.video_depth);q.add_argument('--threads',type=int,default=4)
     q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=8.)
-    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=(1280,720));q.add_argument('--fps',type=int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
-    q=sub.add_parser('film',help='Final-quality thin-lens path-traced film with temporal shutter sampling')
-    q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=4.)
-    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=(1920,1080));q.add_argument('--fps',type=int,default=24)
-    q.add_argument('--spp',type=int,default=144);q.add_argument('--depth',type=int,default=12);q.add_argument('--threads',type=int,default=4)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=V9.video_size);q.add_argument('--fps',type=int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
+    q=sub.add_parser('film',help='Final-quality film; V9 path traces and guided-denoises every encoded frame')
+    q.add_argument('recipe');q.add_argument('--renderer',choices=['v9','photoreal'],default='v9');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=4.)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=V9.film_size);q.add_argument('--fps',type=int,default=24)
+    q.add_argument('--spp',type=int,default=V9.film_spp);q.add_argument('--depth',type=int,default=V9.film_depth);q.add_argument('--threads',type=int,default=4)
     q.add_argument('--shutter-angle',type=float,default=180.);q.add_argument('--shutter-samples',type=int,default=3);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('gif',help='Make a palette-optimized looping GIF from a video')
     q.add_argument('video',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--start',type=float,default=0.);q.add_argument('--seconds',type=float,default=6.);q.add_argument('--width',type=int,default=640);q.add_argument('--fps',type=int,default=10)
@@ -68,16 +70,16 @@ def parser():
 
 
 def doctor():
-    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG'];dependencies={}
+    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG','mitsuba'];dependencies={}
     for name in libraries:
         try:dependencies[name]=importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:dependencies[name]=None
-    programs={name:shutil.which(name) for name in ['ffmpeg','ffprobe','cmake','g++','git']}
+    programs={name:shutil.which(name) for name in ['ffmpeg','ffprobe','cmake','g++','git','oidnDenoise']}
     from .core import project_root
     root=project_root()
     report={'python':sys.version,'project_root':str(root),'dependencies':dependencies,'programs':programs,
             'preserved_inputs_present':(root/'assets/differential_v3/geometry/reference_parts.npz').exists(),
-            'notes':'VTK needs an EGL-capable graphics stack (Mesa software rendering is sufficient). CairoSVG needs the system Cairo library. Native path tracing additionally requires a C++17 compiler and OpenMP.'}
+            'notes':'V9 uses Mitsuba 3 plus Intel OIDN, a CC0 Poly Haven workshop HDRI, and a CC0 scanned bench roughness map. On Linux x86_64/WSL OIDN is downloaded with a pinned checksum when oidnDenoise is absent. VTK/Mesa remains required for preview/section utilities; FFmpeg is required for video.'}
     print(json.dumps(report,indent=2));return 0 if all(dependencies.values()) and programs['ffmpeg'] and programs['ffprobe'] else 2
 
 
@@ -119,7 +121,10 @@ def run(args):
         print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out)},indent=2))
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
-        if args.renderer in ('photoreal','pathtrace'):
+        if args.renderer=='v9':
+            from .v9 import render_v9
+            render_v9(assembly,output,args.view,args.size,args.spp,args.depth,args.intent,args.allow_estimates,args.time,f_stop=args.f_stop,focus_distance=args.focus_distance)
+        elif args.renderer in ('photoreal','pathtrace'):
             from .photoreal import render_photoreal
             render_photoreal(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,args.intent,args.allow_estimates,args.time,args.f_stop,args.focus_distance,False)
         else:
@@ -131,8 +136,11 @@ def run(args):
         truth=assert_renderable(assembly,args.intent,args.allow_estimates)
         from .media import Shot,render_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'videos'/(assembly.name+'.mp4')
-        if args.renderer=='photoreal':
+        output=args.out or out/'videos'/(assembly.name+'_'+args.renderer+'.mp4')
+        if args.renderer=='v9':
+            from .v9 import render_v9_video
+            report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
+        elif args.renderer=='photoreal':
             from .photoreal import render_photoreal_video
             report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,intent=args.intent,allow_estimates=args.allow_estimates)
         else:report=render_video(assembly,output,shots,args.size,args.fps)
@@ -140,11 +148,15 @@ def run(args):
         print(json.dumps({k:v for k,v in report.items() if k!='frames_log'},indent=2))
     elif args.command=='film':
         from .media import Shot
-        from .photoreal import render_photoreal_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'films'/(assembly.name+'_photoreal.mp4')
-        report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,args.shutter_angle,args.shutter_samples,args.intent,args.allow_estimates)
-        print(json.dumps({k:v for k,v in report.items() if k!='truth'},indent=2))
+        output=args.out or out/'films'/(assembly.name+'_'+args.renderer+'.mp4')
+        if args.renderer=='v9':
+            from .v9 import render_v9_video
+            report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
+        else:
+            from .photoreal import render_photoreal_video
+            report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,args.shutter_angle,args.shutter_samples,args.intent,args.allow_estimates)
+        print(json.dumps({k:v for k,v in report.items() if k!='truth' and k!='frames_log'},indent=2))
     elif args.command=='animate':
         from .exporters import export_animated_glb
         output=args.out or out/(assembly.name+'_'+args.mode+'.glb');print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))
