@@ -43,6 +43,11 @@ def package(source,out):
             names.append(name)
             exr='linear_masters/'+target+('_denoised' if not suffix else '_beauty')+'_linear.exr'
             mi.Bitmap(np.ascontiguousarray(linear)).write(str(out/exr));names.append(exr)
+        for guide in ['albedo','normal']:
+            linear=v9.read_pfm(source/(stem+'_'+guide+'.pfm'))
+            if not np.isfinite(linear).all():raise ValueError('Invalid denoiser guide')
+            name='linear_masters/'+target+'_'+guide+'.exr'
+            mi.Bitmap(np.ascontiguousarray(linear)).write(str(out/name));names.append(name)
         report['delivered_image']=target+'.png';reports.append(report)
     model=source/'CYBR_Procedural_Human_Face.glb'
     if any(r['model_sha256']!=reports[0]['model_sha256'] or
@@ -77,7 +82,8 @@ def package(source,out):
         'GLB coordinates: metres, Y up. Color maps are embedded. Offline pore-height shading\n'
         'and refractive ocular materials are reproduced by the dedicated renderer.\n\n'
         'FILES\n'
-        'PNG: final images and raw comparisons. linear_masters/: float EXR masters.\n'
+        'PNG: final images and raw comparisons. linear_masters/: float EXR masters,\n'
+        'albedo guides and world-space normal guides used by the denoiser.\n'
         'JSON: exact render evidence, procedural parameters, texture hashes and validation.\n'
         'CYBR_Human_Face.glb: the actual render assembly.\n\n'
         'SOURCE / GPL-2.0\n'

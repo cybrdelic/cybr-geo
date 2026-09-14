@@ -1,79 +1,39 @@
 {
-  "tests": "tests/test_human_face.py",
-  "result": "3 passed",
+  "date_utc": "2026-09-14T05:48:43.051596+00:00",
+  "test_command": "PYTHONPATH=src python3 -m pytest -q tests/test_human_face.py tests/test_procedural_human_face.py",
+  "tests_passed": 5,
+  "test_seconds": 17.03,
   "checks": [
-    "Welded subdivision and UV-seam displacement continuity",
-    "Facial texture landmark alignment",
-    "Mitsuba OBJ importer preserves expected UV coordinates"
+    "Default face entry point selects original procedural anatomy",
+    "Geometry rebuild with file reads disabled; repeated arrays match exactly",
+    "Finite nondegenerate geometry, unit normals and noncollapsed ear UV charts",
+    "Actual ray intersections verify open/closed eyelids and recessed nostrils",
+    "Eyelid and head regions share exact boundary positions and normals"
   ],
-  "export_checks": {
-    "triangles": 282944,
-    "vertices": 142978,
-    "glb_height_metres": 0.317128986120224,
-    "embedded_color_map": [
-      1024,
-      1024
-    ],
-    "embedded_normal_map": [
-      1024,
-      1024
-    ]
-  },
-  "limitations": [
-    "No volumetric tissue model or physiological validation",
-    "No original procedural identity-generation claim"
-  ],
-  "camera_validation": {
-    "f_stop": 16,
-    "framing_distance_mm": 513.7777777777777,
-    "surface_focus_distance_mm": 444.66119384765625,
-    "focus_point_mm": [
-      17.8777909479944,
-      -81.72082414501006,
-      30.412133992957404
-    ],
-    "preview_visually_checked": true,
-    "note": "Final images are rerendered with visible-surface autofocus; framing-center focus was rejected."
-  },
-  "profile_visibility_validation": {
-    "preview_resolution": [
-      160,
-      200
-    ],
-    "preview_spp": 4,
-    "camera": {
-      "camera_mm": [
-        407.77722745927,
-        -328.59048663068796,
-        37.03258990942962
+  "glb": {
+    "bytes": 74538824,
+    "sha256": "b42417227a1a7f913feb2f941ee401f6e47d76c291b6bf113aab7b2c3f1039da",
+    "triangles": 2448309,
+    "meshes": 23,
+    "embedded_images": 4,
+    "bounds_metres": [
+      [
+        -0.17049852013587952,
+        -0.18000000715255737,
+        -0.09399999678134918
       ],
-      "target_mm": [
-        0.0,
-        -10.0,
-        28.0
-      ],
-      "focal_length_mm": 85,
-      "f_stop": 16,
-      "focus_distance_mm": 459.5719909667969,
-      "gaussian_filter_stddev": 0.42,
-      "fill_light_position_mm": [
-        900.0,
-        -660.0,
-        250.0
-      ],
-      "fill_light_scale": 3.0,
-      "framing_distance_mm": 517.5555555555555,
-      "focus_method": "Central ray intersection with the actual visible surface",
-      "focus_point_mm": [
-        45.68471336536834,
-        -45.69280990344157,
-        29.011952735885494
+      [
+        0.17049852013587952,
+        0.14398999512195587,
+        0.09182614088058472
       ]
-    },
-    "preview_visually_checked": true,
-    "guards": [
-      "Autofocus must hit the anatomy object",
-      "Beauty radiance must have nonzero range and mean"
-    ]
-  }
+    ],
+    "binary_header_and_length_valid": true,
+    "external_resources": false
+  },
+  "not_claimed": [
+    "Medical anatomical validation",
+    "Watertight fabrication mesh",
+    "Measured multilayer skin transport"
+  ]
 }

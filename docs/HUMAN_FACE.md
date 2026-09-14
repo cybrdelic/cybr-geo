@@ -5,6 +5,12 @@ scan, an imported head mesh, a photograph, a skin texture library, a statistical
 face model, or learned weights. No generative image model is used. The previous
 scan demonstration is retained only under explicitly named reference commands.
 
+![Original procedural portrait](../media/human_face/portrait.jpg)
+
+![Profile of the same generated assembly](../media/human_face/profile.jpg)
+
+![Clay geometry view](../media/human_face/clay.jpg)
+
 ## Geometry
 
 `examples/procedural_human_face.py` creates the complete model through the
@@ -57,7 +63,7 @@ Autofocus intersects the visible surface. The renderer rejects missed anatomy,
 nonfinite radiance and blank frames. Receipts record sampling, exposure, camera,
 render time, geometry, procedural inputs, texture hashes and pixel hashes.
 The downloadable package verifies its images against those receipts and includes
-raw comparisons and linear float EXRs. The GLB contains the real assembly in
+raw comparisons, linear float EXRs, and the actual albedo/normal denoiser guides. The GLB contains the real assembly in
 metres/Y-up with embedded color maps. Its real-time appearance depends on the
 viewer; the dedicated renderer reproduces the pore-height and ocular shaders.
 

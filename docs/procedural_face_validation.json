@@ -8,7 +8,7 @@
     "Geometry rebuild with file reads disabled; repeated arrays match exactly",
     "Finite nondegenerate geometry, unit normals and noncollapsed ear UV charts",
     "Actual ray intersections verify open/closed eyelids and recessed nostrils",
-    "Eyelid and head regions share exact boundary positions, normals and UVs"
+    "Eyelid and head regions share exact boundary positions and normals"
   ],
   "glb": {
     "bytes": 74538824,
