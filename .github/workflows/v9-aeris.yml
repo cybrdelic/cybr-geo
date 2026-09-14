@@ -7,6 +7,7 @@ on:
       - '.github/workflows/v9-aeris.yml'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/v9.py'
+      - 'src/mechanism_lab/v9_dispatch.py'
       - 'src/mechanism_lab/render_profiles.py'
       - 'src/mechanism_lab/cli.py'
       - 'src/cybrgeo/**'
@@ -21,6 +22,7 @@ on:
       - '.github/workflows/v9-aeris.yml'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/v9.py'
+      - 'src/mechanism_lab/v9_dispatch.py'
       - 'src/mechanism_lab/render_profiles.py'
       - 'src/mechanism_lab/cli.py'
       - 'src/cybrgeo/**'
@@ -37,7 +39,7 @@ concurrency:
 jobs:
   verify-render:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -61,33 +63,39 @@ jobs:
         run: python examples/aeris/build_assets.py --out build/aeris --exports
       - name: Verify geometry, CAD contacts and serialized animation
         run: python examples/aeris/verify.py --out build/aeris --cad
-      - name: Render AERIS through exact-quality V9
+      - name: Render AERIS hero through exact-quality V9
         run: |
           python examples/aeris/render_assets.py --out build/aeris --views hero \
             --size 1100x825 --spp 256 --depth 14 --threads 2
-      - name: Verify V9 render provenance
+      - name: Render V9 detail images
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris \
+            --views rotor_detail topology_detail \
+            --size 1100x825 --spp 256 --depth 14 --threads 2
+      - name: Verify V9 image provenance
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           from PIL import Image,ImageChops,ImageStat
           root=Path('build/aeris/renders')
-          final=root/'aeris_hero.png';noisy=root/'aeris_hero_noisy.png'
-          meta=json.loads((root/'aeris_hero.json').read_text())
-          for p in (final,noisy):
-              with Image.open(p) as im:
-                  im.verify();assert im.size==(1100,825)
-          with Image.open(final).convert('RGB') as a,Image.open(noisy).convert('RGB') as b:
-              assert sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)>.10
-          assert meta['render_profile']=='v9'
-          assert meta['backend']=='v9-mitsuba-hdri-oidn'
-          assert meta['renderer']=='Mitsuba 3 path + albedo/normal-guided Intel OIDN'
-          assert meta['generated_imagery'] is False
-          assert meta['environment']['asset']=='small_workshop'
-          assert meta['environment']['license']=='CC0'
-          assert meta['bench_surface']['asset']=='blue_metal_plate'
-          assert meta['bench_surface']['license']=='CC0'
-          assert meta['resolution']==[1100,825] and meta['spp']==256 and meta['max_depth']==14
+          for stem in ('aeris_hero','aeris_rotor_detail','aeris_topology_detail'):
+              final=root/f'{stem}.png';noisy=root/f'{stem}_noisy.png'
+              meta=json.loads((root/f'{stem}.json').read_text())
+              for p in (final,noisy):
+                  with Image.open(p) as im:
+                      im.verify();assert im.size==(1100,825)
+              with Image.open(final).convert('RGB') as a,Image.open(noisy).convert('RGB') as b:
+                  assert sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)>.10
+              assert meta['render_profile']=='v9'
+              assert meta['backend']=='v9-mitsuba-hdri-oidn'
+              assert meta['renderer']=='Mitsuba 3 path + albedo/normal-guided Intel OIDN'
+              assert meta['generated_imagery'] is False
+              assert meta['environment']['asset']=='small_workshop'
+              assert meta['environment']['license']=='CC0'
+              assert meta['bench_surface']['asset']=='blue_metal_plate'
+              assert meta['bench_surface']['license']=='CC0'
+              assert meta['resolution']==[1100,825] and meta['spp']==256 and meta['max_depth']==14
           PY
       - name: Generate analytic whiteprints
         run: python examples/aeris/draw_assets.py --out build/aeris
