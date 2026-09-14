@@ -1,0 +1,80 @@
+name: V9 procedural mesh smoke
+
+on:
+  push:
+    branches: ['fix/true-v9-mitsuba-default']
+    paths:
+      - '.github/workflows/v9-procedural-smoke.yml'
+      - 'src/mechanism_lab/v9_dispatch.py'
+  pull_request:
+    paths:
+      - '.github/workflows/v9-procedural-smoke.yml'
+      - 'src/mechanism_lab/v9_dispatch.py'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Mitsuba 3.7.1
+        run: python -m pip install 'mitsuba==3.7.1'
+      - name: Probe procedural mesh construction modes in isolated processes
+        shell: bash --noprofile --norc {0}
+        run: |
+          cat >/tmp/probe_mesh.py <<'PY'
+          import sys
+          import mitsuba as mi
+          import drjit as dr
+          mi.set_variant('llvm_ad_rgb')
+          mode=sys.argv[1]
+          p=mi.Point3f(mi.Float([-1,1,0]),mi.Float([0,0,0]),mi.Float([0,0,1]))
+          n=mi.Normal3f(mi.Float([0,0,0]),mi.Float([1,1,1]),mi.Float([0,0,0]))
+          f=mi.Vector3u(mi.UInt32([0]),mi.UInt32([1]),mi.UInt32([2]))
+          props=mi.Properties()
+          bsdf=None
+          if mode in ('props_bsdf','props_bsdf_normals'):
+              bsdf=mi.load_dict({'type':'diffuse','reflectance':{'type':'rgb','value':[.5,.5,.5]}})
+              props['bsdf']=bsdf
+          mesh=mi.Mesh('tri',3,1,props,mode in ('normals','props_bsdf_normals','set_bsdf'),False)
+          params=mi.traverse(mesh)
+          params['vertex_positions']=dr.ravel(p)
+          params['faces']=dr.ravel(f)
+          if mode in ('normals','props_bsdf_normals','set_bsdf'):
+              params['vertex_normals']=dr.ravel(n)
+          params.update()
+          if mode=='set_bsdf':
+              bsdf=mi.load_dict({'type':'diffuse','reflectance':{'type':'rgb','value':[.5,.5,.5]}})
+              mesh.set_bsdf(bsdf)
+          print('PRELOAD',mode,mesh,flush=True)
+          scene=mi.load_dict({
+              'type':'scene',
+              'integrator':{'type':'path'},
+              'light':{'type':'constant','radiance':1.0},
+              'sensor':{
+                  'type':'perspective',
+                  'to_world':mi.ScalarTransform4f.look_at(origin=[0,-4,1],target=[0,0,.3],up=[0,0,1]),
+                  'film':{'type':'hdrfilm','width':8,'height':8},
+                  'sampler':{'type':'independent','sample_count':1},
+              },
+              'tri':mesh,
+          })
+          print('LOADED',mode,flush=True)
+          image=mi.render(scene,spp=1)
+          dr.eval(image)
+          print('RENDERED',mode,dr.width(image),flush=True)
+          PY
+          : >/tmp/results.txt
+          for mode in docs normals props_bsdf props_bsdf_normals set_bsdf; do
+            echo "=== $mode ==="
+            python /tmp/probe_mesh.py "$mode"
+            code=$?
+            echo "$mode $code" | tee -a /tmp/results.txt
+          done
+          echo '=== RESULTS ==='
+          cat /tmp/results.txt
+          # At minimum the verbatim documentation construction must work.
+          grep -q '^docs 0$' /tmp/results.txt
