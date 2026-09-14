@@ -126,5 +126,14 @@ def test_cutaway_handles_completely_removed_sensor_without_null_shape(assembly):
     assert len(cut.parts) > 10
     assert "temperature_sensor_envelope" not in {p.name for p in cut.parts}
     assert all(p.cad.isValid() and p.cad.Volume() > 0 for p in cut.parts)
-    assert all(p.cad.BoundingBox().ymin > -1e-6 for p in cut.parts)
-    assert all(p.cad.BoundingBox().zmax < printer.BED + 55. + 1e-6 for p in cut.parts)
+    # OCC's triangulation-backed bounding boxes can extend beyond a planar
+    # cut. Test actual retained material against the excluded half-spaces.
+    import cadquery as cq
+    excluded = [
+        cq.Workplane("XY").box(400, 400, 600).translate((0, -200, printer.BED)).val(),
+        cq.Workplane("XY").box(400, 400, 600).translate((0, 0, printer.BED + 355)).val(),
+    ]
+    for part in cut.parts:
+        for halfspace in excluded:
+            overlap = part.cad.intersect(halfspace).Volume()
+            assert overlap < 1e-7, (part.name, overlap)
