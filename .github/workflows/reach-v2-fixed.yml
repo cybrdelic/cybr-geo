@@ -1,0 +1,92 @@
+name: CYBR REACH-1 v2 Fixed Build and Render
+
+on:
+  push:
+    branches: [feat/reach-elbow-v1]
+    paths:
+      - 'examples/reach_elbow_module_v2_fixed.py'
+      - 'examples/reach_elbow_module_v2_render_fixed.py'
+      - 'tools/reach_v2_fixed_mitsuba.py'
+      - 'tests/test_reach_elbow_module_v2_fixed.py'
+      - '.github/workflows/reach-v2-fixed.yml'
+  workflow_dispatch:
+
+jobs:
+  build-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libegl1 curl
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-orbit-v3-tested.txt
+          python -m pip install --no-deps -e .
+          python -m pip install 'mitsuba>=3.6,<3.8'
+      - name: Validate robust REACH v2 completion CAD and motion
+        run: |
+          pytest -q tests/test_reach_elbow_module_v2_fixed.py
+      - name: Install Intel Open Image Denoise 2.5.1
+        run: |
+          set -euxo pipefail
+          curl -L --fail --retry 3 \
+            -o /tmp/oidn.tar.gz \
+            https://github.com/RenderKit/oidn/releases/download/v2.5.1/oidn-2.5.1.x86_64.linux.tar.gz
+          echo '743c3e2aff8c220d5d70fe6cb970fb3d36f2702d2693c61d1d148e404cf37cd6  /tmp/oidn.tar.gz' | sha256sum -c -
+          mkdir -p /tmp/oidn
+          tar -xzf /tmp/oidn.tar.gz -C /tmp/oidn
+          OIDN_ROOT=$(find /tmp/oidn -maxdepth 1 -mindepth 1 -type d -name 'oidn-*' | head -1)
+          test -x "$OIDN_ROOT/bin/oidnDenoise"
+          echo "$OIDN_ROOT/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$OIDN_ROOT/lib:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
+      - name: Render completed REACH v2 attached to ORBIT
+        run: |
+          python tools/reach_v2_fixed_mitsuba.py \
+            --out /tmp/reach-v2-fixed \
+            --size 1100x825 \
+            --spp 256 \
+            --max-depth 14 \
+            --pose-time 2.0 \
+            --env-rotation 202 \
+            --env-scale 0.76 \
+            --exposure 1.05 \
+            --oidn oidnDenoise
+      - name: Verify completed v2 render and provenance
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('/tmp/reach-v2-fixed')
+          final=root/'REACH_v2_ORBIT_hero.png'
+          noisy=root/'REACH_v2_ORBIT_noisy.png'
+          manifest=json.loads((root/'REACH_v2_manifest.json').read_text())
+          for p in (final,noisy):
+              with Image.open(p) as im:
+                  assert im.size==(1100,825)
+                  im.verify()
+          assert manifest['generated_imagery'] is False
+          assert manifest['parts']>=200
+          assert manifest['triangles']>3_000_000
+          assert manifest['reduction_ratio']==16.0
+          assert manifest['completion_pass']['bearing_retainers'] is True
+          assert manifest['environment']['license']=='CC0'
+          assert manifest['bench_surface']['license']=='CC0'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CYBR-REACH-1-v2-FIXED-ORBIT
+          path: |
+            /tmp/reach-v2-fixed/REACH_v2_ORBIT_hero.png
+            /tmp/reach-v2-fixed/REACH_v2_ORBIT_noisy.png
+            /tmp/reach-v2-fixed/REACH_v2_manifest.json
+          if-no-files-found: error
+          retention-days: 7
