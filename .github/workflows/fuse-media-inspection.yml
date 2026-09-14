@@ -29,6 +29,12 @@ jobs:
           path: completed_stills
           run-id: 34850079331
           github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-validation
+          path: validated_cad
+          run-id: 34850079331
+          github-token: ${{ github.token }}
       - name: Verify and expose representative completed frames for visual review
         run: |
           python - <<'PY'
@@ -51,6 +57,24 @@ jobs:
                   im.convert('RGB').save(out/(view+'.jpg'),quality=94,subsampling=0)
               shutil.copy2(source,out/(view+'.png'))
               shutil.copy2(source.with_suffix('.json'),out/(view+'.json'))
+          import zipfile
+          cad=out/'cad'
+          cad.mkdir(parents=True,exist_ok=True)
+          origin=pathlib.Path('validated_cad')
+          execution=json.loads((origin/'execution.json').read_text())
+          assert execution['tested_commit']=='d913877447589414137ee97ec670ce2257ecf834'
+          for name in ('FUSE_C220_mechanism_validation.json','FUSE_C220_hotend_validation.json'):
+              assert json.loads((origin/name).read_text())['all_passed']
+          with zipfile.ZipFile(cad/'FUSE_C220_analytic.step.zip','w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
+              archive.write(origin/'FUSE_C220_analytic.step',arcname='FUSE_C220_analytic.step')
+          shutil.copy2(origin/'FUSE_C220.glb',cad/'FUSE_C220.glb')
+          shutil.copy2(origin/'execution.json',cad/'execution.json')
+          files=[]
+          for path in sorted(cad.iterdir()):
+              assert path.stat().st_size<80*1024*1024,path
+              files.append({'file':path.name,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+          (cad/'manifest.json').write_text(json.dumps({'files':files,'source_commit':execution['tested_commit'],'scope':'Nominal digital assembly only; STEP includes analytic BREP bodies, while GLB includes tessellated and mesh-only components. Not a manufacturing release.'},indent=2))
+          print(json.dumps(files,indent=2))
           canvas=Image.new('RGB',(1440,800),(18,22,23))
           draw=ImageDraw.Draw(canvas)
           records=[]
