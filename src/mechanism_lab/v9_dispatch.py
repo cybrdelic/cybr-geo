@@ -23,7 +23,14 @@ ORBIT_REFERENCE_MODEL='cybr_orbit_inspection_wrist'
 
 
 def _scalar_mitsuba():
-    """Select the scalar backend used by the robust generic V9 path."""
+    """Compatibility-named selector for the generic procedural V9 backend.
+
+    Procedural meshes require dynamically sized Dr.Jit arrays, so prefer the
+    same LLVM RGB variant as the approved ORBIT V9 render. The scalar variant is
+    intentionally not used here: its Point3f is a single 3-vector rather than a
+    dynamically sized structure-of-arrays and therefore cannot hold an entire
+    mesh buffer.
+    """
     try:
         import mitsuba as mi
     except ImportError as error:
@@ -31,14 +38,17 @@ def _scalar_mitsuba():
             "V9 requires Mitsuba 3. Install cybr-geo with its current dependencies."
         ) from error
     variants=mi.variants()
-    if 'scalar_rgb' not in variants:
-        raise RuntimeError(f'Mitsuba scalar_rgb is unavailable; variants={variants}')
+    if 'llvm_ad_rgb' not in variants:
+        raise RuntimeError(
+            'Generic V9 procedural meshes require Mitsuba llvm_ad_rgb; '
+            f'variants={variants}'
+        )
     try:
-        mi.set_variant('scalar_rgb')
+        mi.set_variant('llvm_ad_rgb')
     except Exception:
-        if mi.variant()!='scalar_rgb':
+        if mi.variant()!='llvm_ad_rgb':
             raise
-    return mi,'scalar_rgb'
+    return mi,'llvm_ad_rgb'
 
 
 def _generic_shapes(assembly,time_seconds=0.0,explode=0.0):
@@ -61,12 +71,15 @@ def _generic_shapes(assembly,time_seconds=0.0,explode=0.0):
     shapes=[]
     for (material,bucket),record in sorted(groups.items()):
         label=f'material_{material:02d}_variation_{bucket}'
-        vertices=np.concatenate(record['vertices'],axis=0).astype(np.float32,copy=False)
-        normals=np.concatenate(record['normals'],axis=0).astype(np.float32,copy=False)
-        faces=np.concatenate(record['faces'],axis=0).astype(np.uint32,copy=False)
+        vertices=np.ascontiguousarray(
+            np.concatenate(record['vertices'],axis=0),dtype=np.float32)
+        normals=np.ascontiguousarray(
+            np.concatenate(record['normals'],axis=0),dtype=np.float32)
+        faces=np.ascontiguousarray(
+            np.concatenate(record['faces'],axis=0),dtype=np.uint32)
         if not np.isfinite(vertices).all() or not np.isfinite(normals).all():
             raise ValueError(f'Non-finite V9 geometry in {label}')
-        if len(faces) and (faces.min()<0 or int(faces.max())>=len(vertices)):
+        if len(faces) and int(faces.max())>=len(vertices):
             raise ValueError(f'Out-of-range V9 triangle index in {label}')
         shapes.append({
             'label':label,
@@ -106,13 +119,22 @@ def _procedural_mesh(mi,record,material):
         has_vertex_texcoords=False,
     )
     params=mi.traverse(mesh)
-    params['vertex_positions']=dr.ravel(mi.Point3f(vertices))
-    params['vertex_normals']=dr.ravel(mi.Normal3f(normals))
-    params['faces']=dr.ravel(mi.Vector3u(faces))
+
+    # Construct Dr.Jit structure-of-arrays explicitly. Passing an N×3 ndarray
+    # directly to Point3f is variant-dependent; separate dynamic component
+    # arrays are accepted by llvm_ad_rgb and match Mitsuba's procedural-mesh
+    # guide exactly.
+    vertex_pos=mi.Point3f(
+        mi.Float(vertices[:,0]),mi.Float(vertices[:,1]),mi.Float(vertices[:,2]))
+    vertex_nrm=mi.Normal3f(
+        mi.Float(normals[:,0]),mi.Float(normals[:,1]),mi.Float(normals[:,2]))
+    face_idx=mi.Vector3u(
+        mi.UInt32(faces[:,0]),mi.UInt32(faces[:,1]),mi.UInt32(faces[:,2]))
+    params['vertex_positions']=dr.ravel(vertex_pos)
+    params['vertex_normals']=dr.ravel(vertex_nrm)
+    params['faces']=dr.ravel(face_idx)
     params.update()
 
-    # Fail in Python rather than allowing a native renderer failure later if a
-    # future Mitsuba build changes the procedural buffer contract.
     if int(mesh.vertex_count())!=len(vertices) or int(mesh.face_count())!=len(faces):
         raise RuntimeError(f'Procedural V9 mesh count mismatch for {record["label"]}')
     return mesh
@@ -207,9 +229,9 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
 
 
 def _dispatch(function,assembly,*args,**kwargs):
-    # Preserve the exact loader/variant used by the approved V9 artifact itself.
+    # Preserve the exact loader path used by the approved V9 artifact itself.
     # Generic CYBR GEO models bypass Mitsuba's mesh-file plugins while retaining
-    # every visual/transport element that defines V9.
+    # the same LLVM execution family and every visual/transport element of V9.
     if assembly.name==ORBIT_REFERENCE_MODEL:
         return function(assembly,*args,**kwargs)
 
@@ -221,7 +243,7 @@ def _dispatch(function,assembly,*args,**kwargs):
         result=function(assembly,*args,**kwargs)
         if isinstance(result,dict):
             result['generic_v9_dispatch']=(
-                'scalar_rgb + exact in-memory procedural Mesh material/variation '
+                'llvm_ad_rgb + exact in-memory procedural Mesh material/variation '
                 'batches; V9 lighting/material/camera/AOV/OIDN/color contract unchanged')
         return result
     finally:
