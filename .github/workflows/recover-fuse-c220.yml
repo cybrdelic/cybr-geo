@@ -1,0 +1,79 @@
+name: Recover FUSE C220 source
+on:
+  push:
+    branches: ['sync/recent-chats-2026-09-14']
+    paths: ['.github/workflows/recover-fuse-c220.yml']
+permissions:
+  contents: write
+concurrency:
+  group: recover-fuse-c220
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: sync/recent-chats-2026-09-14
+          fetch-depth: 0
+      - name: Verify and restore original source bytes
+        run: |
+          python - <<'PY'
+          import base64, datetime, hashlib, io, json, pathlib, shutil, tarfile
+          root = pathlib.Path('.recovery/fuse_c220')
+          if not root.exists():
+              print('Source already restored; nothing to import.')
+              raise SystemExit(0)
+          payload = b''.join((root / f'source.b64.part{i}').read_bytes() for i in range(3))
+          data = base64.b64decode(payload, validate=True)
+          expected = 'f2947b7127b86b55a31cf6b9ae613d34d1ad97dc84eab58865e95129be4b4815'
+          if hashlib.sha256(data).hexdigest() != expected:
+              raise RuntimeError('Source transfer checksum mismatch; no project files written')
+          records = []
+          with tarfile.open(fileobj=io.BytesIO(data), mode='r:xz') as archive:
+              entries = archive.getmembers()
+              if len(entries) != 9 or sum(e.size for e in entries) != 75567:
+                  raise RuntimeError('Unexpected source archive size/count')
+              for entry in entries:
+                  p = pathlib.PurePosixPath(entry.name)
+                  if not entry.isfile() or p.is_absolute() or '..' in p.parts:
+                      raise RuntimeError('Unsafe archive member')
+                  if p.parts[:2] != ('examples', 'fuse_c220') or p.suffix not in ('.py', '.md', '.json'):
+                      raise RuntimeError('Import outside approved printer source directory')
+                  if pathlib.Path(entry.name).exists():
+                      raise RuntimeError('Refusing to overwrite existing work: ' + entry.name)
+              for entry in entries:
+                  p = pathlib.Path(entry.name)
+                  content = archive.extractfile(entry).read()
+                  p.parent.mkdir(parents=True, exist_ok=True)
+                  p.write_bytes(content)
+                  records.append({'path': entry.name, 'bytes': len(content), 'sha256': hashlib.sha256(content).hexdigest()})
+          receipt = {
+              'repository': 'cybrdelic/cybr-geo',
+              'recovered_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'source_archive': 'FUSE_C220_complete.zip',
+              'source_archive_sha256': 'c354aa1ac6a9db2f87a1ae893a807659981ebccac9775334ad02aa44e0f38b28',
+              'transferred_source_tar_xz_sha256': expected,
+              'original_local_commit': '9d6c74181e31d39eb6a513903ddfceca5273c63c',
+              'original_base_commit': 'ce83e1dc06a1258e524c8af82e298e82fc223a6d',
+              'files': records,
+              'scope': 'Exact original Python, Markdown, and JSON source bytes. CAD, images, video, gallery, G-code, and full delivery archive are not part of this source transfer.',
+              'historical_renderer_warning': 'Original script uses an obsolete native V9 setting. Its history is preserved; compatibility repair follows separately. Original render evidence is historical, not a fresh true-V9 render.'
+          }
+          p = pathlib.Path('docs/publication_receipts/fuse-c220-chat-recovery-2026-09-14.json')
+          p.parent.mkdir(parents=True, exist_ok=True)
+          p.write_text(json.dumps(receipt, indent=2) + '\n')
+          shutil.rmtree(root)
+          print(json.dumps(receipt, indent=2))
+          PY
+          python -m compileall -q examples/fuse_c220
+      - name: Commit and push restored source without changing master
+        run: |
+          git config user.name 'CYBR GEO source recovery'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- examples/fuse_c220 docs/publication_receipts .recovery
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Recover exact FUSE C220 printer source and original numerical evidence'
+          git push origin HEAD:sync/recent-chats-2026-09-14
+          git log -1 --format='%H %s'
