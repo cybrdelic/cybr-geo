@@ -122,7 +122,7 @@ def run(args):
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
         if args.renderer=='v9':
-            from .v9 import render_v9
+            from .v9_dispatch import render_v9
             render_v9(assembly,output,args.view,args.size,args.spp,args.depth,args.intent,args.allow_estimates,args.time,f_stop=args.f_stop,focus_distance=args.focus_distance)
         elif args.renderer in ('photoreal','pathtrace'):
             from .photoreal import render_photoreal
@@ -138,7 +138,7 @@ def run(args):
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
         output=args.out or out/'videos'/(assembly.name+'_'+args.renderer+'.mp4')
         if args.renderer=='v9':
-            from .v9 import render_v9_video
+            from .v9_dispatch import render_v9_video
             report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
         elif args.renderer=='photoreal':
             from .photoreal import render_photoreal_video
@@ -151,7 +151,7 @@ def run(args):
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
         output=args.out or out/'films'/(assembly.name+'_'+args.renderer+'.mp4')
         if args.renderer=='v9':
-            from .v9 import render_v9_video
+            from .v9_dispatch import render_v9_video
             report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
         else:
             from .photoreal import render_photoreal_video
