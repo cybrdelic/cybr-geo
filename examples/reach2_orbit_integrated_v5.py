@@ -142,6 +142,9 @@ def build():
     def add(name, shape, material=0, group="reach5_fixed", role="", tiny=False):
         if not shape.isValid():
             raise ValueError(f"invalid REACH-2 v5 CAD: {name}")
+        solids = shape.Solids()
+        if len(solids) != 1:
+            raise ValueError(f"REACH-2 v5 part must be one connected solid: {name} ({len(solids)} solids)")
         p = cad_part(
             name, shape, material,
             tolerance=.018, angular=.12 if tiny else .050,
@@ -163,8 +166,8 @@ def build():
     # Commercial actuator silhouette: exposed satin/silver circular core with a
     # 42 mm true hollow bore. It is fixed; only its output flange rotates.
     front_flange = annulus_y(ACTUATOR_MAX_OD_MM / 2.0,
-                            ACTUATOR_HOLLOW_BORE_MM / 2.0,
-                            body_y0, 15.0, px, pz)
+                             ACTUATOR_HOLLOW_BORE_MM / 2.0,
+                             body_y0, 15.0, px, pz)
     main_body = annulus_y(ACTUATOR_BODY_OD_MM / 2.0,
                           ACTUATOR_HOLLOW_BORE_MM / 2.0,
                           body_y0 + 15.0, ACTUATOR_LENGTH_MM - 15.0, px, pz)
@@ -189,25 +192,29 @@ def build():
             socket_screw_y(x, output_y - 7.0, z, 14.0, 3.0, 5.0, 4.0),
             2, "reach5_output", "M6 class 12.9 FHA output fastener", tiny=True)
 
-    # ORBIT-like graphite front pedestal. The large circular ring is the fixed
-    # actuator mount; twin tapered legs carry bearing moment directly into the
-    # existing lower modular flange instead of a rectangular gearbox cage.
+    # ORBIT-like graphite front pedestal. Build the outer disk and tapered legs
+    # as overlapping solids FIRST, then machine the pilot bore through the fused
+    # result. This guarantees a single connected BRep instead of a tangent
+    # annulus/leg compound while retaining the 12 mm section and >=24 mm legs.
     mount_y0 = py - PEDESTAL_THICKNESS_MM / 2.0
-    mount_ring = annulus_y(PEDESTAL_RING_OD_MM / 2.0,
-                           PEDESTAL_PILOT_BORE_MM / 2.0,
-                           mount_y0, PEDESTAL_THICKNESS_MM, px, pz)
+    outer_disk = cylinder(PEDESTAL_RING_OD_MM / 2.0,
+                          PEDESTAL_THICKNESS_MM, (px, mount_y0, pz), "Y")
     leg_bottom_z = -146.0
     left_leg = plate_xz([
-        (px - 71, pz - 18), (px - 52, pz - 39),
+        (px - 76, pz - 12), (px - 48, pz - 34),
         (px - 48, leg_bottom_z), (px - 72, leg_bottom_z),
-        (px - 79, pz - 44),
+        (px - 80, pz - 38),
     ], mount_y0, PEDESTAL_THICKNESS_MM)
     right_leg = plate_xz([
-        (px + 71, pz - 18), (px + 52, pz - 39),
+        (px + 76, pz - 12), (px + 48, pz - 34),
         (px + 48, leg_bottom_z), (px + 24, leg_bottom_z),
-        (px + 79, pz - 44),
+        (px + 80, pz - 38),
     ], mount_y0, PEDESTAL_THICKNESS_MM)
-    pedestal = mount_ring.fuse(left_leg).fuse(right_leg).clean()
+    pedestal_blank = outer_disk.fuse(left_leg).fuse(right_leg).clean()
+    pilot_cut = cylinder(PEDESTAL_PILOT_BORE_MM / 2.0,
+                         PEDESTAL_THICKNESS_MM + 2.0,
+                         (px, mount_y0 - 1.0, pz), "Y")
+    pedestal = pedestal_blank.cut(pilot_cut).clean()
     add("R5_12_ORBIT_family_actuator_pedestal", pedestal, 0, "reach5_fixed",
         "12 mm graphite anodized annular actuator pedestal with tapered load legs")
 
