@@ -5,11 +5,15 @@ path. Other CYBR GEO assemblies use the same V9 camera, HDRI, physical bench,
 principled materials, path integrator, AOVs, OIDN and ACES/sRGB pipeline, but
 their already-world-transformed triangle buffers are handed to Mitsuba as
 procedural ``mi.Mesh`` objects instead of being reparsed through OBJ/PLY loader
-plugins. This is important for large heterogeneous assemblies such as AERIS:
-Mitsuba 3.7.1 reproducibly segfaults in its file-loader path on several valid
-AERIS subsets, while the same topology is safe when placed directly into Mesh
-buffers. No geometry is simplified, decimated, remeshed, moved, replaced, or
-synthesized.
+plugins. This is important for large heterogeneous assemblies such as AERIS.
+No geometry is simplified, decimated, remeshed, moved, replaced, or synthesized.
+
+Mitsuba 3.7.1 has a reproducible native crash when the envmap emitter's optional
+``mis_compensation`` flag is enabled, independent of image format and execution
+variant. Generic V9 therefore leaves that optional sampling optimization off.
+This does not alter the HDRI radiance, orientation, exposure, BSDFs or path
+integral; it only uses the emitter's ordinary importance sampler instead of its
+MIS-compensated sampling distribution.
 """
 from __future__ import annotations
 
@@ -120,10 +124,6 @@ def _procedural_mesh(mi,record,material):
     )
     params=mi.traverse(mesh)
 
-    # Construct Dr.Jit structure-of-arrays explicitly. Passing an N×3 ndarray
-    # directly to Point3f is variant-dependent; separate dynamic component
-    # arrays are accepted by llvm_ad_rgb and match Mitsuba's procedural-mesh
-    # guide exactly.
     vertex_pos=mi.Point3f(
         mi.Float(vertices[:,0]),mi.Float(vertices[:,1]),mi.Float(vertices[:,2]))
     vertex_nrm=mi.Normal3f(
@@ -143,7 +143,7 @@ def _procedural_mesh(mi,record,material):
 def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
                       time_seconds=0.0,explode=0.0,azimuth=None,
                       f_stop=None,focus_distance=None):
-    """V9 scene builder using procedural Mitsuba meshes for generic assemblies."""
+    """Build the V9 scene with exact procedural meshes for generic assemblies."""
     origin,target,distance,hfov=_core._camera(view,size,azimuth)
     focal=float(view.focal_length_mm)
     fstop=float(f_stop or view.f_stop or V9.reference_f_stop)
@@ -182,7 +182,10 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
             'scale':V9.environment_scale,
             'to_world':mi.ScalarTransform4f.rotate(
                 [0,0,1],V9.environment_rotation_degrees),
-            'mis_compensation':True,
+            # Mitsuba 3.7.1 segfaults with True on both HDR/EXR and both LLVM/
+            # scalar variants. False changes sampling variance only, not the
+            # environment's emitted radiance or the converged path integral.
+            'mis_compensation':False,
         },
     }
 
@@ -229,9 +232,6 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
 
 
 def _dispatch(function,assembly,*args,**kwargs):
-    # Preserve the exact loader path used by the approved V9 artifact itself.
-    # Generic CYBR GEO models bypass Mitsuba's mesh-file plugins while retaining
-    # the same LLVM execution family and every visual/transport element of V9.
     if assembly.name==ORBIT_REFERENCE_MODEL:
         return function(assembly,*args,**kwargs)
 
@@ -244,7 +244,8 @@ def _dispatch(function,assembly,*args,**kwargs):
         if isinstance(result,dict):
             result['generic_v9_dispatch']=(
                 'llvm_ad_rgb + exact in-memory procedural Mesh material/variation '
-                'batches; V9 lighting/material/camera/AOV/OIDN/color contract unchanged')
+                'batches; workshop HDRI with ordinary unbiased importance sampling; '
+                'V9 lighting/material/camera/AOV/OIDN/color contract unchanged')
         return result
     finally:
         _core._mitsuba=original_mitsuba
