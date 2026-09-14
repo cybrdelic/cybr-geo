@@ -1,0 +1,60 @@
+name: Inspect completed FUSE operation frames
+on:
+  push:
+    branches: ['render/fuse-c220-media-inspection']
+    paths: ['.github/workflows/fuse-media-inspection.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==12.3.0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fuse-v9-frames-*
+          path: frames
+          merge-multiple: true
+          run-id: 34850963896
+          github-token: ${{ github.token }}
+      - name: Verify and expose representative completed frames for visual review
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib
+          from PIL import Image, ImageDraw
+          root=pathlib.Path('frames')
+          frames=sorted(p for p in root.glob('*.png') if p.stem.isdigit())
+          assert frames
+          selected=[frames[round(i*(len(frames)-1)/5)] for i in range(6)]
+          out=pathlib.Path('media/fuse_c220')
+          out.mkdir(parents=True,exist_ok=True)
+          canvas=Image.new('RGB',(1440,800),(18,22,23))
+          draw=ImageDraw.Draw(canvas)
+          records=[]
+          for i,path in enumerate(selected):
+              record=json.loads(path.with_suffix('.frame.json').read_text())
+              assert hashlib.sha256(path.read_bytes()).hexdigest()==record['sha256']
+              assert record['render_profile']=='v9'
+              with Image.open(path) as image:
+                  assert image.size==(960,720)
+                  tile=image.convert('RGB').resize((480,360),Image.Resampling.LANCZOS)
+              x=(i%3)*480;y=(i//3)*400
+              canvas.paste(tile,(x,y))
+              draw.text((x+12,y+369),f"Frame {record['frame']:02d} | G-code t={record['gcode_time_s']:.2f} s | layer {record['layer']+1}",fill=(230,235,235))
+              records.append(record)
+          canvas.save(out/'operation_contact_sheet.jpg',quality=94,subsampling=0)
+          with Image.open(selected[-1]) as image:
+              image.convert('RGB').save(out/'operation_sample.jpg',quality=94,subsampling=0)
+          (out/'operation_inspection.json').write_text(json.dumps({'available_frames':len(frames),'selected':records,'operation':'contact sheet and JPEG display copies; no content synthesis'},indent=2))
+          PY
+          git config user.name 'CYBR GEO printer verification'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- media/fuse_c220
+          git commit -m 'Preserve actual V9 operation frames for visual inspection'
+          git push origin HEAD:render/fuse-c220-media-inspection
