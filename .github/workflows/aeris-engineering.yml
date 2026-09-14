@@ -36,28 +36,30 @@ jobs:
           sudo apt-get install -y libcairo2 libgl1-mesa-dri libglu1-mesa
           python -m pip install -r requirements-tested.txt
           python -m pip install --no-deps -e .
-      - name: Build complete AERIS CAD, mesh and exports
-        run: python examples/aeris/build_assets.py --out build/aeris --exports
+      - name: Build corrected AERIS-E1 CAD, mesh and exports
+        run: python examples/aeris/build_engineered_assets.py --out build/aeris-e1 --exports
       - name: Run geometry, kinematics, CAD and export verification
-        run: python examples/aeris/verify.py --out build/aeris --cad
-      - name: Run multidisciplinary engineering screening
-        run: python examples/aeris/engineering_validate.py --out build/aeris --rpm 3600
-      - name: Require report schema and honest qualification state
-        if: always()
+        run: python examples/aeris/verify.py --out build/aeris-e1 --cad
+      - name: Run corrected multidisciplinary engineering screening
+        run: python examples/aeris/engineering_validate_e1.py --out build/aeris-e1 --rpm 3600
+      - name: Export CYBR PHYSICS handoff manifest
+        run: python examples/aeris/export_cybr_physics_manifest.py --out build/aeris-e1
+      - name: Require no hard failures and honest qualification state
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path('build/aeris/engineering_report.json')
-          if not p.is_file():
-              print('engineering report absent because an earlier required step failed')
-              raise SystemExit(0)
-          r=json.loads(p.read_text())
-          assert r['model']=='AERIS'
+          r=json.loads(Path('build/aeris-e1/engineering_report_e1.json').read_text())
+          assert r['model']=='AERIS-E1'
           assert r['analysis_kind'].startswith('deterministic first-order')
           assert 'checks' in r and len(r['checks'])>=10
           assert 'limitations' in r and len(r['limitations'])>=5
           assert isinstance(r['release_ready'],bool)
+          assert not r['critical_failures'], r['critical_failures']
+          # Numerical screening can clear hard geometric/mechanical defects while
+          # physical release data remains deliberately unknown.
+          assert r['release_ready'] is False
+          assert 'shaft/bearing production fit' in r['unqualified_domains']
           print('ENGINEERING_VERDICT',r['verdict'])
           print('HARD_FAILURES',r['critical_failures'])
           print('UNQUALIFIED',r['unqualified_domains'])
@@ -65,13 +67,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: aeris-engineering-report
+          name: aeris-e1-engineering-report
           path: |
-            build/aeris/validation.json
-            build/aeris/verification.json
-            build/aeris/engineering_report.json
-            build/aeris/engineering_report.md
-            build/aeris/*.coverage.json
-            build/aeris/*.step
+            build/aeris-e1/validation.json
+            build/aeris-e1/verification.json
+            build/aeris-e1/engineering_report_e1.json
+            build/aeris-e1/aeris_cybr_physics.manifest
+            build/aeris-e1/*.coverage.json
+            build/aeris-e1/*.step
           if-no-files-found: warn
           retention-days: 30
