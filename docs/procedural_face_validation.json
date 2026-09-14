@@ -1,0 +1,38 @@
+{
+  "date_utc": "2026-09-14T05:48:43.051596+00:00",
+  "test_command": "PYTHONPATH=src python3 -m pytest -q tests/test_human_face.py tests/test_procedural_human_face.py",
+  "tests_passed": 4,
+  "test_seconds": 6.35,
+  "checks": [
+    "Default face entry point selects original procedural anatomy",
+    "Geometry rebuild with file reads disabled; repeated arrays match exactly",
+    "Finite nondegenerate geometry, unit normals and noncollapsed ear UV charts",
+    "Actual ray intersections verify open/closed eyelids and recessed nostrils"
+  ],
+  "glb": {
+    "bytes": 79331596,
+    "sha256": "8868200119fbb5e5af78c217fe5379cffb33e7a46207a3d57b665c17b0e4bbc8",
+    "triangles": 2610417,
+    "meshes": 23,
+    "embedded_images": 4,
+    "bounds_metres": [
+      [
+        -0.17049852013587952,
+        -0.18000000715255737,
+        -0.09399999678134918
+      ],
+      [
+        0.17049852013587952,
+        0.14398999512195587,
+        0.09182614088058472
+      ]
+    ],
+    "binary_header_and_length_valid": true,
+    "external_resources": false
+  },
+  "not_claimed": [
+    "Medical anatomical validation",
+    "Watertight fabrication mesh",
+    "Measured multilayer skin transport"
+  ]
+}

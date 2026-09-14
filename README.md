@@ -56,12 +56,15 @@ prototype, manufacturing-tolerance and load qualification.
 
 ## Human face portrait / approved v9 pipeline
 
-The [human face recipe](examples/human_face.py) builds a 282,944-triangle,
-UV-mapped portrait assembly from the attributed Lee Perry-Smith head scan,
-with two subdivision levels and fine geometric relief. Its
-[portrait command](tools/render_human_face.py) reuses the approved ORBIT v9
-Mitsuba camera, linear AOVs, OIDN denoising and tone-mapping code. See the
-[renders, reproduction steps and material limits](docs/HUMAN_FACE.md).
+The default [human face recipe](examples/human_face.py) now builds original
+procedural anatomy with **no scan, imported head mesh or photographic skin
+textures**. Authored cross-sections and facial fields define the head; separate
+surfaces model eyelids, eyes, nasal cavities and ear cartilage. Seeded numeric
+fields generate skin and eye detail, with individual brow, lash and stubble
+geometry. The [portrait command](tools/render_human_face.py) uses the approved
+ORBIT v9 path-tracing, physical camera, AOV/OIDN and tone-mapping architecture.
+See [renders, reproduction and limitations](docs/HUMAN_FACE.md). The earlier
+scan demonstration remains explicitly labeled as a [legacy reference](docs/SCAN_FACE_REFERENCE.md).
 
 ## Shared photographic rendering in 0.5
 

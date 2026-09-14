@@ -1,101 +1,108 @@
-# CYBR GEO human face / v9 portrait
+# CYBR GEO / original procedural human face
 
-The portrait is a real textured mesh assembled through CYBR GEO's
-`Assembly`, `Part`, `Material`, and `View` interface. The portrait renderer uses
-the **actual approved ORBIT v9 Mitsuba code**, recovered from CYBR GEO commit
-`40797a6fa756ce209b5e21dd83f2df1e41dbd5fb`.
+The default portrait is now **original procedural anatomy**. It does not read a
+scan, an imported head mesh, a photograph, a skin texture library, a statistical
+face model, or learned weights. No generative image model is used. The previous
+scan demonstration is retained only under explicitly named reference commands.
 
-![Human face rendered through the v9 pipeline](../media/human_face/portrait.jpg)
+## Geometry
 
-![Profile rendered from the same anatomy](../media/human_face/profile.jpg)
+`examples/procedural_human_face.py` creates the complete model through the
+CYBR GEO `Assembly`, `Part`, `Material` and `View` interfaces. The default
+`examples/human_face.py` entry point now delegates to this original recipe.
 
-![Clay view showing the actual facial geometry](../media/human_face/clay.jpg)
+- Smooth authored skull, jaw, neck and shoulder cross-sections.
+- Continuous malar, orbital, nasal, philtral, vermilion and chin surface fields.
+- Genuine nasal apertures with recessed vestibule surfaces and an oral recess.
+- Eyelid patches that replace the underlying head surface, with adjustable
+  geometric closure. The default is the closed-eye pose of the first portrait.
+- Independent sclera, recessed iris and pupil surfaces, ocular clear envelope,
+  lacrimal caruncles, and moist margins. These remain under the closed lids.
+- Pinna shells with rolled helix, concha, antihelix, tragus and lobule relief.
+- Individually modeled tapered brow hairs, lashes and shaved facial hair.
 
-## Anatomy and geometry
+The final head grid has 800 rows and 1,201 meridian samples; additional geometry
+represents the anatomical parts and hair. Exact per-part counts are recorded
+in the delivered render evidence. The code exposes eye spacing, eye height,
+nose projection, mouth width, skull/jaw width, brow weight, eyelid closure,
+relief and a deterministic seed. These are artistic controls rather than
+measurements fitted to a person.
 
-The anatomical base is **Infinite, 3D Head Scan by Lee Perry-Smith**, distributed
-through the Three.js examples under Creative Commons Attribution 3.0 Unported.
-The original scan's closed eyelids are retained. Source geometry and textures
-are attributed inputs. The face was not sculpted from scratch by CYBR GEO.
+## Materials and rendering
 
-The recipe welds the source geometry before two Loop subdivision levels, keeps
-UV seams separate from the geometric topology, and adds high-pass detail from
-the supplied 4096px displacement map. Relief is limited to ±25 micrometres.
-Seam samples are averaged before displacement so they cannot split the mesh.
-The original 17,684 triangles become **282,944 triangles**. Coordinates are
-converted to CYBR GEO's millimetres and Z-up convention.
+The 4096-pixel skin maps come from seeded multiscale pigment fields, pore pits,
+small pigment clusters, oil/roughness variation and lip microfolds. Iris fibers
+and scleral vessel fields are also generated numerically. No source image is
+read to generate any of these maps. The shader's pore-height range is 0.032 mm;
+this is an authored material scale, not a measured skin calibration.
 
-The skin shader uses the attributed color and tangent-normal maps, a roughness
-map derived from the source specular map, and an explicitly authored Principled
-BSDF. The 1024px color/normal texture resolution remains a visible limit in
-close views. The BSDF's flatness term is a surface approximation to skin-like
-scattering; this delivery does **not** implement a measured multilayer BSSRDF
-or a volumetric skin transport model.
+The studio is entirely modeled: three area lights, a backdrop and an analytic
+constant environment. It has no environment photograph. Rendering uses the
+approved ORBIT v9 architecture: Mitsuba LLVM CPU path tracing, physical thin
+lens, Gaussian reconstruction filter (0.42), linear beauty/albedo/normal guides,
+Intel OIDN, and the unchanged original v9 ACES approximation and sRGB transfer.
+The normal guide uses **world-space geometric normals**. The installed bump-map
+shader exposes its shading-normal attribute in a local frame; mixing that
+attribute with world-space normals from other materials was corrected during QA.
+The render recipe retains actual geometric relief at dense tessellation.
 
-## Rendering
+| View | Resolution | Samples/pixel | Max depth | Lens |
+| --- | --- | --- | --- | --- |
+| Portrait | 1440 × 1800 | 512 | 14 | 85 mm, f/16 |
+| Profile | 1200 × 1500 | 384 | 14 | 85 mm, f/16 |
+| Clay | 960 × 1200 | 128 | 14 | 85 mm, f/16 |
 
-- Mitsuba 3 LLVM CPU path tracing with multiple importance sampling.
-- The same Poly Haven `small_workshop` HDR environment used by ORBIT v9,
-  attenuated beneath three physical portrait softboxes and a modeled backdrop.
-- V9's thin-lens camera construction, Gaussian reconstruction filter (0.42),
-  HDR beauty/albedo/shading-normal AOVs, Intel OIDN high-quality guide-based
-  denoising, and original ACES approximation followed by sRGB transfer.
-- Portrait and profile use f/16. Autofocus traces the central camera ray onto
-  the actual visible skin surface; the framing target lies inside the head and
-  is not used as a focus target. The render receipt records both distances and
-  the 3D focus point. This corrects the focus error found during close-up QA.
-- The profile fill panel is moved farther behind that camera and scaled around
-  its lighting target to retain angular size. The renderer rejects a central
-  ray blocked by an object other than the anatomy, and rejects blank frames.
-- Portrait: 1440 × 1800, 512 samples per pixel, 14-bounce limit.
-- Profile: 1200 × 1500, 384 samples per pixel, 14-bounce limit.
-- Clay proof: 960 × 1200, 128 samples per pixel, 14-bounce limit.
-- Final views use v9's original single-pass sample accumulation, seed
-  `20260914`. The command also supports independent smaller batches using
-  `--batch-spp`; the actual batch size is recorded in each receipt. Smaller
-  batches use seed `20260914 + completed_spp * 131` and accumulate linear
-  radiance before denoising and tone mapping.
-
-The source OBJ, model, raw and denoised images, and JSON render receipts are
-written together. Every image is rendered from geometry. No image generation,
-painted-over render, or image synthesis is used. The clay image removes the skin
-maps to expose the actual modeled facial surface.
+Autofocus intersects the visible surface. The renderer rejects missed anatomy,
+nonfinite radiance and blank frames. Receipts record sampling, exposure, camera,
+render time, geometry, procedural inputs, texture hashes and pixel hashes.
+The downloadable package verifies its images against those receipts and includes
+raw comparisons and linear float EXRs. The GLB contains the real assembly in
+metres/Y-up with embedded color maps. Its real-time appearance depends on the
+viewer; the dedicated renderer reproduces the pore-height and ocular shaders.
 
 ## Reproduce
 
-Check out `feat/human-face-v9`. From that repository root, use the normal CYBR GEO installation plus Mitsuba 3,
-Dr.Jit, and Intel Open Image Denoise. The asset downloader validates every
-SHA-256 digest against the checked-in input manifest.
+Check out `feat/procedural-human-face-v9` and install the standard CYBR GEO
+requirements plus Mitsuba 3.9.1 and Intel Open Image Denoise. No asset downloader
+is needed for this recipe.
 
 ```bash
-python tools/fetch_portrait_assets.py
-python -m pip install mitsuba==3.9.1
 export OIDN_BIN=/absolute/path/to/oidnDenoise
 
-python tools/render_human_face.py --view portrait --out build/human_face \
-  --size 1440x1800 --spp 512 --batch-spp 512 --depth 14
-python tools/render_human_face.py --view profile --out build/human_face \
-  --size 1200x1500 --spp 384 --batch-spp 384 --depth 14
-python tools/render_human_face.py --view portrait --clay --out build/human_face \
-  --size 960x1200 --spp 128 --batch-spp 128 --depth 14
+python tools/render_human_face.py --out build/procedural_face_final \
+  --view portrait --size 1440x1800 --spp 512 --depth 14 \
+  --quality final --texture-size 4096 --exposure 1.4
 
-PYTHONPATH=src python -m pytest -q tests/test_human_face.py
+python tools/render_human_face.py --out build/procedural_face_final \
+  --view profile --size 1200x1500 --spp 384 --depth 14 \
+  --quality final --reuse-textures --skip-export --exposure 1.4
+
+python tools/render_human_face.py --out build/procedural_face_final \
+  --view portrait --clay --size 960x1200 --spp 128 --depth 14 \
+  --quality final --reuse-textures --skip-export --exposure 1.4
+
+PYTHONPATH=src python -m pytest -q tests/test_procedural_human_face.py
+python tools/package_human_face.py --out build/procedural_face_package
 ```
 
-The dedicated portrait command retains UVs and the skin textures. The existing
-mechanical native renderer and its binary format do not carry this portrait's
-texture maps; use the documented command for these images. The exported GLB
-embeds skin color and normal maps and is in metres/Y-up for standard viewers.
-Its real-time appearance depends on the viewer's lighting and material support.
+Use `--eyelid-closure 0` for open eyes, or a value between zero and one for a
+partial blink. For other proportions, pass a `FaceParameters` instance to the
+recipe's `build` function.
 
-## Attribution
+## Validation and limits
 
-- Infinite head scan and textures: **Lee Perry-Smith**, CC BY 3.0 Unported.
-  Based on work at www.triplegangers.com. See
-  [`LeePerrySmith_License.txt`](../assets/portrait/LeePerrySmith_License.txt) and
-  [the Three.js source directory](https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf/LeePerrySmith).
-- `small_workshop` HDR: **Poly Haven**, CC0.
-- CYBR GEO source retains the repository's GPL-2.0 license.
+The targeted tests rebuild the anatomy with file access disabled and compare
+its generated arrays exactly for determinism. They check finite, nondegenerate
+geometry and noncollapsed ear UV charts. Actual Mitsuba ray intersections verify
+that closed lids cover the eyes, open lids expose the ocular surface, and nostril
+rays reach a recessed interior rather than a painted dark spot.
 
-The asset hashes and download locations are recorded in
-[`sources.json`](../assets/portrait/sources.json).
+This is an original artistic head, **not a measured or medically validated
+anatomical model**. Its form remains a hand-authored approximation. Skin uses a
+surface BSDF approximation rather than multilayer tissue transport. Hidden
+surfaces intersect, and the model is a rendering assembly rather than a
+watertight printing or finite-element mesh. Matching the v9 pipeline and sample
+settings does not by itself establish photographic realism.
+
+The original code follows the repository's GPL-2.0 license. The separate legacy
+scan reference keeps its own attribution and is not an input to this model.
