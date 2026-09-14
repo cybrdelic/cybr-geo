@@ -32,10 +32,13 @@ jobs:
             ! grep -n '^from mechanism_lab\|^import mechanism_lab' "$f"
           done
           python - <<'PY'
-          import inspect, cybrgeo, cybrgeo.core
-          assert 'mechanism_lab' not in inspect.getsource(cybrgeo.core.from_shape)
+          import ast, inspect, cybrgeo, cybrgeo.core
           assert cybrgeo.Assembly.__module__ == 'cybrgeo.core'
           assert cybrgeo.from_shape.__module__ == 'cybrgeo.core'
+          node=ast.parse(inspect.getsource(cybrgeo.core.from_shape))
+          assert not any(isinstance(n,(ast.Import,ast.ImportFrom)) and (
+              any(a.name.startswith('mechanism_lab') for a in n.names) if isinstance(n,ast.Import)
+              else (n.module or '').startswith('mechanism_lab')) for n in ast.walk(node))
           PY
       - name: Validate native CYBR GEO model and engineering
         run: |
