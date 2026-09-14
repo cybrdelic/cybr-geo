@@ -29,6 +29,10 @@ def part(assembly, name):
     return next(p for p in assembly.parts if p.name == name)
 
 
+def overlap_mm3(a, b):
+    return sum(abs(s.Volume()) for s in a.intersect(b).Solids())
+
+
 def test_reach_build_contract_and_exact_orbit_interface(built):
     r, a = built
     assert a.name == "CYBR REACH-1 + ORBIT"
@@ -58,13 +62,13 @@ def test_interface_faces_contact_without_solid_overlap(built):
     saddle = part(a, "R01_ORBIT_interface_saddle")
     assert abs(shoe.bounds[0, 2]) < 1e-6
     assert abs(saddle.bounds[1, 2]) < 1e-6
-    assert shoe.cad.common(saddle.cad).Volume() < 1e-5
+    assert overlap_mm3(shoe.cad, saddle.cad) < 1e-5
 
     for i, _ in enumerate(r.ORBIT_PATTERN):
         screw = part(a, f"R06_{i}_ORBIT_M6_socket_screw")
-        assert shoe.cad.common(screw.cad).Volume() < 1e-4
+        assert overlap_mm3(shoe.cad, screw.cad) < 1e-4
         insert = part(a, f"R02_{i}_Steel_thread_insert")
-        assert insert.cad.common(screw.cad).Volume() < 1e-4
+        assert overlap_mm3(insert.cad, screw.cad) < 1e-4
 
 
 def test_reduction_pairs_do_not_have_gross_static_overlap(built):
@@ -73,7 +77,7 @@ def test_reduction_pairs_do_not_have_gross_static_overlap(built):
         ("R12_56T_Output_gear", "R13_14T_Intermediate_pinion"),
         ("R14_48T_Intermediate_gear", "R15_12T_Input_pinion"),
     ]:
-        vol = part(a, left).cad.common(part(a, right).cad).Volume()
+        vol = overlap_mm3(part(a, left).cad, part(a, right).cad)
         assert vol < 1e-3, (left, right, vol)
 
 
