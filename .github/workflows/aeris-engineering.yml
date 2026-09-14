@@ -1,0 +1,77 @@
+name: AERIS engineering qualification
+
+on:
+  push:
+    branches: ['feat/aeris-engineering-qualification']
+    paths:
+      - '.github/workflows/aeris-engineering.yml'
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/**'
+      - 'requirements-tested.txt'
+  pull_request:
+    paths:
+      - '.github/workflows/aeris-engineering.yml'
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/**'
+      - 'requirements-tested.txt'
+  workflow_dispatch:
+
+concurrency:
+  group: aeris-engineering-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  engineering:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install engineering environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2 libgl1-mesa-dri libglu1-mesa
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Build complete AERIS CAD, mesh and exports
+        run: python examples/aeris/build_assets.py --out build/aeris --exports
+      - name: Run geometry, kinematics, CAD and export verification
+        run: python examples/aeris/verify.py --out build/aeris --cad
+      - name: Run multidisciplinary engineering screening
+        run: python examples/aeris/engineering_validate.py --out build/aeris --rpm 3600
+      - name: Require report schema and honest qualification state
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('build/aeris/engineering_report.json')
+          if not p.is_file():
+              print('engineering report absent because an earlier required step failed')
+              raise SystemExit(0)
+          r=json.loads(p.read_text())
+          assert r['model']=='AERIS'
+          assert r['analysis_kind'].startswith('deterministic first-order')
+          assert 'checks' in r and len(r['checks'])>=10
+          assert 'limitations' in r and len(r['limitations'])>=5
+          assert isinstance(r['release_ready'],bool)
+          print('ENGINEERING_VERDICT',r['verdict'])
+          print('HARD_FAILURES',r['critical_failures'])
+          print('UNQUALIFIED',r['unqualified_domains'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aeris-engineering-report
+          path: |
+            build/aeris/validation.json
+            build/aeris/verification.json
+            build/aeris/engineering_report.json
+            build/aeris/engineering_report.md
+            build/aeris/*.coverage.json
+            build/aeris/*.step
+          if-no-files-found: warn
+          retention-days: 30
