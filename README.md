@@ -54,6 +54,15 @@ along explicit paths. The assembly animation follows those paths in reverse.
 The validation reports distinguish sampled nominal CAD clearance from physical
 prototype, manufacturing-tolerance and load qualification.
 
+## Human face portrait / approved v9 pipeline
+
+The [human face recipe](examples/human_face.py) builds a 282,944-triangle,
+UV-mapped portrait assembly from the attributed Lee Perry-Smith head scan,
+with two subdivision levels and fine geometric relief. Its
+[portrait command](tools/render_human_face.py) reuses the approved ORBIT v9
+Mitsuba camera, linear AOVs, OIDN denoising and tone-mapping code. See the
+[renders, reproduction steps and material limits](docs/HUMAN_FACE.md).
+
 ## Shared photographic rendering in 0.5
 
 `lab render`, `lab video`, `lab film`, `cybrgeo render`, and `cybrgeo video`

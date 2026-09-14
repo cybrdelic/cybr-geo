@@ -11,3 +11,8 @@ dist/
 .cache/
 .env
 .env.*
+# Reproducible, attributed portrait inputs; hashes and licenses are tracked.
+assets/portrait/*.glb
+assets/portrait/*.jpg
+assets/portrait/*.hdr
+assets/portrait/*.download

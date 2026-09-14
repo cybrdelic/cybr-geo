@@ -1,0 +1,26 @@
+{
+  "tests": "tests/test_human_face.py",
+  "result": "3 passed",
+  "checks": [
+    "Welded subdivision and UV-seam displacement continuity",
+    "Facial texture landmark alignment",
+    "Mitsuba OBJ importer preserves expected UV coordinates"
+  ],
+  "export_checks": {
+    "triangles": 282944,
+    "vertices": 142978,
+    "glb_height_metres": 0.317128986120224,
+    "embedded_color_map": [
+      1024,
+      1024
+    ],
+    "embedded_normal_map": [
+      1024,
+      1024
+    ]
+  },
+  "limitations": [
+    "No volumetric tissue model or physiological validation",
+    "No original procedural identity-generation claim"
+  ]
+}
