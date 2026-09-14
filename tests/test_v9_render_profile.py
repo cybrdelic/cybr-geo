@@ -64,8 +64,15 @@ def test_cybrgeo_cli_defaults_to_v9_not_legacy_native():
     assert "choices=['v9','photoreal','pbr']" in source
 
 
-def test_original_cybrgeo_api_uses_v9():
+def test_every_public_v9_entrypoint_uses_stable_dispatch():
+    from mechanism_lab import cli as lab_cli
     from cybrgeo import photoreal
-    assert photoreal.render.__defaults__[0:4]==(V9.still_size[0],V9.still_size[1],V9.still_spp,V9.still_depth)
+    lab_source=inspect.getsource(lab_cli.run)
+    assert 'from .v9_dispatch import render_v9' in lab_source
+    assert 'from .v9_dispatch import render_v9_video' in lab_source
+    module_source=inspect.getsource(photoreal)
+    assert 'from mechanism_lab.v9_dispatch import render_v9,render_v9_video' in module_source
+    assert photoreal.render.__defaults__[0:4]==(
+        V9.still_size[0],V9.still_size[1],V9.still_spp,V9.still_depth)
     assert 'render_v9' in inspect.getsource(photoreal.render)
     assert 'render_v9_video' in inspect.getsource(photoreal.film)
