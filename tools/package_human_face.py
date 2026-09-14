@@ -24,6 +24,28 @@ def atomic_png(linear,path):
     temporary.replace(path)
 
 
+def archive_package(out):
+    """Include only the deliverables, never editor or transfer temporary files."""
+    stems=['CYBR_Face_portrait','CYBR_Face_profile','CYBR_Face_portrait_clay']
+    names=['README.txt','SCAN_LICENSE.txt','input_sources.json',
+           'render_environment.json','render_evidence.json','CYBR_Human_Face.glb']
+    for stem in stems:
+        names.extend([stem+'.png',stem+'_raw.png',
+                      'linear_masters/'+stem+'_beauty_linear.exr',
+                      'linear_masters/'+stem+'_denoised_linear.exr'])
+    files=[out/name for name in sorted(names)]
+    for path in files:
+        if not path.is_file():
+            raise FileNotFoundError(path)
+    archive=out/'CYBR_Face_Render_Package.zip'
+    with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=5) as z:
+        for path in files:z.write(path,path.relative_to(out))
+    with zipfile.ZipFile(archive) as z:
+        if set(z.namelist())!=set(names) or z.testzip() is not None:
+            raise ValueError('Render package ZIP integrity check failed')
+    return archive,files
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--input',type=Path,default=ROOT/'build/human_face_focused')
@@ -81,14 +103,7 @@ def main():
         'https://github.com/cybrdelic/cybr-geo/tree/feat/human-face-v9\n'
         'See docs/HUMAN_FACE.md, examples/human_face.py and tools/render_human_face.py.\n'
         'Project code retains GPL-2.0; scan rights are separately attributed above.\n')
-    archive=args.out/'CYBR_Face_Render_Package.zip'
-    files=sorted(p for p in args.out.rglob('*')
-                 if p.is_file() and p!=archive and '.writing.' not in p.name)
-    with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=5) as z:
-        for path in files:z.write(path,path.relative_to(args.out))
-    with zipfile.ZipFile(archive) as z:
-        if z.testzip() is not None:
-            raise ValueError('Render package ZIP integrity check failed')
+    archive,files=archive_package(args.out)
     print(json.dumps({'files':[str(p) for p in files],
                       'archive':str(archive),'archive_bytes':archive.stat().st_size},indent=2))
 
