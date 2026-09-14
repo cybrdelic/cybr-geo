@@ -1,0 +1,32 @@
+name: Shared engineering capabilities
+on:
+  push:
+    branches: [feat/shared-engineering-capabilities]
+    paths:
+      - '.github/workflows/engineering-capabilities.yml'
+      - 'src/mechanism_lab/engineering/**'
+      - 'tests/test_engineering*'
+      - 'tools/engineering*'
+      - 'examples/engineering/**'
+  pull_request:
+    paths:
+      - 'src/mechanism_lab/engineering/**'
+      - 'tests/test_engineering*'
+      - 'tools/engineering*'
+      - 'examples/engineering/**'
+      - '.github/workflows/engineering-capabilities.yml'
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package current tracked source for offline development
+        run: |
+          git archive --format=zip HEAD src tests tests_legacy tools examples docs pyproject.toml requirements-tested.txt .github/workflows > /tmp/engineering-source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: engineering-source
+          path: /tmp/engineering-source.zip
+          retention-days: 7
