@@ -7,6 +7,10 @@ the **actual approved ORBIT v9 Mitsuba code**, recovered from CYBR GEO commit
 
 ![Human face rendered through the v9 pipeline](../media/human_face/portrait.jpg)
 
+![Profile rendered from the same anatomy](../media/human_face/profile.jpg)
+
+![Clay view showing the actual facial geometry](../media/human_face/clay.jpg)
+
 ## Anatomy and geometry
 
 The anatomical base is **Infinite, 3D Head Scan by Lee Perry-Smith**, distributed
@@ -59,7 +63,7 @@ maps to expose the actual modeled facial surface.
 
 ## Reproduce
 
-From the repository root, use the normal CYBR GEO installation plus Mitsuba 3,
+Check out `feat/human-face-v9`. From that repository root, use the normal CYBR GEO installation plus Mitsuba 3,
 Dr.Jit, and Intel Open Image Denoise. The asset downloader validates every
 SHA-256 digest against the checked-in input manifest.
 

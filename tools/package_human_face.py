@@ -39,6 +39,8 @@ def main():
         raw=v9.read_pfm(args.input/(stem+'_beauty.pfm'))
         if not np.isfinite(linear).all() or not np.isfinite(raw).all():
             raise ValueError(f'Invalid radiance in {stem}')
+        if float(np.ptp(raw))<1e-5 or float(raw.mean())<1e-5:
+            raise ValueError(f'Blank render cannot be packaged: {stem}')
         final=args.out/(stem+'.png');atomic_png(linear,final)
         raw_file=args.out/(stem+'_raw.png');atomic_png(raw,raw_file)
         for p in [final,raw_file]:
