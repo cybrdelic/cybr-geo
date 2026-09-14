@@ -32,6 +32,9 @@ jobs:
           python tools/reach2_engineering_v5.py \
             --out /tmp/reach2v5/REACH2_engineering_report.json \
             --require-pass
+      - name: Export analytic CAD and interactive GLB
+        run: |
+          python tools/export_reach2_v5_cad.py --out /tmp/reach2v5
       - name: Install Intel Open Image Denoise 2.5.1
         run: |
           set -euxo pipefail
@@ -70,6 +73,8 @@ jobs:
               with Image.open(p) as im:
                   assert im.size==(1200,900)
                   im.verify()
+          assert (root/'REACH2_v5_ORBIT_analytic.step').stat().st_size > 100000
+          assert (root/'REACH2_v5_ORBIT.glb').stat().st_size > 100000
           assert manifest['generated_imagery'] is False
           assert manifest['aesthetic_family']=='CYBR ORBIT'
           assert eng['qualified'] is True
@@ -89,5 +94,11 @@ jobs:
             /tmp/reach2v5/REACH2_ORBIT_noisy.png
             /tmp/reach2v5/REACH2_manifest.json
             /tmp/reach2v5/REACH2_engineering_report.json
+            /tmp/reach2v5/REACH2_v5_ORBIT_analytic.step
+            /tmp/reach2v5/REACH2_v5_ORBIT_analytic.coverage.json
+            /tmp/reach2v5/REACH2_v5_ORBIT.glb
+            /tmp/reach2v5/REACH2_v5_BOM/
+            /tmp/reach2v5/reach2_orbit_integrated_v5.py
+            /tmp/reach2v5/reach2_orbit_integrated_v5b.py
           if-no-files-found: error
           retention-days: 7
