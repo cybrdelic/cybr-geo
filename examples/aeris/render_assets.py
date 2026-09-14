@@ -26,6 +26,16 @@ def load(out,section=False):
 
 
 def select_shot(a,name):
+    if name=='hero_shell':
+        # Exterior photographic shot. These groups are physically internal and
+        # occluded by the assembled shell/filter/motor housing from this camera;
+        # omitting them changes renderer load only, not the visible exterior CAD.
+        # Dedicated internal/detail views below render those components directly.
+        internal={'impeller','shaft','bearings','motor_rotor','motor_stator','windings','lattice','gyroid'}
+        visible=[p for p in a.parts if p.group not in internal]
+        a=replace(a,name='aeris_hero_shell',parts=visible,views={'hero':a.views['hero']})
+        print(f'HERO_SHELL_VISIBLE_PARTS {len(visible)}/{len(a.parts)+sum(1 for _ in ())}',flush=True)
+        return a,'hero'
     if name=='rotor_detail':
         keep={'impeller','shaft','bearings','motor_rotor','motor_stator','windings','motor_front'}
         a=replace(a,name='aeris_rotor_detail',parts=[p for p in a.parts if p.group in keep])
@@ -42,7 +52,7 @@ def select_shot(a,name):
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--out',type=Path,default=ROOT/'build/aeris')
-    ap.add_argument('--views',nargs='+',default=['hero','cutaway','exploded','rotor_detail','topology_detail'])
+    ap.add_argument('--views',nargs='+',default=['hero_shell','rotor_detail','topology_detail','hero','cutaway','exploded'])
     ap.add_argument('--size',default=f'{V9.still_size[0]}x{V9.still_size[1]}');ap.add_argument('--spp',type=int,default=V9.still_spp)
     ap.add_argument('--threads',type=int,default=4);ap.add_argument('--depth',type=int,default=V9.still_depth)
     ap.add_argument('--preview',action='store_true');ap.add_argument('--pbr',action='store_true');ap.add_argument('--native',action='store_true')
@@ -50,7 +60,7 @@ def main():
     folder=args.out/('previews' if args.preview else 'renders');folder.mkdir(parents=True,exist_ok=True)
     for name in args.views:
         a=load(args.out,name=='cutaway');view='hero' if name=='cutaway' else name
-        if name in ('rotor_detail','topology_detail'):a,view=select_shot(a,name)
+        if name in ('hero_shell','rotor_detail','topology_detail'):a,view=select_shot(a,name)
         p=folder/f'aeris_{name}.png';print('RENDER_START',name,size,args.spp,flush=True)
         if args.pbr:
             render_still(a,p,view_name=view,size=size,captions=False,supersample=1 if args.preview else 2,intent='concept')
