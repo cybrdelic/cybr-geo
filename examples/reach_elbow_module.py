@@ -181,17 +181,21 @@ def build():
         yoke = yoke.fuse(annulus_y(16.0, 8.15, y0, 8.0, PIVOT[0], PIVOT[2]))
         add(f"R03_{side}_Moving_yoke", yoke, 0, "reach_output", "Rigid saddle-to-elbow yoke")
 
-    # Hollow shaft preserves a through path for future electrical/pneumatic service.
-    add("R04_Hollow_output_shaft", annulus_y(8.0, 4.2, -56.0, 138.0, PIVOT[0], PIVOT[2]),
+    # The shaft spans both fixed bearing packs. A 0.1 mm radial modeled gap
+    # separates its r=8.0 surface from the r=8.1 inner-race bore.
+    add("R04_Hollow_output_shaft", annulus_y(8.0, 4.2, -63.0, 145.0, PIVOT[0], PIVOT[2]),
         2, "reach_output", "Hollow elbow output shaft")
 
     # --- fixed forearm clevis --------------------------------------------
-    fixed_profile = [(-62, -46), (-49, -35), (-37, -52), (-31, -67),
-                     (-41, -101), (-55, -126), (11, -126), (0, -99),
-                     (-8, -70), (-13, -52), (-1, -35), (13, -46)]
+    # Use a simple tapered web fused to a full bearing boss. The earlier highly
+    # concave outline could tessellate into an empty OCCT compound on Linux.
+    web_profile = [(-50, -126), (6, -126), (0, -96), (-7, -76), (-10, -58),
+                   (-34, -58), (-37, -76), (-44, -96)]
     for side, y0 in (("L", -63.0), ("R", 72.0)):
-        cheek = plate_xz(fixed_profile, y0, 7.0, 2.5)
-        cheek = cheek.cut(cylinder(13.1, 9, (PIVOT[0], y0 - 1, PIVOT[2]), "Y"))
+        web = plate_xz(web_profile, y0, 7.0, 0.0)
+        boss = cylinder(22.0, 7.0, (PIVOT[0], y0, PIVOT[2]), "Y")
+        cheek = web.fuse(boss).clean()
+        cheek = cheek.cut(cylinder(13.1, 9, (PIVOT[0], y0 - 1, PIVOT[2]), "Y")).clean()
         add(f"R05_{side}_Fixed_clevis", cheek, 0, "reach_fixed", "Fixed elbow bearing clevis")
 
     for side, y0 in (("L", -63.0), ("R", 72.0)):
@@ -207,7 +211,11 @@ def build():
         lower = lower.cut(cylinder(6.0, 3.8, (x, y, -130), "Z"))
     add("R09_Lower_link_flange", lower, 0, "reach_fixed", "Interface for next upper-arm module")
     add("R10_Lower_crossbrace", box(58, 128, 10, (-22, 8.5, -112), 3), 0, "reach_fixed")
-    add("R11_Cable_guard", annulus_y(9.5, 5.0, -48, 112, PIVOT[0], PIVOT[2]), 4, "reach_fixed", "Elastomer-lined hollow service passage")
+    # Stationary elastomer-lined sleeve between the moving yokes. Its 8.6 mm
+    # bore clears the 8.0 mm rotating shaft, and its ends stop 1 mm short of
+    # each moving yoke hub.
+    add("R11_Cable_guard", annulus_y(10.5, 8.6, -42.0, 102.0, PIVOT[0], PIVOT[2]),
+        4, "reach_fixed", "Elastomer-lined hollow service passage")
 
     # --- two-stage 16:1 involute reducer ---------------------------------
     out_gear = gear_y(STAGE2_OUTPUT_TEETH, GEAR_MODULE, 8.0,
