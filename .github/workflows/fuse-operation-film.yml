@@ -1,4 +1,4 @@
-name: FUSE corrected V9 operation film
+name: FUSE corrected V9 operation film checkpoint completion
 
 on:
   push:
@@ -13,12 +13,12 @@ permissions:
 jobs:
   frames:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       max-parallel: 8
       matrix:
-        batch: [0, 1, 2, 3, 4, 5, 6, 7]
+        batch: [4, 5]
     env:
       PYTHONPATH: src:examples/fuse_c220
       OPENBLAS_NUM_THREADS: '1'
@@ -53,7 +53,14 @@ jobs:
           for name in ('FUSE_C220_mechanism_validation.json','FUSE_C220_edge_validation.json','FUSE_C220_hotend_validation.json','FUSE_C220_calibration.validation.json'):
               assert json.loads((pathlib.Path('deliverables')/name).read_text())['all_passed'],name
           PY
-      - name: Path trace twelve real operation frames
+      - name: Restore exact validated frame checkpoints
+        uses: actions/download-artifact@v4
+        with:
+          name: fuse-v9-frames-${{ matrix.batch }}
+          path: work/film_v9_frames
+          run-id: 34850963896
+          github-token: ${{ github.token }}
+      - name: Resume missing geometry-rendered frames
         run: |
           python - <<'PY'
           import os, subprocess
@@ -93,6 +100,14 @@ jobs:
           name: fuse-functional-validation
           path: deliverables
           run-id: 34850079331
+          github-token: ${{ github.token }}
+      - name: Restore completed original frames from all eight batches
+        uses: actions/download-artifact@v4
+        with:
+          pattern: fuse-v9-frames-*
+          path: work/film_v9_frames
+          merge-multiple: true
+          run-id: 34850963896
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
