@@ -7,6 +7,7 @@ import numpy as np
 from PIL import Image
 from .core import project_root
 from .exporters import export_meshbin
+from .render_profiles import V9
 
 
 def compile_renderer():
@@ -113,19 +114,19 @@ def render_photoreal(assembly,output,view_name='hero',size=(1920,1080),spp=512,t
         raw=Image.fromarray(filt.tonemap(arr,exposure=view.exposure,operator=view.tone_mapping));filt.save_png(raw,output.with_name(output.stem+'_linear-tonemapped.png'))
         with open(str(ppm)+'.guides','rb') as f:
             w,h=np.fromfile(f,'<u4',2);guides=np.fromfile(f,'<f4').reshape(h,w,9)
-        clean=filt.finish_frame(arr,guides,view.exposure,2,view.tone_mapping);filt.save_png(clean,output)
+        clean=filt.finish_frame(arr,guides,view.exposure,V9.filter_passes,view.tone_mapping);filt.save_png(clean,output)
         if captions:
             counts=truth['tier_counts'];line=f"{truth['resolved_intent'].upper()} / "+', '.join(f'{k}:{v}' for k,v in counts.items())
             labelled(clean,view.title or assembly.name.upper(),view.note,
                      f'{spp} spp / {depth} bounces / thin-lens f/{f_stop or view.f_stop:g} / {line}',
                      tag='CYBR MECHANISM LAB / PHOTOGRAPHIC PATH TRACE').save(output.with_name(output.stem+'_card.png'))
     report={'file':output.name,'model':assembly.name,'view':view_name,'resolution':list(size),'spp':spp,'bounce_limit':depth,
-            'section_normal':assembly.views[view_name].section,
+            'render_profile':V9.name,'section_normal':assembly.views[view_name].section,
             'projection':view.projection,'focal_length_mm':view.focal_length_mm,'sensor_width_mm':view.sensor_width_mm,
             'camera_distance_mm':_camera_distance(view,size),'f_stop':f_stop or view.f_stop,
             'focus_distance_mm':focus_distance or view.focus_distance_mm or _camera_distance(view,size),
             'environment_strength':view.environment_strength,'light_size':view.light_size,'floor_roughness':view.floor_roughness,
-            'tone_mapping':view.tone_mapping,'filtering':'2 geometry-guided linear-light atrous passes',
+            'tone_mapping':view.tone_mapping,'filtering':f'{V9.filter_passes} geometry-guided linear-light atrous passes',
             'studio_target':view.studio_target,'studio_scale':view.studio_scale,'floor_z_mm':view.floor_z_mm,
             'seconds':time.time()-start,'renderer':'native thin-lens BVH/GGX/MIS path tracer','truth':truth}
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');write_truth_report(truth,output.with_suffix('.truth.json'));return report
@@ -183,7 +184,7 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
                     arr,stats=temporal_radiance(current,[previous],v)
                     temporal_stats.append(dict(frame=global_frame,neighbors=stats))
                 previous=current
-                im=filt.finish_frame(arr,center_guides,v.exposure,2,v.tone_mapping)
+                im=filt.finish_frame(arr,center_guides,v.exposure,V9.filter_passes,v.tone_mapping)
                 path=td/f'{global_frame:06}.png';filt.save_png(im,path)
                 frames.append(path);global_frame+=1
                 if f%12==0 or f==n-1:print(f'{output.name}: shot {si+1}/{len(shots)}, frame {f+1}/{n}',flush=True)
@@ -193,8 +194,8 @@ def render_photoreal_video(assembly,output,shots,size=(1920,1080),fps=24,spp=144
     encoded=probe(output)
     if int(encoded['streams'][0]['nb_read_frames'])!=global_frame:raise ValueError('Encoded film frame count mismatch')
     report={'model':assembly.name,'frames':global_frame,'duration':global_frame/fps,'resolution':list(size),'fps':fps,'spp_per_frame':spp,
-            'depth':depth,'shutter_angle':shutter_angle,'shutter_samples':shutter_samples,'seconds_to_render':time.time()-start,
+            'render_profile':V9.name,'depth':depth,'shutter_angle':shutter_angle,'shutter_samples':shutter_samples,'seconds_to_render':time.time()-start,
             'method':'thin-lens path tracing + temporal geometry supersampling','probe':encoded,'truth':truth}
-    report.update(tone_mapping='per-view neutral by default',filtering='shared geometry-guided linear-light finishing',studio='fixed in model coordinates per shot',
+    report.update(tone_mapping='per-view neutral by default',filtering=f'{V9.filter_passes} shared geometry-guided linear-light finishing passes',studio='fixed in model coordinates per shot',
                   temporal_filter='one previous native frame reprojected using part transforms; current retains >=80% weight; camera-orbit shots skip reuse',temporal_stats=temporal_stats)
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');write_truth_report(truth,output.with_suffix('.truth.json'));return report
