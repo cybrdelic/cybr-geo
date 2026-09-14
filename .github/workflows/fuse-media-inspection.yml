@@ -23,10 +23,16 @@ jobs:
           merge-multiple: true
           run-id: 34850963896
           github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-v9-renders
+          path: completed_stills
+          run-id: 34850079331
+          github-token: ${{ github.token }}
       - name: Verify and expose representative completed frames for visual review
         run: |
           python - <<'PY'
-          import hashlib, json, pathlib
+          import hashlib, json, pathlib, shutil
           from PIL import Image, ImageDraw
           root=pathlib.Path('frames')
           frames=sorted(p for p in root.glob('*.png') if p.stem.isdigit())
@@ -34,6 +40,17 @@ jobs:
           selected=[frames[round(i*(len(frames)-1)/5)] for i in range(6)]
           out=pathlib.Path('media/fuse_c220')
           out.mkdir(parents=True,exist_ok=True)
+          for view in ('hero','printing','drive'):
+              source=pathlib.Path('completed_stills')/('FUSE_C220_'+view+'.png')
+              receipt=json.loads(source.with_suffix('.json').read_text())
+              assert receipt['render_profile']=='v9' and receipt['spp']==256
+              assert receipt['generated_imagery'] is False
+              with Image.open(source) as im:
+                  im.verify()
+              with Image.open(source) as im:
+                  im.convert('RGB').save(out/(view+'.jpg'),quality=94,subsampling=0)
+              shutil.copy2(source,out/(view+'.png'))
+              shutil.copy2(source.with_suffix('.json'),out/(view+'.json'))
           canvas=Image.new('RGB',(1440,800),(18,22,23))
           draw=ImageDraw.Draw(canvas)
           records=[]
