@@ -1,0 +1,101 @@
+name: Inspect completed FUSE operation frames
+on:
+  push:
+    branches: ['render/fuse-c220-media-inspection']
+    paths: ['.github/workflows/fuse-media-inspection.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install Pillow==12.3.0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fuse-v9-frames-*
+          path: frames
+          merge-multiple: true
+          run-id: 34850963896
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-v9-renders
+          path: completed_stills
+          run-id: 34850079331
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-validation
+          path: validated_cad
+          run-id: 34850079331
+          github-token: ${{ github.token }}
+      - name: Verify and expose representative completed frames for visual review
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, shutil
+          from PIL import Image, ImageDraw
+          root=pathlib.Path('frames')
+          frames=sorted(p for p in root.glob('*.png') if p.stem.isdigit())
+          assert frames
+          selected=[frames[round(i*(len(frames)-1)/5)] for i in range(6)]
+          out=pathlib.Path('media/fuse_c220')
+          out.mkdir(parents=True,exist_ok=True)
+          for view in ('hero','printing','drive'):
+              source=pathlib.Path('completed_stills')/('FUSE_C220_'+view+'.png')
+              receipt=json.loads(source.with_suffix('.json').read_text())
+              assert receipt['render_profile']=='v9' and receipt['spp']==256
+              assert receipt['generated_imagery'] is False
+              with Image.open(source) as im:
+                  im.verify()
+              with Image.open(source) as im:
+                  im.convert('RGB').save(out/(view+'.jpg'),quality=94,subsampling=0)
+              shutil.copy2(source,out/(view+'.png'))
+              shutil.copy2(source.with_suffix('.json'),out/(view+'.json'))
+          import zipfile
+          cad=out/'cad'
+          cad.mkdir(parents=True,exist_ok=True)
+          origin=pathlib.Path('validated_cad')
+          execution=json.loads((origin/'execution.json').read_text())
+          assert execution['tested_commit']=='d913877447589414137ee97ec670ce2257ecf834'
+          for name in ('FUSE_C220_mechanism_validation.json','FUSE_C220_hotend_validation.json'):
+              assert json.loads((origin/name).read_text())['all_passed']
+          with zipfile.ZipFile(cad/'FUSE_C220_analytic.step.zip','w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
+              archive.write(origin/'FUSE_C220_analytic.step',arcname='FUSE_C220_analytic.step')
+          shutil.copy2(origin/'FUSE_C220.glb',cad/'FUSE_C220.glb')
+          shutil.copy2(origin/'execution.json',cad/'execution.json')
+          files=[]
+          for path in sorted(cad.iterdir()):
+              assert path.stat().st_size<80*1024*1024,path
+              files.append({'file':path.name,'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+          (cad/'manifest.json').write_text(json.dumps({'files':files,'source_commit':execution['tested_commit'],'scope':'Nominal digital assembly only; STEP includes analytic BREP bodies, while GLB includes tessellated and mesh-only components. Not a manufacturing release.'},indent=2))
+          print(json.dumps(files,indent=2))
+          canvas=Image.new('RGB',(1440,800),(18,22,23))
+          draw=ImageDraw.Draw(canvas)
+          records=[]
+          for i,path in enumerate(selected):
+              record=json.loads(path.with_suffix('.frame.json').read_text())
+              assert hashlib.sha256(path.read_bytes()).hexdigest()==record['sha256']
+              assert record['render_profile']=='v9'
+              with Image.open(path) as image:
+                  assert image.size==(960,720)
+                  tile=image.convert('RGB').resize((480,360),Image.Resampling.LANCZOS)
+              x=(i%3)*480;y=(i//3)*400
+              canvas.paste(tile,(x,y))
+              draw.text((x+12,y+369),f"Frame {record['frame']:02d} | G-code t={record['gcode_time_s']:.2f} s | layer {record['layer']+1}",fill=(230,235,235))
+              records.append(record)
+          canvas.save(out/'operation_contact_sheet.jpg',quality=94,subsampling=0)
+          with Image.open(selected[-1]) as image:
+              image.convert('RGB').save(out/'operation_sample.jpg',quality=94,subsampling=0)
+          (out/'operation_inspection.json').write_text(json.dumps({'available_frames':len(frames),'selected':records,'operation':'contact sheet and JPEG display copies; no content synthesis'},indent=2))
+          PY
+          git config user.name 'CYBR GEO printer verification'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- media/fuse_c220
+          git commit -m 'Preserve actual V9 operation frames for visual inspection'
+          git push origin HEAD:render/fuse-c220-media-inspection
