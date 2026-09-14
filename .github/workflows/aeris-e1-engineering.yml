@@ -57,5 +57,5 @@ jobs:
             build/aeris-e1/verification.json
             build/aeris-e1/engineering_report_e1.json
             build/aeris-e1/aeris_cybr_physics.manifest
-            build/aeris-e1/aeris_e1_analytic.coverage.json
+            build/aeris-e1/aeris_analytic.coverage.json
           retention-days: 30
