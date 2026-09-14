@@ -164,7 +164,7 @@ class Anatomy:
                              +.45*np.sin(x*7.1+z*5.3))
         return d
 
-    def front(self,x,z):
+    def base_front(self,x,z):
         rx,front,back=self.section(z)
         q=np.clip(x/np.maximum(rx,.01),-.999999,.999999)
         c=np.sqrt(np.maximum(1-q*q,0))
@@ -173,6 +173,29 @@ class Anatomy:
         # Deformations fade before the side seam of the parametric skull.
         return base+self.deformation(x,z)*smoothstep(0,.55,c)
 
+    def lid_skin(self,x,z,base):
+        """Eyelid relief is part of the continuous head, with no overlay shell."""
+        y=np.array(base,copy=True)
+        for side in (-1,1):
+            c=self.eye(side);lx=(x-c[0])*side;lz=z-c[2]
+            sphere=1-(lx/14.7)**2-(lz/12.4)**2
+            cap=c[1]-13.05*np.sqrt(np.maximum(sphere,0))
+            cap-=1.28*np.exp(-((lx*lx+lz*lz)/(5.5**2))**2)
+            target=np.where(sphere>0,smooth_minimum(base,cap-.30,5.),base)
+            ellipse=(lx/19.2)**2+((lz-1.35*lx/19.2)/np.where(lz>=0,10.8,9.4))**2
+            blend=1-smoothstep(.76,1.,ellipse)
+            y+=(target-base)*blend
+            q=np.clip(lx/13.7,-1,1)
+            seam=1.15*q-self.p.eyelid_closure*3.1*(1-q*q)
+            extent=np.maximum(1-q*q,0)**.7
+            y+=self.p.eyelid_closure*.12*np.exp(-((lz-seam)/.21)**2)*extent*blend
+            y+=.10*np.exp(-((lz-7.9-.5*q)/.38)**2)*extent*blend
+            y-=.15*np.exp(-((lz-seam+2.1)/1.4)**2)*extent*blend
+        return y
+
+    def front(self,x,z):
+        return self.lid_skin(x,z,self.base_front(x,z))
+
     def point(self,theta,z):
         rx,front,back=self.section(z)
         s=np.sin(theta);c=np.cos(theta)
@@ -180,6 +203,7 @@ class Anatomy:
         mid=(front+back)/2
         y=np.where(c>=0,mid-(mid-front)*c*(1+.28*s*s),mid-(back-mid)*c)
         y+=self.deformation(x,z)*smoothstep(0,.55,c)
+        y+=(self.lid_skin(x,z,y)-y)*smoothstep(.3,.7,c)
         return np.stack(np.broadcast_arrays(x,y,z),axis=-1)
 
     def uv(self,vertices):
@@ -224,12 +248,10 @@ def head_mesh(a,quality):
     center=v[f].mean(axis=1);x,y,z=center.T
     remove=np.zeros(len(f),bool)
     for side in (-1,1):
-        # The anatomical eyelid patch replaces this region. Merely cutting the
-        # opening would leave two almost coincident skin surfaces above the eye.
-        c=a.eye(side);q=(x-c[0])*side/19.2
-        local_z=z-c[2]-1.35*q
-        ellipse=q*q+(local_z/np.where(local_z>=0,10.8,9.4))**2
-        remove|=(ellipse<.91**2)&(y<0)
+        # Closed lids are continuous skin; only an actually open eye needs an aperture.
+        if a.p.eyelid_closure<1:
+            q,upper,lower=a.eye_opening(x,side)
+            remove|=(abs(q)<1)&(z<upper)&(z>lower)&(y<0)
         # Open apertures lead to separately modeled recessed nasal vestibules.
         nx=side*9.7+.35;nz=-16.0
         remove|=(((x-nx)/3.15)**2+((z-nz)/1.65)**2<1)&(y<-65)
@@ -242,7 +264,25 @@ def head_mesh(a,quality):
     # Average duplicate meridian normals, preserving the texture seam.
     n=p.normals.reshape(rows,cols,3)
     seam=unit(n[:,0]+n[:,-1]);n[:,0]=seam;n[:,-1]=seam
-    return p
+    # Partition a single already-smoothed mesh for named anatomical parts.
+    # Shared positions, normals and UVs are identical across every part boundary.
+    center=p.vertices[p.faces].mean(axis=1)
+    labels=np.zeros(len(p.faces),np.int8)
+    for label,side in [(1,-1),(2,1)]:
+        c=a.eye(side);lx=(center[:,0]-c[0])*side;lz=center[:,2]-c[2]
+        ellipse=(lx/19.2)**2+((lz-1.35*lx/19.2)/np.where(lz>=0,10.8,9.4))**2
+        labels[(ellipse<1.05)&(center[:,1]<0)]=label
+    parts=[]
+    for label,name in enumerate(['Sculpted_head_neck_and_shoulders','Left_eyelids','Right_eyelids']):
+        faces=p.faces[labels==label]
+        vertices,inverse=np.unique(faces,return_inverse=True)
+        part=Part(name,p.vertices[vertices],inverse.reshape(-1,3),p.normals[vertices],
+                  material=SKIN,group='anatomy',provenance='original-procedural',
+                  role='Region of the continuous authored anatomical skin surface',
+                  tags=('original-procedural','no-scan','shared-boundary-skin'))
+        part.portrait_uv=p.portrait_uv[vertices]
+        parts.append(part)
+    return parts
 
 
 def ellipsoid(name,center,radii,material,nu=128,nv=80,iris_cut=False):
@@ -298,52 +338,19 @@ def tube_collection(name,curves,radii,material,a=None,sides=5):
 
 
 def eyelids(a,side):
-    """A regular height surface avoids a collapsed polar ring at full closure."""
+    """The actual lids belong to the head mesh; add only their moist margin."""
     c=a.eye(side);closure=a.p.eyelid_closure
-    nu,nv=260,172
-    u=np.linspace(-1,1,nu)[None,:]
-    v=np.linspace(-1,1,nv)[:,None]
-    xx=np.broadcast_to(19.2*u,(nv,nu))
-    zz=1.35*u+np.sqrt(np.maximum(1-u*u,0))*np.where(v>=0,10.8*v,9.4*v)
-
-    def lid_height(localx,localz):
-        x=c[0]+side*localx;z=c[2]+localz
-        base=a.front(x,z)
-        sphere=1-(localx/14.7)**2-(localz/12.4)**2
-        cap=c[1]-13.05*np.sqrt(np.maximum(sphere,0))
-        cap-=1.28*np.exp(-((localx*localx+localz*localz)/(5.5**2))**2)
-        target=np.where(sphere>0,smooth_minimum(base,cap-.30,5.),base)
-        ellipse=(localx/19.2)**2+((localz-1.35*localx/19.2)/np.where(localz>=0,10.8,9.4))**2
-        blend=1-smoothstep(.76,1.,ellipse)
-        y=base+(target-base)*blend-.085
-        q=np.clip(localx/13.7,-1,1)
-        seam=1.15*q-closure*3.1*(1-q*q)
-        extent=np.maximum(1-q*q,0)**.7
-        # Real shallow palpebral groove and the superior lid fold.
-        y+=closure*.12*np.exp(-((localz-seam)/.21)**2)*extent
-        y+=.10*np.exp(-((localz-7.9-.5*q)/.38)**2)*extent
-        y-=.15*np.exp(-((localz-seam+2.1)/1.4)**2)*extent
-        return y
-
-    x=c[0]+side*xx;z=c[2]+zz;y=lid_height(xx,zz)
-    vertices=np.stack([x,y,z],-1).reshape(-1,3)
-    faces=grid_faces(nv,nu,reverse=side<0)
-    if closure<1:
-        mid=vertices[faces].mean(axis=1)
-        q,upper,lower=a.eye_opening(mid[:,0],side)
-        opening=(abs(q)<1)&(mid[:,2]<upper)&(mid[:,2]>lower)
-        faces=faces[~opening]
-    name=('Left' if side<0 else 'Right')+'_eyelids'
-    part=surface_part(name,vertices,faces,SKIN,a.uv(vertices))
     theta=np.linspace(0,2*np.pi,257)
     q=np.cos(theta);shape=np.maximum(1-q*q,0)
     mx=13.7*q
     mz=1.15*q-closure*3.1*shape+(1-closure)*np.where(np.sin(theta)>=0,
             4.5*shape**.7,-4.05*shape**.76)
-    margin=np.column_stack([c[0]+side*mx,lid_height(mx,mz)-.045,c[2]+mz])
+    x=c[0]+side*mx;z=c[2]+mz
+    margin=np.column_stack([x,a.front(x,z)-.055,z])
+    name=('Left' if side<0 else 'Right')+'_eyelids'
     wet_curve=margin[:129] if closure==1 else margin
     wet=tube_collection(name+'_wet_margin',[wet_curve],[.105],LID,a,6)
-    return part,wet,margin
+    return wet,margin
 
 
 def nasal_cavity(a,side):
@@ -438,8 +445,9 @@ def stubble(a,rng,quality):
     mask=(abs(x)<rx*.93)&~lip
     density=.55+.45*np.exp(-((z+63)/17)**2)
     mask&=rng.random(count)<density
-    for xx,zz in zip(x[mask],z[mask]):
-        yy=float(a.front(xx,zz))
+    selected_x=x[mask];selected_z=z[mask]
+    selected_y=a.front(selected_x,selected_z)
+    for xx,yy,zz in zip(selected_x,selected_y,selected_z):
         t=np.linspace(0,1,3)
         length=rng.uniform(.08,.30)
         curve=np.column_stack([xx+.12*t,yy-.045-length*t,zz-.18*t])
@@ -449,11 +457,11 @@ def stubble(a,rng,quality):
 
 def build(parameters=None,quality='final',hair=True):
     p=parameters or FaceParameters();a=Anatomy(p);rng=np.random.default_rng(p.seed)
-    parts=[head_mesh(a,quality),mouth_interior(a)]
+    parts=head_mesh(a,quality)+[mouth_interior(a)]
     for side in (-1,1):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
         parts.append(nasal_cavity(a,side));parts.append(ear(a,side))
-        lids,wet,margin=eyelids(a,side);parts.extend([lids,wet])
+        wet,margin=eyelids(a,side);parts.append(wet)
         parts.append(ellipsoid(prefix+'_sclera',c,[14.5,12.8,12.2],SCLERA,iris_cut=True))
         caruncle=c+np.array([-side*12.65,-6.9,-.85])
         parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[1.2,.85,.65],LID,nu=48,nv=32))

@@ -47,6 +47,16 @@ def test_referenced_geometry_and_ear_charts_are_nondegenerate(closed):
             assert (jac>1e-14).all()
 
 
+def test_lids_share_exact_skin_boundary_positions_and_normals(closed):
+    body=next(p for p in closed.parts if p.name=='Sculpted_head_neck_and_shoulders')
+    lookup={tuple(v):n for v,n in zip(body.vertices,body.normals)}
+    for name in ['Left_eyelids','Right_eyelids']:
+        lid=next(p for p in closed.parts if p.name==name)
+        shared=[(i,lookup[tuple(v)]) for i,v in enumerate(lid.vertices) if tuple(v) in lookup]
+        assert len(shared)>30
+        assert all(np.array_equal(lid.normals[i],normal) for i,normal in shared)
+
+
 def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
     import mitsuba as mi
     mi.set_variant('llvm_ad_rgb')

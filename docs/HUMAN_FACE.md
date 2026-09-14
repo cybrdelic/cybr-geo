@@ -14,15 +14,16 @@ CYBR GEO `Assembly`, `Part`, `Material` and `View` interfaces. The default
 - Smooth authored skull, jaw, neck and shoulder cross-sections.
 - Continuous malar, orbital, nasal, philtral, vermilion and chin surface fields.
 - Genuine nasal apertures with recessed vestibule surfaces and an oral recess.
-- Eyelid patches that replace the underlying head surface, with adjustable
-  geometric closure. The default is the closed-eye pose of the first portrait.
+- Eyelid regions in the continuous head mesh, with shared boundary vertices
+  and normals and adjustable geometric closure. The default is the closed-eye pose of the first portrait.
 - Independent sclera, recessed iris and pupil surfaces, ocular clear envelope,
   lacrimal caruncles, and moist margins. These remain under the closed lids.
 - Pinna shells with rolled helix, concha, antihelix, tragus and lobule relief.
 - Individually modeled tapered brow hairs, lashes and shaved facial hair.
 
-The final head grid has 800 rows and 1,201 meridian samples; additional geometry
-represents the anatomical parts and hair. Exact per-part counts are recorded
+The final assembly contains **2,448,309 triangles across 23 parts**. Its head
+grid has 800 rows and 1,201 meridian samples; additional geometry represents
+the anatomical parts and hair. Exact per-part counts are recorded
 in the delivered render evidence. The code exposes eye spacing, eye height,
 nose projection, mouth width, skull/jaw width, brow weight, eyelid closure,
 relief and a deterministic seed. These are artistic controls rather than
@@ -91,9 +92,10 @@ recipe's `build` function.
 
 ## Validation and limits
 
-The targeted tests rebuild the anatomy with file access disabled and compare
+Five targeted tests pass. They rebuild the anatomy with file access disabled and compare
 its generated arrays exactly for determinism. They check finite, nondegenerate
-geometry and noncollapsed ear UV charts. Actual Mitsuba ray intersections verify
+geometry and noncollapsed ear UV charts. The eyelid boundaries share exactly matching positions and normals with the
+head. Actual Mitsuba ray intersections verify
 that closed lids cover the eyes, open lids expose the ocular surface, and nostril
 rays reach a recessed interior rather than a painted dark spot.
 

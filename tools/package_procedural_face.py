@@ -45,6 +45,9 @@ def package(source,out):
             mi.Bitmap(np.ascontiguousarray(linear)).write(str(out/exr));names.append(exr)
         report['delivered_image']=target+'.png';reports.append(report)
     model=source/'CYBR_Procedural_Human_Face.glb'
+    if any(r['model_sha256']!=reports[0]['model_sha256'] or
+           r['source_code_sha256']!=reports[0]['source_code_sha256'] for r in reports):
+        raise ValueError('The views were produced from different source or model revisions')
     if hashlib.sha256(model.read_bytes()).hexdigest()!=reports[0]['model_sha256']:
         raise ValueError('The packaged model differs from the portrait render receipt')
     shutil.copy2(model,out/'CYBR_Human_Face.glb')
