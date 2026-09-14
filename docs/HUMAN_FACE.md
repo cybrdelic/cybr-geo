@@ -40,6 +40,9 @@ or a volumetric skin transport model.
   the actual visible skin surface; the framing target lies inside the head and
   is not used as a focus target. The render receipt records both distances and
   the 3D focus point. This corrects the focus error found during close-up QA.
+- The profile fill panel is moved farther behind that camera and scaled around
+  its lighting target to retain angular size. The renderer rejects a central
+  ray blocked by an object other than the anatomy, and rejects blank frames.
 - Portrait: 1440 × 1800, 512 samples per pixel, 14-bounce limit.
 - Profile: 1200 × 1500, 384 samples per pixel, 14-bounce limit.
 - Clay proof: 960 × 1200, 128 samples per pixel, 14-bounce limit.

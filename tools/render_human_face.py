@@ -100,6 +100,11 @@ def create_scene(assembly,out,mesh,view_name,width,height,spp,depth,clay=False):
     az,el=np.radians([view.az,view.el])
     direction=np.array([math.cos(az)*math.cos(el),math.sin(az)*math.cos(el),math.sin(el)])
     camera=target+direction*distance
+    # Keep the fill panel behind the side-view camera. Scale it around the
+    # lighting target so its angular extent is preserved at that target.
+    fill_scale=3. if view_name=='profile' else 1.
+    fill_target=np.array([0.,0.,40.])
+    fill_position=fill_target+np.array([300.,-220.,70.])*fill_scale
     scene={
         'type':'scene',
         'integrator':{'type':'aov','aovs':'albedo:albedo,normal:sh_normal',
@@ -121,7 +126,8 @@ def create_scene(assembly,out,mesh,view_name,width,height,spp,depth,clay=False):
                        'mis_compensation':True},
         'anatomy':{'type':'obj','filename':str(mesh),'face_normals':False,'bsdf':skin_bsdf(out,clay)},
         'key':light([-270,-390,270],[0,-15,30],[155,230],[4.8,4.48,4.15]),
-        'fill':light([300,-220,110],[0,0,40],[180,220],[.65,.79,1.0]),
+        'fill':light(fill_position.tolist(),fill_target.tolist(),
+                     [180*fill_scale,220*fill_scale],[.65,.79,1.0]),
         'rim':light([190,150,200],[0,0,25],[85,185],[2.0,2.45,3.0]),
         'backdrop':{'type':'rectangle',
                     'to_world':mi.ScalarTransform4f.look_at(origin=[0,300,80],target=[0,0,80],up=[0,0,1])
@@ -130,7 +136,9 @@ def create_scene(assembly,out,mesh,view_name,width,height,spp,depth,clay=False):
     }
     return scene,{'camera_mm':camera.tolist(),'target_mm':target.tolist(),
                   'focal_length_mm':view.focal_length_mm,'f_stop':view.f_stop,
-                  'focus_distance_mm':distance,'gaussian_filter_stddev':.42}
+                  'focus_distance_mm':distance,'gaussian_filter_stddev':.42,
+                  'fill_light_position_mm':fill_position.tolist(),
+                  'fill_light_scale':fill_scale}
 
 
 def denoise(beauty,albedo,normal,out,stem,oidn,exposure):
@@ -198,6 +206,8 @@ def main():
     hit=loaded.ray_intersect(mi.Ray3f(mi.Point3f(origin),mi.Vector3f(direction)))
     if not bool(np.asarray(hit.is_valid()).ravel()[0]):
         raise ValueError('Portrait autofocus ray missed the visible surface')
+    if hit.shape[0].id()!='anatomy':
+        raise ValueError(f'Portrait camera is obstructed by {hit.shape[0].id()}')
     focus=float(np.asarray(hit.t).ravel()[0])
     params=mi.traverse(loaded)
     params['sensor.focus_distance']=focus
@@ -226,6 +236,8 @@ def main():
     normal=np.clip(v9.extract_channels(rendered,names,'normal'),-1,1)
     if not np.isfinite(beauty).all() or np.min(beauty)<0:
         raise ValueError('Non-finite or negative render radiance')
+    if float(np.ptp(beauty))<1e-5 or float(beauty.mean())<1e-5:
+        raise ValueError('Render is blank or unlit; check camera and emitter visibility')
     stem='CYBR_Face_'+args.view+('_clay' if args.clay else '')
     denoise(beauty,albedo,normal,args.out,stem,args.oidn,args.exposure)
     # Decode the full pixel data, not only the PNG header/chunk structure.

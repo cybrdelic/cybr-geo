@@ -34,5 +34,46 @@
     ],
     "preview_visually_checked": true,
     "note": "Final images are rerendered with visible-surface autofocus; framing-center focus was rejected."
+  },
+  "profile_visibility_validation": {
+    "preview_resolution": [
+      160,
+      200
+    ],
+    "preview_spp": 4,
+    "camera": {
+      "camera_mm": [
+        407.77722745927,
+        -328.59048663068796,
+        37.03258990942962
+      ],
+      "target_mm": [
+        0.0,
+        -10.0,
+        28.0
+      ],
+      "focal_length_mm": 85,
+      "f_stop": 16,
+      "focus_distance_mm": 459.5719909667969,
+      "gaussian_filter_stddev": 0.42,
+      "fill_light_position_mm": [
+        900.0,
+        -660.0,
+        250.0
+      ],
+      "fill_light_scale": 3.0,
+      "framing_distance_mm": 517.5555555555555,
+      "focus_method": "Central ray intersection with the actual visible surface",
+      "focus_point_mm": [
+        45.68471336536834,
+        -45.69280990344157,
+        29.011952735885494
+      ]
+    },
+    "preview_visually_checked": true,
+    "guards": [
+      "Autofocus must hit the anatomy object",
+      "Beauty radiance must have nonzero range and mean"
+    ]
   }
 }
