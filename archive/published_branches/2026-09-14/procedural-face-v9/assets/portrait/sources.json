@@ -1,0 +1,52 @@
+[
+  {
+    "file": "LeePerrySmith.glb",
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/20c2d848804f3cb5376c61621866bb37385c07ae/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb",
+    "sha256": "402b8a8ac9f03232e6d64b5962929703a069daf99d3c49ac8eb0e48bedc9c576",
+    "bytes": 404976,
+    "upstream_revision": "20c2d848804f3cb5376c61621866bb37385c07ae"
+  },
+  {
+    "file": "LeePerrySmith_License.txt",
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/20c2d848804f3cb5376c61621866bb37385c07ae/examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt",
+    "sha256": "7cf4da43a6ae6d32f7f7d063fe129a19468af6f4fe7c53b937f83959709fcb50",
+    "bytes": 364,
+    "upstream_revision": "20c2d848804f3cb5376c61621866bb37385c07ae"
+  },
+  {
+    "file": "Map-COL.jpg",
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/20c2d848804f3cb5376c61621866bb37385c07ae/examples/models/gltf/LeePerrySmith/Map-COL.jpg",
+    "sha256": "e976d73b31407f8d0967412bf468019ed26a5d5a32cf5811aabff7e816458a65",
+    "bytes": 148269,
+    "upstream_revision": "20c2d848804f3cb5376c61621866bb37385c07ae"
+  },
+  {
+    "file": "Map-SPEC.jpg",
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/20c2d848804f3cb5376c61621866bb37385c07ae/examples/models/gltf/LeePerrySmith/Map-SPEC.jpg",
+    "sha256": "cbb96b60e355b804d9b6c7338372d13ec8cc7adf664f50a00a3d32c66afd293a",
+    "bytes": 682006,
+    "upstream_revision": "20c2d848804f3cb5376c61621866bb37385c07ae"
+  },
+  {
+    "file": "Infinite-Level_02_Tangent_SmoothUV.jpg",
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/20c2d848804f3cb5376c61621866bb37385c07ae/examples/models/gltf/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+    "sha256": "36925e51ad9b324b94e8faf4692da1b4132809f2762bb8d5bd549ffd215d4ca6",
+    "bytes": 146793,
+    "upstream_revision": "20c2d848804f3cb5376c61621866bb37385c07ae"
+  },
+  {
+    "file": "Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
+    "source": "https://raw.githubusercontent.com/mrdoob/three.js/20c2d848804f3cb5376c61621866bb37385c07ae/examples/models/gltf/LeePerrySmith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
+    "sha256": "937dea3ab1adea4624c9743ea0653fcb022235e6dcdebfb6e739b93f9d2a5cef",
+    "bytes": 752389,
+    "upstream_revision": "20c2d848804f3cb5376c61621866bb37385c07ae"
+  },
+  {
+    "file": "small_workshop_2k.hdr",
+    "source": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/small_workshop_2k.hdr",
+    "license": "CC0",
+    "author": "Poly Haven",
+    "sha256": "8144e1b038a17537c3cb4d37deef352dc817c50a9990229f87d71809d3f4b5e9",
+    "bytes": 6755781
+  }
+]

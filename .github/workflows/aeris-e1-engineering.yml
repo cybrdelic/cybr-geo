@@ -1,0 +1,71 @@
+name: AERIS-E1 engineering qualification
+
+on:
+  push:
+    branches: ['fix/aeris-e1-rebased']
+    paths:
+      - 'examples/aeris/**'
+      - '.github/workflows/aeris-e1-engineering.yml'
+  pull_request:
+    paths:
+      - 'examples/aeris/**'
+      - '.github/workflows/aeris-e1-engineering.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: aeris-e1-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install CAD environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2 libgl1-mesa-dri libglu1-mesa
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Compile E1 sources
+        run: python -m compileall -q examples/aeris/engineering_revision.py examples/aeris/build_engineered_assets.py examples/aeris/engineering_validate_e1.py examples/aeris/export_cybr_physics_manifest.py
+      - name: Build corrected AERIS-E1
+        run: python examples/aeris/build_engineered_assets.py --out build/aeris-e1 --exports
+      - name: Re-run CAD geometry kinematics and export verification
+        run: python examples/aeris/verify.py --out build/aeris-e1 --cad
+      - name: Run multidisciplinary screen
+        run: python examples/aeris/engineering_validate_e1.py --out build/aeris-e1 --rpm 3600
+      - name: Export CYBR PHYSICS handoff
+        run: python examples/aeris/export_cybr_physics_manifest.py --out build/aeris-e1
+      - name: Gate corrected geometry and honest release state
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          v=json.loads(pathlib.Path('build/aeris-e1/validation.json').read_text())
+          e=json.loads(pathlib.Path('build/aeris-e1/engineering_report_e1.json').read_text())
+          b=v['bearing_interface']
+          assert b['series']=='6000'
+          assert (b['nominal_bore_mm'],b['nominal_od_mm'],b['nominal_width_mm'])==(10.0,26.0,8.0)
+          assert not e['critical_failures'], e['critical_failures']
+          assert e['release_ready'] is False
+          assert 'shaft/bearing production fit' in e['unqualified_domains']
+          assert pathlib.Path('build/aeris-e1/aeris_cybr_physics.manifest').is_file()
+          print('AERIS_E1_ENGINEERING_GATE_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aeris-e1-engineering
+          path: |
+            build/aeris-e1/validation.json
+            build/aeris-e1/verification.json
+            build/aeris-e1/engineering_report_e1.json
+            build/aeris-e1/aeris_cybr_physics.manifest
+            build/aeris-e1/aeris_analytic.coverage.json
+          if-no-files-found: warn
+          retention-days: 30

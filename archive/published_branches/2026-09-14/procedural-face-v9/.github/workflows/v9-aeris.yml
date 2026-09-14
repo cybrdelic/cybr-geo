@@ -1,0 +1,76 @@
+name: V9 + AERIS integration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/advanced_geometry.py'
+      - 'src/mechanism_lab/render_profiles.py'
+      - 'src/mechanism_lab/native/**'
+      - 'src/mechanism_lab/photoreal.py'
+      - 'src/cybrgeo/**'
+      - 'tests/test_v9_render_profile.py'
+      - 'docs/RENDER_V9.md'
+  push:
+    branches: ['feat/v9-default-aeris']
+    paths:
+      - 'examples/aeris/**'
+      - 'src/mechanism_lab/advanced_geometry.py'
+      - 'src/mechanism_lab/render_profiles.py'
+      - 'src/mechanism_lab/native/**'
+      - 'src/mechanism_lab/photoreal.py'
+      - 'src/cybrgeo/**'
+      - 'tests/test_v9_render_profile.py'
+      - 'docs/RENDER_V9.md'
+
+concurrency:
+  group: v9-aeris-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install CAD, EGL and rendering dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++ libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Compile Python sources
+        run: python -m compileall -q src examples/aeris
+      - name: Gate repository-wide V9 defaults
+        run: python -m pytest -q tests/test_v9_render_profile.py tests/test_shared_photo_pipeline.py
+      - name: Check shared core regression tests
+        run: python -m pytest -q tests/test_core.py
+      - name: Build complete AERIS analytic and mesh assemblies
+        run: python examples/aeris/build_assets.py --out build/aeris --exports
+      - name: Verify geometry, CAD contacts and serialized animation
+        run: python examples/aeris/verify.py --out build/aeris --cad
+      - name: Render shared-photographic proof
+        run: |
+          python examples/aeris/render_assets.py --out build/aeris --views hero rotor_detail \
+            --size 1024x666 --spp 128 --threads 2 --depth 12
+      - name: Generate analytic whiteprints
+        run: python examples/aeris/draw_assets.py --out build/aeris
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v9-aeris-verification
+          path: |
+            build/aeris/validation.json
+            build/aeris/verification.json
+            build/aeris/*.coverage.json
+            build/aeris/*.animation.json
+            build/aeris/renders/
+            build/aeris/whiteprints/
+            build/aeris/*.glb
+            build/aeris/*.step
+          if-no-files-found: error
+          retention-days: 30

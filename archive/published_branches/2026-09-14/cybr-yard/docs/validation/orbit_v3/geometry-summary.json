@@ -1,0 +1,1219 @@
+{
+  "model": "cybr_orbit_inspection_wrist",
+  "parts": 148,
+  "triangles": 3188510,
+  "units": "mm",
+  "bounds_mm": [
+    [
+      -64.7,
+      -60.0,
+      -2.0
+    ],
+    [
+      137.5,
+      77.0,
+      114.0
+    ]
+  ],
+  "truth": {
+    "model": "cybr_orbit_inspection_wrist",
+    "requested_intent": "inspection",
+    "resolved_intent": "inspection",
+    "allow_estimates": false,
+    "passed": true,
+    "part_count": 148,
+    "tier_counts": {
+      "designed": 148
+    },
+    "blocked": [],
+    "uncertain": [],
+    "parts": [
+      {
+        "name": "B01_Mounting_shoe",
+        "group": "base",
+        "role": "B01 Mounting shoe",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B02_0_Nonmarking_foot",
+        "group": "base",
+        "role": "B02 0 Nonmarking foot",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B02_1_Nonmarking_foot",
+        "group": "base",
+        "role": "B02 1 Nonmarking foot",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B02_2_Nonmarking_foot",
+        "group": "base",
+        "role": "B02 2 Nonmarking foot",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B02_3_Nonmarking_foot",
+        "group": "base",
+        "role": "B02 3 Nonmarking foot",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B03_Rear_bearing_pedestal",
+        "group": "pedestal",
+        "role": "B03 Rear bearing pedestal",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B04_0_Pedestal_clamp",
+        "group": "fasteners",
+        "role": "B04 0 Pedestal clamp",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "B04_1_Pedestal_clamp",
+        "group": "fasteners",
+        "role": "B04 1 Pedestal clamp",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H01_Removable_gear_shell",
+        "group": "housing",
+        "role": "H01 Removable gear shell",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H03_00_Cover_socket_screw",
+        "group": "cover_fasteners",
+        "role": "H03 00 Cover socket screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H03_01_Cover_socket_screw",
+        "group": "cover_fasteners",
+        "role": "H03 01 Cover socket screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H03_02_Cover_socket_screw",
+        "group": "cover_fasteners",
+        "role": "H03 02 Cover socket screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H03_03_Cover_socket_screw",
+        "group": "cover_fasteners",
+        "role": "H03 03 Cover socket screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H03_04_Cover_socket_screw",
+        "group": "cover_fasteners",
+        "role": "H03 04 Cover socket screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H03_05_Cover_socket_screw",
+        "group": "cover_fasteners",
+        "role": "H03 05 Cover socket screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H02_-1_Split_front_bearing_cover",
+        "group": "cover",
+        "role": "H02 -1 Split front bearing cover",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "H02_1_Split_front_bearing_cover",
+        "group": "cover",
+        "role": "H02 1 Split front bearing cover",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Outer_race",
+        "group": "bearings",
+        "role": "R01 Rear Outer race",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Inner_race",
+        "group": "bearings",
+        "role": "R01 Rear Inner race",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_00",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 00",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_01",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 01",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_02",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 02",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_03",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 03",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_04",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 04",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_05",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 05",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_06",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 06",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_07",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 07",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_08",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 08",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_09",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 09",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_10",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 10",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Ball_11",
+        "group": "bearing_balls",
+        "role": "R01 Rear Ball 11",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R01_Rear_Pocketed_cage",
+        "group": "bearings",
+        "role": "R01 Rear Pocketed cage",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Outer_race",
+        "group": "bearings",
+        "role": "R02 Front Outer race",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Inner_race",
+        "group": "bearings",
+        "role": "R02 Front Inner race",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_00",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 00",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_01",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 01",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_02",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 02",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_03",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 03",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_04",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 04",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_05",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 05",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_06",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 06",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_07",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 07",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_08",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 08",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_09",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 09",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_10",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 10",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Ball_11",
+        "group": "bearing_balls",
+        "role": "R02 Front Ball 11",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "R02_Front_Pocketed_cage",
+        "group": "bearings",
+        "role": "R02 Front Pocketed cage",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W01_Revolved_hollow_shaft_and_flange",
+        "group": "wrist",
+        "role": "W01 Revolved hollow shaft and flange",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W02_Parallel_drive_key",
+        "group": "wrist",
+        "role": "W02 Parallel drive key",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W03_Front_thrust_washer",
+        "group": "wrist",
+        "role": "W03 Front thrust washer",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W04_Rear_thrust_washer",
+        "group": "wrist",
+        "role": "W04 Rear thrust washer",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W07_Rear_gear_spacer",
+        "group": "wrist",
+        "role": "W07 Rear gear spacer",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W07_Front_gear_spacer",
+        "group": "wrist",
+        "role": "W07 Front gear spacer",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W05_-1_Split_rear_clamp_collar",
+        "group": "wrist",
+        "role": "W05 -1 Split rear clamp collar",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W05_1_Split_rear_clamp_collar",
+        "group": "wrist",
+        "role": "W05 1 Split rear clamp collar",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W06_0_Collar_clamp_screw",
+        "group": "wrist",
+        "role": "W06 0 Collar clamp screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "W06_1_Collar_clamp_screw",
+        "group": "wrist",
+        "role": "W06 1 Collar clamp screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G01_72T_Involute_wrist_gear",
+        "group": "gears",
+        "role": "G01 72T Involute wrist gear",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G02_20T_Involute_input_pinion",
+        "group": "gears",
+        "role": "G02 20T Involute input pinion",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G03_Input_shaft",
+        "group": "input",
+        "role": "G03 Input shaft",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G04_0_Input_plain_bearing",
+        "group": "input",
+        "role": "G04 0 Input plain bearing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G04_1_Input_plain_bearing",
+        "group": "input",
+        "role": "G04 1 Input plain bearing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G05_Fluted_rotary_input_knob",
+        "group": "input",
+        "role": "G05 Fluted rotary input knob",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G06_Input_shaft_retaining_collar",
+        "group": "input",
+        "role": "G06 Input shaft retaining collar",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G07_0_Flat_engaging_grub_screw",
+        "group": "input",
+        "role": "G07 0 Flat engaging grub screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G07_1_Flat_engaging_grub_screw",
+        "group": "input",
+        "role": "G07 1 Flat engaging grub screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "G07_2_Flat_engaging_grub_screw",
+        "group": "input",
+        "role": "G07 2 Flat engaging grub screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P00_-16.0_-26.0_Flange_screw",
+        "group": "palm",
+        "role": "P00 -16.0 -26.0 Flange screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P00_-16.0_26.0_Flange_screw",
+        "group": "palm",
+        "role": "P00 -16.0 26.0 Flange screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P00_16.0_-26.0_Flange_screw",
+        "group": "palm",
+        "role": "P00 16.0 -26.0 Flange screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P00_16.0_26.0_Flange_screw",
+        "group": "palm",
+        "role": "P00 16.0 26.0 Flange screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P01_Hollow_sculpted_palm",
+        "group": "palm",
+        "role": "P01 Hollow sculpted palm",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P03_-1_51_Support_screw",
+        "group": "palm",
+        "role": "P03 -1 51 Support screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P03_-1_89_Support_screw",
+        "group": "palm",
+        "role": "P03 -1 89 Support screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L05_-1_56_Guide_rod_lock_screw",
+        "group": "guides",
+        "role": "L05 -1 56 Guide rod lock screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L05_-1_84_Guide_rod_lock_screw",
+        "group": "guides",
+        "role": "L05 -1 84 Guide rod lock screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P02_-1_Guide_end_support",
+        "group": "palm",
+        "role": "P02 -1 Guide end support",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P04_-1_Screw_end_bushing",
+        "group": "palm",
+        "role": "P04 -1 Screw end bushing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P03_1_51_Support_screw",
+        "group": "palm",
+        "role": "P03 1 51 Support screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P03_1_89_Support_screw",
+        "group": "palm",
+        "role": "P03 1 89 Support screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L05_1_56_Guide_rod_lock_screw",
+        "group": "guides",
+        "role": "L05 1 56 Guide rod lock screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L05_1_84_Guide_rod_lock_screw",
+        "group": "guides",
+        "role": "L05 1 84 Guide rod lock screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P02_1_Guide_end_support",
+        "group": "palm",
+        "role": "P02 1 Guide end support",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "P04_1_Screw_end_bushing",
+        "group": "palm",
+        "role": "P04 1 Screw end bushing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L01_0_Ground_guide_rod",
+        "group": "guides",
+        "role": "L01 0 Ground guide rod",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L01_1_Ground_guide_rod",
+        "group": "guides",
+        "role": "L01 1 Ground guide rod",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L02_Opposed_helical_lead_screw",
+        "group": "leadscrew",
+        "role": "L02 Opposed helical lead screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L03_Fluted_gripper_input_knob",
+        "group": "leadscrew",
+        "role": "L03 Fluted gripper input knob",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L04_Flat_engaging_knob_screw",
+        "group": "leadscrew",
+        "role": "L04 Flat engaging knob screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L06_Screw_axial_retaining_collar",
+        "group": "leadscrew",
+        "role": "L06 Screw axial retaining collar",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L07_Screw_collar_lock",
+        "group": "leadscrew",
+        "role": "L07 Screw collar lock",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L08_-1_Screw_thrust_washer",
+        "group": "palm",
+        "role": "L08 -1 Screw thrust washer",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "L08_1_Screw_thrust_washer",
+        "group": "palm",
+        "role": "L08 1 Screw thrust washer",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J02_-1_56_Guide_bushing",
+        "group": "jaws",
+        "role": "J02 -1 56 Guide bushing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J02_-1_84_Guide_bushing",
+        "group": "jaws",
+        "role": "J02 -1 84 Guide bushing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J03_-1_Helically_cut_bronze_nut",
+        "group": "jaws",
+        "role": "J03 -1 Helically cut bronze nut",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_-1_-1_61_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 -1 -1 61 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_-1_-1_79_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 -1 -1 79 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J07_-1_-1_Nut_retaining_plate",
+        "group": "jaws",
+        "role": "J07 -1 -1 Nut retaining plate",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_-1_1_61_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 -1 1 61 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_-1_1_79_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 -1 1 79 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J07_-1_1_Nut_retaining_plate",
+        "group": "jaws",
+        "role": "J07 -1 1 Nut retaining plate",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J04_-1_Lofted_windowed_finger",
+        "group": "jaws",
+        "role": "One-piece lofted finger and guide carriage with hexagonal captive-nut seat",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J06_-1_Grooved_elastomer_pad",
+        "group": "jaws",
+        "role": "J06 -1 Grooved elastomer pad",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J02_1_56_Guide_bushing",
+        "group": "jaws",
+        "role": "J02 1 56 Guide bushing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J02_1_84_Guide_bushing",
+        "group": "jaws",
+        "role": "J02 1 84 Guide bushing",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J03_1_Helically_cut_bronze_nut",
+        "group": "jaws",
+        "role": "J03 1 Helically cut bronze nut",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_1_-1_61_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 1 -1 61 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_1_-1_79_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 1 -1 79 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J07_1_-1_Nut_retaining_plate",
+        "group": "jaws",
+        "role": "J07 1 -1 Nut retaining plate",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_1_1_61_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 1 1 61 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J08_1_1_79_Nut_plate_screw",
+        "group": "jaws",
+        "role": "J08 1 1 79 Nut plate screw",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J07_1_1_Nut_retaining_plate",
+        "group": "jaws",
+        "role": "J07 1 1 Nut retaining plate",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J04_1_Lofted_windowed_finger",
+        "group": "jaws",
+        "role": "One-piece lofted finger and guide carriage with hexagonal captive-nut seat",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "J06_1_Grooved_elastomer_pad",
+        "group": "jaws",
+        "role": "J06 1 Grooved elastomer pad",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C01_Through_bore_service_conduit",
+        "group": "conduit",
+        "role": "Analytic routed harness envelope; removed with the palm by axial feeding through the shaft",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C03_0_Connector_contact",
+        "group": "conduit",
+        "role": "C03 0 Connector contact",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C03_1_Connector_contact",
+        "group": "conduit",
+        "role": "C03 1 Connector contact",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C03_2_Connector_contact",
+        "group": "conduit",
+        "role": "C03 2 Connector contact",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C03_3_Connector_contact",
+        "group": "conduit",
+        "role": "C03 3 Connector contact",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C03_4_Connector_contact",
+        "group": "conduit",
+        "role": "C03 4 Connector contact",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C02_Rear_service_connector",
+        "group": "conduit",
+        "role": "C02 Rear service connector",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C02b_Connector_insulator",
+        "group": "conduit",
+        "role": "C02b Connector insulator",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "C04_Palm_service_gland",
+        "group": "conduit",
+        "role": "C04 Palm service gland",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M02_Mount_identification",
+        "group": "markings",
+        "role": "M02 Mount identification",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M04_Recessed_serial_infill",
+        "group": "markings",
+        "role": "M04 Recessed serial infill",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_00_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 00 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_02_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 02 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_03_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 03 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_04_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 04 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_05_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 05 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_06_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 06 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_07_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 07 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_08_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 08 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_09_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 09 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_10_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 10 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_11_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 11 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_13_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 13 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_14_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 14 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_15_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 15 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_16_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 16 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_17_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 17 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_18_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 18 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_19_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 19 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_20_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 20 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_21_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 21 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_22_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 22 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "M03_24_Angular_scale_tick",
+        "group": "markings",
+        "role": "M03 24 Angular scale tick",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      }
+    ],
+    "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
+  },
+  "disclaimer": "Geometry/transform/provenance checks only; not load, contact, fit or safety validation."
+}

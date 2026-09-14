@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-09-14T11:18:08.925619+00:00",
+  "counts": {
+    "tests": 17,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "scope": "Fresh nominal CAD, ideal kinematics, toolpath, checkpoint integrity, and V9 adapter contract. Rendering calls in adapter tests are mocks; no new full printer render, thermal/strength analysis, controller execution, or physical printing is claimed.",
+  "run_url": "https://github.com/cybrdelic/cybr-geo/actions/runs/34837412938",
+  "tested_parent": "2fd86f84d8273ace03db32ccbdf77d50c6bc7370",
+  "source_sha256": {
+    "examples/fuse_c220/render_delivery.py": "8da46200a76f76c5abb9b5afdfd7f74c9ca9583cffc60918f24409b58c4d80bb",
+    "examples/fuse_c220/verify_mechanism.py": "c4f2d5935f99bde40fa40d912ef8746fd07b9a2d0da9a118ef143542ed06cfcb",
+    "examples/fuse_c220/verify_edges.py": "f7f6256b2d01f8483ea6a25e3ed3ea230ab5354c440abc39732c42a22a9abd39",
+    "examples/fuse_c220/toolpath.py": "6ab27ecaa5ad25078bb45a0b9107b6ee80178071b747e2d07e35d9f30dcd9c75",
+    "examples/fuse_c220/printer.py": "82ac86623a2f2791b09d826d9171c278b692117c1a3bcfe5c6e8f8101987fe0e"
+  }
+}

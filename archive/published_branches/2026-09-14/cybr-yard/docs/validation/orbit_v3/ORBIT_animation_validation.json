@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "maximum_position_error_m": 4.967083100382297e-08,
+  "method": "Decode serialized GLB meshes, hierarchy, TRS animation and world-unit transforms; compare beginning, two intermediate checkpoints and final inventory against service poses."
+}
