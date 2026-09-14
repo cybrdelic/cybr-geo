@@ -82,7 +82,8 @@ def main():
         'See docs/HUMAN_FACE.md, examples/human_face.py and tools/render_human_face.py.\n'
         'Project code retains GPL-2.0; scan rights are separately attributed above.\n')
     archive=args.out/'CYBR_Face_Render_Package.zip'
-    files=sorted(p for p in args.out.rglob('*') if p.is_file() and p!=archive)
+    files=sorted(p for p in args.out.rglob('*')
+                 if p.is_file() and p!=archive and '.writing.' not in p.name)
     with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=5) as z:
         for path in files:z.write(path,path.relative_to(args.out))
     with zipfile.ZipFile(archive) as z:
