@@ -1,0 +1,11 @@
+{
+  "observed_at": "2026-09-14T12:10:45.117428+00:00",
+  "counts": {
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "run_url": "https://github.com/cybrdelic/cybr-geo/actions/runs/34841464153",
+  "scope": "Fresh printer nominal numerics, V9 adapter wiring, and REACH-2 v5 CAD/geometry regression tests on the current master-based framework. No fresh full render or physical qualification is claimed. Other archived branch snapshots were syntax-checked, not fully rerendered."
+}

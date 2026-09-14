@@ -1,0 +1,794 @@
+[
+  {
+    "name": "K01_Left_side_gear_48T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "left",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      -42.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 98208
+  },
+  {
+    "name": "K02_Right_side_gear_48T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "right",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      42.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 98208
+  },
+  {
+    "name": "K_Pair1_A_helical_18T",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      -23.47256688367506,
+      20.28001488883577
+    ],
+    "explode": [
+      0.0,
+      -18.77805350694005,
+      16.224011911068615
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair1_A_coupling_spur_18T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      -23.47256688367506,
+      20.28001488883577
+    ],
+    "explode": [
+      0.0,
+      -18.77805350694005,
+      16.224011911068615
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair1_A_rigid_journal",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      -23.47256688367506,
+      20.28001488883577
+    ],
+    "explode": [
+      0.0,
+      -18.77805350694005,
+      16.224011911068615
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair1_A_carrier_pin",
+    "material": 4,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -23.47256688367506,
+      20.28001488883577
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 1536
+  },
+  {
+    "name": "K_Pair1_A_front_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -23.47256688367506,
+      20.28001488883577
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair1_A_rear_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -23.47256688367506,
+      20.28001488883577
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair1_B_helical_18T",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      -30.623267872327695,
+      4.945287132175661
+    ],
+    "explode": [
+      0.0,
+      -24.498614297862158,
+      3.956229705740529
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair1_B_coupling_spur_18T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      -30.623267872327695,
+      4.945287132175661
+    ],
+    "explode": [
+      0.0,
+      -24.498614297862158,
+      3.956229705740529
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair1_B_rigid_journal",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      -30.623267872327695,
+      4.945287132175661
+    ],
+    "explode": [
+      0.0,
+      -24.498614297862158,
+      3.956229705740529
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair1_B_carrier_pin",
+    "material": 4,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -30.623267872327695,
+      4.945287132175661
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 1536
+  },
+  {
+    "name": "K_Pair1_B_front_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -30.623267872327695,
+      4.945287132175661
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair1_B_rear_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -30.623267872327695,
+      4.945287132175661
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair2_A_helical_18T",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      -5.826724641020912,
+      -30.46784665770982
+    ],
+    "explode": [
+      0.0,
+      -4.66137971281673,
+      -24.374277326167856
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair2_A_coupling_spur_18T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      -5.826724641020912,
+      -30.46784665770982
+    ],
+    "explode": [
+      0.0,
+      -4.66137971281673,
+      -24.374277326167856
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair2_A_rigid_journal",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      -5.826724641020912,
+      -30.46784665770982
+    ],
+    "explode": [
+      0.0,
+      -4.66137971281673,
+      -24.374277326167856
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair2_A_carrier_pin",
+    "material": 4,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -5.826724641020912,
+      -30.46784665770982
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 1536
+  },
+  {
+    "name": "K_Pair2_A_front_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -5.826724641020912,
+      -30.46784665770982
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair2_A_rear_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      -5.826724641020912,
+      -30.46784665770982
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair2_B_helical_18T",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      11.028889650691438,
+      -28.99317149041945
+    ],
+    "explode": [
+      0.0,
+      8.82311172055315,
+      -23.19453719233556
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair2_B_coupling_spur_18T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      11.028889650691438,
+      -28.99317149041945
+    ],
+    "explode": [
+      0.0,
+      8.82311172055315,
+      -23.19453719233556
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair2_B_rigid_journal",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      11.028889650691438,
+      -28.99317149041945
+    ],
+    "explode": [
+      0.0,
+      8.82311172055315,
+      -23.19453719233556
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair2_B_carrier_pin",
+    "material": 4,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      11.028889650691438,
+      -28.99317149041945
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 1536
+  },
+  {
+    "name": "K_Pair2_B_front_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      11.028889650691438,
+      -28.99317149041945
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair2_B_rear_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      11.028889650691438,
+      -28.99317149041945
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair3_A_helical_18T",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      29.299291524695963,
+      10.187831768874041
+    ],
+    "explode": [
+      0.0,
+      23.439433219756772,
+      8.150265415099232
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair3_A_coupling_spur_18T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      29.299291524695963,
+      10.187831768874041
+    ],
+    "explode": [
+      0.0,
+      23.439433219756772,
+      8.150265415099232
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair3_A_rigid_journal",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetA",
+    "center": [
+      0.0,
+      29.299291524695963,
+      10.187831768874041
+    ],
+    "explode": [
+      0.0,
+      23.439433219756772,
+      8.150265415099232
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair3_A_carrier_pin",
+    "material": 4,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      29.299291524695963,
+      10.187831768874041
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 1536
+  },
+  {
+    "name": "K_Pair3_A_front_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      29.299291524695963,
+      10.187831768874041
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair3_A_rear_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      29.299291524695963,
+      10.187831768874041
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair3_B_helical_18T",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      19.59437822163625,
+      24.047884358243795
+    ],
+    "explode": [
+      0.0,
+      15.675502577309002,
+      19.238307486595037
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair3_B_coupling_spur_18T",
+    "material": 2,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      19.59437822163625,
+      24.047884358243795
+    ],
+    "explode": [
+      0.0,
+      15.675502577309002,
+      19.238307486595037
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 36828
+  },
+  {
+    "name": "K_Pair3_B_rigid_journal",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "planetB",
+    "center": [
+      0.0,
+      19.59437822163625,
+      24.047884358243795
+    ],
+    "explode": [
+      0.0,
+      15.675502577309002,
+      19.238307486595037
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair3_B_carrier_pin",
+    "material": 4,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      19.59437822163625,
+      24.047884358243795
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 1536
+  },
+  {
+    "name": "K_Pair3_B_front_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      19.59437822163625,
+      24.047884358243795
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Pair3_B_rear_bush",
+    "material": 5,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      19.59437822163625,
+      24.047884358243795
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 2048
+  },
+  {
+    "name": "K_Front_six_bore_support_plate",
+    "material": 0,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 13464
+  },
+  {
+    "name": "K_Rear_six_bore_support_plate",
+    "material": 0,
+    "group": "kinematic_core",
+    "motion": "carrier",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 13464
+  },
+  {
+    "name": "K_Left_inner_thrust_collar",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "left",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      -42.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 3072
+  },
+  {
+    "name": "K_Right_inner_thrust_collar",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "right",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      42.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 3072
+  },
+  {
+    "name": "K_Front_bearing_shaft_adapter",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "left",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      -42.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 3072
+  },
+  {
+    "name": "K_Rear_bearing_shaft_adapter",
+    "material": 3,
+    "group": "kinematic_core",
+    "motion": "right",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "explode": [
+      42.0,
+      0.0,
+      0.0
+    ],
+    "role": "new kinematic-core component",
+    "triangles": 3072
+  }
+]

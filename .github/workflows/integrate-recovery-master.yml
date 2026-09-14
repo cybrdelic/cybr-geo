@@ -1,0 +1,136 @@
+name: Prepare audited recovery merge
+on:
+  push:
+    branches: ['sync/recent-chats-2026-09-14']
+    paths: ['.github/workflows/integrate-recovery-master.yml']
+permissions:
+  contents: write
+concurrency:
+  group: recovery-master-integration
+  cancel-in-progress: false
+jobs:
+  integrate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: src
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '4'
+      EXPECTED_MASTER: 5a1790506983343ec07cebcb554e5a903c5d0c0a
+      RECOVERY_BRANCH: sync/recent-chats-2026-09-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-tested.txt
+      - name: Merge current master without rewriting history
+        run: |
+          set -euo pipefail
+          git config user.name 'CYBR GEO integration'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin master "$RECOVERY_BRANCH"
+          test "$(git rev-parse origin/master)" = "$EXPECTED_MASTER"
+          test "$(git rev-parse origin/$RECOVERY_BRANCH)" = "$GITHUB_SHA"
+          git merge --no-ff --no-edit "$EXPECTED_MASTER"
+          git diff --exit-code "$EXPECTED_MASTER" -- src native pyproject.toml requirements-tested.txt
+      - name: Verify recovered snapshots and remove incomplete transport only
+        run: |
+          mkdir -p /tmp/recovery-integration-results
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          root=pathlib.Path('.')
+          receipt=json.loads((root/'docs/publication_receipts/recent-remote-source-consolidation-2026-09-14.json').read_text())
+          count=0
+          for source in receipt['sources'].values():
+              for entry in source['files']:
+                  p=root/entry['path'];data=p.read_bytes()
+                  assert len(data)==entry['bytes'],str(p)
+                  assert hashlib.sha256(data).hexdigest()==entry['sha256'],str(p)
+                  original=subprocess.check_output(['git','cat-file','blob',entry['git_blob']])
+                  assert data==original,str(p)
+                  count+=1
+          for entry in receipt['integrated_forearm_files']:
+              assert hashlib.sha256((root/entry['path']).read_bytes()).hexdigest()==entry['sha256'],entry['path']
+          staging=root/'.chat_recovery'
+          parts=sorted(staging.glob('*')) if staging.exists() else []
+          assert [p.name for p in parts]==[f'source.part{i:02d}' for i in range(8)],'Unexpected transport files; review required'
+          removed=[{'path':str(p),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in parts]
+          subprocess.run(['git','rm','--',*[str(p) for p in parts]],check=True)
+          assert not list(root.glob('.chat_recovery/source.part*'))
+          record={'verified_snapshot_files':count,'verified_active_forearm_files':len(receipt['integrated_forearm_files']),'removed_incomplete_transport':removed,'transport_preserved_in_commit':'a7c4a7f1ab4da2c2ea532d849e8c9a55d1df2e33','source_snapshot_receipt':'docs/publication_receipts/recent-remote-source-consolidation-2026-09-14.json','scope':'Byte-for-byte source preservation and clean integration; no new rendered media or physical qualification.'}
+          pathlib.Path('/tmp/recovery-integration-results/integrity.json').write_text(json.dumps(record,indent=2)+'\n')
+          print(json.dumps(record,indent=2))
+          PY
+          python -m compileall -q src examples tools tests tests_legacy archive/published_branches/2026-09-14
+          git diff --check -- ':!archive' ':!docs/validation'
+      - name: Install tested dependencies and native runtime prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Full active and legacy regression suite
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests tests_legacy --junitxml=/tmp/recovery-integration-results/tests.xml 2>&1 | tee /tmp/recovery-integration-results/tests.log
+      - name: Record tested tree and honest recovery scope
+        run: |
+          python - <<'PY'
+          import datetime,json,os,pathlib,xml.etree.ElementTree as ET
+          report=pathlib.Path('/tmp/recovery-integration-results')
+          suites=ET.parse(report/'tests.xml').getroot().iter('testsuite')
+          counts={k:0 for k in ('tests','failures','errors','skipped')}
+          for s in suites:
+              for k in counts:counts[k]+=int(s.attrib.get(k,0))
+          assert counts['tests']>0 and not counts['failures'] and not counts['errors'],counts
+          record=json.loads((report/'integrity.json').read_text())
+          record.update({'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'counts':counts,'master_base':os.environ['EXPECTED_MASTER'],'workflow_source_commit':os.environ['GITHUB_SHA'],'run_url':os.environ['GITHUB_SERVER_URL']+'/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['GITHUB_RUN_ID'],'protected_shared_source_unchanged':True,'pending_source_packages':['CELL-01/AERIS','Hot Springs v4','clouds v4','BACKLOT-01','spectral quartz','Prismatic II'],'pending_reason':'The prior transfer contains only 8 of 22 encoded parts. These are removed from the merge tree, not mistaken for restored source. The complete locally delivered recovery ZIP remains the recovery source.'})
+          out=pathlib.Path('docs/validation/recent_source/master-integration-2026-09-14.json')
+          out.write_text(json.dumps(record,indent=2)+'\n')
+          (report/'result.json').write_text(json.dumps(record,indent=2)+'\n')
+          sections=[
+              '# Recent-chat source integration — 2026-09-14',
+              'The recovery branch is integrated with master without reverting newer shared geometry, native-renderer, or skatepark changes.',
+              '## Active source',
+              'FUSE C220 printer: `examples/fuse_c220/`; tests: `tests/test_fuse_c220_recovery.py`. REACH/REACH-2 forearm and elbow: `examples/reach*`, `tools/reach*`, `tools/export_reach2_v5_cad.py`, and `tests/test_reach*`. The newest recovered assembly is `examples/reach2_orbit_integrated_v5.py`; the v5b variant is also preserved.',
+              'New printer renders dispatch through the current shared V9 entrypoint. Historical media and mocked adapter tests are not evidence of a new Mitsuba render.',
+              '## Preserved source snapshots',
+              '`archive/published_branches/2026-09-14/` contains pinned REACH-2 v5, procedural-face, and CYBR YARD snapshots. These are provenance archives, not replacements for active `src/` or the shared renderer. Snapshot bytes and active recovered forearm files were checked against their publication receipt before the merge.',
+              '## Explicitly incomplete publication',
+              'CELL-01/AERIS, Hot Springs v4, clouds v4, BACKLOT-01, spectral quartz, and Prismatic II have not been fully imported as ordinary repository source. The previous transfer stopped at 8 of 22 encoded parts. Those `.chat_recovery/source.part*` transport fragments are excluded from the merged tree; their exact contents remain in commit `a7c4a7f1ab4da2c2ea532d849e8c9a55d1df2e33` and its ancestors. The separately delivered `cybr-recent-chat-source-payload.zip` holds the recovered source and printer preview/video. Large historical CAD and render deliveries are not claimed to be fully published.',
+              '## Verification',
+              'See `docs/validation/recent_source/master-integration-2026-09-14.json` and its linked Actions run for the tested base, source-integrity counts, regression results, and transport checksums. The full active and legacy Python suites are run, not only the earlier 20 targeted checks. Skips are reported rather than counted as passes.',
+              'This is source integration and numerical/software verification, not physical build certification, a full mechanical/thermal safety analysis, or a newly rendered delivery.'
+          ]
+          pathlib.Path('docs/RECENT_CHAT_RECOVERY.md').write_text('\n\n'.join(sections)+'\n')
+          PY
+          git diff --exit-code "$EXPECTED_MASTER" -- src native pyproject.toml requirements-tested.txt
+      - name: Commit and push only after verification; refuse races
+        run: |
+          set -euo pipefail
+          git add -- docs/RECENT_CHAT_RECOVERY.md docs/validation/recent_source/master-integration-2026-09-14.json
+          git commit -m 'Integrate current master, verify recovery, and exclude unfinished transport fragments'
+          git fetch origin master "$RECOVERY_BRANCH"
+          test "$(git rev-parse origin/master)" = "$EXPECTED_MASTER"
+          test "$(git rev-parse origin/$RECOVERY_BRANCH)" = "$GITHUB_SHA"
+          git push origin "HEAD:$RECOVERY_BRANCH"
+          git rev-parse HEAD > /tmp/recovery-integration-results/pushed-sha.txt
+      - name: Preserve diagnostic source and results
+        if: always()
+        run: |
+          mkdir -p /tmp/recovery-integration-results
+          git status --short > /tmp/recovery-integration-results/git-status.txt
+          git diff --stat > /tmp/recovery-integration-results/diff-stat.txt
+          git archive --format=zip HEAD -o /tmp/recovery-integration-results/checked-source.zip
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-master-integration-results
+          path: /tmp/recovery-integration-results/
+          retention-days: 30

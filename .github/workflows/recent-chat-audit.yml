@@ -1,0 +1,46 @@
+name: Recent chat source audit
+on:
+  push:
+    branches: ['sync/recent-chats-2026-09-14']
+    paths: ['.github/workflows/recent-chat-audit.yml', '.recovery/**']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Export tracked source and branch inventory
+        run: |
+          python - <<'PY'
+          import datetime, json, pathlib, subprocess, zipfile
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          out = pathlib.Path('chat-audit'); out.mkdir()
+          branches = []
+          for line in git('for-each-ref', '--format=%(refname:short) %(objectname)', 'refs/remotes/origin/').splitlines():
+              ref, sha = line.split()
+              if ref == 'origin/HEAD':
+                  continue
+              left, right = map(int, git('rev-list', '--left-right', '--count', 'origin/master...' + sha).split())
+              branches.append({'branch': ref.removeprefix('origin/'), 'sha': sha,
+                               'behind_master': left, 'ahead_of_master': right,
+                               'paths_changed_from_merge_base': git('diff', '--name-only', 'origin/master...' + sha).splitlines()})
+          report = {'observed_at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    'master': git('rev-parse', 'origin/master'), 'audit_head': git('rev-parse', 'HEAD'),
+                    'branches': branches}
+          (out/'branches.json').write_text(json.dumps(report, indent=2)+'\n')
+          with zipfile.ZipFile(out/'tracked-source.zip', 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for path in git('ls-files').splitlines():
+                  if pathlib.Path(path).is_file():
+                      z.write(path, path)
+          print(json.dumps(report, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recent-chat-source-audit
+          path: chat-audit/
+          retention-days: 30

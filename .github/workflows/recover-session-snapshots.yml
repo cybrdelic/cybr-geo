@@ -1,0 +1,75 @@
+name: Recover recent session snapshots
+on:
+  push:
+    branches: ['sync/recent-chats-2026-09-14']
+    paths: ['.github/workflows/recover-session-snapshots.yml']
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: sync/recent-chats-2026-09-14
+          fetch-depth: 0
+      - name: Download bounded source transfer and verify every restored file
+        env:
+          SOURCE_TRANSFER: 'https://sdmntprcentralus.oaiusercontent.com/files/00000000-5b14-81f5-8dac-c62bdcd039d5/raw?se=2026-09-14T11%3A39%3A55Z&sp=r&sv=2026-02-06&sr=b&scid=0ccd508a-6336-5d00-bf5b-373f95cf74de&skoid=2757bbe4-5137-4324-975b-acedc0bad279&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-13T18%3A08%3A59Z&ske=2026-09-14T18%3A08%3A59Z&sks=b&skv=2026-02-06&sig=TJi7Vf1RzyWyw8vPRHE92GFFgSIsFno4wBd49pmbFPk%3D'
+        run: |
+          python - <<'PY'
+          import ast,datetime,hashlib,io,json,os,pathlib,urllib.request,zipfile
+          expected='000ccfa0d3b09d0c04123f364995816b707e8e4f8b74bfbd2f81141b3ef5c0b9'
+          with urllib.request.urlopen(os.environ['SOURCE_TRANSFER'],timeout=60) as response:
+              data=response.read(4168396)
+          if len(data)!=4168395 or hashlib.sha256(data).hexdigest()!=expected:
+              raise RuntimeError('Transfer size/checksum mismatch; no source files written')
+          manifest_name='docs/publication_receipts/recent-chat-source-snapshots-2026-09-14.json'
+          with zipfile.ZipFile(io.BytesIO(data)) as archive:
+              entries=archive.infolist()
+              if len(entries)!=398 or sum(i.file_size for i in entries)!=8920525:
+                  raise RuntimeError('Unexpected source snapshot member count/size')
+              manifest=json.loads(archive.read(manifest_name))
+              expected_files={r['path']:r for project in manifest['projects'] for r in project['included']}
+              expected_files.update({r['path']:r for r in manifest['printer_media']})
+              if set(archive.namelist())!=set(expected_files)|{manifest_name}:
+                  raise RuntimeError('Archive and per-file receipt do not agree')
+              for item in entries:
+                  p=pathlib.PurePosixPath(item.filename)
+                  if p.is_absolute() or '..' in p.parts or item.is_dir():raise RuntimeError('Unsafe archive path')
+                  if not (item.filename.startswith('archive/chat_sessions/2026-09-14/') or item.filename.startswith('media/fuse_c220/') or item.filename==manifest_name):
+                      raise RuntimeError('Source outside approved recovery paths')
+                  if p.suffix.lower() in ('.ttf','.otf','.woff','.woff2'):raise RuntimeError('Font files are excluded')
+                  content=archive.read(item)
+                  if item.filename!=manifest_name:
+                      record=expected_files[item.filename]
+                      if len(content)!=record['bytes'] or hashlib.sha256(content).hexdigest()!=record['sha256']:
+                          raise RuntimeError('Per-file checksum mismatch: '+item.filename)
+                  dest=pathlib.Path(item.filename)
+                  if dest.exists() and dest.read_bytes()!=content:raise RuntimeError('Refusing to replace existing source: '+item.filename)
+              syntax=[]
+              for item in entries:
+                  content=archive.read(item);p=pathlib.Path(item.filename)
+                  p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(content)
+                  if p.suffix=='.py':
+                      try:ast.parse(content,filename=str(p));syntax.append({'path':str(p),'passed':True})
+                      except SyntaxError as exc:syntax.append({'path':str(p),'passed':False,'detail':str(exc)})
+          receipt={'observed_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'transfer_sha256':expected,'files':len(entries),'bytes':sum(i.file_size for i in entries),
+                   'per_file_hashes_verified':True,'source_projects':[p['project'] for p in manifest['projects']],
+                   'python_syntax_checks':syntax,'scope':'Exact historical source snapshots and original printer preview/video. No fresh render or runtime validation is claimed for archived snapshots. Core shared framework was not replaced.'}
+          p=pathlib.Path('docs/publication_receipts/recent-chat-source-transfer-2026-09-14.json')
+          p.write_text(json.dumps(receipt,indent=2)+'\n')
+          pathlib.Path('.github/workflows/recover-session-snapshots.yml').unlink()
+          print('Verified and restored',len(entries),'files across',len(manifest['projects']),'source projects; Python syntax:',sum(s['passed'] for s in syntax),'/',len(syntax))
+          PY
+      - name: Commit and push restored project files
+        run: |
+          git config user.name 'CYBR GEO source recovery'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f -- archive/chat_sessions/2026-09-14 media/fuse_c220 docs/publication_receipts/recent-chat-source-snapshots-2026-09-14.json docs/publication_receipts/recent-chat-source-transfer-2026-09-14.json
+          git add -u -- .github/workflows/recover-session-snapshots.yml
+          git commit -m 'Recover six complete source snapshots and retain original FUSE C220 printer preview and video'
+          git pull --rebase origin sync/recent-chats-2026-09-14
+          git push origin HEAD:sync/recent-chats-2026-09-14
+          git log -1 --format='%H %s'
