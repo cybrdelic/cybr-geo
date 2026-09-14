@@ -1,77 +1,87 @@
 # CYBR GEO photographic contract / V9
 
-V9 is the repository-wide default photographic presentation contract. It is not
-a second renderer and does not duplicate the transport code. Both public CYBR
-GEO APIs route ordinary still/video work through the single native
-`mechanism_lab.photoreal` implementation, so renderer fixes apply everywhere.
+**V9 is the captured-workshop Mitsuba renderer used for the approved ORBIT V9 image.**
+It is not the older CYBR native softbox renderer. The native BVH/GGX/MIS path
+tracer remains available explicitly as `photoreal`; V9 is now the ordinary
+`lab` and `cybrgeo` rendering default.
 
-## Default command budgets
+## Exact approved V9 reference
 
-| Path | Renderer | Resolution | Samples | Bounce limit |
-|---|---|---:|---:|---:|
-| `lab render` | native photographic | 1600×1100 | 512 spp | 14 |
-| `lab video` | native photographic | 1280×720 | 128 spp/frame | 12 |
-| `lab film` | native photographic | 1920×1080 | 144 spp/frame | 12 |
-| `cybrgeo render` | shared native photographic | 1600×1100 | 512 spp | shared still path |
-| `cybrgeo video` | shared native photographic | 1280×720 | 128 spp/frame | shared film path |
+The successful ORBIT V9 workflow rendered this stack:
 
-These are generic production defaults, not a claim that every shot needs the
-same budget. The fast VTK PBR renderer remains an explicit opt-in preview.
-Compatibility `pathtrace` names resolve to the same photographic implementation
-rather than silently selecting an older presentation path.
+- Mitsuba 3.7.1 path tracing (`llvm_ad_rgb` where available).
+- 1100 × 825 pixels, 256 samples per pixel, 14-bounce maximum depth.
+- 72 mm thin lens at f/16.
+- Poly Haven `small_workshop` 2k HDRI, CC0, rotated 195 degrees and scaled 0.72.
+- A finite rendered workbench with the CC0 Poly Haven `blue_metal_plate` 1k
+  scanned roughness map. The room is illumination/background from the HDRI; it
+  is not a pasted photograph behind the CAD.
+- Gaussian reconstruction filter, standard deviation 0.42.
+- Linear-HDR beauty, albedo and shading-normal AOVs passed to Intel Open Image
+  Denoise 2.5.1 at high quality.
+- Exposure 1.04, ACES fitted tone curve, then standard sRGB transfer.
+- No generated imagery, compositing, frame interpolation, sharpening or
+  screen-space fake mechanical detail.
 
-## Approved V9 reference settings
+The corresponding code is now generalized in `mechanism_lab.v9` so the same
+renderer can consume any truthful CYBR GEO `Assembly`, rather than being an
+ORBIT-only presentation script.
 
-The V9 reference is the ORBIT photographic proof that established the look now
-being made generic. Delivered stills were 1920×1440 at 192 spp, a 12-bounce
-limit and **three** normal/depth/part/variance-guided spatial finishing passes.
-The hero was rendered at 2304×1728 before Lanczos delivery to 1920×1440. The
-reference films were 960×720, 48 spp/frame, depth 10, 24 fps and four seconds,
-with conservative geometry-reprojected adjacent-frame radiance reuse followed
-by the same three spatial passes. Those shot-specific budgets are recorded in
-`mechanism_lab.render_profiles.V9`; the three-pass finishing behavior is now
-used by the shared still and film APIs by default.
+## Public defaults
 
-## What V9 means visually
+| Path | Default backend | Default budget |
+|---|---|---|
+| `lab render` | `v9` | 1100×825, 256 spp, depth 14 |
+| `lab video` | `v9` | 1280×720, 128 spp/frame, depth 12 |
+| `lab film` | `v9` | 1920×1080, 144 spp/frame, depth 14 |
+| `cybrgeo render` | `v9` | 1100×825, 256 spp, depth 14 |
+| `cybrgeo video` | `v9` | 1280×720, 128 spp/frame, depth 12 |
 
-V9 keeps the high-fidelity stack together as one contract: physical
-focal-length/sensor camera rays and thin-lens depth of field; analytic CAD
-surface normals and real hard-edge boundaries; authored IOR, clearcoat,
-anisotropic GGX and explicit part-local microfinish; visible-normal sampling;
-dielectric entry/exit attenuation; a larger four-softbox product studio;
-power-weighted area-light sampling with consistent MIS PDFs; randomized
-low-discrepancy pixel sampling; band-limited procedural finish to suppress
-unresolved sparkle; a subdued indirect environment; hue-preserving neutral
-highlight compression followed by sRGB; three normal/depth/material/variance-
-guided linear-light finishing passes; and conservative geometry-reprojected
-radiance reuse for eligible fixed-camera film frames. Shutter blur remains real
-geometry-time supersampling, not optical-flow interpolation.
+Every V9 movie frame is independently rendered from the actual geometry and
+OIDN-guided in linear HDR. The implementation does not use optical-flow frame
+synthesis. For fast engineering inspection select `pbr`. For the previous
+in-house product-studio path select `photoreal` explicitly.
 
-The studio rig scales with the model and each softbox is raised as needed until
-its complete area remains above the matte floor. This avoids the floor/light
-intersections and implausible hot strips that can otherwise appear on large
-assemblies while preserving the newer shared renderer's BSDF, materials, color
-and temporal pipeline.
+## Materials
 
-Truth/provenance gates remain upstream of polished rendering. A V9 render is not
-evidence that concept geometry is a measured product, that a mechanism is load
-qualified, or that material parameters were measured unless the recipe says so.
+V9 translates authored CYBR material values into Mitsuba principled BSDFs and
+retains deterministic, subtle per-part variation so assemblies do not read as
+one perfectly uniform CG material. The ORBIT material names used in the
+reference image carry the exact V9 retuning used by the original successful
+render; unrelated recipes retain their authored base material values.
 
-`mechanism_lab.render_profiles.V9` names this contract and
-`tests/test_v9_render_profile.py` prevents either public command surface from
-silently falling back to PBR or drifting away from the documented defaults.
+That means the V9 visual character comes from **real captured environment
+lighting, PBR transport, realistic roughness response, physical lens framing and
+guided path-trace denoising**, rather than from pushing contrast or blurring the
+older studio output until it looks photographic.
 
-## Useful-machine validation target
+## Assets and reproducibility
 
-`examples/aeris/` is the first large integration target carried forward on top
-of the V9 default branch. AERIS is a serviceable benchtop extraction-turbine
-concept with 215 named components, analytic CAD for 202 components, real
-cutaway/export geometry, prescribed rotor motion, drawings and verification.
-It is deliberately more demanding than a decorative part: large scene bounds,
-internal reflective geometry, copper routing, a filter cartridge, impeller,
-motor internals and topology structures exercise framing, studio scale,
-materials and detail retention together.
+The renderer obtains the two CC0 Poly Haven assets through the provider API and
+caches them under `~/.cache/cybr-geo/v9` by default. Downloaded files are checked
+against the provider MD5 values. Set `CYBR_GEO_V9_CACHE` to relocate the cache.
 
-AERIS remains a geometry/mechanism concept. No airflow, filtration, capture,
-structural, electrical, thermal or safety performance is claimed until those
-analyses and physical tests exist.
+Intel OIDN is used from `PATH` when available. On Linux x86_64/WSL the renderer
+can obtain the exact 2.5.1 binary release automatically and verifies its pinned
+SHA-256 before extraction. Set `CYBR_GEO_OIDN` to use an existing executable.
+Other platforms should install OIDN separately.
+
+Mitsuba is a normal CYBR GEO Python dependency in the V9 release and the tested
+requirements pin 3.7.1, matching the approved render environment.
+
+## Truth boundary
+
+V9 improves photographic presentation; it does not promote design assumptions
+to measurements. Existing truth/provenance gates still run before rendering.
+A concept render remains a concept, and a realistic workbench/HDRI does not
+establish load capacity, manufacturing tolerance, CFD performance or physical
+prototype validation.
+
+## AERIS integration target
+
+`examples/aeris/` is the first large useful-machine integration target for the
+shared V9 backend. It contains 215 named components, 202 analytic CAD components,
+a true CAD cutaway, impeller, bearings, motor internals, routed conductors,
+filter geometry, lattice/gyroid topology, export verification and whiteprints.
+Its normal render script now chooses V9; `--native` selects the old native
+photographic backend and `--pbr` selects the raster preview explicitly.
