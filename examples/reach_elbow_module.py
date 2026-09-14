@@ -24,8 +24,6 @@ from mechanism_lab.core import Assembly, View, cad_part
 ROOT = Path(__file__).resolve().parents[1]
 ORBIT_RECIPE = ROOT / "examples" / "orbit_inspection_wrist.py"
 
-# Exact existing ORBIT B01 pattern. The 6.6 mm clearance bores are appropriate
-# for a nominal M6 attachment and are not modified by REACH.
 ORBIT_X = (-46.0, 2.0)
 ORBIT_Y = (-45.0, 63.0)
 ORBIT_PATTERN = tuple((x, y) for x in ORBIT_X for y in ORBIT_Y)
@@ -80,8 +78,6 @@ def annulus_z(ro, ri, z0, length, x, y):
 
 
 def gear_y(teeth, module, width, x, y0, z, bore=0.0, phase=0.0):
-    # CYBR GEO's gear primitive is authored about +X. +90 degrees around Z
-    # rotates that shaft axis to +Y while retaining the generated involute flanks.
     g = involute_spur_gear(teeth, module, width, bore=bore, phase=phase).val()
     return g.rotate((0, 0, 0), (0, 0, 1), 90).translate((x, y0, z))
 
@@ -136,8 +132,6 @@ def build():
     orbit_recipe = load_orbit_recipe()
     orbit = orbit_recipe.build()
 
-    # B02 feet are removable bench accessories. Attachment mode removes them;
-    # the original B01 shoe, holes, pedestal and every functional ORBIT part stay unchanged.
     orbit_source = [p for p in orbit.parts if not p.name.startswith("B02_")]
     orbit_original = {}
     parts = []
@@ -160,8 +154,7 @@ def build():
         parts.append(p)
         return shape
 
-    # --- exact ORBIT mounting interface ---------------------------------
-    # B01 bottom is z=0. REACH saddle top is also z=0: actual face-to-face contact.
+    # ORBIT B01 bottom is z=0. Saddle top is z=0: real face-to-face interface.
     saddle = box(76, 140, 6, (-22, 9, -3), 2.0)
     for x, y in ORBIT_PATTERN:
         saddle = saddle.cut(cylinder(5.1, 8, (x, y, -7), "Z"))
@@ -172,7 +165,6 @@ def build():
         add(f"R02_{i}_Steel_thread_insert", insert, 2, "reach_output", "Captive threaded-insert representation at ORBIT mounting station")
         add(f"R06_{i}_ORBIT_M6_socket_screw", socket_screw_z(x, y), 2, "reach_output", "M6-equivalent ORBIT attachment screw")
 
-    # Moving yokes turn the entire ORBIT shoe about the elbow axis.
     yoke_profile = [(-60, -6), (16, -6), (10, -20), (1, -38), (-13, -52),
                     (-22, -66), (-31, -52), (-48, -38), (-55, -20)]
     for side, y0 in (("L", -51.0), ("R", 61.0)):
@@ -181,14 +173,9 @@ def build():
         yoke = yoke.fuse(annulus_y(16.0, 8.15, y0, 8.0, PIVOT[0], PIVOT[2]))
         add(f"R03_{side}_Moving_yoke", yoke, 0, "reach_output", "Rigid saddle-to-elbow yoke")
 
-    # The shaft spans both fixed bearing packs. A 0.1 mm radial modeled gap
-    # separates its r=8.0 surface from the r=8.1 inner-race bore.
     add("R04_Hollow_output_shaft", annulus_y(8.0, 4.2, -63.0, 145.0, PIVOT[0], PIVOT[2]),
         2, "reach_output", "Hollow elbow output shaft")
 
-    # --- fixed forearm clevis --------------------------------------------
-    # Use a simple tapered web fused to a full bearing boss. The earlier highly
-    # concave outline could tessellate into an empty OCCT compound on Linux.
     web_profile = [(-50, -126), (6, -126), (0, -96), (-7, -76), (-10, -58),
                    (-34, -58), (-37, -76), (-44, -96)]
     for side, y0 in (("L", -63.0), ("R", 72.0)):
@@ -202,8 +189,6 @@ def build():
         add(f"R07_{side}_Bearing_outer_race", annulus_y(13.0, 10.1, y0, 7.0, PIVOT[0], PIVOT[2]), 2, "reach_fixed")
         add(f"R08_{side}_Bearing_inner_race", annulus_y(10.0, 8.1, y0, 7.0, PIVOT[0], PIVOT[2]), 2, "reach_output")
 
-    # Lower flange deliberately exposes another simple four-bolt interface so
-    # the next module can be an upper arm/shoulder without redesigning REACH.
     lower = box(82, 104, 8, (-22, 9, -130), 2.5)
     lower_pattern = [(-46, -23), (-46, 41), (2, -23), (2, 41)]
     for x, y in lower_pattern:
@@ -211,13 +196,9 @@ def build():
         lower = lower.cut(cylinder(6.0, 3.8, (x, y, -130), "Z"))
     add("R09_Lower_link_flange", lower, 0, "reach_fixed", "Interface for next upper-arm module")
     add("R10_Lower_crossbrace", box(58, 128, 10, (-22, 8.5, -112), 3), 0, "reach_fixed")
-    # Stationary elastomer-lined sleeve between the moving yokes. Its 8.6 mm
-    # bore clears the 8.0 mm rotating shaft, and its ends stop 1 mm short of
-    # each moving yoke hub.
     add("R11_Cable_guard", annulus_y(10.5, 8.6, -42.0, 102.0, PIVOT[0], PIVOT[2]),
         4, "reach_fixed", "Elastomer-lined hollow service passage")
 
-    # --- two-stage 16:1 involute reducer ---------------------------------
     out_gear = gear_y(STAGE2_OUTPUT_TEETH, GEAR_MODULE, 8.0,
                       PIVOT[0], 82.0, PIVOT[2], bore=16.1,
                       phase=math.pi / STAGE2_OUTPUT_TEETH)
@@ -241,18 +222,20 @@ def build():
     add("R18_Input_knob", fluted_knob_y(INPUT[0], 108.0, INPUT[2], 12.0, 12.0, 6.1),
         5, "reach_input", "Manual commissioning knob; replaceable by motor coupler")
 
-    # Separate support sits immediately outside the fixed right cheek (72..79 mm)
-    # and immediately inside the first gear stage (82..90 mm).
     support = plate_xz([(-7, -36), (30, -36), (34, -103), (-4, -103)], 79.2, 2.6, 1.0)
     support = support.cut(cylinder(4.2, 4.0, (INTERMEDIATE[0], 78.5, INTERMEDIATE[2]), "Y"))
     support = support.cut(cylinder(3.2, 4.0, (INPUT[0], 78.5, INPUT[2]), "Y"))
     add("R19_Service_side_shaft_support", support, 0, "reach_fixed", "Input/intermediate bearing support")
 
-    guard = box(101, 4, 83, (-11, 108, -68), 3.0)
-    guard = guard.cut(cylinder(30.5, 6, (PIVOT[0], 107, PIVOT[2]), "Y"))
-    guard = guard.cut(cylinder(27.0, 6, (INTERMEDIATE[0], 107, INTERMEDIATE[2]), "Y"))
-    guard = guard.cut(cylinder(14.0, 6, (INPUT[0], 107, INPUT[2]), "Y"))
-    add("R20_Perforated_gear_guard", guard, 0, "reach_fixed", "Open inspection guard around reduction train")
+    # Connected four-rail frame: no overlapping subtractive cuts, no fragile
+    # sliver faces, and the entire gearset remains visible/accessible.
+    guard_y = 108.0
+    top = box(110, 4, 6, (-11, guard_y, -21), 1.0)
+    bottom = box(110, 4, 6, (-11, guard_y, -115), 1.0)
+    left = box(6, 4, 100, (-63, guard_y, -68), 1.0)
+    right = box(6, 4, 100, (41, guard_y, -68), 1.0)
+    guard = top.fuse(bottom).fuse(left).fuse(right).clean()
+    add("R20_Service_gear_guard_frame", guard, 0, "reach_fixed", "Open service frame around reduction train")
 
     def motion(part, t, e):
         theta = elbow_angle(t)
