@@ -161,3 +161,5 @@ and valid CAD are development evidence; hardware qualification remains open.
 - The rendering stack follows [CYBR GEO's V9 contract](../../docs/RENDER_V9.md):
   Mitsuba 3.7.1, captured CC0 workshop HDRI, scanned bench roughness, guided OIDN,
   ACES and sRGB. Every animation frame comes from geometry.
+
+The current GLB exports retain the legacy opaque PBR material fallback; use the V9 PNG/MP4 outputs to inspect actual lens refraction. STEP contains the analytic lens surfaces.

@@ -315,14 +315,14 @@ def build(spec=None, include_phone=True, include_straps=True):
         for value in range(58,73,2):
             x=sign*value/2
             add(f"70_IPD_tick_{sign}_{value}",rounded_box(.35,.18,
-                2 if value%4 else 3,(x,-12.12+f,z+36)),6,"markings",
+                2 if value%4 else 3,(x,-12.12+f,z+36)),6,"markings",explode=(0,-35,0),
                 role=f"IPD setting {value} mm; both carriers must match")
     # Original embossed identifier, real CAD text geometry on the front fascia.
     text=cq.Workplane("XZ").text("CYBR / M1",7,.35,combine=True,
                                  font="DejaVu Sans",kind="bold").val()
     # XZ text extrudes toward -Y; rotate to face +Y and translate above vents.
     text=text.rotate((0,0,0),(0,0,1),180).translate((0,60.35,z+35))
-    add("71_embossed_identifier",text,1,"markings",role="Original product identifier")
+    add("71_embossed_identifier",text,1,"cover",explode=(0,105,0),role="Original product identifier bonded to removable cover")
 
     views={
         "hero":View(az=55,el=25,scale=152,target=(0,-51,78),
