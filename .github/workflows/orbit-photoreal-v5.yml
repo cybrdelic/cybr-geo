@@ -1,0 +1,51 @@
+name: ORBIT Photoreal V5 Workshop
+
+on:
+  push:
+    branches: [feat/orbit-photoreal-v5-workshop]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ ffmpeg libgl1 libegl1
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-orbit-v3-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Render workshop hero proof
+        run: |
+          python tools/orbit_photoreal_v5.py \
+            --out /tmp/orbit-v5 \
+            --size 960x720 \
+            --spp 72 \
+            --depth 14 \
+            --threads 4
+      - name: Verify outputs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          root=Path('/tmp/orbit-v5')
+          for name in ['ORBIT_v5_workshop_native.png','ORBIT_v5_workshop.png']:
+              with Image.open(root/name) as im:
+                  im.verify()
+          assert (root/'ORBIT_v5_manifest.json').is_file()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ORBIT-photoreal-v5-workshop
+          path: /tmp/orbit-v5/
+          if-no-files-found: error
+          retention-days: 7
