@@ -1,0 +1,16 @@
+{
+  "archive_sha256": "9c44a44a809634e4342ea546d9476126e67bfb7e1fdd20f0ac173dce2d0ab15d",
+  "files": 8,
+  "paths": [
+    ".skatepark_delivery.patch",
+    "tests/test_diy_skatepark.py",
+    "examples/diy_skatepark/README.md",
+    "examples/diy_skatepark/build_render.py",
+    "examples/diy_skatepark/make_plan.py",
+    "examples/diy_skatepark/make_viewer.py",
+    "examples/diy_skatepark/recipe.py",
+    "examples/diy_skatepark/viewer_template.html"
+  ],
+  "method": "checksum-verified source and checked patch; isolated skatepark branch",
+  "base_geometry_commit": "ce83e1dc06a1258e524c8af82e298e82fc223a6d"
+}

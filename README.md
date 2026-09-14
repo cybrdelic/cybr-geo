@@ -70,6 +70,14 @@ self-intersections and drawing dimensions for models above the origin.
 Selected geometry/interface checks are recorded separately from unqualified
 load and manufacturing claims.
 
+## CYBR YARD / DIY skatepark
+
+A 22 × 16 m parametric skatepark with a layered timber mini ramp, bank, quarter pipe, low street obstacles, coping, framing and access stairs. The 1,404-part design uses the normal CYBR GEO assembly/export pipeline and the V9 native photographic renderer with explicitly selected outdoor lighting. Its added finishes do not change existing product-studio defaults.
+
+[Design, dimensions, reproduction and limitations](examples/diy_skatepark/README.md) · [Parametric recipe](examples/diy_skatepark/recipe.py) · [Geometry tests](tests/test_diy_skatepark.py)
+
+This is a geometry/rendering study, not construction-qualified plans or a rider/structural simulation. The offline native renders and the optional self-contained WebGL geometry inspector are distinct outputs.
+
 ## Install
 
 Python 3.11–3.13; Linux/WSL is the documented environment. Install FFmpeg, a C++17/OpenMP compiler, CMake, Cairo, EGL/OpenGL and Mesa system libraries first. The wheel contains the native photographic source and can render independent recipes without a repository checkout. Historical built-in recipes still need their documented reference assets.

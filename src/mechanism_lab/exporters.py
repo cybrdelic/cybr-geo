@@ -23,6 +23,9 @@ MICROFINISH_PATTERNS={
     'drawn-wire':5,
     'copper-wire':6,
     'anodized':7,
+    'wood':9,
+    'concrete':10,
+    'grip':11,
 }
 
 def linear_to_srgb(x):
