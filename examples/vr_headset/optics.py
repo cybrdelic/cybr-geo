@@ -74,7 +74,17 @@ def optical_report(s):
         visible=bool(ray and -s.screen_width/2 <= left_x <= -.7)
         records.append({"angle_deg":float(angle),"left_eye_visible":visible,"ray":ray})
     visible=[r["angle_deg"] for r in records if r["left_eye_visible"]]
-    return {"model":"two spherical refracting interfaces, n=1.49, nominal pupil",
+    branch=[]
+    previous=-1.
+    for angle in np.linspace(0,45,601):
+        ray=trace_from_eye(s,float(angle))
+        if ray is None or ray["screen_x_mm"]<=previous:
+            break
+        previous=ray["screen_x_mm"]
+        branch.append(float(angle))
+    return {"monotonic_inverse_map_half_angle_deg":max(branch),
+            "monotonic_inverse_map_screen_radius_mm":previous,
+            "model":"two spherical refracting interfaces, authored IOR, nominal pupil",
             "paraxial":s.report(),"left_eye_horizontal_visible_degrees":
             [min(visible),max(visible)] if visible else None,
             "sampling_step_degrees":.5,

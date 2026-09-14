@@ -128,8 +128,8 @@ def build(spec=None, include_phone=True, include_straps=True):
             shell=shell.fuse(ear).cut(cylinder_y(1.65,-7,13,x,zz))
     add("01_optical_tunnel",shell,role="PA12 or PETG opaque tunnel; 7 mm nominal radial walls",
         tags=("print",))
-    septum=rounded_box(1.4,43,69,(0,21.5,z+1),0)
-    add("02_binocular_septum",septum,1,"baffle",role="Bond into keyed centerline; black optical isolation",
+    septum=rounded_box(1.4,43,84,(0,21.5,z),0).cut(nose)
+    add("02_binocular_septum",septum,1,"baffle",role="Bond along tunnel top/bottom; black optical isolation",
         tags=("print",))
 
     # Eye plate with real obround IPD apertures and captive nut tracks.
@@ -263,8 +263,8 @@ def build(spec=None, include_phone=True, include_straps=True):
         phone=rounded_box(s.phone_width,s.phone_thickness,s.phone_height,
             (0,s.screen_y+s.phone_thickness/2,z),8)
         add("50_S25_Ultra_body_envelope",phone,3,"phone",explode=(0,80,0),
-            role="Samsung nominal external dimensions; internals not modeled",
-            provenance="manufacturer-reference")
+            role="Samsung nominal body bounds; 8 mm corner radius is an assumed clearance envelope",
+            provenance="source-guided-concept")
         add("51_active_display_envelope",rounded_box(s.screen_width,.12,
             s.screen_height,(0,s.screen_y-.07,z),7),4,"phone",explode=(0,80,0),
             role="Derived 6.9-inch rectangular active area; corners/cutout unmeasured",
@@ -335,7 +335,9 @@ def build(spec=None, include_phone=True, include_straps=True):
         "exploded":View(az=40,el=24,scale=220,target=(0,10,66),
                     explode=1,hide=("straps",),focal_length_mm=72,f_stop=22),
     }
-    a=Assembly("cybr_visor_m1",parts,MATERIALS,views=views,
+    materials=list(MATERIALS)
+    materials[7]=replace(materials[7],ior=s.lens_ior)
+    a=Assembly("cybr_visor_m1",parts,materials,views=views,
         metadata={"truth_intent":"inspection","design":s.report(),
                   "hardware_status":"unbuilt mobile VR prototype",
                   "note":"All renders inspect declared design/envelopes; no claimed device certification."})

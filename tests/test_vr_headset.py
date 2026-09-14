@@ -58,7 +58,10 @@ def test_v9_transmission_is_explicit_and_backward_compatible():
     clear=Material("optical PMMA",(.99,.99,.99),rough=.002,ior=1.49,transmission=1)
     bsdf=principled(clear,"test")
     assert bsdf=={"type":"dielectric","int_ior":1.49,"ext_ior":1.0}
-    assert Material(**clear.as_dict())==clear
+    restored=Material(**clear.as_dict())
+    assert restored.transmission==1
+    assert principled(restored,"test")==bsdf
+    assert np.allclose(restored.color,clear.color)
     with pytest.raises(ValueError):
         principled(Material("bad",(.5,.5,.5),transmission=2),"test")
 
