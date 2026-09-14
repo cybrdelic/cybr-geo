@@ -14,7 +14,7 @@ from recipe import coupled_pose
 from mechanism_lab import View
 from mechanism_lab.core import load_cache
 from mechanism_lab.render_profiles import V9
-from mechanism_lab.v9 import render_v9
+from mechanism_lab.v9_dispatch import render_v9
 from mechanism_lab.photoreal import render_photoreal
 from mechanism_lab.render import render_still
 
