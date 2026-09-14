@@ -1,0 +1,142 @@
+name: FUSE corrected V9 operation film
+
+on:
+  push:
+    branches: ['render/fuse-c220-operation-20260914']
+    paths: ['.github/workflows/fuse-operation-film.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  frames:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        batch: [0, 1, 2, 3, 4, 5, 6, 7]
+    env:
+      PYTHONPATH: src:examples/fuse_c220
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+      FRAME_BATCH: ${{ matrix.batch }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install actual geometry and V9 dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-validation
+          path: deliverables
+          run-id: 34850079331
+          github-token: ${{ github.token }}
+      - name: Verify the exact source used for the validated geometry
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib
+          record=json.loads(pathlib.Path('deliverables/execution.json').read_text())
+          assert record['tested_commit']=='d913877447589414137ee97ec670ce2257ecf834'
+          for path, expected in record['source_sha256'].items():
+              assert hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()==expected,path
+          for name in ('FUSE_C220_mechanism_validation.json','FUSE_C220_edge_validation.json','FUSE_C220_hotend_validation.json','FUSE_C220_calibration.validation.json'):
+              assert json.loads((pathlib.Path('deliverables')/name).read_text())['all_passed'],name
+          PY
+      - name: Path trace twelve real operation frames
+        run: |
+          python - <<'PY'
+          import os, subprocess
+          start=int(os.environ['FRAME_BATCH'])*12
+          subprocess.run(['python','examples/fuse_c220/render_delivery.py','frames',*[str(i) for i in range(start,start+12)]],check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fuse-v9-frames-${{ matrix.batch }}
+          path: work/film_v9_frames/
+          if-no-files-found: error
+          retention-days: 30
+  assemble:
+    needs: frames
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    env:
+      PYTHONPATH: src:examples/fuse_c220
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-validation
+          path: deliverables
+          run-id: 34850079331
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fuse-v9-frames-*
+          path: work/film_v9_frames
+          merge-multiple: true
+      - name: Require all 96 current frame receipts and encode the film
+        run: |
+          python examples/fuse_c220/render_delivery.py encode
+          ffmpeg -v error -xerror -i deliverables/FUSE_C220_printing.mp4 -f null -
+          python - <<'PY'
+          import json, pathlib, subprocess
+          path=pathlib.Path('deliverables/FUSE_C220_printing.mp4')
+          info=json.loads(subprocess.check_output(['ffprobe','-v','error','-count_frames','-show_streams','-show_format','-of','json',str(path)],text=True))
+          stream=next(s for s in info['streams'] if s['codec_type']=='video')
+          assert int(stream['nb_read_frames'])==96
+          assert (int(stream['width']),int(stream['height']))==(960,720)
+          assert abs(float(info['format']['duration'])-4)<.1
+          receipt=json.loads(path.with_suffix('.video.json').read_text())
+          assert receipt['generated_imagery'] is False and receipt['frame_interpolation'] is False
+          assert len(receipt['frames_detail'])==96
+          assert len({r['sha256'] for r in receipt['frames_detail']})>90
+          (path.parent/'FUSE_C220_video_probe.json').write_text(json.dumps(info,indent=2))
+          PY
+      - name: Preserve operation film and receipts
+        run: |
+          mkdir -p media/fuse_c220
+          cp deliverables/FUSE_C220_printing.mp4 media/fuse_c220/printing.mp4
+          cp deliverables/FUSE_C220_printing.video.json media/fuse_c220/printing.video.json
+          cp deliverables/FUSE_C220_video_probe.json media/fuse_c220/printing.probe.json
+          ffmpeg -y -v error -i media/fuse_c220/printing.mp4 -filter_complex "[0:v]fps=12,scale=640:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse" media/fuse_c220/printing.gif
+          git config user.name 'CYBR GEO printer verification'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- media/fuse_c220
+          git commit -m 'Preserve 96 geometry-rendered V9 FUSE operation frames as verified video'
+          git push origin HEAD:render/fuse-c220-operation-20260914
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fuse-c220-v9-operation-film
+          path: |
+            media/fuse_c220/
+            deliverables/FUSE_C220_printing.mp4
+            deliverables/FUSE_C220_printing.video.json
+            deliverables/FUSE_C220_video_probe.json
+          if-no-files-found: error
+          retention-days: 30
