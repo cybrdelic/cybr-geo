@@ -330,7 +330,7 @@ def validate(assembly: Assembly, expensive=False):
             raise ValueError(f'Invalid transmission for {m.name}')
 
     for name, view in assembly.views.items():
-        if view.studio_style not in {'classic', 'product'}:
+        if view.studio_style not in {'classic', 'product', 'outdoor'}:
             raise ValueError(f'Invalid studio style on view {name}')
         for color in (view.floor_color, view.background_color):
             if len(color) != 3 or not all(np.isfinite(color)) or any(c < 0 or c > 1 for c in color):
