@@ -1,0 +1,95 @@
+name: V9 AERIS isolation
+
+on:
+  push:
+    branches: ['fix/true-v9-mitsuba-default']
+    paths:
+      - '.github/workflows/v9-aeris-isolation.yml'
+      - 'src/mechanism_lab/v9_dispatch.py'
+  workflow_dispatch:
+
+jobs:
+  isolate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install tested environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg libcairo2
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Build AERIS cache
+        run: python examples/aeris/build_assets.py --out build/aeris
+      - name: Isolate exact shaft mesh through stack stages
+        shell: bash --noprofile --norc {0}
+        run: |
+          cat >/tmp/aeris_isolate.py <<'PY'
+          import os,sys
+          from dataclasses import replace
+          from pathlib import Path
+          ROOT=Path.cwd();sys.path.insert(0,str(ROOT/'src'));sys.path.insert(0,str(ROOT/'examples/aeris'))
+          os.environ.setdefault('MECHANISM_LAB_ROOT',str(ROOT))
+          import drjit as dr
+          from recipe import coupled_pose
+          from mechanism_lab.core import load_cache
+          from mechanism_lab.v9 import ensure_assets
+          from mechanism_lab.v9_dispatch import _scalar_mitsuba,_generic_shapes,_procedural_mesh
+
+          mode=sys.argv[1]
+          a=load_cache(ROOT/'build/aeris/cache');a.motion_function=coupled_pose
+          part=next(p for p in a.parts if p.group=='shaft')
+          a=replace(a,name='aeris_isolate_shaft',parts=[part])
+          mi,variant=_scalar_mitsuba()
+          r=_generic_shapes(a)[0]
+          print('RECORD',mode,'vertices',len(r['vertices']),'faces',len(r['faces']),
+                'vmin',r['vertices'].min(axis=0).tolist(),'vmax',r['vertices'].max(axis=0).tolist(),
+                'nmin',r['normals'].min(axis=0).tolist(),'nmax',r['normals'].max(axis=0).tolist(),flush=True)
+          if mode=='face_normals':
+              # Same exact indexed positions, but let Mitsuba derive normals.
+              import drjit as dr
+              props=mi.Properties(); props['bsdf']=mi.load_dict({'type':'diffuse','reflectance':.5})
+              mesh=mi.Mesh('shaft',len(r['vertices']),len(r['faces']),props,False,False)
+              p=mi.traverse(mesh)
+              V=r['vertices'];F=r['faces']
+              p['vertex_positions']=dr.ravel(mi.Point3f(mi.Float(V[:,0]),mi.Float(V[:,1]),mi.Float(V[:,2])))
+              p['faces']=dr.ravel(mi.Vector3u(mi.UInt32(F[:,0]),mi.UInt32(F[:,1]),mi.UInt32(F[:,2])))
+              p.update()
+          else:
+              mesh=_procedural_mesh(mi,r,a.materials[r['material']])
+          print('MESH_READY',mode,mesh,flush=True)
+          integrator={'type':'path','max_depth':2}
+          if mode in ('aov','env','envbench'):
+              integrator={'type':'aov','aovs':'albedo:albedo,normal:sh_normal','beauty':{'type':'path','max_depth':2,'rr_depth':2}}
+          scene={
+              'type':'scene','integrator':integrator,
+              'sensor':{'type':'perspective','to_world':mi.ScalarTransform4f.look_at(origin=[150,-220,120],target=[90,0,50],up=[0,0,1]),'film':{'type':'hdrfilm','width':32,'height':24,'component_format':'float32'},'sampler':{'type':'independent','sample_count':1}},
+              'shaft':mesh,
+          }
+          if mode in ('minimal','aov','face_normals'):
+              scene['light']={'type':'constant','radiance':1.0}
+          else:
+              assets=ensure_assets()
+              scene['environment']={'type':'envmap','filename':str(assets['hdri']),'scale':.72,'mis_compensation':True}
+              if mode=='envbench':
+                  scene['bench']={'type':'rectangle','to_world':mi.ScalarTransform4f.translate([90,0,-2]) @ mi.ScalarTransform4f.scale([185,135,1]),'bsdf':{'type':'principled','base_color':{'type':'rgb','value':[.105,.1,.094]},'metallic':0.0,'roughness':{'type':'bitmap','filename':str(assets['roughness']),'raw':True,'wrap_mode':'repeat'},'specular':.34,'clearcoat':0.0}}
+          print('LOAD_START',mode,flush=True)
+          s=mi.load_dict(scene)
+          print('LOAD_OK',mode,flush=True)
+          img=mi.render(s,spp=1);dr.eval(img)
+          print('RENDER_OK',mode,dr.width(img),flush=True)
+          PY
+          : >/tmp/results.txt
+          for mode in minimal face_normals aov env envbench; do
+            echo "=== $mode ==="
+            python /tmp/aeris_isolate.py "$mode"
+            code=$?
+            echo "$mode $code" | tee -a /tmp/results.txt
+          done
+          echo '=== RESULTS ==='; cat /tmp/results.txt
+          # Diagnostic workflow intentionally records failures without masking them.
