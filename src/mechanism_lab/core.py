@@ -31,6 +31,7 @@ class Material:
     opacity: float = 1.0
     microfinish: str = 'none'
     material_source: str = ''
+    transmission: float = 0.0
 
     def as_dict(self):
         return dict(
@@ -46,6 +47,7 @@ class Material:
             opacity=self.opacity,
             microfinish=self.microfinish,
             material_source=self.material_source,
+            transmission=self.transmission,
         )
 
 
@@ -324,8 +326,11 @@ def validate(assembly: Assembly, expensive=False):
         if not -1 <= m.anisotropy <= 1 or not np.isfinite(m.anisotropy_rotation) or not 0 <= m.opacity <= 1:
             raise ValueError(f'Invalid anisotropy/opacity for {m.name}')
 
+        if not np.isfinite(m.transmission) or not 0 <= m.transmission <= 1:
+            raise ValueError(f'Invalid transmission for {m.name}')
+
     for name, view in assembly.views.items():
-        if view.studio_style not in {'classic', 'product', 'outdoor'}:
+        if view.studio_style not in {'classic', 'product'}:
             raise ValueError(f'Invalid studio style on view {name}')
         for color in (view.floor_color, view.background_color):
             if len(color) != 3 or not all(np.isfinite(color)) or any(c < 0 or c > 1 for c in color):
