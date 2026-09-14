@@ -38,6 +38,13 @@ def test_shared_photographic_api_and_view_defaults_match_v9():
     assert still['depth'].default==V9.still_depth
     assert film['spp'].default==V9.film_spp
     assert film['depth'].default==V9.film_depth
+    assert V9.filter_passes==3
+    assert 'V9.filter_passes' in inspect.getsource(render_photoreal)
+    assert 'V9.filter_passes' in inspect.getsource(render_photoreal_video)
+    assert V9.reference_still_size==(1920,1440)
+    assert (V9.reference_still_spp,V9.reference_still_depth)==(192,12)
+    assert V9.reference_film_size==(960,720)
+    assert (V9.reference_film_spp,V9.reference_film_depth,V9.reference_fps,V9.reference_duration)==(48,10,24,4.0)
     view=View()
     assert view.tone_mapping==V9.tone_mapping
     assert view.studio_style==V9.studio_style
