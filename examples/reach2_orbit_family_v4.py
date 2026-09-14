@@ -13,7 +13,6 @@ retained as release constraints. Native units are millimetres.
 from __future__ import annotations
 
 import importlib.util
-import math
 from pathlib import Path
 
 import cadquery as cq
@@ -35,7 +34,6 @@ def _load_v3():
 
 _v3 = _load_v3()
 
-# Preserve all qualified drivetrain and interface constants.
 RATIO = _v3.RATIO
 GEAR_OD = _v3.GEAR_OD
 GEAR_LEN = _v3.GEAR_LEN
@@ -69,7 +67,6 @@ HOUSING_BOLT_COUNT = _v3.HOUSING_BOLT_COUNT
 HOUSING_PILOT_BORE_NOMINAL_MM = _v3.HOUSING_PILOT_BORE_NOMINAL_MM
 HOUSING_PILOT_BORE_TOL_MM = _v3.HOUSING_PILOT_BORE_TOL_MM
 
-# ORBIT-family packaging release constraints.
 WEB_THICKNESS_MM = 12.0
 RING_OUTER_RADIUS_MM = 62.0
 RING_INNER_RADIUS_MM = 55.0
@@ -115,10 +112,6 @@ def rotation_y(angle, pivot=(0, 0, 0)):
 
 def build():
     old = _v3.build()
-
-    # Replace only the fixed packaging that visually broke the ORBIT family.
-    # Qualified reducer, reducer adapters, output structure, ORBIT interface,
-    # fasteners, hard stops, coupling and servo envelope remain unchanged.
     remove = {
         "R3_12_A_Fixed_housing_web",
         "R3_12_B_Fixed_housing_web",
@@ -145,9 +138,6 @@ def build():
     px, py, pz = map(float, PIVOT)
     gear_y0 = py - GEAR_LEN / 2.0
 
-    # Twin graphite pedestals echo ORBIT B03: a circular bearing/reducer ring
-    # flowing into two narrow tapered legs instead of a broad polygon slab.
-    # The 12 mm thickness is unchanged from v3.
     for side, y0 in (("A", -19.0), ("B", 39.0)):
         ring = annulus_y(RING_OUTER_RADIUS_MM, RING_INNER_RADIUS_MM,
                          y0, WEB_THICKNESS_MM, px, pz)
@@ -166,35 +156,28 @@ def build():
         add(f"R4_12_{side}_Orbit_family_pedestal", web, 0, "reach4_fixed",
             "12 mm graphite anodized annular reducer pedestal with twin tapered load ribs")
 
-    # Rounded twin lower gussets preserve the old 18 mm load-path thickness but
-    # use ORBIT-like compact blocks rather than 64 mm-wide featureless boxes.
     for side, x in (("L", px - 38.0), ("R", px + 38.0)):
         g = box(GUSSET_THICKNESS_MM, 54.0, 48.0, (x, py, pz - 69.0), 3.0)
-        # Remove a service relief from the low-stress outer corner to break up the mass.
         relief = cylinder(9.0, 56.0, (x, py - 28.0, pz - 58.0), "Y")
         g = g.cut(relief)
         add(f"R4_14_{side}_Rounded_lower_gusset", g, 0, "reach4_fixed",
             "18 mm graphite anodized rounded lower reducer gusset")
 
-    # Circular satin adapter instead of the generic 80x80 square plate. It still
-    # carries the unchanged 48 mm-square four-M5 servo pattern and 44 mm bore.
     motor_face_y = gear_y0 + GEAR_LEN + 10.0
     motor_adapter = annulus_y(MOTOR_ADAPTER_OD_MM / 2.0, 22.0,
                               motor_face_y, 10.0, px, pz)
     add("R4_20_Circular_motor_adapter", motor_adapter, 1, "reach4_fixed",
         "Satin machined circular 60 mm servo adapter")
 
-    # Teal service rings deliberately reuse ORBIT's teal anodized material. They
-    # are real removable covers/retainers, not image-only decoration.
+    # Count this moving retainer in the same qualified output group as the rest
+    # of the v3 output structure so v3b mass/inertia accounting remains complete.
     add("R4_30_Output_service_ring",
         annulus_y(48.0, 42.0, gear_y0 - 10.5, 2.5, px, pz),
-        5, "reach4_output", "Teal anodized removable output service retainer")
+        5, "reach3_output", "Teal anodized removable output service retainer")
     add("R4_31_Housing_service_ring",
         annulus_y(61.5, 55.5, gear_y0 + 39.0, 2.5, px, pz),
         5, "reach4_fixed", "Teal anodized reducer housing service retainer")
 
-    # Compact teal motor rear cap gives the vendor motor the same accent hierarchy
-    # as the wrist without pretending the commercial motor body is a custom part.
     motor_body_y = motor_face_y + 14.0
     add("R4_32_Motor_rear_service_cap",
         box(58.0, 3.0, 58.0,
@@ -203,7 +186,7 @@ def build():
 
     def motion(part, t, e):
         if part.name.startswith("R4_"):
-            if part.group == "reach4_output":
+            if part.group in ("reach3_output", "reach4_output"):
                 return rotation_y(elbow_angle(t), PIVOT)
             return np.eye(4)
         return old.pose(part, t, e)
