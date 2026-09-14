@@ -42,10 +42,13 @@ validation or physical prototype testing.
 
 `export_cybr_physics_manifest.py` exports CAD-derived E1 mass/CG/bearing/shaft/
 hood/filter/outlet parameters for the separate CYBR PHYSICS repository. That
-repository then runs deterministic CPU solid-FEM, thermal-FEM and D3Q19-LBM
-reduced-order submodels. Those submodels deliberately keep their limitations in
-the resulting report rather than promoting a numerical pass to fabrication or
-safety qualification.
+repository runs deterministic CPU solid-FEM, thermal-FEM and D3Q19-LBM
+**reduced-order submodels**. The structural runner uses the actual impeller CG and
+49.5/100 mm bearing stations, while preserving the 10 mm circular shaft second
+moment in its equivalent tetrahedral section. The LBM case is deliberately a
+low-Mach local hood/coupling validation, not a CAD-resolved fan or capture CFD
+claim. Numerical passes do not promote the design to fabrication or safety
+qualification.
 
 ## Why AERIS uses V9
 
