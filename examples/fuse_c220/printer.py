@@ -1,7 +1,7 @@
 """CYBR FUSE C220: original, millimetre-native Cartesian printer mechanism.
 
-Geometry is built with CYBR GEO's OpenCascade/mesh part contracts. Native V9
-rendering is used unmodified. No imported product meshes or generated images.
+Geometry is built with CYBR GEO's OpenCascade/mesh part contracts. Shared V9
+rendering is selected by render_delivery.py. No imported product meshes or generated images.
 X = nozzle translation; Y = negative bed translation; Z = gantry elevation.
 Nominal purchased-component envelopes require vendor reconciliation before build.
 """

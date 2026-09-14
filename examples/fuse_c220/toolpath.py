@@ -195,4 +195,5 @@ def verify(tp):
 
 if __name__=='__main__':
  import sys
- p=Path(sys.argv[1]);tp=generate(p);p.with_suffix('.validation.json').write_text(json.dumps(verify(tp),indent=2));print(json.dumps(verify(tp),indent=2))
+ p=Path(sys.argv[1]);p.parent.mkdir(parents=True,exist_ok=True);tp=generate(p);report=verify(tp);p.with_suffix('.validation.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
+ if not report['all_passed']:raise SystemExit(1)

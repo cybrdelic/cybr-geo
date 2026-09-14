@@ -1,9 +1,14 @@
 # CYBR FUSE / C220
 
-An original Cartesian FFF printer designed with CYBR GEO, rendered with its native
-V9 path tracer, and exercised with a deterministic extrusion toolpath.
+An original Cartesian FFF printer designed with CYBR GEO and exercised with a
+deterministic extrusion toolpath. The recovered recipe now uses the repository's
+current Mitsuba/OIDN V9 renderer for new renders.
 
-![CYBR FUSE C220](../../media/fuse_c220/hero.jpg)
+**Recovery note (2026-09-14):** the original source is preserved in Git history.
+Original delivered images and video used the older native photographic renderer;
+they are not evidence of a fresh Mitsuba V9 run. This publication restores source
+and numerical evidence, not the entire historical binary delivery. See
+[the recovery receipt](../../docs/publication_receipts/fuse-c220-chat-recovery-2026-09-14.json).
 
 This is a **digital prototype**. The evidence covers nominal geometry, selected
 CAD interfaces, guide support, ideal motor/axis kinematics and G-code deposition.
@@ -91,28 +96,28 @@ All axis values are millimetres. `State` rejects coordinates outside the
 specified travel region. The resulting assembly can use the same CYBR GEO
 render and export functions as the supplied poses.
 
-Optional: set `CYBR_GEO_EMBREE_ROOT` to an installed Embree 4 prefix. Without it,
-CYBR GEO uses its native BVH accelerator. This changes acceleration, not geometry,
-materials or light transport. The still/film code calls the shared V9 renderer
-without modifying or forking its transport code.
+New stills call `mechanism_lab.v9_dispatch.render_v9`, with the current
+`V9.still_spp` and `V9.still_depth`; preview uses an explicit 32-spp budget.
+The main still resolutions remain 1920 x 1440 and 1920 x 1280. The renderer
+fetches its recorded workshop lighting/bench assets and OIDN runtime as described
+in [the shared V9 documentation](../../docs/RENDER_V9.md). No model is downloaded.
 
-Stills use 1920 × 1440 (hero/drive) and 1920 × 1280 (printing), 256 spp, 12-bounce
-limit, thin-lens sampling, explicit part-attached PBR finishes and the V9 contract's
-three guide-aware linear-light filtering passes. Unfiltered tone-mapped outputs
-are retained for comparison. The operation film uses 960 × 720, 48 spp, 10 bounces
-and 24 fps, matching V9's reference film budget. Each video frame is freshly traced.
-A fixed random seed suppresses independent-frame sampling changes. The film has
-no frame interpolation, image-generated objects or image-based camera pans.
+The operation film traces each frame through the same V9 entrypoint, at 960 x 720,
+24 fps, `V9.video_spp`, and `V9.video_depth`. Frames are serialized because the
+shared generic dispatch temporarily changes renderer module globals. They are
+not submitted concurrently through that non-thread-safe dispatch. Renderer JSON,
+truth receipts and unfiltered PNGs accompany the frames. Explanatory text labels
+are burned into the final frames and disclosed in the video receipt.
 
-The film labels the two-second variable-speed 180-layer time-lapse separately from the two-second
-segment at modeled real time. Motion is accelerated in the time-lapse; it is not
-a claim that a real printer can finish the vessel in two seconds.
+The first two seconds are a variable-speed 180-layer time-lapse. The next two
+seconds replay final extrusion at modeled real time. This is not a claim that a
+physical printer produces the vessel in two seconds. There is no frame interpolation.
 
-Completed film frames are checkpoints in `work/film_frames`. Re-running `film`
-reuses them. Clear that folder when changing the model, toolpath or render
-settings. `render_delivery.py frames 41` regenerates a missing frame;
-`render_delivery.py encode` assembles the movie once all 96 frames are present.
-Large native render inputs use isolated temporary directories.
+Current-V9 checkpoints live in `work/film_v9_frames`, separate from historical
+native frames. Source, cache and toolpath hashes invalidate changed checkpoints;
+encoding refuses missing or modified frames. `render_delivery.py frames 41`
+renders one selected frame; `render_delivery.py encode` requires all 96 valid
+frame receipts. Do not treat adapter wiring tests as evidence of a completed render.
 
 ## Before a physical build
 

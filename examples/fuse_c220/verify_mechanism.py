@@ -73,6 +73,7 @@ def verify(a):
  return {'all_passed':all(c['passed'] for c in checks),'checks':checks,'scope':'Nominal CAD interfaces, selected BREP interference checks, full axis envelopes, ideal kinematics. Not an exhaustive tolerance-stack collision certification; no heat/strength/contact/friction/controller or physical print validation.'}
 
 if __name__=='__main__':
- out=Path('deliverables');a=build();r=verify(a);out.joinpath('FUSE_C220_mechanism_validation.json').write_text(json.dumps(r,indent=2))
+ out=Path('deliverables');out.mkdir(parents=True,exist_ok=True);a=build();r=verify(a);out.joinpath('FUSE_C220_mechanism_validation.json').write_text(json.dumps(r,indent=2))
+ if not r['all_passed']:raise SystemExit(1)
  save_cache(a,out/'cache');export_glb(posed(a,State()),out/'FUSE_C220.glb');export_step(a,out/'FUSE_C220_analytic.step',individual=False);export_bom(a,out)
  print('ALL_PASSED',r['all_passed'],flush=True)
