@@ -1,23 +1,23 @@
 """Runtime dispatch for the true V9 renderer.
 
 The approved ORBIT V9 artifact stays on its exact Mitsuba PLY/``llvm_ad_rgb``
-path. Large assemblies use the *same* V9 camera, HDRI, physical bench, principled
-materials, path integrator, AOVs, OIDN and ACES/sRGB pipeline, but their already-
-world-transformed geometry is packed into a small set of material/variation OBJ
-meshes and loaded with Mitsuba ``scalar_rgb``. This avoids a reproducible
-Mitsuba 3.7.1 PLY-loader crash seen on AERIS at 1.657M triangles without
-simplifying, decimating, moving or synthesizing any geometry.
+path. Other CYBR GEO assemblies use the *same* V9 camera, HDRI, physical bench,
+principled materials, path integrator, AOVs, OIDN and ACES/sRGB pipeline, but
+their already-world-transformed geometry is packed into material/variation OBJ
+meshes and loaded with Mitsuba ``scalar_rgb``. This avoids reproducible Mitsuba
+3.7.1 PLY-loader crashes seen on otherwise validated AERIS meshes. OBJ here is
+only a renderer interchange format: no geometry is simplified, decimated,
+moved, replaced, or synthesized.
 """
 from __future__ import annotations
 
-import math
 from pathlib import Path
 import numpy as np
 
 from . import v9 as _core
 from .render_profiles import V9
 
-LARGE_ASSEMBLY_PART_LIMIT = _core.V9_EXACT_PART_SHAPE_LIMIT
+ORBIT_REFERENCE_MODEL='cybr_orbit_inspection_wrist'
 
 
 def _scalar_mitsuba():
@@ -58,16 +58,46 @@ def _write_obj(path:Path,vertices,normals,faces):
             stream.write(f'v {x:.9g} {y:.9g} {z:.9g}\n')
         for x,y,z in normals:
             stream.write(f'vn {x:.9g} {y:.9g} {z:.9g}\n')
-        # Vertex and normal arrays are one-to-one, so the same 1-based index is
-        # used on each side of OBJ's v//vn pair.
         for a,b,c in faces+1:
             stream.write(f'f {a}//{a} {b}//{b} {c}//{c}\n')
+
+
+def _generic_shapes(assembly,time_seconds=0.0,explode=0.0):
+    """Batch exact transformed triangles by material and finish variation."""
+    groups={}
+    for part in assembly.parts:
+        bucket=_core._variation_bucket(part.name)
+        key=(int(part.material),bucket)
+        record=groups.setdefault(key,{
+            'vertices':[],'normals':[],'faces':[],'count':0,'offset':0
+        })
+        vertices,normals,faces=_core.transformed_mesh(
+            assembly,part,time_seconds,explode)
+        record['vertices'].append(vertices)
+        record['normals'].append(normals)
+        record['faces'].append(faces+record['offset'])
+        record['offset']+=len(vertices)
+        record['count']+=1
+
+    shapes=[]
+    for (material,bucket),record in sorted(groups.items()):
+        label=f'material_{material:02d}_variation_{bucket}'
+        shapes.append({
+            'label':label,
+            'material':material,
+            'variation_key':label,
+            'vertices':np.concatenate(record['vertices'],axis=0),
+            'normals':np.concatenate(record['normals'],axis=0),
+            'faces':np.concatenate(record['faces'],axis=0).astype('<i4',copy=False),
+            'source_parts':record['count'],
+        })
+    return shapes
 
 
 def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
                       time_seconds=0.0,explode=0.0,azimuth=None,
                       f_stop=None,focus_distance=None):
-    """V9 scene builder differing from core only in large-mesh serialization."""
+    """V9 scene builder differing from reference only in mesh interchange/variant."""
     origin,target,distance,hfov=_core._camera(view,size,azimuth)
     focal=float(view.focal_length_mm)
     fstop=float(f_stop or view.f_stop or V9.reference_f_stop)
@@ -128,7 +158,7 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
             'bsdf':bench_bsdf,
         }
 
-    render_shapes,source_mode=_core._render_shapes(
+    render_shapes=_generic_shapes(
         assembly,time_seconds=time_seconds,explode=explode)
     triangle_count=0
     source_parts=0
@@ -143,7 +173,7 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
                 assembly.materials[record['material']],record['variation_key']),
         }
     if source_parts!=len(assembly.parts):
-        raise RuntimeError('V9 large-scene serialization lost source parts')
+        raise RuntimeError('V9 generic serialization lost source parts')
 
     camera={
         'origin':origin.tolist(),'target':target.tolist(),'distance':distance,
@@ -152,13 +182,17 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
     }
     return (
         scene,triangle_count,camera,len(render_shapes),
-        source_mode+'-obj-large-scene',
+        'material-variation-batches-obj-generic',
     )
 
 
 def _dispatch(function,assembly,*args,**kwargs):
-    if len(assembly.parts)<=LARGE_ASSEMBLY_PART_LIMIT:
+    # Preserve the exact loader/variant used by the approved V9 artifact itself.
+    # Generic CYBR GEO models get a more robust interchange path while retaining
+    # every visual/transport element that defines V9.
+    if assembly.name==ORBIT_REFERENCE_MODEL:
         return function(assembly,*args,**kwargs)
+
     original_mitsuba=_core._mitsuba
     original_scene=_core._scene_dict
     _core._mitsuba=_scalar_mitsuba
@@ -166,7 +200,7 @@ def _dispatch(function,assembly,*args,**kwargs):
     try:
         result=function(assembly,*args,**kwargs)
         if isinstance(result,dict):
-            result['large_scene_dispatch']=(
+            result['generic_v9_dispatch']=(
                 'scalar_rgb + exact OBJ material/variation batches; '
                 'V9 lighting/material/camera/AOV/OIDN/color contract unchanged')
         return result
