@@ -18,7 +18,7 @@ jobs:
           python-version: '3.12'
       - name: Install Mitsuba
         run: python -m pip install 'mitsuba==3.7.1'
-      - name: Download both Poly Haven representations and test in isolated processes
+      - name: Isolate workshop envmap options in separate processes
         shell: bash --noprofile --norc {0}
         run: |
           cat >/tmp/get_env.py <<'PY'
@@ -40,37 +40,38 @@ jobs:
           cat >/tmp/test_env.py <<'PY'
           import pathlib,sys
           import mitsuba as mi
-          variant,fmt=sys.argv[1:3]
+          variant,fmt,mode=sys.argv[1:4]
           mi.set_variant(variant)
           path=pathlib.Path('/tmp')/f'small_workshop_2k.{fmt}'
-          print('TEST',variant,fmt,'bytes',path.stat().st_size,flush=True)
+          env={'type':'envmap','filename':str(path),'scale':.72}
+          if mode=='mis_false': env['mis_compensation']=False
+          if mode=='mis_true': env['mis_compensation']=True
           scene={
-              'type':'scene',
-              'integrator':{'type':'path','max_depth':2},
+              'type':'scene','integrator':{'type':'path','max_depth':2},
               'sensor':{
                   'type':'perspective',
                   'to_world':mi.ScalarTransform4f.look_at(origin=[0,-4,1],target=[0,0,0],up=[0,0,1]),
                   'film':{'type':'hdrfilm','width':16,'height':12,'component_format':'float32'},
                   'sampler':{'type':'independent','sample_count':1},
               },
-              'environment':{'type':'envmap','filename':str(path),'scale':.72,'mis_compensation':True},
+              'environment':env,
           }
-          print('LOAD_START',variant,fmt,flush=True)
+          print('LOAD_START',variant,fmt,mode,flush=True)
           loaded=mi.load_dict(scene,parallel=False)
-          print('LOAD_OK',variant,fmt,flush=True)
+          print('LOAD_OK',variant,fmt,mode,flush=True)
           image=mi.render(loaded,spp=1)
           import drjit as dr
           dr.eval(image)
-          print('RENDER_OK',variant,fmt,dr.width(image),flush=True)
+          print('RENDER_OK',variant,fmt,mode,dr.width(image),flush=True)
           PY
           : >/tmp/results.txt
           for variant in llvm_ad_rgb scalar_rgb; do
             for fmt in hdr exr; do
-              if [ -f "/tmp/small_workshop_2k.$fmt" ]; then
-                python /tmp/test_env.py "$variant" "$fmt"
+              for mode in omitted mis_false mis_true; do
+                python /tmp/test_env.py "$variant" "$fmt" "$mode"
                 code=$?
-                echo "$variant $fmt $code" | tee -a /tmp/results.txt
-              fi
+                echo "$variant $fmt $mode $code" | tee -a /tmp/results.txt
+              done
             done
           done
           echo '=== RESULTS ==='; cat /tmp/results.txt
