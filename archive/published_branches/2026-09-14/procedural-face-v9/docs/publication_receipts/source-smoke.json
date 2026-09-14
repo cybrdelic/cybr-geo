@@ -1,0 +1,23 @@
+{
+  "scope": "Source-only smoke tests on a clean snapshot reconstructed from the two checksum-verified archives published to this repository, plus their server-side receipts and existing LICENSE. No historical output binaries or cached motor geometry were copied into this snapshot.",
+  "source_archives": {
+    "native": "c8b675c2b43283690afcf9f0504aa771b8ca78a0647392d2900c168229c0a0ce",
+    "mechanism_lab": "cbb39188243db5f21bd0a63cecc6939c90a20ebbb8c7cbc8384ed0fd6ad2d6c1"
+  },
+  "command": "python -m pytest -q tests/test_core.py tests/test_drawings_media.py tests_legacy -k 'not individual_motor_parts'",
+  "environment": {
+    "python": "3.13.5",
+    "LP_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "<checkout>/src",
+    "MECHANISM_LAB_ROOT": "<checkout>"
+  },
+  "passed": 25,
+  "failed": 0,
+  "deselected": 1,
+  "warnings": 16,
+  "elapsed_seconds": 18.25,
+  "excluded_check": "test_no_missing_individual_motor_parts; requires the full motor catalogue and motor geometry build",
+  "limitations": "This is a local clean-snapshot test run, not a claim of full-suite CI, full historical binary publication, mechanical contact simulation or engineering qualification. VTK deprecated API warnings remain."
+}

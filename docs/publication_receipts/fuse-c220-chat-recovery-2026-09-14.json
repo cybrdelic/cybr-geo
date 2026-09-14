@@ -1,0 +1,58 @@
+{
+  "repository": "cybrdelic/cybr-geo",
+  "recovered_at_utc": "2026-09-14T11:07:09.276670+00:00",
+  "source_archive": "FUSE_C220_complete.zip",
+  "source_archive_sha256": "c354aa1ac6a9db2f87a1ae893a807659981ebccac9775334ad02aa44e0f38b28",
+  "transferred_source_tar_xz_sha256": "f2947b7127b86b55a31cf6b9ae613d34d1ad97dc84eab58865e95129be4b4815",
+  "original_local_commit": "9d6c74181e31d39eb6a513903ddfceca5273c63c",
+  "original_base_commit": "ce83e1dc06a1258e524c8af82e298e82fc223a6d",
+  "files": [
+    {
+      "path": "examples/fuse_c220/README.md",
+      "bytes": 7416,
+      "sha256": "280cc60207e249afc42a2eebc9f60a6e33f71f7a50870f92c7f04515579bbb1f"
+    },
+    {
+      "path": "examples/fuse_c220/evidence/edge_cases.json",
+      "bytes": 1442,
+      "sha256": "29de85f2920dc768d686b100e78566d5a6688aa29a12b98afcdb69cc9aa1eb21"
+    },
+    {
+      "path": "examples/fuse_c220/evidence/mechanism.json",
+      "bytes": 7906,
+      "sha256": "2372d545c55dbb7284fb055256ebd3bac1a9aa88943433823a7dac8c8d1fbb07"
+    },
+    {
+      "path": "examples/fuse_c220/evidence/toolpath.json",
+      "bytes": 1618,
+      "sha256": "514a7f4db67d84fc72088bc0344cd5d6463d3c6743a05edaacb49cbc25acdba4"
+    },
+    {
+      "path": "examples/fuse_c220/printer.py",
+      "bytes": 31849,
+      "sha256": "692b14ce9a66892de62cf38ff88100059fae8be41104c7f4bfa3a91976c77dde"
+    },
+    {
+      "path": "examples/fuse_c220/render_delivery.py",
+      "bytes": 6278,
+      "sha256": "1454071a2d17c2786c02d20b2dc2e0dac50bc0884e773b215313b56a7515c440"
+    },
+    {
+      "path": "examples/fuse_c220/toolpath.py",
+      "bytes": 9517,
+      "sha256": "b7f737b758a097bb7705f20cd402f785d68a25dc6b519d847471d74abb58db96"
+    },
+    {
+      "path": "examples/fuse_c220/verify_edges.py",
+      "bytes": 2445,
+      "sha256": "f7f6256b2d01f8483ea6a25e3ed3ea230ab5354c440abc39732c42a22a9abd39"
+    },
+    {
+      "path": "examples/fuse_c220/verify_mechanism.py",
+      "bytes": 7096,
+      "sha256": "07663a3435f71f14d093be72906d6dba7a2e6ede7256cacc84c3cbafdc77bc4d"
+    }
+  ],
+  "scope": "Exact original Python, Markdown, and JSON source bytes. CAD, images, video, gallery, G-code, and full delivery archive are not part of this source transfer.",
+  "historical_renderer_warning": "Original script uses an obsolete native V9 setting. Its history is preserved; compatibility repair follows separately. Original render evidence is historical, not a fresh true-V9 render."
+}

@@ -278,7 +278,9 @@ def validate(core,pairs):
     for p in core:
         t=trimesh.Trimesh(p.vertices,p.faces,process=True);checks.append(dict(name=p.name,finite=bool(np.isfinite(p.vertices).all()),watertight=bool(t.is_watertight),triangles=len(p.faces),bounds_mm=p.bounds.tolist()))
     result=dict(source_reference_component_count=len(M['components']),kinematic_core_component_count=len(core),gear_design=dict(side_teeth=NS,pinion_teeth=NP,transverse_module_mm=MODULE,transverse_pressure_deg=20,helix_deg=25,side_pitch_radius_mm=RS,pinion_pitch_radius_mm=RP,pinion_orbit_radius_mm=ORBIT,maximum_gear_tip_radius_mm=ORBIT+RP+MODULE,tooth_thickness_allowance_mm=.03,pinion_pairs=3),independent_cross_section_tests=cases,maximum_sampled_intersection_area_mm2=worst,minimum_sampled_mating_clearance_mm=closest,max_angular_constraint_residual_rad_times_teeth=max_res,meshes=checks,limitations=['Rigid-body prescribed kinematics; no contact force integration or load response.','Sampled transverse polygon checks do not certify full 3D collision-free manufacturing geometry.','Original bearings and clutch are retained visualization geometry, not engineered tolerances or torque-bias elements.','Pin and bore fits, lubrication, bearing raceways, preload and stress require further engineering.','Exterior is unchanged from the prior reference reconstruction, not an exact recovery of the generated concept.'])
-    (ROOT/'validation'/'kinematic_checks.json').write_text(json.dumps(result,indent=2))
+    validation_path = ROOT / 'validation' / 'kinematic_checks.json'
+    validation_path.parent.mkdir(parents=True, exist_ok=True)
+    validation_path.write_text(json.dumps(result, indent=2))
     print(json.dumps({k:v for k,v in result.items() if k not in ['meshes','limitations']},indent=2),flush=True)
     if worst>1e-5:raise AssertionError(f'Gear profile intersections: {worst}')
     if max_res>1e-10:raise AssertionError('Kinematic residual failure')

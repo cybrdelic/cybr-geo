@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "cad_tests": 433,
+  "collisions": [],
+  "volume_tolerance_mm3": 0.0001
+}
