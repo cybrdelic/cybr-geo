@@ -69,7 +69,7 @@ def refined_skin(mesh):
     crosses=np.cross(gv[gf[:,1]]-gv[gf[:,0]],gv[gf[:,2]]-gv[gf[:,0]])
     for k in range(3):np.add.at(normals,gf[:,k],crosses)
     normals/=np.maximum(np.linalg.norm(normals,axis=1)[:,None],1e-12)
-    # Fine measured displacement: remove broad offsets already represented by
+    # Fine scan-derived displacement: remove broad offsets already represented by
     # the scan, then retain only <= 25 micrometres of fine geometric relief.
     height=np.asarray(Image.open(ASSETS/'Infinite-Level_02_Disp_NoSmoothUV-4096.jpg').convert('L'),np.float32)/255.
     relief=height-gaussian_filter(height,4.)

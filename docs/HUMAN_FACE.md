@@ -43,9 +43,11 @@ or a volumetric skin transport model.
 - Portrait: 1440 × 1800, 512 samples per pixel, 14-bounce limit.
 - Profile: 1200 × 1500, 384 samples per pixel, 14-bounce limit.
 - Clay proof: 960 × 1200, 128 samples per pixel, 14-bounce limit.
-- Independent 32-sample batches bound CPU wavefront memory. Each batch uses
-  seed `20260914 + completed_spp * 131`; linear radiance is accumulated before
-  denoising and tone mapping.
+- Final views use v9's original single-pass sample accumulation, seed
+  `20260914`. The command also supports independent smaller batches using
+  `--batch-spp`; the actual batch size is recorded in each receipt. Smaller
+  batches use seed `20260914 + completed_spp * 131` and accumulate linear
+  radiance before denoising and tone mapping.
 
 The source OBJ, model, raw and denoised images, and JSON render receipts are
 written together. Every image is rendered from geometry. No image generation,
@@ -64,11 +66,11 @@ python -m pip install mitsuba==3.9.1
 export OIDN_BIN=/absolute/path/to/oidnDenoise
 
 python tools/render_human_face.py --view portrait --out build/human_face \
-  --size 1440x1800 --spp 512 --depth 14
+  --size 1440x1800 --spp 512 --batch-spp 512 --depth 14
 python tools/render_human_face.py --view profile --out build/human_face \
-  --size 1200x1500 --spp 384 --depth 14
+  --size 1200x1500 --spp 384 --batch-spp 384 --depth 14
 python tools/render_human_face.py --view portrait --clay --out build/human_face \
-  --size 960x1200 --spp 128 --depth 14
+  --size 960x1200 --spp 128 --batch-spp 128 --depth 14
 
 PYTHONPATH=src python -m pytest -q tests/test_human_face.py
 ```

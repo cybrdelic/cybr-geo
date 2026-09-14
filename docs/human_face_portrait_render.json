@@ -1,0 +1,107 @@
+{
+  "image": "CYBR_Face_portrait.png",
+  "renderer": "CYBR GEO ORBIT v9 Mitsuba 3 / LLVM CPU",
+  "mitsuba_version": "3.9.1",
+  "resolution": [
+    1440,
+    1800
+  ],
+  "spp": 512,
+  "depth": 14,
+  "seed": 20260914,
+  "batch_spp": 512,
+  "batch_seed_rule": "20260914 + previously_completed_spp * 131",
+  "seconds": 990.1099376678467,
+  "denoiser": "Intel OIDN / HDR + albedo + shading-normal AOVs / high",
+  "tone_mapping": "Original v9 ACES approximation followed by sRGB transfer",
+  "camera": {
+    "camera_mm": [
+      132.89446877355368,
+      -510.968909507778,
+      45.93058586137383
+    ],
+    "target_mm": [
+      0.0,
+      -15.0,
+      28.0
+    ],
+    "focal_length_mm": 85,
+    "f_stop": 16,
+    "focus_distance_mm": 444.66119384765625,
+    "gaussian_filter_stddev": 0.42,
+    "framing_distance_mm": 513.7777777777777,
+    "focus_method": "Central ray intersection with the actual visible surface",
+    "focus_point_mm": [
+      17.8777909479944,
+      -81.72082414501006,
+      30.412133992957404
+    ]
+  },
+  "parts": [
+    {
+      "name": "Human_face_and_neck",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Infinite head scan by Lee Perry-Smith; CC BY 3.0",
+      "provenance": "reference-scan",
+      "tags": [
+        "organic-surface",
+        "uv-mapped",
+        "reference-scan"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 142978,
+      "triangles": 282944,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -170.82266911222334,
+          -103.17431617254852,
+          -158.48813530740694
+        ],
+        [
+          170.63742884077578,
+          102.00475215419141,
+          158.64084939411805
+        ]
+      ]
+    }
+  ],
+  "source": {
+    "units": "mm",
+    "anatomy_source": "Infinite, 3D Head Scan by Lee Perry-Smith",
+    "license": "CC BY 3.0",
+    "source_url": "https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf/LeePerrySmith",
+    "renderer_reference": "CYBR GEO ORBIT v9, commit 40797a6fa756ce209b5e21dd83f2df1e41dbd5fb",
+    "geometry_operations": [
+      "Two Loop subdivision levels on welded topology",
+      "Independent UV corner interpolation",
+      "4K scan height detail, high-pass filtered, capped at 25 micrometres",
+      "Millimetre / Z-up CYBR GEO assembly integration"
+    ],
+    "limitations": [
+      "Scan-derived anatomy, not an original procedural human generator.",
+      "The supplied skin color texture has finite 1024px resolution.",
+      "Surface material is a skin-like BSDF, not measured multilayer tissue."
+    ]
+  },
+  "finite_radiance": true,
+  "image_generation": false,
+  "sha256": "0e9b353099ce4182028c1dadc7d8c2b94352a163fe81eb2ab2d43797f7941dc4"
+}

@@ -46,8 +46,8 @@ def main():
                 im.load()
                 if im.size!=tuple(report['resolution']):
                     raise ValueError('Rendered resolution does not match receipt')
-        mi.Bitmap(raw).write(str(masters/(stem+'_beauty_linear.exr')))
-        mi.Bitmap(linear).write(str(masters/(stem+'_denoised_linear.exr')))
+        mi.Bitmap(np.ascontiguousarray(raw)).write(str(masters/(stem+'_beauty_linear.exr')))
+        mi.Bitmap(np.ascontiguousarray(linear)).write(str(masters/(stem+'_denoised_linear.exr')))
         report['delivered_png_sha256']=hashlib.sha256(final.read_bytes()).hexdigest()
         report['delivered_png_pixels_sha256']=hashlib.sha256(np.asarray(Image.open(final)).tobytes()).hexdigest()
         receipts.append(report)
@@ -83,6 +83,9 @@ def main():
     files=sorted(p for p in args.out.rglob('*') if p.is_file() and p!=archive)
     with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=5) as z:
         for path in files:z.write(path,path.relative_to(args.out))
+    with zipfile.ZipFile(archive) as z:
+        if z.testzip() is not None:
+            raise ValueError('Render package ZIP integrity check failed')
     print(json.dumps({'files':[str(p) for p in files],
                       'archive':str(archive),'archive_bytes':archive.stat().st_size},indent=2))
 
