@@ -1,0 +1,61 @@
+name: AERIS-E1 engineering revision
+
+on:
+  push:
+    branches: ['feat/aeris-engineering-qualification']
+    paths:
+      - 'examples/aeris/engineering_revision.py'
+      - 'examples/aeris/build_engineered_assets.py'
+      - 'examples/aeris/engineering_validate_e1.py'
+      - 'examples/aeris/export_cybr_physics_manifest.py'
+      - '.github/workflows/aeris-e1-engineering.yml'
+  workflow_dispatch:
+
+jobs:
+  e1:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install CAD environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2 libgl1-mesa-dri libglu1-mesa
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Build corrected AERIS-E1
+        run: python examples/aeris/build_engineered_assets.py --out build/aeris-e1 --exports
+      - name: Re-run CAD, geometry, kinematics and export gates
+        run: python examples/aeris/verify.py --out build/aeris-e1 --cad
+      - name: Run corrected multidisciplinary screening
+        run: python examples/aeris/engineering_validate_e1.py --out build/aeris-e1 --rpm 3600
+      - name: Export CYBR PHYSICS manifest
+        run: python examples/aeris/export_cybr_physics_manifest.py --out build/aeris-e1
+      - name: Gate bearing correction semantics
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          v=json.loads(pathlib.Path('build/aeris-e1/validation.json').read_text())
+          e=json.loads(pathlib.Path('build/aeris-e1/engineering_report_e1.json').read_text())
+          b=v['bearing_interface']
+          assert b['series']=='6000'
+          assert b['nominal_bore_mm']==10.0 and b['nominal_od_mm']==26.0 and b['nominal_width_mm']==8.0
+          assert not e['critical_failures'], e['critical_failures']
+          assert 'shaft/bearing production fit' in e['unqualified_domains']
+          assert e['release_ready'] is False
+          print('AERIS_E1_NOMINAL_BEARING_CORRECTION_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aeris-e1-engineering
+          path: |
+            build/aeris-e1/validation.json
+            build/aeris-e1/verification.json
+            build/aeris-e1/engineering_report_e1.json
+            build/aeris-e1/aeris_cybr_physics.manifest
+            build/aeris-e1/aeris_e1_analytic.coverage.json
+          retention-days: 30
