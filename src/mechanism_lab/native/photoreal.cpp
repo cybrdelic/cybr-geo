@@ -210,14 +210,30 @@ int main(int argc,char**argv){
  V camera=target+V(std::cos(az)*std::cos(el),std::sin(az)*std::cos(el),std::sin(el))*opt.cameraDistance;
  V fwd=unit(target-camera),right=unit(cross(fwd,V(0,0,1))),up=cross(right,fwd);
 
- // Camera-relative softboxes. Sizes change independently from distance so shadow
- // softness is a controllable photographic property rather than a scene-scale accident.
+ // V9 product studio. Positions and dimensions already scale together through
+ // the resolved model-space studio scale. Keep every area emitter physically
+ // above the matte floor as large assemblies and unusual camera elevations move
+ // the rig; otherwise an emitter can intersect the floor and create implausible
+ // hot strips/reflections in exactly the scenes the generic default must handle.
  V lightTarget=opt.fixedStudio?opt.studioTarget:target;
  float laz=(opt.fixedStudio?opt.studioAz:opt.az)*PI/180.f,lel=(opt.fixedStudio?opt.studioEl:opt.el)*PI/180.f;
  V towardCamera=V(std::cos(laz)*std::cos(lel),std::sin(laz)*std::cos(lel),std::sin(lel));
  V lightRight=unit(cross(-towardCamera,V(0,0,1))),lightUp=cross(lightRight,-towardCamera);
  auto addLight=[&](V offset,float width,float height,V emission){
-  Light l(lightTarget+offset*opt.studioScale,lightTarget,lightRight,width*opt.lightSize*opt.studioScale,height*opt.lightSize*opt.studioScale,emission*opt.lightIntensity);lights.push_back(l);
+  V center=lightTarget+offset*opt.studioScale;
+  float scaledWidth=width*opt.lightSize*opt.studioScale;
+  float scaledHeight=height*opt.lightSize*opt.studioScale;
+  Light l(center,lightTarget,lightRight,scaledWidth,scaledHeight,emission*opt.lightIntensity);
+  if(enableFloor){
+   const float clearance=std::max(2.f,4.f*opt.studioScale);
+   for(int attempt=0;attempt<16;attempt++){
+    float lowest=l.c.z-std::fabs(l.u.z)-std::fabs(l.v.z);
+    if(lowest>=floorZ+clearance)break;
+    center.z+=floorZ+clearance-lowest;
+    l=Light(center,lightTarget,lightRight,scaledWidth,scaledHeight,emission*opt.lightIntensity);
+   }
+  }
+  lights.push_back(l);
  };
  if(opt.studio=="product"){
   addLight(towardCamera*380.f-lightRight*340.f+lightUp*420.f,500.f,350.f,V(6.5f,6.3f,6.0f));
