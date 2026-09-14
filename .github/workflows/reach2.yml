@@ -1,0 +1,92 @@
+name: CYBR REACH-2 Engineering and v9 Render
+
+on:
+  push:
+    branches: [feat/reach2-engineered-elbow]
+  workflow_dispatch:
+
+jobs:
+  qualify-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libegl1 curl
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-orbit-v3-tested.txt
+          python -m pip install --no-deps -e .
+          python -m pip install 'mitsuba>=3.6,<3.8'
+      - name: Validate REACH-2 CAD and engineering envelope
+        run: |
+          pytest -q tests/test_reach2_engineered.py
+          python tools/reach2_engineering.py --out /tmp/reach2/REACH2_engineering_report.json --require-pass
+      - name: Install Intel Open Image Denoise 2.5.1
+        run: |
+          set -euxo pipefail
+          curl -L --fail --retry 3 \
+            -o /tmp/oidn.tar.gz \
+            https://github.com/RenderKit/oidn/releases/download/v2.5.1/oidn-2.5.1.x86_64.linux.tar.gz
+          echo '743c3e2aff8c220d5d70fe6cb970fb3d36f2702d2693c61d1d148e404cf37cd6  /tmp/oidn.tar.gz' | sha256sum -c -
+          mkdir -p /tmp/oidn
+          tar -xzf /tmp/oidn.tar.gz -C /tmp/oidn
+          OIDN_ROOT=$(find /tmp/oidn -maxdepth 1 -mindepth 1 -type d -name 'oidn-*' | head -1)
+          test -x "$OIDN_ROOT/bin/oidnDenoise"
+          echo "$OIDN_ROOT/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$OIDN_ROOT/lib:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
+      - name: Render engineering-qualified REACH-2 with v9 architecture
+        run: |
+          python tools/reach2_mitsuba_v9.py \
+            --out /tmp/reach2 \
+            --size 1200x900 \
+            --spp 256 \
+            --max-depth 14 \
+            --pose-time 1.6 \
+            --env-rotation 202 \
+            --env-scale 0.76 \
+            --exposure 1.05 \
+            --oidn oidnDenoise
+      - name: Verify render provenance and engineering gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('/tmp/reach2')
+          final=root/'REACH2_ORBIT_hero.png'
+          noisy=root/'REACH2_ORBIT_noisy.png'
+          manifest=json.loads((root/'REACH2_manifest.json').read_text())
+          eng=json.loads((root/'REACH2_engineering_report.json').read_text())
+          for p in (final,noisy):
+              with Image.open(p) as im:
+                  assert im.size==(1200,900)
+                  im.verify()
+          assert manifest['generated_imagery'] is False
+          assert manifest['engineering_qualified'] is True
+          assert eng['qualified'] is True
+          assert eng['load_case']['payload_kg']==2.0
+          assert eng['load_case']['shock_g']==3.0
+          assert manifest['reducer_ratio']==120.0
+          assert manifest['parts']>=180
+          assert manifest['triangles']>3_000_000
+          assert manifest['environment']['license']=='CC0'
+          assert manifest['bench_surface']['license']=='CC0'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CYBR-REACH-2-ENGINEERED-v9
+          path: |
+            /tmp/reach2/REACH2_ORBIT_hero.png
+            /tmp/reach2/REACH2_ORBIT_noisy.png
+            /tmp/reach2/REACH2_manifest.json
+            /tmp/reach2/REACH2_engineering_report.json
+          if-no-files-found: error
+          retention-days: 7
