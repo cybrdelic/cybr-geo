@@ -1,0 +1,28 @@
+name: Manufacturer reference acquisition
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/vendor-reference.yml'
+permissions:
+  contents: read
+jobs:
+  references:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download public manufacturer references
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p vendor-reference
+          curl --fail --location --retry 3 'https://www.revrobotics.com/content/cad/NEO-Vortex-Moter-and-SPARK-Flex-Motor-Controller-with-8mm-Shaft.STEP' -o vendor-reference/NEO_Vortex_SPARK_Flex_8mm.STEP
+          curl --fail --location --retry 3 'https://www.revrobotics.com/content/docs/REV-21-1652-REV-11-2159-DR.pdf' -o vendor-reference/REV-21-1652-REV-11-2159-DR.pdf
+          curl --fail --location --retry 3 'https://cdn11.bigcommerce.com/s-t3eo8vwp22/images/stencil/1500x1500/products/784/3227/REV-11-1652-NEOVortexBrushlessMotor-Bottom-FINAL__60942.1704233487.png?c=2&imbypass=on' -o vendor-reference/manufacturer_docking_face.png
+          printf '%s\n' 'Manufacturer: REV Robotics. Original copyright and trademarks retained.' 'Official product: https://www.revrobotics.com/rev-21-1652/' 'These references are not CYBR GEO production drawings or newly authored geometry.' 'Assembly interfaces are documented; manufacturer CAD does not establish that all internal electromagnetic or electronic construction is disclosed.' > vendor-reference/PROVENANCE.txt
+          sha256sum vendor-reference/* > vendor-reference/SHA256SUMS.txt
+          ls -lh vendor-reference
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rev-neo-vortex-manufacturer-reference
+          path: vendor-reference/
+          retention-days: 7

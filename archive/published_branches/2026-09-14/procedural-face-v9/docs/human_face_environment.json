@@ -1,0 +1,11 @@
+{
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "trimesh": "4.11.1",
+  "Pillow": "12.3.0",
+  "mitsuba": "3.9.1",
+  "drjit": "1.5.0",
+  "OIDN": "2.3.3",
+  "CYBR_GEO_base": "ce83e1dc06a1258e524c8af82e298e82fc223a6d",
+  "CYBR_GEO_v9_source": "40797a6fa756ce209b5e21dd83f2df1e41dbd5fb"
+}

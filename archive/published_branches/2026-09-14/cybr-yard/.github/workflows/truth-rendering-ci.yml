@@ -1,0 +1,26 @@
+name: truth-rendering-ci
+
+on:
+  push:
+    branches:
+      - master
+      - 'fix/truth-rendering-v2'
+  pull_request:
+
+jobs:
+  truth-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install focused test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy trimesh pillow pytest
+          python -m pip install --no-deps -e .
+      - name: Compile Mechanism Lab
+        run: python -m compileall -q src/mechanism_lab
+      - name: Truth/rendering regression tests
+        run: python -m pytest -q tests/test_truth_rendering.py

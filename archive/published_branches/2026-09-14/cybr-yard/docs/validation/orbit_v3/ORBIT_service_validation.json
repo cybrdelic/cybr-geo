@@ -1,0 +1,4195 @@
+{
+  "operations": [
+    {
+      "id": "001",
+      "title": "Unscrew P00_-16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_-26.0_Flange_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 578,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 3
+    },
+    {
+      "id": "002",
+      "title": "Withdraw P00_-16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_-26.0_Flange_screw"
+      ],
+      "samples": 111,
+      "cad_tests": 22,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "003",
+      "title": "Lift P00_-16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_-26.0_Flange_screw"
+      ],
+      "samples": 120,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "004",
+      "title": "Transfer P00_-16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_-26.0_Flange_screw"
+      ],
+      "samples": 558,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "005",
+      "title": "Place P00_-16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_-26.0_Flange_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "006",
+      "title": "Unscrew P00_-16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_26.0_Flange_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 578,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 3
+    },
+    {
+      "id": "007",
+      "title": "Withdraw P00_-16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_26.0_Flange_screw"
+      ],
+      "samples": 111,
+      "cad_tests": 22,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "008",
+      "title": "Lift P00_-16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_26.0_Flange_screw"
+      ],
+      "samples": 68,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "009",
+      "title": "Transfer P00_-16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_26.0_Flange_screw"
+      ],
+      "samples": 515,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "010",
+      "title": "Place P00_-16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_-16.0_26.0_Flange_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "011",
+      "title": "Unscrew P00_16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_-26.0_Flange_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 578,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 3
+    },
+    {
+      "id": "012",
+      "title": "Withdraw P00_16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_-26.0_Flange_screw"
+      ],
+      "samples": 111,
+      "cad_tests": 22,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "013",
+      "title": "Lift P00_16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_-26.0_Flange_screw"
+      ],
+      "samples": 120,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "014",
+      "title": "Transfer P00_16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_-26.0_Flange_screw"
+      ],
+      "samples": 456,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "015",
+      "title": "Place P00_16.0_-26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_-26.0_Flange_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "016",
+      "title": "Unscrew P00_16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_26.0_Flange_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 578,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 3
+    },
+    {
+      "id": "017",
+      "title": "Withdraw P00_16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_26.0_Flange_screw"
+      ],
+      "samples": 111,
+      "cad_tests": 22,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "018",
+      "title": "Lift P00_16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_26.0_Flange_screw"
+      ],
+      "samples": 68,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "019",
+      "title": "Transfer P00_16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_26.0_Flange_screw"
+      ],
+      "samples": 415,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "020",
+      "title": "Place P00_16.0_26.0_Flange_screw",
+      "moving_parts": [
+        "P00_16.0_26.0_Flange_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "021",
+      "title": "Withdraw the complete gripper and feed the harness through the shaft",
+      "moving_parts": [
+        "P01_Hollow_sculpted_palm",
+        "P03_-1_51_Support_screw",
+        "P03_-1_89_Support_screw",
+        "L05_-1_56_Guide_rod_lock_screw",
+        "L05_-1_84_Guide_rod_lock_screw",
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing",
+        "P03_1_51_Support_screw",
+        "P03_1_89_Support_screw",
+        "L05_1_56_Guide_rod_lock_screw",
+        "L05_1_84_Guide_rod_lock_screw",
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing",
+        "L01_0_Ground_guide_rod",
+        "L01_1_Ground_guide_rod",
+        "L02_Opposed_helical_lead_screw",
+        "L03_Fluted_gripper_input_knob",
+        "L04_Flat_engaging_knob_screw",
+        "L06_Screw_axial_retaining_collar",
+        "L07_Screw_collar_lock",
+        "L08_-1_Screw_thrust_washer",
+        "L08_1_Screw_thrust_washer",
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J03_-1_Helically_cut_bronze_nut",
+        "J08_-1_-1_61_Nut_plate_screw",
+        "J08_-1_-1_79_Nut_plate_screw",
+        "J07_-1_-1_Nut_retaining_plate",
+        "J08_-1_1_61_Nut_plate_screw",
+        "J08_-1_1_79_Nut_plate_screw",
+        "J07_-1_1_Nut_retaining_plate",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad",
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J03_1_Helically_cut_bronze_nut",
+        "J08_1_-1_61_Nut_plate_screw",
+        "J08_1_-1_79_Nut_plate_screw",
+        "J07_1_-1_Nut_retaining_plate",
+        "J08_1_1_61_Nut_plate_screw",
+        "J08_1_1_79_Nut_plate_screw",
+        "J07_1_1_Nut_retaining_plate",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad",
+        "C01_Through_bore_service_conduit",
+        "C03_0_Connector_contact",
+        "C03_1_Connector_contact",
+        "C03_2_Connector_contact",
+        "C03_3_Connector_contact",
+        "C03_4_Connector_contact",
+        "C02_Rear_service_connector",
+        "C02b_Connector_insulator",
+        "C04_Palm_service_gland"
+      ],
+      "samples": 211,
+      "cad_tests": 3183,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "022",
+      "title": "Lift Withdraw the complete gripper and feed the harness through the shaft",
+      "moving_parts": [
+        "P01_Hollow_sculpted_palm",
+        "P03_-1_51_Support_screw",
+        "P03_-1_89_Support_screw",
+        "L05_-1_56_Guide_rod_lock_screw",
+        "L05_-1_84_Guide_rod_lock_screw",
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing",
+        "P03_1_51_Support_screw",
+        "P03_1_89_Support_screw",
+        "L05_1_56_Guide_rod_lock_screw",
+        "L05_1_84_Guide_rod_lock_screw",
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing",
+        "L01_0_Ground_guide_rod",
+        "L01_1_Ground_guide_rod",
+        "L02_Opposed_helical_lead_screw",
+        "L03_Fluted_gripper_input_knob",
+        "L04_Flat_engaging_knob_screw",
+        "L06_Screw_axial_retaining_collar",
+        "L07_Screw_collar_lock",
+        "L08_-1_Screw_thrust_washer",
+        "L08_1_Screw_thrust_washer",
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J03_-1_Helically_cut_bronze_nut",
+        "J08_-1_-1_61_Nut_plate_screw",
+        "J08_-1_-1_79_Nut_plate_screw",
+        "J07_-1_-1_Nut_retaining_plate",
+        "J08_-1_1_61_Nut_plate_screw",
+        "J08_-1_1_79_Nut_plate_screw",
+        "J07_-1_1_Nut_retaining_plate",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad",
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J03_1_Helically_cut_bronze_nut",
+        "J08_1_-1_61_Nut_plate_screw",
+        "J08_1_-1_79_Nut_plate_screw",
+        "J07_1_-1_Nut_retaining_plate",
+        "J08_1_1_61_Nut_plate_screw",
+        "J08_1_1_79_Nut_plate_screw",
+        "J07_1_1_Nut_retaining_plate",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad",
+        "C01_Through_bore_service_conduit",
+        "C03_0_Connector_contact",
+        "C03_1_Connector_contact",
+        "C03_2_Connector_contact",
+        "C03_3_Connector_contact",
+        "C03_4_Connector_contact",
+        "C02_Rear_service_connector",
+        "C02b_Connector_insulator",
+        "C04_Palm_service_gland"
+      ],
+      "samples": 121,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "023",
+      "title": "Transfer Withdraw the complete gripper and feed the harness through the shaft",
+      "moving_parts": [
+        "P01_Hollow_sculpted_palm",
+        "P03_-1_51_Support_screw",
+        "P03_-1_89_Support_screw",
+        "L05_-1_56_Guide_rod_lock_screw",
+        "L05_-1_84_Guide_rod_lock_screw",
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing",
+        "P03_1_51_Support_screw",
+        "P03_1_89_Support_screw",
+        "L05_1_56_Guide_rod_lock_screw",
+        "L05_1_84_Guide_rod_lock_screw",
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing",
+        "L01_0_Ground_guide_rod",
+        "L01_1_Ground_guide_rod",
+        "L02_Opposed_helical_lead_screw",
+        "L03_Fluted_gripper_input_knob",
+        "L04_Flat_engaging_knob_screw",
+        "L06_Screw_axial_retaining_collar",
+        "L07_Screw_collar_lock",
+        "L08_-1_Screw_thrust_washer",
+        "L08_1_Screw_thrust_washer",
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J03_-1_Helically_cut_bronze_nut",
+        "J08_-1_-1_61_Nut_plate_screw",
+        "J08_-1_-1_79_Nut_plate_screw",
+        "J07_-1_-1_Nut_retaining_plate",
+        "J08_-1_1_61_Nut_plate_screw",
+        "J08_-1_1_79_Nut_plate_screw",
+        "J07_-1_1_Nut_retaining_plate",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad",
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J03_1_Helically_cut_bronze_nut",
+        "J08_1_-1_61_Nut_plate_screw",
+        "J08_1_-1_79_Nut_plate_screw",
+        "J07_1_-1_Nut_retaining_plate",
+        "J08_1_1_61_Nut_plate_screw",
+        "J08_1_1_79_Nut_plate_screw",
+        "J07_1_1_Nut_retaining_plate",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad",
+        "C01_Through_bore_service_conduit",
+        "C03_0_Connector_contact",
+        "C03_1_Connector_contact",
+        "C03_2_Connector_contact",
+        "C03_3_Connector_contact",
+        "C03_4_Connector_contact",
+        "C02_Rear_service_connector",
+        "C02b_Connector_insulator",
+        "C04_Palm_service_gland"
+      ],
+      "samples": 679,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "024",
+      "title": "Place Withdraw the complete gripper and feed the harness through the shaft",
+      "moving_parts": [
+        "P01_Hollow_sculpted_palm",
+        "P03_-1_51_Support_screw",
+        "P03_-1_89_Support_screw",
+        "L05_-1_56_Guide_rod_lock_screw",
+        "L05_-1_84_Guide_rod_lock_screw",
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing",
+        "P03_1_51_Support_screw",
+        "P03_1_89_Support_screw",
+        "L05_1_56_Guide_rod_lock_screw",
+        "L05_1_84_Guide_rod_lock_screw",
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing",
+        "L01_0_Ground_guide_rod",
+        "L01_1_Ground_guide_rod",
+        "L02_Opposed_helical_lead_screw",
+        "L03_Fluted_gripper_input_knob",
+        "L04_Flat_engaging_knob_screw",
+        "L06_Screw_axial_retaining_collar",
+        "L07_Screw_collar_lock",
+        "L08_-1_Screw_thrust_washer",
+        "L08_1_Screw_thrust_washer",
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J03_-1_Helically_cut_bronze_nut",
+        "J08_-1_-1_61_Nut_plate_screw",
+        "J08_-1_-1_79_Nut_plate_screw",
+        "J07_-1_-1_Nut_retaining_plate",
+        "J08_-1_1_61_Nut_plate_screw",
+        "J08_-1_1_79_Nut_plate_screw",
+        "J07_-1_1_Nut_retaining_plate",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad",
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J03_1_Helically_cut_bronze_nut",
+        "J08_1_-1_61_Nut_plate_screw",
+        "J08_1_-1_79_Nut_plate_screw",
+        "J07_1_-1_Nut_retaining_plate",
+        "J08_1_1_61_Nut_plate_screw",
+        "J08_1_1_79_Nut_plate_screw",
+        "J07_1_1_Nut_retaining_plate",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad",
+        "C01_Through_bore_service_conduit",
+        "C03_0_Connector_contact",
+        "C03_1_Connector_contact",
+        "C03_2_Connector_contact",
+        "C03_3_Connector_contact",
+        "C03_4_Connector_contact",
+        "C02_Rear_service_connector",
+        "C02b_Connector_insulator",
+        "C04_Palm_service_gland"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "025",
+      "title": "Unscrew G07_2_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_2_Flat_engaging_grub_screw"
+      ],
+      "samples": 145,
+      "cad_tests": 179,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 3
+    },
+    {
+      "id": "026",
+      "title": "Withdraw G07_2_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_2_Flat_engaging_grub_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 1,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "027",
+      "title": "Lift G07_2_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_2_Flat_engaging_grub_screw"
+      ],
+      "samples": 68,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "028",
+      "title": "Transfer G07_2_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_2_Flat_engaging_grub_screw"
+      ],
+      "samples": 242,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "029",
+      "title": "Place G07_2_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_2_Flat_engaging_grub_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "030",
+      "title": "Remove input shaft collar",
+      "moving_parts": [
+        "G06_Input_shaft_retaining_collar"
+      ],
+      "samples": 36,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "031",
+      "title": "Lift Remove input shaft collar",
+      "moving_parts": [
+        "G06_Input_shaft_retaining_collar"
+      ],
+      "samples": 97,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "032",
+      "title": "Transfer Remove input shaft collar",
+      "moving_parts": [
+        "G06_Input_shaft_retaining_collar"
+      ],
+      "samples": 236,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "033",
+      "title": "Place Remove input shaft collar",
+      "moving_parts": [
+        "G06_Input_shaft_retaining_collar"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "034",
+      "title": "Unscrew G07_1_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_1_Flat_engaging_grub_screw"
+      ],
+      "samples": 145,
+      "cad_tests": 324,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 4
+    },
+    {
+      "id": "035",
+      "title": "Withdraw G07_1_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_1_Flat_engaging_grub_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 25,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "036",
+      "title": "Lift G07_1_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_1_Flat_engaging_grub_screw"
+      ],
+      "samples": 68,
+      "cad_tests": 21,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "037",
+      "title": "Transfer G07_1_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_1_Flat_engaging_grub_screw"
+      ],
+      "samples": 216,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "038",
+      "title": "Place G07_1_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_1_Flat_engaging_grub_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "039",
+      "title": "Withdraw input shaft with knob",
+      "moving_parts": [
+        "G03_Input_shaft",
+        "G05_Fluted_rotary_input_knob",
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 101,
+      "cad_tests": 217,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "040",
+      "title": "Lift Withdraw input shaft with knob",
+      "moving_parts": [
+        "G03_Input_shaft",
+        "G05_Fluted_rotary_input_knob",
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 103,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "041",
+      "title": "Transfer Withdraw input shaft with knob",
+      "moving_parts": [
+        "G03_Input_shaft",
+        "G05_Fluted_rotary_input_knob",
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 685,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "042",
+      "title": "Place Withdraw input shaft with knob",
+      "moving_parts": [
+        "G03_Input_shaft",
+        "G05_Fluted_rotary_input_knob",
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "043",
+      "title": "Unscrew H03_00_Cover_socket_screw",
+      "moving_parts": [
+        "H03_00_Cover_socket_screw"
+      ],
+      "samples": 337,
+      "cad_tests": 1685,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 6
+    },
+    {
+      "id": "044",
+      "title": "Withdraw H03_00_Cover_socket_screw",
+      "moving_parts": [
+        "H03_00_Cover_socket_screw"
+      ],
+      "samples": 56,
+      "cad_tests": 152,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "045",
+      "title": "Lift H03_00_Cover_socket_screw",
+      "moving_parts": [
+        "H03_00_Cover_socket_screw"
+      ],
+      "samples": 74,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "046",
+      "title": "Transfer H03_00_Cover_socket_screw",
+      "moving_parts": [
+        "H03_00_Cover_socket_screw"
+      ],
+      "samples": 233,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "047",
+      "title": "Place H03_00_Cover_socket_screw",
+      "moving_parts": [
+        "H03_00_Cover_socket_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "048",
+      "title": "Unscrew H03_01_Cover_socket_screw",
+      "moving_parts": [
+        "H03_01_Cover_socket_screw"
+      ],
+      "samples": 337,
+      "cad_tests": 1348,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 7
+    },
+    {
+      "id": "049",
+      "title": "Withdraw H03_01_Cover_socket_screw",
+      "moving_parts": [
+        "H03_01_Cover_socket_screw"
+      ],
+      "samples": 56,
+      "cad_tests": 115,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "050",
+      "title": "Lift H03_01_Cover_socket_screw",
+      "moving_parts": [
+        "H03_01_Cover_socket_screw"
+      ],
+      "samples": 54,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "051",
+      "title": "Transfer H03_01_Cover_socket_screw",
+      "moving_parts": [
+        "H03_01_Cover_socket_screw"
+      ],
+      "samples": 281,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "052",
+      "title": "Place H03_01_Cover_socket_screw",
+      "moving_parts": [
+        "H03_01_Cover_socket_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "053",
+      "title": "Unscrew H03_02_Cover_socket_screw",
+      "moving_parts": [
+        "H03_02_Cover_socket_screw"
+      ],
+      "samples": 337,
+      "cad_tests": 1685,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 6
+    },
+    {
+      "id": "054",
+      "title": "Withdraw H03_02_Cover_socket_screw",
+      "moving_parts": [
+        "H03_02_Cover_socket_screw"
+      ],
+      "samples": 56,
+      "cad_tests": 152,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "055",
+      "title": "Lift H03_02_Cover_socket_screw",
+      "moving_parts": [
+        "H03_02_Cover_socket_screw"
+      ],
+      "samples": 74,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "056",
+      "title": "Transfer H03_02_Cover_socket_screw",
+      "moving_parts": [
+        "H03_02_Cover_socket_screw"
+      ],
+      "samples": 334,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "057",
+      "title": "Place H03_02_Cover_socket_screw",
+      "moving_parts": [
+        "H03_02_Cover_socket_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "058",
+      "title": "Unscrew H03_03_Cover_socket_screw",
+      "moving_parts": [
+        "H03_03_Cover_socket_screw"
+      ],
+      "samples": 337,
+      "cad_tests": 1685,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "059",
+      "title": "Withdraw H03_03_Cover_socket_screw",
+      "moving_parts": [
+        "H03_03_Cover_socket_screw"
+      ],
+      "samples": 56,
+      "cad_tests": 152,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "060",
+      "title": "Lift H03_03_Cover_socket_screw",
+      "moving_parts": [
+        "H03_03_Cover_socket_screw"
+      ],
+      "samples": 115,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "061",
+      "title": "Transfer H03_03_Cover_socket_screw",
+      "moving_parts": [
+        "H03_03_Cover_socket_screw"
+      ],
+      "samples": 534,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "062",
+      "title": "Place H03_03_Cover_socket_screw",
+      "moving_parts": [
+        "H03_03_Cover_socket_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "063",
+      "title": "Unscrew H03_04_Cover_socket_screw",
+      "moving_parts": [
+        "H03_04_Cover_socket_screw"
+      ],
+      "samples": 337,
+      "cad_tests": 1348,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 3
+    },
+    {
+      "id": "064",
+      "title": "Withdraw H03_04_Cover_socket_screw",
+      "moving_parts": [
+        "H03_04_Cover_socket_screw"
+      ],
+      "samples": 56,
+      "cad_tests": 115,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "065",
+      "title": "Lift H03_04_Cover_socket_screw",
+      "moving_parts": [
+        "H03_04_Cover_socket_screw"
+      ],
+      "samples": 135,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "066",
+      "title": "Transfer H03_04_Cover_socket_screw",
+      "moving_parts": [
+        "H03_04_Cover_socket_screw"
+      ],
+      "samples": 473,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "067",
+      "title": "Place H03_04_Cover_socket_screw",
+      "moving_parts": [
+        "H03_04_Cover_socket_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "068",
+      "title": "Unscrew H03_05_Cover_socket_screw",
+      "moving_parts": [
+        "H03_05_Cover_socket_screw"
+      ],
+      "samples": 337,
+      "cad_tests": 1685,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "069",
+      "title": "Withdraw H03_05_Cover_socket_screw",
+      "moving_parts": [
+        "H03_05_Cover_socket_screw"
+      ],
+      "samples": 56,
+      "cad_tests": 152,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "070",
+      "title": "Lift H03_05_Cover_socket_screw",
+      "moving_parts": [
+        "H03_05_Cover_socket_screw"
+      ],
+      "samples": 115,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "071",
+      "title": "Transfer H03_05_Cover_socket_screw",
+      "moving_parts": [
+        "H03_05_Cover_socket_screw"
+      ],
+      "samples": 413,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "072",
+      "title": "Place H03_05_Cover_socket_screw",
+      "moving_parts": [
+        "H03_05_Cover_socket_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "073",
+      "title": "Release split bearing cover -1",
+      "moving_parts": [
+        "H02_-1_Split_front_bearing_cover",
+        "M03_13_Angular_scale_tick",
+        "M03_14_Angular_scale_tick",
+        "M03_15_Angular_scale_tick",
+        "M03_16_Angular_scale_tick",
+        "M03_17_Angular_scale_tick",
+        "M03_18_Angular_scale_tick",
+        "M03_19_Angular_scale_tick",
+        "M03_20_Angular_scale_tick",
+        "M03_21_Angular_scale_tick",
+        "M03_22_Angular_scale_tick",
+        "M03_24_Angular_scale_tick"
+      ],
+      "samples": 71,
+      "cad_tests": 309,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "074",
+      "title": "Lift Release split bearing cover -1",
+      "moving_parts": [
+        "H02_-1_Split_front_bearing_cover",
+        "M03_13_Angular_scale_tick",
+        "M03_14_Angular_scale_tick",
+        "M03_15_Angular_scale_tick",
+        "M03_16_Angular_scale_tick",
+        "M03_17_Angular_scale_tick",
+        "M03_18_Angular_scale_tick",
+        "M03_19_Angular_scale_tick",
+        "M03_20_Angular_scale_tick",
+        "M03_21_Angular_scale_tick",
+        "M03_22_Angular_scale_tick",
+        "M03_24_Angular_scale_tick"
+      ],
+      "samples": 135,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "075",
+      "title": "Transfer Release split bearing cover -1",
+      "moving_parts": [
+        "H02_-1_Split_front_bearing_cover",
+        "M03_13_Angular_scale_tick",
+        "M03_14_Angular_scale_tick",
+        "M03_15_Angular_scale_tick",
+        "M03_16_Angular_scale_tick",
+        "M03_17_Angular_scale_tick",
+        "M03_18_Angular_scale_tick",
+        "M03_19_Angular_scale_tick",
+        "M03_20_Angular_scale_tick",
+        "M03_21_Angular_scale_tick",
+        "M03_22_Angular_scale_tick",
+        "M03_24_Angular_scale_tick"
+      ],
+      "samples": 735,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "076",
+      "title": "Place Release split bearing cover -1",
+      "moving_parts": [
+        "H02_-1_Split_front_bearing_cover",
+        "M03_13_Angular_scale_tick",
+        "M03_14_Angular_scale_tick",
+        "M03_15_Angular_scale_tick",
+        "M03_16_Angular_scale_tick",
+        "M03_17_Angular_scale_tick",
+        "M03_18_Angular_scale_tick",
+        "M03_19_Angular_scale_tick",
+        "M03_20_Angular_scale_tick",
+        "M03_21_Angular_scale_tick",
+        "M03_22_Angular_scale_tick",
+        "M03_24_Angular_scale_tick"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "077",
+      "title": "Release split bearing cover 1",
+      "moving_parts": [
+        "H02_1_Split_front_bearing_cover",
+        "M03_00_Angular_scale_tick",
+        "M03_02_Angular_scale_tick",
+        "M03_03_Angular_scale_tick",
+        "M03_04_Angular_scale_tick",
+        "M03_05_Angular_scale_tick",
+        "M03_06_Angular_scale_tick",
+        "M03_07_Angular_scale_tick",
+        "M03_08_Angular_scale_tick",
+        "M03_09_Angular_scale_tick",
+        "M03_10_Angular_scale_tick",
+        "M03_11_Angular_scale_tick",
+        "G04_1_Input_plain_bearing"
+      ],
+      "samples": 71,
+      "cad_tests": 353,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "078",
+      "title": "Lift Release split bearing cover 1",
+      "moving_parts": [
+        "H02_1_Split_front_bearing_cover",
+        "M03_00_Angular_scale_tick",
+        "M03_02_Angular_scale_tick",
+        "M03_03_Angular_scale_tick",
+        "M03_04_Angular_scale_tick",
+        "M03_05_Angular_scale_tick",
+        "M03_06_Angular_scale_tick",
+        "M03_07_Angular_scale_tick",
+        "M03_08_Angular_scale_tick",
+        "M03_09_Angular_scale_tick",
+        "M03_10_Angular_scale_tick",
+        "M03_11_Angular_scale_tick",
+        "G04_1_Input_plain_bearing"
+      ],
+      "samples": 135,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "079",
+      "title": "Transfer Release split bearing cover 1",
+      "moving_parts": [
+        "H02_1_Split_front_bearing_cover",
+        "M03_00_Angular_scale_tick",
+        "M03_02_Angular_scale_tick",
+        "M03_03_Angular_scale_tick",
+        "M03_04_Angular_scale_tick",
+        "M03_05_Angular_scale_tick",
+        "M03_06_Angular_scale_tick",
+        "M03_07_Angular_scale_tick",
+        "M03_08_Angular_scale_tick",
+        "M03_09_Angular_scale_tick",
+        "M03_10_Angular_scale_tick",
+        "M03_11_Angular_scale_tick",
+        "G04_1_Input_plain_bearing"
+      ],
+      "samples": 1100,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "080",
+      "title": "Place Release split bearing cover 1",
+      "moving_parts": [
+        "H02_1_Split_front_bearing_cover",
+        "M03_00_Angular_scale_tick",
+        "M03_02_Angular_scale_tick",
+        "M03_03_Angular_scale_tick",
+        "M03_04_Angular_scale_tick",
+        "M03_05_Angular_scale_tick",
+        "M03_06_Angular_scale_tick",
+        "M03_07_Angular_scale_tick",
+        "M03_08_Angular_scale_tick",
+        "M03_09_Angular_scale_tick",
+        "M03_10_Angular_scale_tick",
+        "M03_11_Angular_scale_tick",
+        "G04_1_Input_plain_bearing"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "081",
+      "title": "Slide the gear shell axially over the flange",
+      "moving_parts": [
+        "H01_Removable_gear_shell"
+      ],
+      "samples": 141,
+      "cad_tests": 743,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "082",
+      "title": "Lift Slide the gear shell axially over the flange",
+      "moving_parts": [
+        "H01_Removable_gear_shell"
+      ],
+      "samples": 135,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "083",
+      "title": "Transfer Slide the gear shell axially over the flange",
+      "moving_parts": [
+        "H01_Removable_gear_shell"
+      ],
+      "samples": 999,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "084",
+      "title": "Place Slide the gear shell axially over the flange",
+      "moving_parts": [
+        "H01_Removable_gear_shell"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "085",
+      "title": "Unscrew W06_0_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_0_Collar_clamp_screw"
+      ],
+      "samples": 241,
+      "cad_tests": 718,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 8
+    },
+    {
+      "id": "086",
+      "title": "Withdraw W06_0_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_0_Collar_clamp_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 38,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "087",
+      "title": "Lift W06_0_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_0_Collar_clamp_screw"
+      ],
+      "samples": 73,
+      "cad_tests": 20,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "088",
+      "title": "Transfer W06_0_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_0_Collar_clamp_screw"
+      ],
+      "samples": 339,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "089",
+      "title": "Place W06_0_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_0_Collar_clamp_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "090",
+      "title": "Unscrew W06_1_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_1_Collar_clamp_screw"
+      ],
+      "samples": 241,
+      "cad_tests": 718,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 8
+    },
+    {
+      "id": "091",
+      "title": "Withdraw W06_1_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_1_Collar_clamp_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 38,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "092",
+      "title": "Lift W06_1_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_1_Collar_clamp_screw"
+      ],
+      "samples": 73,
+      "cad_tests": 20,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "093",
+      "title": "Transfer W06_1_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_1_Collar_clamp_screw"
+      ],
+      "samples": 308,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "094",
+      "title": "Place W06_1_Collar_clamp_screw",
+      "moving_parts": [
+        "W06_1_Collar_clamp_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "095",
+      "title": "Separate rear clamp collar 1",
+      "moving_parts": [
+        "W05_1_Split_rear_clamp_collar"
+      ],
+      "samples": 26,
+      "cad_tests": 42,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "096",
+      "title": "Clear the shaft end",
+      "moving_parts": [
+        "W05_1_Split_rear_clamp_collar"
+      ],
+      "samples": 66,
+      "cad_tests": 9,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "097",
+      "title": "Lift rear clamp collar",
+      "moving_parts": [
+        "W05_1_Split_rear_clamp_collar"
+      ],
+      "samples": 66,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "098",
+      "title": "Transfer rear clamp collar",
+      "moving_parts": [
+        "W05_1_Split_rear_clamp_collar"
+      ],
+      "samples": 360,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "099",
+      "title": "Place rear clamp collar",
+      "moving_parts": [
+        "W05_1_Split_rear_clamp_collar"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "100",
+      "title": "Separate rear clamp collar -1",
+      "moving_parts": [
+        "W05_-1_Split_rear_clamp_collar"
+      ],
+      "samples": 26,
+      "cad_tests": 42,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "101",
+      "title": "Clear the shaft end",
+      "moving_parts": [
+        "W05_-1_Split_rear_clamp_collar"
+      ],
+      "samples": 66,
+      "cad_tests": 9,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "102",
+      "title": "Lift rear clamp collar",
+      "moving_parts": [
+        "W05_-1_Split_rear_clamp_collar"
+      ],
+      "samples": 136,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "103",
+      "title": "Transfer rear clamp collar",
+      "moving_parts": [
+        "W05_-1_Split_rear_clamp_collar"
+      ],
+      "samples": 385,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "104",
+      "title": "Place rear clamp collar",
+      "moving_parts": [
+        "W05_-1_Split_rear_clamp_collar"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "105",
+      "title": "Remove rear thrust washer",
+      "moving_parts": [
+        "W04_Rear_thrust_washer"
+      ],
+      "samples": 25,
+      "cad_tests": 16,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "106",
+      "title": "Lift Remove rear thrust washer",
+      "moving_parts": [
+        "W04_Rear_thrust_washer"
+      ],
+      "samples": 107,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "107",
+      "title": "Transfer Remove rear thrust washer",
+      "moving_parts": [
+        "W04_Rear_thrust_washer"
+      ],
+      "samples": 388,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "108",
+      "title": "Place Remove rear thrust washer",
+      "moving_parts": [
+        "W04_Rear_thrust_washer"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "109",
+      "title": "Withdraw spindle, gear and front bearing together",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage",
+        "W01_Revolved_hollow_shaft_and_flange",
+        "W02_Parallel_drive_key",
+        "W03_Front_thrust_washer",
+        "W07_Rear_gear_spacer",
+        "W07_Front_gear_spacer",
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 101,
+      "cad_tests": 322,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "110",
+      "title": "Lift Withdraw spindle, gear and front bearing together",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage",
+        "W01_Revolved_hollow_shaft_and_flange",
+        "W02_Parallel_drive_key",
+        "W03_Front_thrust_washer",
+        "W07_Rear_gear_spacer",
+        "W07_Front_gear_spacer",
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 128,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "111",
+      "title": "Transfer Withdraw spindle, gear and front bearing together",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage",
+        "W01_Revolved_hollow_shaft_and_flange",
+        "W02_Parallel_drive_key",
+        "W03_Front_thrust_washer",
+        "W07_Rear_gear_spacer",
+        "W07_Front_gear_spacer",
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 1141,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "112",
+      "title": "Place Withdraw spindle, gear and front bearing together",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage",
+        "W01_Revolved_hollow_shaft_and_flange",
+        "W02_Parallel_drive_key",
+        "W03_Front_thrust_washer",
+        "W07_Rear_gear_spacer",
+        "W07_Front_gear_spacer",
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "113",
+      "title": "Remove input pinion",
+      "moving_parts": [
+        "G02_20T_Involute_input_pinion"
+      ],
+      "samples": 46,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "114",
+      "title": "Lift Remove input pinion",
+      "moving_parts": [
+        "G02_20T_Involute_input_pinion"
+      ],
+      "samples": 102,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "115",
+      "title": "Transfer Remove input pinion",
+      "moving_parts": [
+        "G02_20T_Involute_input_pinion"
+      ],
+      "samples": 508,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "116",
+      "title": "Place Remove input pinion",
+      "moving_parts": [
+        "G02_20T_Involute_input_pinion"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "117",
+      "title": "Withdraw rear bearing as one cartridge",
+      "moving_parts": [
+        "R01_Rear_Outer_race",
+        "R01_Rear_Inner_race",
+        "R01_Rear_Ball_00",
+        "R01_Rear_Ball_01",
+        "R01_Rear_Ball_02",
+        "R01_Rear_Ball_03",
+        "R01_Rear_Ball_04",
+        "R01_Rear_Ball_05",
+        "R01_Rear_Ball_06",
+        "R01_Rear_Ball_07",
+        "R01_Rear_Ball_08",
+        "R01_Rear_Ball_09",
+        "R01_Rear_Ball_10",
+        "R01_Rear_Ball_11",
+        "R01_Rear_Pocketed_cage"
+      ],
+      "samples": 36,
+      "cad_tests": 125,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "118",
+      "title": "Lift Withdraw rear bearing as one cartridge",
+      "moving_parts": [
+        "R01_Rear_Outer_race",
+        "R01_Rear_Inner_race",
+        "R01_Rear_Ball_00",
+        "R01_Rear_Ball_01",
+        "R01_Rear_Ball_02",
+        "R01_Rear_Ball_03",
+        "R01_Rear_Ball_04",
+        "R01_Rear_Ball_05",
+        "R01_Rear_Ball_06",
+        "R01_Rear_Ball_07",
+        "R01_Rear_Ball_08",
+        "R01_Rear_Ball_09",
+        "R01_Rear_Ball_10",
+        "R01_Rear_Ball_11",
+        "R01_Rear_Pocketed_cage"
+      ],
+      "samples": 112,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "119",
+      "title": "Transfer Withdraw rear bearing as one cartridge",
+      "moving_parts": [
+        "R01_Rear_Outer_race",
+        "R01_Rear_Inner_race",
+        "R01_Rear_Ball_00",
+        "R01_Rear_Ball_01",
+        "R01_Rear_Ball_02",
+        "R01_Rear_Ball_03",
+        "R01_Rear_Ball_04",
+        "R01_Rear_Ball_05",
+        "R01_Rear_Ball_06",
+        "R01_Rear_Ball_07",
+        "R01_Rear_Ball_08",
+        "R01_Rear_Ball_09",
+        "R01_Rear_Ball_10",
+        "R01_Rear_Ball_11",
+        "R01_Rear_Pocketed_cage"
+      ],
+      "samples": 445,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "120",
+      "title": "Place Withdraw rear bearing as one cartridge",
+      "moving_parts": [
+        "R01_Rear_Outer_race",
+        "R01_Rear_Inner_race",
+        "R01_Rear_Ball_00",
+        "R01_Rear_Ball_01",
+        "R01_Rear_Ball_02",
+        "R01_Rear_Ball_03",
+        "R01_Rear_Ball_04",
+        "R01_Rear_Ball_05",
+        "R01_Rear_Ball_06",
+        "R01_Rear_Ball_07",
+        "R01_Rear_Ball_08",
+        "R01_Rear_Ball_09",
+        "R01_Rear_Ball_10",
+        "R01_Rear_Ball_11",
+        "R01_Rear_Pocketed_cage"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "121",
+      "title": "Withdraw rear input bushing",
+      "moving_parts": [
+        "G04_0_Input_plain_bearing"
+      ],
+      "samples": 23,
+      "cad_tests": 11,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "122",
+      "title": "Lift Withdraw rear input bushing",
+      "moving_parts": [
+        "G04_0_Input_plain_bearing"
+      ],
+      "samples": 99,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "123",
+      "title": "Transfer Withdraw rear input bushing",
+      "moving_parts": [
+        "G04_0_Input_plain_bearing"
+      ],
+      "samples": 387,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "124",
+      "title": "Place Withdraw rear input bushing",
+      "moving_parts": [
+        "G04_0_Input_plain_bearing"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "125",
+      "title": "Unscrew B04_0_Pedestal_clamp",
+      "moving_parts": [
+        "B04_0_Pedestal_clamp"
+      ],
+      "samples": 207,
+      "cad_tests": 414,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 1
+    },
+    {
+      "id": "126",
+      "title": "Withdraw B04_0_Pedestal_clamp",
+      "moving_parts": [
+        "B04_0_Pedestal_clamp"
+      ],
+      "samples": 19,
+      "cad_tests": 20,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "127",
+      "title": "Lift B04_0_Pedestal_clamp",
+      "moving_parts": [
+        "B04_0_Pedestal_clamp"
+      ],
+      "samples": 134,
+      "cad_tests": 88,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "128",
+      "title": "Transfer B04_0_Pedestal_clamp",
+      "moving_parts": [
+        "B04_0_Pedestal_clamp"
+      ],
+      "samples": 445,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "129",
+      "title": "Place B04_0_Pedestal_clamp",
+      "moving_parts": [
+        "B04_0_Pedestal_clamp"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "130",
+      "title": "Unscrew B04_1_Pedestal_clamp",
+      "moving_parts": [
+        "B04_1_Pedestal_clamp"
+      ],
+      "samples": 207,
+      "cad_tests": 618,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 1
+    },
+    {
+      "id": "131",
+      "title": "Withdraw B04_1_Pedestal_clamp",
+      "moving_parts": [
+        "B04_1_Pedestal_clamp"
+      ],
+      "samples": 19,
+      "cad_tests": 20,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "132",
+      "title": "Lift B04_1_Pedestal_clamp",
+      "moving_parts": [
+        "B04_1_Pedestal_clamp"
+      ],
+      "samples": 134,
+      "cad_tests": 88,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "133",
+      "title": "Transfer B04_1_Pedestal_clamp",
+      "moving_parts": [
+        "B04_1_Pedestal_clamp"
+      ],
+      "samples": 341,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "134",
+      "title": "Place B04_1_Pedestal_clamp",
+      "moving_parts": [
+        "B04_1_Pedestal_clamp"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "135",
+      "title": "Lift the empty pedestal from its mounting shoe",
+      "moving_parts": [
+        "B03_Rear_bearing_pedestal"
+      ],
+      "samples": 116,
+      "cad_tests": 1,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "136",
+      "title": "Lift Lift the empty pedestal from its mounting shoe",
+      "moving_parts": [
+        "B03_Rear_bearing_pedestal"
+      ],
+      "samples": 37,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "137",
+      "title": "Transfer Lift the empty pedestal from its mounting shoe",
+      "moving_parts": [
+        "B03_Rear_bearing_pedestal"
+      ],
+      "samples": 1484,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "138",
+      "title": "Place Lift the empty pedestal from its mounting shoe",
+      "moving_parts": [
+        "B03_Rear_bearing_pedestal"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "139",
+      "title": "Remove rear gear spacer",
+      "moving_parts": [
+        "W07_Rear_gear_spacer"
+      ],
+      "samples": 31,
+      "cad_tests": 26,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "140",
+      "title": "Lift Remove rear gear spacer",
+      "moving_parts": [
+        "W07_Rear_gear_spacer"
+      ],
+      "samples": 145,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "141",
+      "title": "Transfer Remove rear gear spacer",
+      "moving_parts": [
+        "W07_Rear_gear_spacer"
+      ],
+      "samples": 1530,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "142",
+      "title": "Place Remove rear gear spacer",
+      "moving_parts": [
+        "W07_Rear_gear_spacer"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "143",
+      "title": "Slide the wrist gear off the keyed shaft",
+      "moving_parts": [
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 56,
+      "cad_tests": 74,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "144",
+      "title": "Lift Slide the wrist gear off the keyed shaft",
+      "moving_parts": [
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "145",
+      "title": "Transfer Slide the wrist gear off the keyed shaft",
+      "moving_parts": [
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 346,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "146",
+      "title": "Place Slide the wrist gear off the keyed shaft",
+      "moving_parts": [
+        "G01_72T_Involute_wrist_gear"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "147",
+      "title": "Lift the parallel drive key from its keyway",
+      "moving_parts": [
+        "W02_Parallel_drive_key"
+      ],
+      "samples": 13,
+      "cad_tests": 13,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "148",
+      "title": "Lift Lift the parallel drive key from its keyway",
+      "moving_parts": [
+        "W02_Parallel_drive_key"
+      ],
+      "samples": 128,
+      "cad_tests": 36,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "149",
+      "title": "Transfer Lift the parallel drive key from its keyway",
+      "moving_parts": [
+        "W02_Parallel_drive_key"
+      ],
+      "samples": 1496,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "150",
+      "title": "Place Lift the parallel drive key from its keyway",
+      "moving_parts": [
+        "W02_Parallel_drive_key"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "151",
+      "title": "Remove front gear spacer",
+      "moving_parts": [
+        "W07_Front_gear_spacer"
+      ],
+      "samples": 56,
+      "cad_tests": 54,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "152",
+      "title": "Lift Remove front gear spacer",
+      "moving_parts": [
+        "W07_Front_gear_spacer"
+      ],
+      "samples": 145,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "153",
+      "title": "Transfer Remove front gear spacer",
+      "moving_parts": [
+        "W07_Front_gear_spacer"
+      ],
+      "samples": 1514,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "154",
+      "title": "Place Remove front gear spacer",
+      "moving_parts": [
+        "W07_Front_gear_spacer"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "155",
+      "title": "Remove the complete front bearing over the free shaft end",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage"
+      ],
+      "samples": 71,
+      "cad_tests": 877,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "156",
+      "title": "Lift Remove the complete front bearing over the free shaft end",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage"
+      ],
+      "samples": 147,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "157",
+      "title": "Transfer Remove the complete front bearing over the free shaft end",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage"
+      ],
+      "samples": 1512,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "158",
+      "title": "Place Remove the complete front bearing over the free shaft end",
+      "moving_parts": [
+        "R02_Front_Outer_race",
+        "R02_Front_Inner_race",
+        "R02_Front_Ball_00",
+        "R02_Front_Ball_01",
+        "R02_Front_Ball_02",
+        "R02_Front_Ball_03",
+        "R02_Front_Ball_04",
+        "R02_Front_Ball_05",
+        "R02_Front_Ball_06",
+        "R02_Front_Ball_07",
+        "R02_Front_Ball_08",
+        "R02_Front_Ball_09",
+        "R02_Front_Ball_10",
+        "R02_Front_Ball_11",
+        "R02_Front_Pocketed_cage"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "159",
+      "title": "Remove front thrust washer",
+      "moving_parts": [
+        "W03_Front_thrust_washer"
+      ],
+      "samples": 71,
+      "cad_tests": 63,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "160",
+      "title": "Lift Remove front thrust washer",
+      "moving_parts": [
+        "W03_Front_thrust_washer"
+      ],
+      "samples": 142,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "161",
+      "title": "Transfer Remove front thrust washer",
+      "moving_parts": [
+        "W03_Front_thrust_washer"
+      ],
+      "samples": 1512,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "162",
+      "title": "Place Remove front thrust washer",
+      "moving_parts": [
+        "W03_Front_thrust_washer"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "163",
+      "title": "Unscrew G07_0_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 385,
+      "cad_tests": 419,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 1
+    },
+    {
+      "id": "164",
+      "title": "Withdraw G07_0_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 2,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "165",
+      "title": "Lift G07_0_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 123,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "166",
+      "title": "Transfer G07_0_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 1062,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "167",
+      "title": "Place G07_0_Flat_engaging_grub_screw",
+      "moving_parts": [
+        "G07_0_Flat_engaging_grub_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "168",
+      "title": "Slide the rotary knob off the input shaft",
+      "moving_parts": [
+        "G05_Fluted_rotary_input_knob"
+      ],
+      "samples": 21,
+      "cad_tests": 12,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "169",
+      "title": "Lift Slide the rotary knob off the input shaft",
+      "moving_parts": [
+        "G05_Fluted_rotary_input_knob"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "170",
+      "title": "Transfer Slide the rotary knob off the input shaft",
+      "moving_parts": [
+        "G05_Fluted_rotary_input_knob"
+      ],
+      "samples": 1062,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "171",
+      "title": "Place Slide the rotary knob off the input shaft",
+      "moving_parts": [
+        "G05_Fluted_rotary_input_knob"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "172",
+      "title": "Unscrew L04_Flat_engaging_knob_screw",
+      "moving_parts": [
+        "L04_Flat_engaging_knob_screw"
+      ],
+      "samples": 385,
+      "cad_tests": 433,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 1
+    },
+    {
+      "id": "173",
+      "title": "Withdraw L04_Flat_engaging_knob_screw",
+      "moving_parts": [
+        "L04_Flat_engaging_knob_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "174",
+      "title": "Lift L04_Flat_engaging_knob_screw",
+      "moving_parts": [
+        "L04_Flat_engaging_knob_screw"
+      ],
+      "samples": 134,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "175",
+      "title": "Transfer L04_Flat_engaging_knob_screw",
+      "moving_parts": [
+        "L04_Flat_engaging_knob_screw"
+      ],
+      "samples": 837,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "176",
+      "title": "Place L04_Flat_engaging_knob_screw",
+      "moving_parts": [
+        "L04_Flat_engaging_knob_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "177",
+      "title": "Remove gripper knob",
+      "moving_parts": [
+        "L03_Fluted_gripper_input_knob"
+      ],
+      "samples": 16,
+      "cad_tests": 11,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "178",
+      "title": "Lift Remove gripper knob",
+      "moving_parts": [
+        "L03_Fluted_gripper_input_knob"
+      ],
+      "samples": 143,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "179",
+      "title": "Transfer Remove gripper knob",
+      "moving_parts": [
+        "L03_Fluted_gripper_input_knob"
+      ],
+      "samples": 823,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "180",
+      "title": "Place Remove gripper knob",
+      "moving_parts": [
+        "L03_Fluted_gripper_input_knob"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "181",
+      "title": "Unscrew L07_Screw_collar_lock",
+      "moving_parts": [
+        "L07_Screw_collar_lock"
+      ],
+      "samples": 145,
+      "cad_tests": 194,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "182",
+      "title": "Withdraw L07_Screw_collar_lock",
+      "moving_parts": [
+        "L07_Screw_collar_lock"
+      ],
+      "samples": 19,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "183",
+      "title": "Lift L07_Screw_collar_lock",
+      "moving_parts": [
+        "L07_Screw_collar_lock"
+      ],
+      "samples": 134,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "184",
+      "title": "Transfer L07_Screw_collar_lock",
+      "moving_parts": [
+        "L07_Screw_collar_lock"
+      ],
+      "samples": 949,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "185",
+      "title": "Place L07_Screw_collar_lock",
+      "moving_parts": [
+        "L07_Screw_collar_lock"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "186",
+      "title": "Remove lead screw axial collar",
+      "moving_parts": [
+        "L06_Screw_axial_retaining_collar"
+      ],
+      "samples": 16,
+      "cad_tests": 11,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "187",
+      "title": "Lift Remove lead screw axial collar",
+      "moving_parts": [
+        "L06_Screw_axial_retaining_collar"
+      ],
+      "samples": 138,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "188",
+      "title": "Transfer Remove lead screw axial collar",
+      "moving_parts": [
+        "L06_Screw_axial_retaining_collar"
+      ],
+      "samples": 973,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "189",
+      "title": "Place Remove lead screw axial collar",
+      "moving_parts": [
+        "L06_Screw_axial_retaining_collar"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "190",
+      "title": "Remove screw thrust washer",
+      "moving_parts": [
+        "L08_-1_Screw_thrust_washer"
+      ],
+      "samples": 16,
+      "cad_tests": 11,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "191",
+      "title": "Lift Remove screw thrust washer",
+      "moving_parts": [
+        "L08_-1_Screw_thrust_washer"
+      ],
+      "samples": 138,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "192",
+      "title": "Transfer Remove screw thrust washer",
+      "moving_parts": [
+        "L08_-1_Screw_thrust_washer"
+      ],
+      "samples": 979,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "193",
+      "title": "Place Remove screw thrust washer",
+      "moving_parts": [
+        "L08_-1_Screw_thrust_washer"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "194",
+      "title": "Remove screw thrust washer",
+      "moving_parts": [
+        "L08_1_Screw_thrust_washer"
+      ],
+      "samples": 16,
+      "cad_tests": 11,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "195",
+      "title": "Lift Remove screw thrust washer",
+      "moving_parts": [
+        "L08_1_Screw_thrust_washer"
+      ],
+      "samples": 138,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "196",
+      "title": "Transfer Remove screw thrust washer",
+      "moving_parts": [
+        "L08_1_Screw_thrust_washer"
+      ],
+      "samples": 865,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "197",
+      "title": "Place Remove screw thrust washer",
+      "moving_parts": [
+        "L08_1_Screw_thrust_washer"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "198",
+      "title": "Unscrew L05_-1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 286,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "199",
+      "title": "Withdraw L05_-1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "200",
+      "title": "Lift L05_-1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 148,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "201",
+      "title": "Transfer L05_-1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 977,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "202",
+      "title": "Place L05_-1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "203",
+      "title": "Unscrew L05_-1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 286,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "204",
+      "title": "Withdraw L05_-1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "205",
+      "title": "Lift L05_-1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 120,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "206",
+      "title": "Transfer L05_-1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 993,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "207",
+      "title": "Place L05_-1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_-1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "208",
+      "title": "Unscrew L05_1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 286,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "209",
+      "title": "Withdraw L05_1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "210",
+      "title": "Lift L05_1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 148,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "211",
+      "title": "Transfer L05_1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 926,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "212",
+      "title": "Place L05_1_56_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_56_Guide_rod_lock_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "213",
+      "title": "Unscrew L05_1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 289,
+      "cad_tests": 286,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 2
+    },
+    {
+      "id": "214",
+      "title": "Withdraw L05_1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "215",
+      "title": "Lift L05_1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 120,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "216",
+      "title": "Transfer L05_1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 947,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "217",
+      "title": "Place L05_1_84_Guide_rod_lock_screw",
+      "moving_parts": [
+        "L05_1_84_Guide_rod_lock_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "218",
+      "title": "Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_0_Ground_guide_rod"
+      ],
+      "samples": 111,
+      "cad_tests": 654,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "219",
+      "title": "Lift Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_0_Ground_guide_rod"
+      ],
+      "samples": 150,
+      "cad_tests": 13,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "220",
+      "title": "Transfer Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_0_Ground_guide_rod"
+      ],
+      "samples": 1982,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "221",
+      "title": "Place Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_0_Ground_guide_rod"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "222",
+      "title": "Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_1_Ground_guide_rod"
+      ],
+      "samples": 111,
+      "cad_tests": 654,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "223",
+      "title": "Lift Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_1_Ground_guide_rod"
+      ],
+      "samples": 122,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "224",
+      "title": "Transfer Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_1_Ground_guide_rod"
+      ],
+      "samples": 1987,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "225",
+      "title": "Place Withdraw ground guide rod",
+      "moving_parts": [
+        "L01_1_Ground_guide_rod"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "226",
+      "title": "Unscrew P03_-1_51_Support_screw",
+      "moving_parts": [
+        "P03_-1_51_Support_screw"
+      ],
+      "samples": 193,
+      "cad_tests": 386,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "227",
+      "title": "Withdraw P03_-1_51_Support_screw",
+      "moving_parts": [
+        "P03_-1_51_Support_screw"
+      ],
+      "samples": 36,
+      "cad_tests": 21,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "228",
+      "title": "Lift P03_-1_51_Support_screw",
+      "moving_parts": [
+        "P03_-1_51_Support_screw"
+      ],
+      "samples": 155,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "229",
+      "title": "Transfer P03_-1_51_Support_screw",
+      "moving_parts": [
+        "P03_-1_51_Support_screw"
+      ],
+      "samples": 998,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "230",
+      "title": "Place P03_-1_51_Support_screw",
+      "moving_parts": [
+        "P03_-1_51_Support_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "231",
+      "title": "Unscrew P03_-1_89_Support_screw",
+      "moving_parts": [
+        "P03_-1_89_Support_screw"
+      ],
+      "samples": 193,
+      "cad_tests": 386,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "232",
+      "title": "Withdraw P03_-1_89_Support_screw",
+      "moving_parts": [
+        "P03_-1_89_Support_screw"
+      ],
+      "samples": 36,
+      "cad_tests": 21,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "233",
+      "title": "Lift P03_-1_89_Support_screw",
+      "moving_parts": [
+        "P03_-1_89_Support_screw"
+      ],
+      "samples": 117,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "234",
+      "title": "Transfer P03_-1_89_Support_screw",
+      "moving_parts": [
+        "P03_-1_89_Support_screw"
+      ],
+      "samples": 998,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "235",
+      "title": "Place P03_-1_89_Support_screw",
+      "moving_parts": [
+        "P03_-1_89_Support_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "236",
+      "title": "Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing"
+      ],
+      "samples": 23,
+      "cad_tests": 58,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "237",
+      "title": "Lift Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing"
+      ],
+      "samples": 156,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "238",
+      "title": "Transfer Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing"
+      ],
+      "samples": 1025,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "239",
+      "title": "Place Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_-1_Guide_end_support",
+        "P04_-1_Screw_end_bushing"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "240",
+      "title": "Unscrew P03_1_51_Support_screw",
+      "moving_parts": [
+        "P03_1_51_Support_screw"
+      ],
+      "samples": 193,
+      "cad_tests": 386,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "241",
+      "title": "Withdraw P03_1_51_Support_screw",
+      "moving_parts": [
+        "P03_1_51_Support_screw"
+      ],
+      "samples": 36,
+      "cad_tests": 21,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "242",
+      "title": "Lift P03_1_51_Support_screw",
+      "moving_parts": [
+        "P03_1_51_Support_screw"
+      ],
+      "samples": 155,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "243",
+      "title": "Transfer P03_1_51_Support_screw",
+      "moving_parts": [
+        "P03_1_51_Support_screw"
+      ],
+      "samples": 913,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "244",
+      "title": "Place P03_1_51_Support_screw",
+      "moving_parts": [
+        "P03_1_51_Support_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "245",
+      "title": "Unscrew P03_1_89_Support_screw",
+      "moving_parts": [
+        "P03_1_89_Support_screw"
+      ],
+      "samples": 193,
+      "cad_tests": 386,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "246",
+      "title": "Withdraw P03_1_89_Support_screw",
+      "moving_parts": [
+        "P03_1_89_Support_screw"
+      ],
+      "samples": 36,
+      "cad_tests": 21,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "247",
+      "title": "Lift P03_1_89_Support_screw",
+      "moving_parts": [
+        "P03_1_89_Support_screw"
+      ],
+      "samples": 117,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "248",
+      "title": "Transfer P03_1_89_Support_screw",
+      "moving_parts": [
+        "P03_1_89_Support_screw"
+      ],
+      "samples": 921,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "249",
+      "title": "Place P03_1_89_Support_screw",
+      "moving_parts": [
+        "P03_1_89_Support_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "250",
+      "title": "Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing"
+      ],
+      "samples": 23,
+      "cad_tests": 58,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "251",
+      "title": "Lift Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing"
+      ],
+      "samples": 156,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "252",
+      "title": "Transfer Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing"
+      ],
+      "samples": 920,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "253",
+      "title": "Place Remove guide end support with its bushing",
+      "moving_parts": [
+        "P02_1_Guide_end_support",
+        "P04_1_Screw_end_bushing"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "254",
+      "title": "Unscrew J08_-1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "255",
+      "title": "Withdraw J08_-1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "256",
+      "title": "Lift J08_-1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 144,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "257",
+      "title": "Transfer J08_-1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 1048,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "258",
+      "title": "Place J08_-1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "259",
+      "title": "Unscrew J08_-1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "260",
+      "title": "Withdraw J08_-1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "261",
+      "title": "Lift J08_-1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 126,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "262",
+      "title": "Transfer J08_-1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 1063,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "263",
+      "title": "Place J08_-1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "264",
+      "title": "Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_-1_Nut_retaining_plate"
+      ],
+      "samples": 13,
+      "cad_tests": 45,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "265",
+      "title": "Lift Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_-1_Nut_retaining_plate"
+      ],
+      "samples": 144,
+      "cad_tests": 33,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "266",
+      "title": "Transfer Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_-1_Nut_retaining_plate"
+      ],
+      "samples": 1059,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "267",
+      "title": "Place Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_-1_Nut_retaining_plate"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "268",
+      "title": "Unscrew J08_-1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_61_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "269",
+      "title": "Withdraw J08_-1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_61_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "270",
+      "title": "Lift J08_-1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_61_Nut_plate_screw"
+      ],
+      "samples": 144,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "271",
+      "title": "Transfer J08_-1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_61_Nut_plate_screw"
+      ],
+      "samples": 1049,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "272",
+      "title": "Place J08_-1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_61_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "273",
+      "title": "Unscrew J08_-1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_79_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "274",
+      "title": "Withdraw J08_-1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_79_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "275",
+      "title": "Lift J08_-1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_79_Nut_plate_screw"
+      ],
+      "samples": 126,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "276",
+      "title": "Transfer J08_-1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_79_Nut_plate_screw"
+      ],
+      "samples": 1012,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "277",
+      "title": "Place J08_-1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_-1_1_79_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "278",
+      "title": "Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_1_Nut_retaining_plate"
+      ],
+      "samples": 13,
+      "cad_tests": 45,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "279",
+      "title": "Lift Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_1_Nut_retaining_plate"
+      ],
+      "samples": 144,
+      "cad_tests": 33,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "280",
+      "title": "Transfer Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_1_Nut_retaining_plate"
+      ],
+      "samples": 1029,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "281",
+      "title": "Place Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_-1_1_Nut_retaining_plate"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "282",
+      "title": "Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad"
+      ],
+      "samples": 86,
+      "cad_tests": 164,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "283",
+      "title": "Lift Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad"
+      ],
+      "samples": 154,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "284",
+      "title": "Transfer Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad"
+      ],
+      "samples": 2290,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "285",
+      "title": "Place Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_-1_56_Guide_bushing",
+        "J02_-1_84_Guide_bushing",
+        "J04_-1_Lofted_windowed_finger",
+        "J06_-1_Grooved_elastomer_pad"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "286",
+      "title": "Unscrew J08_1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "287",
+      "title": "Withdraw J08_1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "288",
+      "title": "Lift J08_1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 144,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "289",
+      "title": "Transfer J08_1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 1017,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "290",
+      "title": "Place J08_1_-1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_61_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "291",
+      "title": "Unscrew J08_1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "292",
+      "title": "Withdraw J08_1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "293",
+      "title": "Lift J08_1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 126,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "294",
+      "title": "Transfer J08_1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 1021,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "295",
+      "title": "Place J08_1_-1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_-1_79_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "296",
+      "title": "Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_-1_Nut_retaining_plate"
+      ],
+      "samples": 13,
+      "cad_tests": 45,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "297",
+      "title": "Lift Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_-1_Nut_retaining_plate"
+      ],
+      "samples": 144,
+      "cad_tests": 33,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "298",
+      "title": "Transfer Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_-1_Nut_retaining_plate"
+      ],
+      "samples": 1005,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "299",
+      "title": "Place Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_-1_Nut_retaining_plate"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "300",
+      "title": "Unscrew J08_1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_61_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "301",
+      "title": "Withdraw J08_1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_61_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "302",
+      "title": "Lift J08_1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_61_Nut_plate_screw"
+      ],
+      "samples": 144,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "303",
+      "title": "Transfer J08_1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_61_Nut_plate_screw"
+      ],
+      "samples": 980,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "304",
+      "title": "Place J08_1_1_61_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_61_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "305",
+      "title": "Unscrew J08_1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_79_Nut_plate_screw"
+      ],
+      "samples": 248,
+      "cad_tests": 744,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "306",
+      "title": "Withdraw J08_1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_79_Nut_plate_screw"
+      ],
+      "samples": 19,
+      "cad_tests": 4,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "307",
+      "title": "Lift J08_1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_79_Nut_plate_screw"
+      ],
+      "samples": 126,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "308",
+      "title": "Transfer J08_1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_79_Nut_plate_screw"
+      ],
+      "samples": 991,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "309",
+      "title": "Place J08_1_1_79_Nut_plate_screw",
+      "moving_parts": [
+        "J08_1_1_79_Nut_plate_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "310",
+      "title": "Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_1_Nut_retaining_plate"
+      ],
+      "samples": 13,
+      "cad_tests": 45,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "311",
+      "title": "Lift Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_1_Nut_retaining_plate"
+      ],
+      "samples": 144,
+      "cad_tests": 33,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "312",
+      "title": "Transfer Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_1_Nut_retaining_plate"
+      ],
+      "samples": 1023,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "313",
+      "title": "Place Remove slotted nut retaining plate radially",
+      "moving_parts": [
+        "J07_1_1_Nut_retaining_plate"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "314",
+      "title": "Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad"
+      ],
+      "samples": 86,
+      "cad_tests": 164,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "315",
+      "title": "Lift Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad"
+      ],
+      "samples": 154,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "316",
+      "title": "Transfer Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad"
+      ],
+      "samples": 2833,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "317",
+      "title": "Place Slide the bush-lined finger off its nut and screw",
+      "moving_parts": [
+        "J02_1_56_Guide_bushing",
+        "J02_1_84_Guide_bushing",
+        "J04_1_Lofted_windowed_finger",
+        "J06_1_Grooved_elastomer_pad"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "318",
+      "title": "Unthread left handed bronze nut",
+      "moving_parts": [
+        "J03_-1_Helically_cut_bronze_nut"
+      ],
+      "samples": 217,
+      "cad_tests": 434,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "319",
+      "title": "Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_-1_Helically_cut_bronze_nut"
+      ],
+      "samples": 26,
+      "cad_tests": 23,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "320",
+      "title": "Lift Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_-1_Helically_cut_bronze_nut"
+      ],
+      "samples": 139,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "321",
+      "title": "Transfer Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_-1_Helically_cut_bronze_nut"
+      ],
+      "samples": 1161,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "322",
+      "title": "Place Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_-1_Helically_cut_bronze_nut"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "323",
+      "title": "Unthread right handed bronze nut",
+      "moving_parts": [
+        "J03_1_Helically_cut_bronze_nut"
+      ],
+      "samples": 217,
+      "cad_tests": 434,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "324",
+      "title": "Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_1_Helically_cut_bronze_nut"
+      ],
+      "samples": 26,
+      "cad_tests": 23,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "325",
+      "title": "Lift Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_1_Helically_cut_bronze_nut"
+      ],
+      "samples": 139,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "326",
+      "title": "Transfer Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_1_Helically_cut_bronze_nut"
+      ],
+      "samples": 1041,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "327",
+      "title": "Place Slide the disengaged nut off the plain journal",
+      "moving_parts": [
+        "J03_1_Helically_cut_bronze_nut"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "328",
+      "title": "Lift out the opposed lead screw",
+      "moving_parts": [
+        "L02_Opposed_helical_lead_screw"
+      ],
+      "samples": 36,
+      "cad_tests": 1,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "329",
+      "title": "Lift Lift out the opposed lead screw",
+      "moving_parts": [
+        "L02_Opposed_helical_lead_screw"
+      ],
+      "samples": 137,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "330",
+      "title": "Transfer Lift out the opposed lead screw",
+      "moving_parts": [
+        "L02_Opposed_helical_lead_screw"
+      ],
+      "samples": 2892,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    },
+    {
+      "id": "331",
+      "title": "Place Lift out the opposed lead screw",
+      "moving_parts": [
+        "L02_Opposed_helical_lead_screw"
+      ],
+      "samples": 163,
+      "cad_tests": 0,
+      "max_overlap_mm3": 0.0,
+      "tool_tests": 0
+    }
+  ],
+  "collisions": [],
+  "tool_obstructions": [],
+  "floor_collisions": [],
+  "unchecked_mesh_parts": [],
+  "passed": true,
+  "linear_step_mm": 1,
+  "angular_step_degrees": 15,
+  "volume_tolerance_mm3": 0.0001,
+  "checked_operations": 331,
+  "total_operations": 331,
+  "continuous_motion_certificate": false,
+  "forces_simulated": false,
+  "evidence_note": "Complete fine audit; twelve withdrawal/lift/transfer operations for support screws were rerun after extending their withdrawal to 35 mm. All subsequent parked transforms are unchanged.",
+  "source_sha256": {
+    "examples/orbit_inspection_wrist.py": "02110edd79460b0d12bd09058f418e01d3578564c290e08a98e165aa2c76e676",
+    "examples/orbit_service_process.py": "7a61fe475162cb84d864701e498d45e80552c65ede307f66e1efda26702373d2",
+    "src/mechanism_lab/assembly_process.py": "e8307598c678a0c447a52639503e767bd153e6106a29dad262d349b132cfb7ce"
+  }
+}

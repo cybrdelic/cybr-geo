@@ -1,0 +1,452 @@
+"""Geometry/metadata contract. Internal coordinates are millimetres, X-axis shafts, Z-up.
+
+Recipes supply parts, named motion and views. Rendering, export, drawings, video and
+packaging consume this contract; they never need a motor-specific rewrite.
+"""
+from __future__ import annotations
+from dataclasses import dataclass, field, replace, asdict
+from pathlib import Path
+from typing import Any, Callable
+import hashlib, json, math, os
+import numpy as np
+
+
+@dataclass(frozen=True)
+class Material:
+    """Compact physically-based material contract shared by preview/export/render paths.
+
+    The first four fields intentionally preserve the original positional API.
+    The remaining fields are explicit rather than inferred from metallicity so a
+    renderer never invents machining marks, coatings, or optical properties.
+    """
+    name: str
+    color: tuple[float, float, float]
+    metal: float = 0.0
+    rough: float = 0.4
+    ior: float = 1.5
+    coat: float = 0.0
+    coat_rough: float = 0.2
+    anisotropy: float = 0.0
+    anisotropy_rotation: float = 0.0
+    opacity: float = 1.0
+    microfinish: str = 'none'
+    material_source: str = ''
+
+    def as_dict(self):
+        return dict(
+            name=self.name,
+            color=list(self.color),
+            metal=self.metal,
+            rough=self.rough,
+            ior=self.ior,
+            coat=self.coat,
+            coat_rough=self.coat_rough,
+            anisotropy=self.anisotropy,
+            anisotropy_rotation=self.anisotropy_rotation,
+            opacity=self.opacity,
+            microfinish=self.microfinish,
+            material_source=self.material_source,
+        )
+
+
+@dataclass
+class Part:
+    name: str
+    vertices: np.ndarray
+    faces: np.ndarray
+    normals: np.ndarray
+    material: int = 0
+    group: str = 'structure'
+    motion: str = 'fixed'
+    center: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    explode: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    role: str = ''
+    provenance: str = 'designed-concept'
+    cad: Any = field(default=None, repr=False)
+    tags: tuple[str, ...] = ()
+    finish_axis: tuple[float, float, float] = (1., 0., 0.)
+    finish_origin: tuple[float, float, float] | None = None
+
+    @property
+    def bounds(self):
+        return np.array([self.vertices.min(axis=0), self.vertices.max(axis=0)])
+
+    def moved(self, offset, prefix=''):
+        """Bake a translation without changing local shaft/rotation pivots."""
+        offset = np.asarray(offset, float)
+        return replace(
+            self,
+            name=prefix + self.name,
+            vertices=self.vertices + offset,
+            center=self.center + offset,
+            finish_origin=tuple(np.asarray(self.finish_origin) + offset) if self.finish_origin is not None else None,
+            cad=self.cad.translate(tuple(offset)) if self.cad is not None else None,
+        )
+
+    def metadata(self):
+        return dict(
+            name=self.name,
+            material=self.material,
+            group=self.group,
+            motion=self.motion,
+            center=np.asarray(self.center).tolist(),
+            explode=np.asarray(self.explode).tolist(),
+            role=self.role,
+            provenance=self.provenance,
+            tags=list(self.tags),
+            finish_axis=list(self.finish_axis),
+            finish_origin=list(self.finish_origin) if self.finish_origin is not None else None,
+            vertices=len(self.vertices),
+            triangles=len(self.faces),
+            has_analytic_cad=self.cad is not None,
+            bounds_mm=self.bounds.tolist(),
+        )
+
+
+@dataclass
+class View:
+    az: float = 45.0
+    el: float = 25.0
+    # Framing half-height in mm. Orthographic views use this directly. Perspective
+    # views use it to derive a camera distance when camera_distance_mm is omitted.
+    scale: float = 65.0
+    target: tuple[float, float, float] = (23, 0, 0)
+    explode: float = 0.0
+    hide: tuple[str, ...] = ()
+    section: tuple[float, float, float] | None = None
+    title: str = ''
+    note: str = ''
+    projection: str = 'perspective'  # perspective | orthographic
+    focal_length_mm: float = 58.0
+    sensor_width_mm: float = 36.0
+    camera_distance_mm: float | None = None
+    # Photographic controls. They are ignored by the fast engineering raster
+    # renderer but consumed by the final-quality thin-lens path tracer.
+    f_stop: float = 11.0
+    focus_distance_mm: float | None = None
+    environment_strength: float = 0.24
+    background_strength: float = 1.0
+    light_size: float = 1.35
+    light_intensity: float = 1.0
+    floor_gap_mm: float = 0.0
+    floor_roughness: float = 0.82
+    floor: bool = True
+    exposure: float = 1.0
+    studio_style: str = 'product'
+    floor_color: tuple[float, float, float] = (.09, .095, .105)
+    background_color: tuple[float, float, float] = (.012, .016, .022)
+    # Fixed studio coordinates prevent camera cuts and moving/removing parts
+    # from moving the lights or floor. None is resolved once from the assembly.
+    studio_target: tuple[float, float, float] | None = None
+    studio_scale: float | None = None
+    studio_az: float | None = None
+    studio_el: float | None = None
+    floor_z_mm: float | None = None
+    tone_mapping: str = 'neutral'
+
+
+@dataclass
+class Assembly:
+    name: str
+    parts: list[Part]
+    materials: list[Material]
+    views: dict[str, View] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
+    # Signature: (part, time_seconds, explosion) -> homogeneous 4x4 mm transform
+    motion_function: Callable | None = field(default=None, repr=False)
+
+    def pose(self, p, t=0.0, explode=0.0):
+        if self.motion_function is not None:
+            return self.motion_function(p, t, explode)
+        T = np.eye(4)
+        T[:3, 3] = np.asarray(p.explode) * explode
+        return T
+
+    @property
+    def bounds(self):
+        if not self.parts:
+            raise ValueError('Assembly has no parts')
+        extrema = []
+        for p in self.parts:
+            T = self.pose(p, 0, 0)
+            vertices = p.vertices @ T[:3, :3].T + T[:3, 3]
+            extrema.append((vertices.min(axis=0), vertices.max(axis=0)))
+        return np.array([
+            np.min([b[0] for b in extrema], axis=0),
+            np.max([b[1] for b in extrema], axis=0),
+        ])
+
+    def select(self, groups=None, names=None):
+        parts = [
+            p for p in self.parts
+            if (groups is None or p.group in groups) and (names is None or p.name in names)
+        ]
+        if not parts:
+            raise ValueError('Selection contains no geometry')
+        return replace(self, parts=parts)
+
+
+def project_root() -> Path:
+    configured = os.environ.get('MECHANISM_LAB_ROOT')
+    if configured:
+        return Path(configured).expanduser().resolve()
+    candidate = Path(__file__).resolve().parents[2]
+    if (candidate / 'assets').exists():
+        return candidate
+    if (Path.cwd() / 'assets').exists():
+        return Path.cwd().resolve()
+    # Generic user recipes and installed photographic rendering do not require
+    # the historical differential assets. Asset-backed recipes resolve their
+    # own inputs and still fail explicitly when those inputs are absent.
+    return Path.cwd().resolve()
+
+
+def rotation_x(a):
+    c, s = math.cos(a), math.sin(a)
+    return np.array([[1, 0, 0], [0, c, -s], [0, s, c]], float)
+
+
+def axis_pose(angle, center=(0, 0, 0), explode=(0, 0, 0), amount=0):
+    R = rotation_x(angle)
+    pivot = np.asarray(center, float)
+    T = np.eye(4)
+    T[:3, :3] = R
+    T[:3, 3] = pivot - R @ pivot + np.asarray(explode) * amount
+    return T
+
+
+def smooth_normals(vertices, faces, angle=40):
+    """Split only real hard edges; preserves analytic smooth tessellation elsewhere."""
+    import vtk
+    from vtk.util.numpy_support import numpy_to_vtk, numpy_to_vtkIdTypeArray, vtk_to_numpy
+
+    pd = vtk.vtkPolyData()
+    pts = vtk.vtkPoints()
+    pts.SetData(numpy_to_vtk(np.asarray(vertices, float), deep=True))
+    pd.SetPoints(pts)
+    cells = vtk.vtkCellArray()
+    cells.SetData(
+        numpy_to_vtkIdTypeArray(np.arange(len(faces) + 1, dtype=np.int64) * 3, deep=True),
+        numpy_to_vtkIdTypeArray(np.asarray(faces, dtype=np.int64).ravel(), deep=True),
+    )
+    pd.SetPolys(cells)
+    cl = vtk.vtkCleanPolyData()
+    cl.SetInputData(pd)
+    cl.SetTolerance(1e-8)
+    no = vtk.vtkPolyDataNormals()
+    no.SetInputConnection(cl.GetOutputPort())
+    no.SetFeatureAngle(angle)
+    no.SplittingOn()
+    no.ConsistencyOn()
+    no.AutoOrientNormalsOn()
+    no.Update()
+    q = no.GetOutput()
+    return (
+        vtk_to_numpy(q.GetPoints().GetData()).copy(),
+        vtk_to_numpy(q.GetPolys().GetConnectivityArray()).reshape(-1, 3).copy(),
+        vtk_to_numpy(q.GetPointData().GetNormals()).copy(),
+    )
+
+
+def mesh_part(name, vertices, faces, material=0, **kw):
+    v, f, n = smooth_normals(vertices, faces)
+    return Part(name, v, f, n, material, **kw)
+
+
+def cad_part(name, shape, material=0, tolerance=.022, angular=.045, analytic_normals=True, **kw):
+    import cadquery as cq
+    if isinstance(shape, cq.Workplane):
+        shape = shape.val()
+    if not shape.isValid():
+        raise ValueError(f'{name}: OpenCascade returned invalid CAD')
+    if analytic_normals:
+        from OCP.BRep import BRep_Tool
+        from OCP.BRepLib import BRepLib_ToolTriangulatedShape
+        from OCP.TopAbs import TopAbs_REVERSED
+        from OCP.TopLoc import TopLoc_Location
+        shape.mesh(tolerance, angular)
+        vertices, normals, triangles = [], [], []
+        for face in shape.Faces():
+            location = TopLoc_Location()
+            poly = BRep_Tool.Triangulation_s(face.wrapped, location)
+            if poly is None:
+                raise ValueError(f'{name}: face has no tessellation')
+            BRepLib_ToolTriangulatedShape.ComputeNormals_s(face.wrapped, poly)
+            if not poly.HasNormals():
+                raise ValueError(f'{name}: could not compute CAD surface normals')
+            trsf = location.Transformation()
+            reverse = face.wrapped.Orientation() == TopAbs_REVERSED
+            offset = len(vertices)
+            for j in range(1, poly.NbNodes()+1):
+                p = poly.Node(j).Transformed(trsf)
+                n = poly.Normal(j).Transformed(trsf)
+                sign = -1. if reverse else 1.
+                vertices.append((p.X(), p.Y(), p.Z()))
+                normals.append((sign*n.X(), sign*n.Y(), sign*n.Z()))
+            for triangle in poly.Triangles():
+                order = (1, 3, 2) if reverse else (1, 2, 3)
+                triangles.append(tuple(triangle.Value(i)+offset-1 for i in order))
+        vertices = np.asarray(vertices)
+        triangles = np.asarray(triangles, dtype=np.int64)
+        # OCCT triangulates periodic seams and poles with collapsed triangles.
+        # Remove only numerically zero edges/areas; keep the face-boundary normals.
+        points = vertices[triangles]
+        edges = (points[:, 1]-points[:, 0], points[:, 2]-points[:, 0], points[:, 2]-points[:, 1])
+        keep = np.all(np.stack([np.linalg.norm(e, axis=1) > 1e-8 for e in edges]), axis=0)
+        keep &= np.linalg.norm(np.cross(edges[0], edges[1]), axis=1) > 1e-16
+        triangles = triangles[keep]
+        # Face boundaries keep distinct normals, including small real chamfers.
+        return Part(name, vertices, triangles,
+                    np.asarray(normals), material, cad=shape, **kw)
+    v, f = shape.tessellate(tolerance, angular)
+    return mesh_part(
+        name,
+        [[p.x, p.y, p.z] for p in v],
+        f,
+        material,
+        cad=shape,
+        **kw,
+    )
+
+
+def validate(assembly: Assembly, expensive=False):
+    names = [p.name for p in assembly.parts]
+    if len(set(names)) != len(names):
+        raise ValueError('Duplicate part names')
+
+    for i, m in enumerate(assembly.materials):
+        if not all(np.isfinite(m.color)) or any(c < 0 or c > 1 for c in m.color):
+            raise ValueError(f'Invalid linear base color for material {i}: {m.name}')
+        if not 0 <= m.metal <= 1 or not 0 < m.rough <= 1:
+            raise ValueError(f'Invalid metal/roughness for material {i}: {m.name}')
+        if not np.isfinite(m.ior) or m.ior <= 1 or not 0 <= m.coat <= 1 or not 0 < m.coat_rough <= 1:
+            raise ValueError(f'Invalid optical material parameters for {m.name}')
+        if not -1 <= m.anisotropy <= 1 or not np.isfinite(m.anisotropy_rotation) or not 0 <= m.opacity <= 1:
+            raise ValueError(f'Invalid anisotropy/opacity for {m.name}')
+
+    for name, view in assembly.views.items():
+        if view.studio_style not in {'classic', 'product', 'outdoor'}:
+            raise ValueError(f'Invalid studio style on view {name}')
+        for color in (view.floor_color, view.background_color):
+            if len(color) != 3 or not all(np.isfinite(color)) or any(c < 0 or c > 1 for c in color):
+                raise ValueError(f'Invalid studio color on view {name}')
+        if view.projection not in {'perspective', 'orthographic'}:
+            raise ValueError(f'Invalid projection on view {name}: {view.projection}')
+        if view.scale <= 0 or view.focal_length_mm <= 0 or view.sensor_width_mm <= 0:
+            raise ValueError(f'Invalid camera parameters on view {name}')
+        if view.f_stop <= 0 or view.environment_strength < 0 or view.background_strength < 0:
+            raise ValueError(f'Invalid photographic camera/environment parameters on view {name}')
+        if view.light_size <= 0 or view.light_intensity < 0 or view.floor_gap_mm < 0 or not 0 < view.floor_roughness <= 1:
+            raise ValueError(f'Invalid photographic studio parameters on view {name}')
+        if view.focus_distance_mm is not None and view.focus_distance_mm <= 0:
+            raise ValueError(f'Invalid focus distance on view {name}')
+
+    import trimesh
+    results = []
+    for p in assembly.parts:
+        axis = np.asarray(p.finish_axis, float)
+        if axis.shape != (3,) or not np.isfinite(axis).all() or np.linalg.norm(axis) < 1e-8:
+            raise ValueError(f'Invalid finish axis: {p.name}')
+        if p.finish_origin is not None:
+            origin = np.asarray(p.finish_origin, float)
+            if origin.shape != (3,) or not np.isfinite(origin).all():
+                raise ValueError(f'Invalid finish origin: {p.name}')
+        if p.vertices.ndim != 2 or p.vertices.shape[1] != 3 or p.faces.ndim != 2 or p.faces.shape[1] != 3:
+            raise ValueError(f'Geometry arrays must be Nx3: {p.name}')
+        if p.normals.shape != p.vertices.shape:
+            raise ValueError(f'Vertex/normal shape mismatch: {p.name}')
+        if not np.issubdtype(p.faces.dtype, np.integer):
+            raise ValueError(f'Face indices must be integers: {p.name}')
+        if not len(p.faces) or not np.isfinite(p.vertices).all():
+            raise ValueError(f'Empty/nonfinite geometry: {p.name}')
+        if not np.isfinite(p.normals).all():
+            raise ValueError(f'Nonfinite normals: {p.name}')
+        if p.faces.min() < 0 or p.faces.max() >= len(p.vertices):
+            raise ValueError(f'Invalid face indices: {p.name}')
+        if not 0 <= p.material < len(assembly.materials):
+            raise ValueError(f'Invalid material: {p.name}')
+        T = assembly.pose(p, 0, 0)
+        if T.shape != (4, 4) or not np.isfinite(T).all() or not np.allclose(T[3], [0, 0, 0, 1]):
+            raise ValueError(f'Invalid initial transform: {p.name}')
+        if not np.allclose(T[:3, :3].T @ T[:3, :3], np.eye(3), atol=1e-7) or np.linalg.det(T[:3, :3]) < 0:
+            raise ValueError(f'Pose must be a proper rigid transform: {p.name}')
+        row = dict(
+            name=p.name,
+            finite=True,
+            valid_indices=True,
+            analytic_valid=p.cad.isValid() if p.cad else None,
+            provenance=p.provenance,
+        )
+        if expensive:
+            mesh = trimesh.Trimesh(p.vertices, p.faces, process=True)
+            row.update(
+                watertight=bool(mesh.is_watertight),
+                consistent_winding=bool(mesh.is_winding_consistent),
+            )
+        results.append(row)
+
+    from .truth import truth_report
+    return dict(
+        model=assembly.name,
+        parts=len(names),
+        triangles=sum(len(p.faces) for p in assembly.parts),
+        units='mm',
+        bounds_mm=assembly.bounds.tolist(),
+        checks=results,
+        truth=truth_report(assembly, 'inspection'),
+        disclaimer='Geometry/transform/provenance checks only; not load, contact, fit or safety validation.',
+    )
+
+
+def save_cache(assembly, directory):
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    arrays = {
+        f'p{i}_{k}': getattr(p, k)
+        for i, p in enumerate(assembly.parts)
+        for k in ['vertices', 'faces', 'normals']
+    }
+    np.savez_compressed(directory / 'meshes.npz', **arrays)
+    info = dict(
+        schema=2,
+        name=assembly.name,
+        units='mm',
+        axis='X-shaft/Z-up',
+        parts=[p.metadata() for p in assembly.parts],
+        materials=[m.as_dict() for m in assembly.materials],
+        metadata=assembly.metadata,
+        views={k: asdict(v) for k, v in assembly.views.items()},
+    )
+    (directory / 'manifest.json').write_text(json.dumps(info, indent=2) + '\n')
+
+
+def load_cache(directory):
+    directory = Path(directory)
+    info = json.loads((directory / 'manifest.json').read_text())
+    a = np.load(directory / 'meshes.npz')
+    parts = []
+    for i, d in enumerate(info['parts']):
+        kw = {k: d[k] for k in ['name', 'material', 'group', 'motion', 'center', 'explode', 'role', 'provenance', 'tags']}
+        kw.update({k: a[f'p{i}_{k}'].copy() for k in ['vertices', 'faces', 'normals']})
+        kw.update({k:d[k] for k in ('finish_axis','finish_origin') if k in d})
+        parts.append(Part(**kw))
+    a.close()
+    return Assembly(
+        info['name'],
+        parts,
+        [Material(**m) for m in info['materials']],
+        views={k: View(**v) for k, v in info.get('views', {}).items()},
+        metadata=info['metadata'],
+    )
+
+
+def pose_cad(shape, T):
+    """Apply a rigid 4x4 pose through gp_Trsf, preserving the shape's existing location."""
+    import cadquery as cq
+    from OCP.gp import gp_Trsf
+    T = np.asarray(T, float)
+    if not np.allclose(T[:3, :3].T @ T[:3, :3], np.eye(3), atol=1e-8) or np.linalg.det(T[:3, :3]) < 0:
+        raise ValueError('CAD pose must be a proper rigid transform')
+    tr = gp_Trsf()
+    tr.SetValues(*[float(v) for v in T[:3, :4].ravel()])
+    return shape.moved(cq.Location(tr))
