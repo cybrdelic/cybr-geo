@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - '.github/workflows/v9-aeris.yml'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/v9.py'
       - 'src/mechanism_lab/render_profiles.py'
@@ -17,6 +18,7 @@ on:
   push:
     branches: ['fix/true-v9-mitsuba-default']
     paths:
+      - '.github/workflows/v9-aeris.yml'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/v9.py'
       - 'src/mechanism_lab/render_profiles.py'
