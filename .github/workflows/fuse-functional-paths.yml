@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: fuse-functional-paths-${{ github.ref }}
@@ -50,10 +50,10 @@ jobs:
           python examples/fuse_c220/verify_edges.py
           python - <<'PY'
           import hashlib, json, os, pathlib, subprocess
-          from mechanism_lab.core import load_cache
+          import printer
           import verify_hotend
           out = pathlib.Path('deliverables')
-          report = verify_hotend.verify(load_cache(out / 'cache'))
+          report = verify_hotend.verify(printer.build())
           (out / 'FUSE_C220_hotend_validation.json').write_text(json.dumps(report, indent=2))
           assert report['all_passed'], report
           record = {
@@ -72,7 +72,9 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Render corrected printer with the real V9 pipeline
-        run: python examples/fuse_c220/render_delivery.py stills
+        run: |
+          python examples/fuse_c220/render_delivery.py stills
+          python examples/fuse_c220/inspect_hotend.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -82,3 +84,43 @@ jobs:
             deliverables/*.json
           if-no-files-found: warn
           retention-days: 30
+      - name: Preserve validated render media on this printer branch
+        run: |
+          python - <<'PY'
+          import json, pathlib, shutil
+          from PIL import Image
+          source = pathlib.Path('deliverables')
+          target = pathlib.Path('media/fuse_c220')
+          target.mkdir(parents=True, exist_ok=True)
+          for stem in ('hero', 'printing', 'drive', 'feed_section'):
+              image = source / ('FUSE_C220_' + stem + '.png')
+              receipt = image.with_suffix('.json')
+              report = json.loads(receipt.read_text())
+              assert report['render_profile'] == 'v9' and report['generated_imagery'] is False
+              assert report['spp'] == 256 and report['max_depth'] == 14
+              with Image.open(image) as im:
+                  im.verify()
+              with Image.open(image) as im:
+                  im.convert('RGB').save(target / (stem + '.jpg'), quality=94, subsampling=0)
+              shutil.copy2(image, target / (stem + '.png'))
+              shutil.copy2(receipt, target / (stem + '.json'))
+          for path in source.glob('*validation.json'):
+              shutil.copy2(path, target / path.name)
+          for name in ('tests.xml', 'tests.log', 'execution.json', 'FUSE_C220_calibration.gcode'):
+              shutil.copy2(source / name, target / name)
+          (target / 'README.md').write_text(
+              '# FUSE C220 corrected hotend and G-code replay\n\n'
+              'Images are fresh Mitsuba/OIDN V9 renders, 256 spp and depth 14. '
+              'The feed-section image uses disclosed analytic CAD section cuts. '
+              'JPEGs are display copies of the retained full-resolution PNGs.\n\n'
+              'See execution.json for the exact tested source commit and run. '
+              'This evidence does not establish physical printer operation, '
+              'manufacturing fits, thermal performance or molten-polymer behavior.\n'
+          )
+          PY
+          git config user.name 'CYBR GEO printer verification'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- media/fuse_c220
+          git diff --cached --quiet && exit 0
+          git commit -m 'Preserve verified FUSE hotend correction renders and execution evidence'
+          git push origin HEAD:fix/fuse-c220-functional-paths
