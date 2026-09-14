@@ -36,6 +36,10 @@ or a volumetric skin transport model.
 - V9's thin-lens camera construction, Gaussian reconstruction filter (0.42),
   HDR beauty/albedo/shading-normal AOVs, Intel OIDN high-quality guide-based
   denoising, and original ACES approximation followed by sRGB transfer.
+- Portrait and profile use f/16. Autofocus traces the central camera ray onto
+  the actual visible skin surface; the framing target lies inside the head and
+  is not used as a focus target. The render receipt records both distances and
+  the 3D focus point. This corrects the focus error found during close-up QA.
 - Portrait: 1440 × 1800, 512 samples per pixel, 14-bounce limit.
 - Profile: 1200 × 1500, 384 samples per pixel, 14-bounce limit.
 - Clay proof: 960 × 1200, 128 samples per pixel, 14-bounce limit.

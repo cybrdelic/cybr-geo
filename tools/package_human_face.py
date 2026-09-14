@@ -26,7 +26,7 @@ def atomic_png(linear,path):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--input',type=Path,default=ROOT/'build/human_face_final')
+    parser.add_argument('--input',type=Path,default=ROOT/'build/human_face_focused')
     parser.add_argument('--out',type=Path,required=True)
     args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=True)
     masters=args.out/'linear_masters';masters.mkdir(exist_ok=True)

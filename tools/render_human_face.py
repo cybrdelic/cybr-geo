@@ -190,6 +190,22 @@ def main():
     export_glb(assembly,args.out)
     scene_dict,camera=create_scene(assembly,args.out,mesh,args.view,width,height,args.spp,args.depth,args.clay)
     loaded=mi.load_dict(scene_dict)
+    # Framing targets can be inside an organic volume. Focusing on that target
+    # defocuses the entire visible skin. Probe the actual central surface first.
+    origin=np.array(camera['camera_mm'],dtype=float)
+    direction=np.array(camera['target_mm'],dtype=float)-origin
+    direction/=np.linalg.norm(direction)
+    hit=loaded.ray_intersect(mi.Ray3f(mi.Point3f(origin),mi.Vector3f(direction)))
+    if not bool(np.asarray(hit.is_valid()).ravel()[0]):
+        raise ValueError('Portrait autofocus ray missed the visible surface')
+    focus=float(np.asarray(hit.t).ravel()[0])
+    params=mi.traverse(loaded)
+    params['sensor.focus_distance']=focus
+    params.update()
+    camera['framing_distance_mm']=camera['focus_distance_mm']
+    camera['focus_distance_mm']=focus
+    camera['focus_method']='Central ray intersection with the actual visible surface'
+    camera['focus_point_mm']=(origin+direction*focus).tolist()
     print('Rendering',args.view, width,height,args.spp,'spp',flush=True)
     start=time.time()
     rendered=None

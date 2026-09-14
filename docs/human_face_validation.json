@@ -22,5 +22,17 @@
   "limitations": [
     "No volumetric tissue model or physiological validation",
     "No original procedural identity-generation claim"
-  ]
+  ],
+  "camera_validation": {
+    "f_stop": 16,
+    "framing_distance_mm": 513.7777777777777,
+    "surface_focus_distance_mm": 444.66119384765625,
+    "focus_point_mm": [
+      17.8777909479944,
+      -81.72082414501006,
+      30.412133992957404
+    ],
+    "preview_visually_checked": true,
+    "note": "Final images are rerendered with visible-surface autofocus; framing-center focus was rejected."
+  }
 }
