@@ -1,0 +1,76 @@
+name: V9 envmap smoke
+
+on:
+  push:
+    branches: ['fix/true-v9-mitsuba-default']
+    paths:
+      - '.github/workflows/v9-envmap-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  envmap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Mitsuba
+        run: python -m pip install 'mitsuba==3.7.1'
+      - name: Download both Poly Haven representations and test in isolated processes
+        shell: bash --noprofile --norc {0}
+        run: |
+          cat >/tmp/get_env.py <<'PY'
+          import json, pathlib, urllib.request
+          api='https://api.polyhaven.com/files/small_workshop'
+          req=urllib.request.Request(api,headers={'User-Agent':'CYBR-GEO/V9 env diagnostic'})
+          tree=json.load(urllib.request.urlopen(req,timeout=60))
+          level=tree['hdri']['2k']
+          for fmt in ('hdr','exr'):
+              rec=level.get(fmt)
+              if not rec: continue
+              dst=pathlib.Path('/tmp')/f'small_workshop_2k.{fmt}'
+              req=urllib.request.Request(rec['url'],headers={'User-Agent':'CYBR-GEO/V9 env diagnostic'})
+              with urllib.request.urlopen(req,timeout=120) as src,dst.open('wb') as out:
+                  out.write(src.read())
+              print(fmt,dst,dst.stat().st_size,flush=True)
+          PY
+          python /tmp/get_env.py
+          cat >/tmp/test_env.py <<'PY'
+          import pathlib,sys
+          import mitsuba as mi
+          variant,fmt=sys.argv[1:3]
+          mi.set_variant(variant)
+          path=pathlib.Path('/tmp')/f'small_workshop_2k.{fmt}'
+          print('TEST',variant,fmt,'bytes',path.stat().st_size,flush=True)
+          scene={
+              'type':'scene',
+              'integrator':{'type':'path','max_depth':2},
+              'sensor':{
+                  'type':'perspective',
+                  'to_world':mi.ScalarTransform4f.look_at(origin=[0,-4,1],target=[0,0,0],up=[0,0,1]),
+                  'film':{'type':'hdrfilm','width':16,'height':12,'component_format':'float32'},
+                  'sampler':{'type':'independent','sample_count':1},
+              },
+              'environment':{'type':'envmap','filename':str(path),'scale':.72,'mis_compensation':True},
+          }
+          print('LOAD_START',variant,fmt,flush=True)
+          loaded=mi.load_dict(scene,parallel=False)
+          print('LOAD_OK',variant,fmt,flush=True)
+          image=mi.render(loaded,spp=1)
+          import drjit as dr
+          dr.eval(image)
+          print('RENDER_OK',variant,fmt,dr.width(image),flush=True)
+          PY
+          : >/tmp/results.txt
+          for variant in llvm_ad_rgb scalar_rgb; do
+            for fmt in hdr exr; do
+              if [ -f "/tmp/small_workshop_2k.$fmt" ]; then
+                python /tmp/test_env.py "$variant" "$fmt"
+                code=$?
+                echo "$variant $fmt $code" | tee -a /tmp/results.txt
+              fi
+            done
+          done
+          echo '=== RESULTS ==='; cat /tmp/results.txt
