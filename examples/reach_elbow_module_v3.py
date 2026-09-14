@@ -10,7 +10,6 @@ Concept CAD only; no torque, bearing-life, motor-sizing or structural certificat
 from __future__ import annotations
 
 import importlib.util
-import math
 from pathlib import Path
 
 import cadquery as cq
@@ -74,8 +73,6 @@ def build():
     qx, _, qz = map(float, base.INPUT)
 
     # --- second-side gearbox support ------------------------------------
-    # A narrow vertical bridge supports both reduction shafts without hiding
-    # the exposed gear meshes. It sits beyond the gear planes (gears end y=102).
     bridge = box(22.0, 3.0, 72.0, (13.0, 104.5, -73.0), 1.3)
     bridge = bridge.cut(cylinder(4.25, 5.0, (ix, 102.5, iz), "Y"))
     bridge = bridge.cut(cylinder(3.25, 5.0, (qx, 102.5, qz), "Y"))
@@ -89,20 +86,14 @@ def build():
         annulus_y(5.8, 3.08, 103.0, 3.0, qx, qz),
         3, "reach_fixed", "Outboard bronze bearing for input shaft")
 
-    # Four perimeter standoffs connect the inner service support/cage to the
-    # outboard bridge plane and make the gearbox a real cassette rather than a
-    # collection of cantilevered gears.
     for i, (x, z) in enumerate(((-42.0, -35.0), (31.0, -35.0), (-42.0, -104.0), (31.0, -104.0))):
         rod = cylinder(2.6, 23.0, (x, 81.0, z), "Y")
         add(f"R43_{i}_Gearbox_standoff", rod, 2, "reach_fixed",
             "Gearbox cassette standoff", tiny=True)
-        # Thin washer at the outboard end gives the standoff a readable seat.
         add(f"R44_{i}_Standoff_washer", annulus_y(4.2, 2.65, 103.5, 1.0, x, z),
             1, "reach_fixed", "Outboard standoff washer", tiny=True)
 
     # --- output shaft closure -------------------------------------------
-    # v1's output shaft ends at the output gear. Extend the hollow service path
-    # just beyond the gear and retain it with a visible machined end cap.
     add("R45_Output_shaft_extension",
         annulus_y(8.0, 4.2, 90.0, 7.0, px, pz),
         2, "reach_output", "Hollow output-shaft service extension")
@@ -111,13 +102,17 @@ def build():
         1, "reach_output", "Machined hollow output-shaft end cap")
 
     # --- motor/encoder-ready input interface -----------------------------
-    # A compact square adapter sits outside the outboard input bearing. The
-    # existing green commissioning knob remains usable through its central bore.
-    adapter = box(30.0, 2.5, 30.0, (qx, 107.25, qz), 2.0)
-    adapter = adapter.cut(cylinder(6.4, 4.5, (qx, 105.0, qz), "Y"))
+    # Keep this as a deliberately simple manifold plate. The previous filleted
+    # multi-boolean version occasionally produced an invalid OCCT compound even
+    # though its nominal shape was correct. This version preserves the same
+    # central clearance and four-hole interface without fragile edge topology.
+    adapter = box(30.0, 2.5, 30.0, (qx, 107.25, qz), 0.0)
+    adapter = adapter.cut(cylinder(6.4, 5.5, (qx, 104.5, qz), "Y"))
     for dx in (-9.0, 9.0):
         for dz in (-9.0, 9.0):
-            adapter = adapter.cut(cylinder(1.65, 4.5, (qx + dx, 105.0, qz + dz), "Y"))
+            adapter = adapter.cut(cylinder(1.65, 5.5, (qx + dx, 104.5, qz + dz), "Y"))
+    if not adapter.isValid():
+        raise ValueError("R47 motor/encoder adapter failed manifold construction")
     add("R47_Motor_encoder_adapter", adapter, 0, "reach_fixed",
         "Motor/encoder-ready four-hole input adapter")
 
@@ -126,8 +121,6 @@ def build():
             annulus_y(2.6, 1.7, 106.0, 2.0, qx + dx, qz + dz),
             2, "reach_fixed", "Steel insert for future motor/encoder adapter", tiny=True)
 
-    # Short coupling sleeve between adapter and the manual knob; replaceable by
-    # an actual motor coupling without changing the gearbox shafts.
     add("R49_Input_coupling_sleeve",
         annulus_y(6.0, 3.08, 106.0, 2.0, qx, qz),
         5, "reach_input", "Replaceable elastomer/metal input coupling sleeve")
@@ -138,8 +131,6 @@ def build():
         add(f"R50_{side}_Elbow_hard_stop", bumper, 4, "reach_fixed",
             "Elastomer elbow hard-stop bumper")
 
-    # Central lower spine closes the load path from crossbrace to the next-link
-    # flange without hiding either side clevis.
     spine = box(18.0, 42.0, 26.0, (-22.0, 8.5, -121.0), 2.0)
     add("R51_Lower_center_spine", spine, 0, "reach_fixed",
         "Central lower spine tying crossbrace into lower modular flange")
