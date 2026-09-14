@@ -32,9 +32,10 @@ def select_shot(a,name):
         # omitting them changes renderer load only, not the visible exterior CAD.
         # Dedicated internal/detail views below render those components directly.
         internal={'impeller','shaft','bearings','motor_rotor','motor_stator','windings','lattice','gyroid'}
+        source_count=len(a.parts)
         visible=[p for p in a.parts if p.group not in internal]
         a=replace(a,name='aeris_hero_shell',parts=visible,views={'hero':a.views['hero']})
-        print(f'HERO_SHELL_VISIBLE_PARTS {len(visible)}/{len(a.parts)+sum(1 for _ in ())}',flush=True)
+        print(f'HERO_SHELL_VISIBLE_PARTS {len(visible)}/{source_count}',flush=True)
         return a,'hero'
     if name=='rotor_detail':
         keep={'impeller','shaft','bearings','motor_rotor','motor_stator','windings','motor_front'}
