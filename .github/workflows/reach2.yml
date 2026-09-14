@@ -25,10 +25,10 @@ jobs:
           python -m pip install -r requirements-orbit-v3-tested.txt
           python -m pip install --no-deps -e .
           python -m pip install 'mitsuba>=3.6,<3.8'
-      - name: Validate REACH-2 CAD and engineering envelope
+      - name: Validate robust REACH-2 CAD and engineering envelope
         run: |
-          pytest -q tests/test_reach2_engineered.py
-          python tools/reach2_engineering.py --out /tmp/reach2/REACH2_engineering_report.json --require-pass
+          pytest -q tests/test_reach2_engineered_v2.py
+          python tools/reach2_engineering_v2.py --out /tmp/reach2/REACH2_engineering_report.json --require-pass
       - name: Install Intel Open Image Denoise 2.5.1
         run: |
           set -euxo pipefail
@@ -44,7 +44,7 @@ jobs:
           echo "LD_LIBRARY_PATH=$OIDN_ROOT/lib:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
       - name: Render engineering-qualified REACH-2 with v9 architecture
         run: |
-          python tools/reach2_mitsuba_v9.py \
+          python tools/reach2_mitsuba_v9_v2.py \
             --out /tmp/reach2 \
             --size 1200x900 \
             --spp 256 \
@@ -79,6 +79,7 @@ jobs:
           assert manifest['triangles']>3_000_000
           assert manifest['environment']['license']=='CC0'
           assert manifest['bench_surface']['license']=='CC0'
+          assert manifest['geometry_source'].startswith('examples/reach2_engineered_elbow_v2.py')
           PY
       - uses: actions/upload-artifact@v4
         with:
