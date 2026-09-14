@@ -7,7 +7,7 @@ from dataclasses import asdict
 import numpy as np
 from mechanism_lab.core import Assembly,Part,Material,View
 from mechanism_lab.render_profiles import V9
-from mechanism_lab.v9 import render_v9,render_v9_video
+from mechanism_lab.v9_dispatch import render_v9,render_v9_video
 from mechanism_lab.photoreal import render_photoreal,render_photoreal_video
 
 
