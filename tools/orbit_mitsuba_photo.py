@@ -190,6 +190,19 @@ def extract_channels(rendered,names,prefix):
     return rendered[...,indices[:3]].astype(np.float32,copy=False)
 
 
+def reconcile_aov_names(names,rendered):
+    """Mitsuba 3.7 reports beauty.A even when numpy output omits that alpha plane."""
+    if rendered.ndim!=3:
+        raise RuntimeError(f"Unexpected AOV tensor shape {rendered.shape}")
+    if rendered.shape[2]==len(names):
+        return names
+    if rendered.shape[2]==len(names)-1 and "beauty.A" in names:
+        compact=[n for n in names if n!="beauty.A"]
+        if len(compact)==rendered.shape[2]:
+            return compact
+    raise RuntimeError(f"Unexpected AOV tensor shape {rendered.shape} for {names}")
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--out",type=Path,required=True)
@@ -211,7 +224,6 @@ def main():
     recipe=load_recipe()
     assembly=tune_materials(recipe.with_inspection_coupon(recipe.build()))
 
-    # Slightly wider engineering-photo framing than the previous isolated product shot.
     target=np.array((34.,6.,54.),dtype=float)
     az,el=math.radians(31.),math.radians(21.5)
     focal=72.0;fstop=13.0;sensor=36.0
@@ -226,8 +238,6 @@ def main():
     hdri_path=args.out/("workshop_"+args.hdri_resolution+".hdr")
     hdri_info=download_hdri(hdri_path,args.hdri_resolution)
 
-    # A finite matte slab gives contact and scale without replacing the captured
-    # workshop with an infinite synthetic floor. Beyond its edges the HDRI stays visible.
     bench_bsdf={
         "type":"principled",
         "base_color":{"type":"rgb","value":[.085,.080,.073]},
@@ -275,8 +285,8 @@ def main():
     rendered=np.asarray(mi.render(loaded,spp=args.spp),dtype=np.float32)
     print("AOV_CHANNELS",names,flush=True)
     print("AOV_SHAPE",rendered.shape,flush=True)
-    if rendered.ndim!=3 or rendered.shape[2]!=len(names):
-        raise RuntimeError(f"Unexpected AOV tensor shape {rendered.shape} for {len(names)} names")
+    names=reconcile_aov_names(names,rendered)
+    print("AOV_EFFECTIVE_CHANNELS",names,flush=True)
 
     beauty=extract_channels(rendered,names,"beauty")
     albedo=np.clip(extract_channels(rendered,names,"albedo"),0,1)
