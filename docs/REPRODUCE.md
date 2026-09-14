@@ -11,6 +11,9 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e '.[dev]'
 lab doctor
+# Source-only checkout: retain complete original inputs, otherwise regenerate.
+# Regeneration is documented by a receipt; it is not binary archive recovery.
+python tools/rebuild_differential_inputs.py
 python -m pytest -q
 ```
 

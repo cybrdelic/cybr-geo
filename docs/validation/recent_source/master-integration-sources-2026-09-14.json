@@ -1,0 +1,106 @@
+{
+  "status": "Source preparation complete; full regression gate must pass before merge. Results are recorded on PR #11 and in the Recovery regression tests summary artifact.",
+  "master_base": "5a1790506983343ec07cebcb554e5a903c5d0c0a",
+  "workflow_source_commit": "499cafe17124cf1fc529e0b3818673865f7050d2",
+  "verified_original_snapshot_files": 588,
+  "verified_original_active_forearm_files": 35,
+  "intentional_active_changes": [
+    {
+      "path": "examples/reach2_engineered_elbow.py",
+      "before_sha256": "c553e36066837e025ae2d988847a44b787b1b0c4ac0ca40f89b18d38e2c32771",
+      "after_sha256": "084197e2b9333aa2e31e3c04d7bf7c5405e3e834f533afad63b7032f5359110c"
+    },
+    {
+      "path": "examples/reach_elbow_module_v2.py",
+      "before_sha256": "125e98fcaf85152fb986d302cc1263ca137d77d72c75c1160cb0be2d8df1fa0b",
+      "after_sha256": "57ccb863a837b4000854dd9f9d22123e185402963b8d7afe745d40947abd5097"
+    },
+    {
+      "path": "examples/differential/src/model.py",
+      "before_sha256": "ead4d00cd3089c47a1b57ab15ba3a726ae675a8d646f7b6da614b1b18c9f8751",
+      "after_sha256": "622d6c566df46722ae67c2f67c29f1ec766cb2858e24b549a25a6f86232ea0cc"
+    },
+    {
+      "path": "docs/REPRODUCE.md",
+      "before_sha256": "c92dd343ea57b2714ed8521c5d9c465c81f84db477eeea95abd8f1ae5526c971",
+      "after_sha256": "dc4e7cb5aa08ba39fb1f609e5fe616a86bfcd6e22206fdcfb256821d0d2b2e6d"
+    }
+  ],
+  "removed_incomplete_transport": [
+    {
+      "path": ".chat_recovery/source.part00",
+      "bytes": 16000,
+      "sha256": "6cfa0673af5fc6ce3c3a2407b1ec58c323a1b9a1488a929f25ca99e70df76aaa"
+    },
+    {
+      "path": ".chat_recovery/source.part01",
+      "bytes": 16000,
+      "sha256": "1c462913637a76be95afb64c5af5250f042fdfbb43f7ed0cd3b9bdf35c7a6b30"
+    },
+    {
+      "path": ".chat_recovery/source.part02",
+      "bytes": 16000,
+      "sha256": "3adb4891e45f511cf0a46068e17a3d419cf01868f8e84a38393c9236115a33c2"
+    },
+    {
+      "path": ".chat_recovery/source.part03",
+      "bytes": 16000,
+      "sha256": "2d1f60c48480fd34cf378f5d95e4e83ddf0c5dcd57a15146a87771a960317cb7"
+    },
+    {
+      "path": ".chat_recovery/source.part04",
+      "bytes": 16000,
+      "sha256": "609dd9751b30a8d865317d5671d6c74d3107463b4b43d62ee0c5f45d239f57ef"
+    },
+    {
+      "path": ".chat_recovery/source.part05",
+      "bytes": 16000,
+      "sha256": "da3abf742bfefe95d50bd678fd9a6e188908edfd3a3a423e70a21e58df1bda2c"
+    },
+    {
+      "path": ".chat_recovery/source.part06",
+      "bytes": 16000,
+      "sha256": "614421e3851837b35e56ecda24f191f6d331d213461bcc7eee8e06d429864959"
+    },
+    {
+      "path": ".chat_recovery/source.part07",
+      "bytes": 15480,
+      "sha256": "e2dd34354d98b19f419b54f59679436feb0baebea37aa2faf96359fce83dbdeb"
+    }
+  ],
+  "removed_one_off_workflows": [
+    "consolidate-recent-source.yml",
+    "fuse-recovery-ci.yml",
+    "recent-chat-audit.yml",
+    "recover-fuse-c220.yml",
+    "recover-session-snapshots.yml",
+    "integrate-recovery-master.yml"
+  ],
+  "original_sources_and_transport_preserved_at": "a7c4a7f1ab4da2c2ea532d849e8c9a55d1df2e33",
+  "unchanged_shared_paths": [
+    "src/",
+    "native/",
+    "pyproject.toml",
+    "requirements-tested.txt"
+  ],
+  "initial_full_regression": {
+    "run_id": 34845358423,
+    "passed": 124,
+    "failed": 2,
+    "errors": 11,
+    "skipped": 2
+  },
+  "pending_source_packages": [
+    "CELL-01/AERIS",
+    "Hot Springs v4",
+    "clouds v4",
+    "BACKLOT-01",
+    "spectral quartz",
+    "Prismatic II"
+  ],
+  "limits": [
+    "No new full renders.",
+    "No physical build certification.",
+    "Regenerated arrays are not claimed byte-identical to historical archives."
+  ]
+}

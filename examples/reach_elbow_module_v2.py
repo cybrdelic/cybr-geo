@@ -170,12 +170,16 @@ def build():
     # the moving yokes visually explicit. They fit beneath the saddle and do
     # not alter ORBIT itself.
     for side, y in (("L", -47.0), ("R", 65.0)):
-        rib = box(42.0, 4.0, 16.0, (-22.0, y, -14.0), 1.2)
-        # Taper the rib with a diagonal cut so it reads like a machined gusset.
-        cutter = cq.Workplane("XZ", origin=(0, y - 2.1, 0)).polyline([
-            (-45, -24), (4, -24), (4, -5), (-8, -5)
-        ]).close().extrude(4.2).val()
-        rib = rib.intersect(cutter)
+        # XZ workplanes extrude toward -Y. The original boolean mask was
+        # disjoint from the rib and produced an empty compound. Construct the
+        # intended manifold gusset directly, as in the retained v2_fixed recipe.
+        rib = (
+            cq.Workplane("XZ", origin=(0, y, 0))
+            .polyline([(-43.0, -22.0), (0.0, -22.0), (-8.0, -6.0), (-36.0, -6.0)])
+            .close()
+            .extrude(4.0)
+            .val()
+        )
         add(f"R31_{side}_Saddle_gusset", rib, 0, "reach_output",
             "Saddle-to-moving-yoke reinforcement gusset")
 

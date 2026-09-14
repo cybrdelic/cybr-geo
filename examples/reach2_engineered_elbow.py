@@ -253,7 +253,9 @@ def build():
     # Servo input package.
     # ------------------------------------------------------------------
     motor_face_y = gear_y0 + GEAR_LEN + 8.0
-    motor_adapter = box(72, 8, 72, (px, motor_face_y + 4.0, pz), 4.0)
+    # A 4 mm all-edge fillet collapses the 8 mm plate thickness in OCCT.
+    # Keep a 2 mm web between opposing fillets instead of a degenerate edge.
+    motor_adapter = box(72, 8, 72, (px, motor_face_y + 4.0, pz), 3.0)
     motor_adapter = motor_adapter.cut(cylinder(20.0, 10.0, (px, motor_face_y - 1.0, pz), "Y"))
     add("R2_20_Motor_adapter_plate", motor_adapter, 0, "reach2_fixed",
         "6061-T6 60 mm servo adapter plate")

@@ -1,0 +1,168 @@
+name: Recovery regression tests
+on:
+  pull_request:
+  push:
+    branches: [master]
+permissions:
+  contents: read
+concurrency:
+  group: recovery-regressions-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  inputs:
+    name: Rebuild differential inputs from retained source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-tested.txt
+      - name: Install and regenerate missing source-only inputs
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+          python -u tools/rebuild_differential_inputs.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: regression-differential-inputs
+          path: |
+            assets/differential_v3/geometry/*.npz
+            assets/differential_v3/geometry/*.json
+          if-no-files-found: error
+          retention-days: 30
+  regressions:
+    needs: inputs
+    name: Regression shard ${{ matrix.shard }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    env:
+      PYTHONPATH: src
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '4'
+      SHARD: ${{ matrix.shard }}
+      SHARD_COUNT: '8'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-tested.txt
+      - name: Install tested dependencies and native prerequisites
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - uses: actions/download-artifact@v4
+        with:
+          name: regression-differential-inputs
+          path: assets/differential_v3/geometry
+      - name: Compile active source and execute this test partition
+        run: |
+          set -euo pipefail
+          python -m compileall -q src examples tools tests tests_legacy
+          mkdir -p /tmp/recovery-regressions
+          python -u - <<'PY' 2>&1 | tee /tmp/recovery-regressions/tests.log
+          import hashlib, json, os, pathlib, subprocess, sys
+          shard, count = int(os.environ['SHARD']), int(os.environ['SHARD_COUNT'])
+          assert 0 <= shard < count
+          files = sorted(str(p) for folder in ('tests', 'tests_legacy')
+                         for p in pathlib.Path(folder).rglob('*.py')
+                         if p.name.startswith('test_') or p.name.endswith('_test.py'))
+          selected = files[shard::count]
+          if not selected:
+              raise RuntimeError('Empty regression partition')
+          root = pathlib.Path('/tmp/recovery-regressions')
+          manifest = {'shard': shard, 'shard_count': count, 'all_files': files,
+                      'selected_files': selected, 'commit': os.environ['GITHUB_SHA'],
+                      'tree': subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], text=True).strip()}
+          geom = pathlib.Path('assets/differential_v3/geometry')
+          required = ['reference_parts.npz', 'kinematic_core_parts.npz', 'working_variant_parts.npz']
+          assert all((geom / name).is_file() for name in required)
+          manifest['input_sha256'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(geom.iterdir()) if p.suffix in ('.json', '.npz')}
+          origin = geom / 'regeneration_receipt.json'
+          manifest['input_origin'] = json.loads(origin.read_text())['origin'] if origin.is_file() else 'Existing complete input arrays retained.'
+          (root / 'partition.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          print(json.dumps(manifest, indent=2), flush=True)
+          sys.exit(subprocess.call([sys.executable, '-m', 'pytest', '-vv', '--durations=25',
+                                    '--junitxml=' + str(root / 'tests.xml'), *selected]))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-regressions-${{ matrix.shard }}
+          path: /tmp/recovery-regressions/
+          retention-days: 30
+  complete-suite:
+    name: Complete regression suite
+    needs: [inputs, regressions]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      SHARD_RESULT: ${{ needs.regressions.result }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: recovery-regressions-*
+          path: results
+      - name: Verify complete non-overlapping test coverage and passing results
+        run: |
+          python - <<'PY'
+          import collections, json, os, pathlib, xml.etree.ElementTree as ET
+          assert os.environ['SHARD_RESULT'] == 'success', os.environ['SHARD_RESULT']
+          manifests = [json.loads(p.read_text()) for p in pathlib.Path('results').glob('*/partition.json')]
+          assert len(manifests) == 8
+          assert sorted(m['shard'] for m in manifests) == list(range(8))
+          assert all(m['shard_count'] == 8 for m in manifests)
+          assert len({m['tree'] for m in manifests}) == 1
+          assert len({m['commit'] for m in manifests}) == 1
+          assert all(m['input_sha256'] == manifests[0]['input_sha256'] for m in manifests)
+          expected = manifests[0]['all_files']
+          assert all(m['all_files'] == expected for m in manifests)
+          actual = [p for m in manifests for p in m['selected_files']]
+          assert collections.Counter(actual) == collections.Counter(expected)
+          reports = list(pathlib.Path('results').glob('*/tests.xml'))
+          assert len(reports) == 8
+          counts = {k: 0 for k in ('tests', 'failures', 'errors', 'skipped')}
+          for report in reports:
+              for suite in ET.parse(report).getroot().iter('testsuite'):
+                  for key in counts:
+                      counts[key] += int(suite.attrib.get(key, 0))
+          assert counts['tests'] > 0 and counts['failures'] == counts['errors'] == 0, counts
+          counts['passed'] = counts['tests'] - counts['skipped']
+          result = {'counts': counts, 'test_files': len(expected), 'shards': 8,
+                    'input_sha256': manifests[0]['input_sha256'], 'input_origin': manifests[0]['input_origin'],
+                    'tested_tree': manifests[0]['tree'], 'commit': manifests[0]['commit'],
+                    'scope': 'Full active and legacy Python suites. Explicit skips are not passes. No physical certification or new full renders are implied.'}
+          pathlib.Path('regression-summary.json').write_text(json.dumps(result, indent=2) + '\n')
+          print(json.dumps(result, indent=2))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:
+              stream.write('## Complete recovery regression suite\n\n```json\n' + json.dumps(result, indent=2) + '\n```\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recovery-regression-summary
+          path: regression-summary.json
+          retention-days: 30
