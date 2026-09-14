@@ -184,10 +184,69 @@ def rotation(angle: float, axis=(1,0,0), center=(0,0,0)) -> np.ndarray:
 
 def from_shape(name: str, shape, material: int=0, tolerance: float=.022,
                angular_tolerance: float=.045, **kwargs) -> Part:
-    """Tessellate CAD and split normals at actual creases, retaining analytic input separately."""
-    from mechanism_lab.core import cad_part
-    native=cad_part(name,shape,material,tolerance=tolerance,angular=angular_tolerance,analytic_normals=True)
-    return Part(name,native.vertices,native.faces,native.normals,material=material,**kwargs)
+    """Create a CYBR GEO Part directly from an OpenCascade BRep.
+
+    This implementation intentionally owns the CAD tessellation path inside
+    ``cybrgeo``.  It does not delegate to mechanism_lab.  Nodes are kept per
+    BRep face so real CAD creases/chamfers retain their analytic face normals.
+    """
+    import cadquery as cq
+    from OCP.BRep import BRep_Tool
+    from OCP.BRepLib import BRepLib_ToolTriangulatedShape
+    from OCP.TopAbs import TopAbs_REVERSED
+    from OCP.TopLoc import TopLoc_Location
+
+    if isinstance(shape, cq.Workplane):
+        shape = shape.val()
+    if shape is None or not shape.isValid():
+        raise ValueError(f"{name}: OpenCascade returned invalid CAD")
+
+    shape.mesh(float(tolerance), float(angular_tolerance))
+    vertices: list[tuple[float,float,float]] = []
+    normals: list[tuple[float,float,float]] = []
+    triangles: list[tuple[int,int,int]] = []
+    for face in shape.Faces():
+        location = TopLoc_Location()
+        poly = BRep_Tool.Triangulation_s(face.wrapped, location)
+        if poly is None:
+            raise ValueError(f"{name}: face has no tessellation")
+        BRepLib_ToolTriangulatedShape.ComputeNormals_s(face.wrapped, poly)
+        if not poly.HasNormals():
+            raise ValueError(f"{name}: could not compute CAD surface normals")
+        trsf = location.Transformation()
+        reverse = face.wrapped.Orientation() == TopAbs_REVERSED
+        offset = len(vertices)
+        sign = -1.0 if reverse else 1.0
+        for j in range(1, poly.NbNodes()+1):
+            point = poly.Node(j).Transformed(trsf)
+            normal = poly.Normal(j).Transformed(trsf)
+            vertices.append((point.X(), point.Y(), point.Z()))
+            normals.append((sign*normal.X(), sign*normal.Y(), sign*normal.Z()))
+        for triangle in poly.Triangles():
+            order = (1,3,2) if reverse else (1,2,3)
+            triangles.append(tuple(triangle.Value(i)+offset-1 for i in order))
+
+    v = np.asarray(vertices, dtype=np.float64)
+    f = np.asarray(triangles, dtype=np.int64)
+    n = np.asarray(normals, dtype=np.float64)
+    if f.ndim != 2 or f.shape[1:] != (3,):
+        raise ValueError(f"{name}: BRep produced no triangle faces")
+
+    # OCCT may emit collapsed triangles at periodic seams/poles. Remove only
+    # numerical degeneracies, preserving all genuine face boundaries.
+    points = v[f]
+    e0 = points[:,1]-points[:,0]
+    e1 = points[:,2]-points[:,0]
+    e2 = points[:,2]-points[:,1]
+    keep = (np.linalg.norm(e0,axis=1)>1e-8)
+    keep &= (np.linalg.norm(e1,axis=1)>1e-8)
+    keep &= (np.linalg.norm(e2,axis=1)>1e-8)
+    keep &= np.linalg.norm(np.cross(e0,e1),axis=1)>1e-16
+    f = f[keep]
+    if not len(f):
+        raise ValueError(f"{name}: BRep tessellation collapsed to zero valid triangles")
+
+    return Part(name,v,f,n,material=material,**kwargs)
 
 def safe_name(text: str) -> str:
     return re.sub(r'[^A-Za-z0-9_.-]+','_',text).strip('_') or 'part'
