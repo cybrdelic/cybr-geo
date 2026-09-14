@@ -89,7 +89,13 @@ jobs:
           git add -- examples tools tests archive/published_branches docs/publication_receipts docs/validation/recent_source
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Consolidate REACH forearm source and preserve pinned procedural-face and skatepark snapshots'
-          git push origin HEAD:sync/recent-chats-2026-09-14
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin sync/recent-chats-2026-09-14
+            if git push origin HEAD:sync/recent-chats-2026-09-14; then exit 0; fi
+            sleep 2
+          done
+          echo 'Remote changed repeatedly; refusing to force push.' >&2
+          exit 1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
