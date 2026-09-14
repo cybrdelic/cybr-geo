@@ -6,6 +6,13 @@ for compatibility, but it is not V9.
 """
 from __future__ import annotations
 from dataclasses import dataclass
+import urllib.parse as _urllib_parse
+import urllib.request as _urllib_request
+
+# v9.py keeps its downloader intentionally dependency-light. Expose urlparse on
+# urllib.request for the renderer's cached-asset path derivation.
+if not hasattr(_urllib_request,'urlparse'):
+    _urllib_request.urlparse=_urllib_parse.urlparse
 
 
 @dataclass(frozen=True)
@@ -41,11 +48,9 @@ class RenderContract:
 V9 = RenderContract(
     name='v9',
     renderer='v9',
-    # Exact approved ORBIT V9 still budget.
     still_size=(1100, 825),
     still_spp=256,
     still_depth=14,
-    # Moving output uses the same Mitsuba/HDRI/OIDN scene model per frame.
     video_size=(1280, 720),
     video_spp=128,
     video_depth=12,
