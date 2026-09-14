@@ -24,6 +24,9 @@ jobs:
   integration-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      OMP_NUM_THREADS: '2'
+      LP_NUM_THREADS: '2'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -39,6 +42,13 @@ jobs:
           python -m pip install --no-deps -e .
       - name: Compile all current source
         run: python -m compileall -q src tests tools/render_planetary_film.py
+      - name: Regenerate documented differential inputs for the full suite
+        run: |
+          # Historical NPZ archives are not tracked. This documented source
+          # regeneration is NOT a byte-identical restoration of those archives.
+          python tools/rebuild_differential_inputs.py
+          mkdir -p artifacts
+          cp assets/differential_v3/geometry/regeneration_receipt.json artifacts/
       - name: Combined current regression suite
         run: python -m pytest -q tests
       - name: Legacy compatibility suite
