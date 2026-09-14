@@ -839,8 +839,8 @@
     },
     {
       "name": "71_embossed_identifier",
-      "group": "markings",
-      "role": "Original product identifier",
+      "group": "cover",
+      "role": "Original product identifier bonded to removable cover",
       "provenance": "designed-concept",
       "tier": "designed",
       "allowed": true

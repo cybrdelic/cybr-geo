@@ -1,6 +1,6 @@
 {
   "model": "cybr_visor_m1",
-  "view": "eyes",
+  "view": "optics",
   "render_profile": "v9",
   "renderer": "Mitsuba 3 path + albedo/normal-guided Intel OIDN",
   "variant": "llvm_ad_rgb",
@@ -10,25 +10,25 @@
   ],
   "spp": 256,
   "max_depth": 14,
-  "triangles": 112126,
-  "parts": 77,
-  "render_shapes": 25,
+  "triangles": 83824,
+  "parts": 57,
+  "render_shapes": 16,
   "geometry_mode": "material-variation-batches-procedural-mesh",
   "camera": {
     "origin": [
-      -309.7021799940098,
-      -484.15236392242645,
-      293.76500513377147
+      -168.49733101742373,
+      -424.0455288369591,
+      169.8440719015531
     ],
     "target": [
       0.0,
-      -25.0,
-      70.0
+      -7.0,
+      66.0
     ],
-    "distance": 597.3333333333334,
-    "focal_length_mm": 72.0,
+    "distance": 461.6296296296296,
+    "focal_length_mm": 82.0,
     "f_stop": 16.0,
-    "horizontal_fov_degrees": 28.072486935852957
+    "horizontal_fov_degrees": 24.761513857614354
   },
   "environment": {
     "asset": "small_workshop",
@@ -915,6 +915,6 @@
     "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
   },
   "generic_v9_dispatch": "llvm_ad_rgb + exact in-memory procedural Mesh material/variation batches; workshop HDRI with ordinary unbiased importance sampling; V9 lighting/material/camera/AOV/OIDN/color contract unchanged",
-  "sha256": "1852f10ee5ab146e88cea0531f6f37a65acf50be08657b3c0f51af21bcf49176",
+  "sha256": "624930aa76fc4221f91dff1f21d57dc9ef7a8b84b4702feb70e9cdde62b95808",
   "physical_headset_tested": false
 }

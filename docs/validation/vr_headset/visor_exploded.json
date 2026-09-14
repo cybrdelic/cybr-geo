@@ -905,8 +905,8 @@
       },
       {
         "name": "71_embossed_identifier",
-        "group": "markings",
-        "role": "Original product identifier",
+        "group": "cover",
+        "role": "Original product identifier bonded to removable cover",
         "provenance": "designed-concept",
         "tier": "designed",
         "allowed": true
@@ -915,6 +915,6 @@
     "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
   },
   "generic_v9_dispatch": "llvm_ad_rgb + exact in-memory procedural Mesh material/variation batches; workshop HDRI with ordinary unbiased importance sampling; V9 lighting/material/camera/AOV/OIDN/color contract unchanged",
-  "sha256": "ee5888d8610cfbf2ca082ad7145e37d91b76237b3176d72e5a1f530a4b035cdd",
+  "sha256": "4776fb8aa6fca0fefbeaa0d4dd7b75483f6d75c6f29ff1bb8a40a7803a631027",
   "physical_headset_tested": false
 }
