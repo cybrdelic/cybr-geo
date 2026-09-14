@@ -1,121 +1,202 @@
-"""Native V9 stills and freshly traced print-operation frames.
+"""FUSE C220 delivery using the repository's current Mitsuba/OIDN V9 API.
 
-The time-lapse and real-time segments are labeled separately. The geometry
-contains only extrusion completed by each sampled G-code time.
+The original native-renderer script is retained in the recovery commit history.
+Original delivery images are historical legacy-photoreal results, not rerenders
+from this adapter. Film frames are serialized because v9_dispatch temporarily
+changes module-level Mitsuba dispatch. Every frame has a render receipt.
 """
 from __future__ import annotations
-import os,sys,json,time,hashlib,subprocess,tempfile,shutil
-from concurrent.futures import ThreadPoolExecutor,as_completed
+
+import argparse
+from dataclasses import asdict, replace
+import hashlib
+import json
 from pathlib import Path
-import numpy as np
-from dataclasses import replace
-from PIL import Image,ImageDraw,ImageFont
-from printer import *
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'src'))
+from PIL import Image, ImageDraw, ImageFont
+from printer import posed
 from toolpath import parse
 from mechanism_lab.core import load_cache
-from mechanism_lab.photoreal import render_photoreal,compile_renderer,_invoke
-from mechanism_lab import finish_render as finish
 from mechanism_lab.render_profiles import V9
+from mechanism_lab.v9_dispatch import render_v9
 
-OUT=Path('deliverables');WORK=Path('work');FPS=24
-FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-BOLD='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+OUT = Path('deliverables')
+WORK = Path('work')
+FRAMES = WORK / 'film_v9_frames'
+FPS = 24
+FRAME_COUNT = 96
+FRAME_SIZE = (960, 720)
+
+
+def digest(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def fingerprint() -> str:
+    """Invalidate film checkpoints when sources, geometry, or toolpath change."""
+    paths = list(Path(__file__).parent.glob('*.py'))
+    paths += list((ROOT / 'src' / 'mechanism_lab').glob('*.py'))
+    paths += sorted((OUT / 'cache').rglob('*'))
+    paths.append(OUT / 'FUSE_C220_calibration.gcode')
+    records = [(str(p), digest(p)) for p in sorted(set(paths)) if p.is_file()]
+    contract = {'source_files': records, 'profile': asdict(V9), 'size': FRAME_SIZE,
+                'fps': FPS, 'frame_count': FRAME_COUNT, 'adapter_version': 1}
+    return hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
 
 
 def setup():
- a=load_cache(OUT/'cache');tp=parse(OUT/'FUSE_C220_calibration.gcode');tp.prepare_beads();return a,tp
+    OUT.mkdir(parents=True, exist_ok=True)
+    WORK.mkdir(parents=True, exist_ok=True)
+    assembly = load_cache(OUT / 'cache')
+    toolpath = parse(OUT / 'FUSE_C220_calibration.gcode')
+    toolpath.prepare_beads()
+    return assembly, toolpath
 
 
-def stills(a,tp,preview=False):
- tm=tp.deposition_end*.88;state,_,_=tp.state(tm)
- a=posed(a,state,tp.geometry(tm))
- shots=['hero','printing','drive'] if not preview else ['hero','printing']
- for view in shots:
-  size=(1920,1440) if view!='printing' else (1920,1280)
-  spp=256
-  if preview:size=(960,720);spp=32
-  name=(WORK/f'preview_{view}.png') if preview else OUT/f'FUSE_C220_{view}.png'
-  print('RENDER',name,flush=True)
-  r=render_photoreal(a,name,view,size=size,spp=spp,threads=8,depth=V9.reference_still_depth)
-  print('DONE',view,'seconds',r['seconds'],flush=True)
+def schedule(toolpath):
+    start = next(m.t0 for m in toolpath.moves if m.deposits)
+    result = []
+    for i in range(48):
+        u = i / 95 if i < 24 else (23 / 95 + (1 - 23 / 95) * (i - 23) / 24)
+        result.append((start + (toolpath.deposition_end - start) * u,
+                       '180-layer time-lapse / compressed print time'))
+    live_start = max(start, toolpath.deposition_end - 3.0)
+    result.extend((live_start + i / FPS,
+                   '1x modeled motion / replay of final extrusion') for i in range(48))
+    return result
 
 
-def label(im,mode,layer,z,simtime):
- im=im.copy();d=ImageDraw.Draw(im)
- d.rounded_rectangle((16,14,im.width-16,66),radius=7,fill=(17,23,25))
- f=ImageFont.truetype(BOLD,17);s=ImageFont.truetype(FONT,12)
- d.text((30,23),'CYBR FUSE / C220',font=f,fill=(215,228,223))
- d.text((30,45),mode,font=s,fill=(102,208,182))
- text=f'Layer {layer+1:03d} / 180     Z {z:05.2f} mm'
- d.text((im.width-300,26),text,font=s,fill=(206,213,210))
- d.text((im.width-300,44),'G-code drives nozzle + bed + deposited beads',font=s,fill=(147,166,160))
- return im
+def stills(assembly, toolpath, preview=False):
+    t = toolpath.deposition_end * .88
+    state, _, _ = toolpath.state(t)
+    scene = posed(assembly, state, toolpath.geometry(t))
+    shots = ['hero', 'printing'] if preview else ['hero', 'printing', 'drive']
+    for view in shots:
+        size = (960, 720) if preview else ((1920, 1280) if view == 'printing' else (1920, 1440))
+        path = WORK / f'preview_{view}.png' if preview else OUT / f'FUSE_C220_{view}.png'
+        start = time.perf_counter()
+        render_v9(scene, path, view_name=view, size=size,
+                  spp=32 if preview else V9.still_spp, depth=V9.still_depth)
+        print('DONE', path, 'seconds', round(time.perf_counter() - start, 3), flush=True)
 
 
-def film(a,tp,only_frames=None):
- output=OUT/'FUSE_C220_printing.mp4';frames=WORK/'film_frames';frames.mkdir(exist_ok=True)
- ex=compile_renderer();logs=[]
- # 2 seconds of variable-speed 180-layer time-lapse, then 2 seconds at true modeled time.
- # 96 independent native renders. Camera geometry and sampled print states are recorded.
- schedule=[]
- start=next(m.t0 for m in tp.moves if m.deposits)
- for i in range(48):
-  u=i/95 if i<24 else (23/95+(1-23/95)*(i-23)/24)
-  tm=start+(tp.deposition_end-start)*u
-  schedule.append((tm,'printing','180-layer time-lapse / compressed print time'))
- live_start=tp.deposition_end-3.0
- for i in range(48):schedule.append((live_start+i/FPS,'printing','1x motion / acceleration-limited extrusion'))
- def render_frame(job):
-  i,(tm,viewname,mode)=job
-  fpath=frames/f'{i:05d}.png';info=frames/f'{i:05d}.json'
-  if fpath.exists() and info.exists():return json.loads(info.read_text())
-  temporary=tempfile.TemporaryDirectory(prefix=f'fuse_c220_frame_{i:05d}_')
-  scratch=Path(temporary.name);mesh=scratch/'scene.meshbin';ppm=scratch/'frame.ppm'
-  state,mi,u=tp.state(tm);dep=tp.geometry(tm);assembly=posed(a,state,dep)
-  view=assembly.views[viewname]
-  # Height fixed so the complete growing print stays within the close shot.
-  view=replace(view,scale=122,target=(0,-9,130),f_stop=11)
-  begin=time.time()
-  try:
-   _invoke(ex,assembly,view,mesh,ppm,(960,720),48,2,10,2026,time_seconds=0,log=scratch/'native.log')
-  finally:
-   if (scratch/'native.log').exists():shutil.copyfile(scratch/'native.log',WORK/f'native_film_{i:05d}.log')
-  hdr=finish.read_pfm(str(ppm)+'.pfm')
-  with open(str(ppm)+'.guides','rb') as stream:
-   w,h=np.fromfile(stream,'<u4',2);guides=np.fromfile(stream,'<f4').reshape(h,w,9)
-  im=finish.finish_frame(hdr,guides,view.exposure,V9.filter_passes,view.tone_mapping)
-  im=label(im,mode,tp.moves[mi].layer,state.z,tm);finish.save_png(im,fpath)
-  item={'frame':i,'gcode_time_s':tm,'mode':mode,'state':state.__dict__,'layer':tp.moves[mi].layer,'move_index':mi,'move_fraction':u,'deposition_triangles':sum(len(p.faces) for p in dep),'seconds_to_render':time.time()-begin,'sha256':hashlib.sha256(fpath.read_bytes()).hexdigest()}
-  info.write_text(json.dumps(item))
-  temporary.cleanup()
-  return item
- with ThreadPoolExecutor(max_workers=4) as pool:
-  jobs=[job for job in enumerate(schedule) if only_frames is None or job[0] in only_frames]
-  futures=[pool.submit(render_frame,job) for job in jobs]
-  for future in as_completed(futures):
-   item=future.result();logs.append(item)
-   print('COMPLETE',len(logs),len(schedule),'frame',item['frame'],'render_s',round(item['seconds_to_render'],2),'z',round(item['state']['z'],2),flush=True)
- logs.sort(key=lambda r:r['frame'])
- if only_frames is not None:
-  print('SELECTED FRAMES DONE',flush=True);return
- encode_film(output,frames,logs)
+def label(path, mode, layer, z):
+    with Image.open(path) as source:
+        im = source.convert('RGB')
+    draw = ImageDraw.Draw(im)
+    draw.rounded_rectangle((16, 14, im.width - 16, 66), radius=7, fill=(17, 23, 25))
+    normal = Path('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
+    bold = normal.with_name('DejaVuSans-Bold.ttf')
+    f = ImageFont.truetype(str(bold), 17) if bold.exists() else ImageFont.load_default()
+    s = ImageFont.truetype(str(normal), 12) if normal.exists() else ImageFont.load_default()
+    draw.text((30, 23), 'CYBR FUSE / C220', font=f, fill=(215, 228, 223))
+    draw.text((30, 45), mode, font=s, fill=(102, 208, 182))
+    draw.text((im.width - 300, 26), f'Layer {layer + 1:03d} / 180    Z {z:05.2f} mm',
+              font=s, fill=(206, 213, 210))
+    draw.text((im.width - 300, 44), 'G-code-driven nozzle, bed and beads',
+              font=s, fill=(147, 166, 160))
+    im.save(path)
 
 
-def encode_film(output,frames,logs):
- assert [r['frame'] for r in logs]==list(range(96)), 'All 96 frame records are required'
- subprocess.run(['ffmpeg','-y','-v','error','-framerate',str(FPS),'-i',str(frames/'%05d.png'),'-c:v','libx264','-preset','slow','-crf','16','-pix_fmt','yuv420p','-movflags','+faststart',str(output)],check=True)
- report={'renderer':'CYBR GEO native V9 thin-lens GGX/MIS path tracer','frames':len(logs),'fps':FPS,'duration_s':len(logs)/FPS,'resolution':[960,720],'spp':48,'bounce_limit':10,'filter_passes':V9.filter_passes,'fixed_sampling_seed':2026,'frame_interpolation':False,'denoiser':'3 native geometry-guided atrous passes; no generative imagery','time_lapse_seconds':2,'real_time_seconds':2,'frames_detail':logs}
- output.with_suffix('.video.json').write_text(json.dumps(report,indent=2))
- print('FILM DONE',flush=True)
+def read_checkpoint(index, identity):
+    image = FRAMES / f'{index:05d}.png'
+    receipt = FRAMES / f'{index:05d}.frame.json'
+    if not image.exists() or not receipt.exists():
+        return None
+    try:
+        record = json.loads(receipt.read_text())
+        if (record['frame'] == index and record['fingerprint'] == identity
+                and record['sha256'] == digest(image)
+                and (FRAMES / f'{index:05d}.json').exists()):
+            return record
+    except (ValueError, KeyError, OSError):
+        pass
+    return None
 
-if __name__=='__main__':
- mode=sys.argv[1] if len(sys.argv)>1 else 'stills'
- if mode=='encode':
-  frames=WORK/'film_frames'
-  logs=[json.loads((frames/f'{i:05d}.json').read_text()) for i in range(96)]
-  encode_film(OUT/'FUSE_C220_printing.mp4',frames,logs);sys.exit(0)
- a,tp=setup()
- if mode=='preview':stills(a,tp,True)
- elif mode=='stills':stills(a,tp)
- elif mode=='film':film(a,tp)
- elif mode=='frames':film(a,tp,{int(i) for i in sys.argv[2:]})
+
+def film(assembly, toolpath, only_frames=None):
+    FRAMES.mkdir(parents=True, exist_ok=True)
+    identity = fingerprint()
+    if only_frames is not None and not all(0 <= i < FRAME_COUNT for i in only_frames):
+        raise ValueError('Frame indices must lie in [0, 95]')
+    for i, (t, mode) in enumerate(schedule(toolpath)):
+        if only_frames is not None and i not in only_frames:
+            continue
+        if read_checkpoint(i, identity) is not None:
+            continue
+        state, move, fraction = toolpath.state(t)
+        deposit = toolpath.geometry(t)
+        scene = posed(assembly, state, deposit)
+        view = replace(scene.views['printing'], scale=122, target=(0, -9, 130), f_stop=11)
+        scene = replace(scene, views={**scene.views, 'printing': view})
+        image = FRAMES / f'{i:05d}.png'
+        begin = time.perf_counter()
+        render_receipt = render_v9(scene, image, view_name='printing', size=FRAME_SIZE,
+                                   spp=V9.video_spp, depth=V9.video_depth)
+        label(image, mode, toolpath.moves[move].layer, state.z)
+        record = {'frame': i, 'fingerprint': identity, 'sha256': digest(image),
+                  'gcode_time_s': t, 'mode': mode, 'state': asdict(state),
+                  'layer': toolpath.moves[move].layer, 'move_index': move,
+                  'move_fraction': fraction, 'render_profile': render_receipt['render_profile'],
+                  'deposition_triangles': sum(len(p.faces) for p in deposit),
+                  'seconds_to_render': time.perf_counter() - begin,
+                  'burned_in_explanatory_labels': True}
+        image.with_suffix('.frame.json').write_text(json.dumps(record, indent=2) + '\n')
+        print('COMPLETE frame', i, 'of', FRAME_COUNT, flush=True)
+    if only_frames is None:
+        encode_film(identity)
+
+
+def encode_film(identity=None):
+    identity = fingerprint() if identity is None else identity
+    records = [read_checkpoint(i, identity) for i in range(FRAME_COUNT)]
+    if any(record is None for record in records):
+        raise RuntimeError('Encoding requires all 96 current, checksum-valid V9 frame receipts')
+    output = OUT / 'FUSE_C220_printing.mp4'
+    subprocess.run(['ffmpeg', '-y', '-v', 'error', '-framerate', str(FPS),
+                    '-i', str(FRAMES / '%05d.png'), '-frames:v', str(FRAME_COUNT),
+                    '-c:v', 'libx264', '-preset', 'slow', '-crf', '16',
+                    '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(output)], check=True)
+    report = {'renderer': 'Mitsuba 3 path + albedo/normal-guided Intel OIDN',
+              'render_profile': 'v9', 'frames': FRAME_COUNT, 'fps': FPS,
+              'duration_s': FRAME_COUNT / FPS, 'resolution': FRAME_SIZE,
+              'spp': V9.video_spp, 'bounce_limit': V9.video_depth,
+              'fingerprint': identity, 'sha256': digest(output),
+              'frame_interpolation': False, 'generated_imagery': False,
+              'burned_in_explanatory_labels': True,
+              'time_lapse_seconds': 2, 'modeled_real_time_replay_seconds': 2,
+              'frames_detail': records}
+    output.with_suffix('.video.json').write_text(json.dumps(report, indent=2) + '\n')
+    return report
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('mode', choices=['preview', 'stills', 'film', 'frames', 'encode'])
+    parser.add_argument('indices', nargs='*', type=int)
+    args = parser.parse_args()
+    if args.mode == 'encode':
+        encode_film()
+        return
+    assembly, toolpath = setup()
+    if args.mode in ('preview', 'stills'):
+        stills(assembly, toolpath, args.mode == 'preview')
+    elif args.mode == 'frames':
+        if not args.indices:
+            parser.error('frames requires at least one index')
+        film(assembly, toolpath, set(args.indices))
+    else:
+        film(assembly, toolpath)
+
+
+if __name__ == '__main__':
+    main()
