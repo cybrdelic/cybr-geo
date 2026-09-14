@@ -34,47 +34,51 @@ jobs:
           p=mi.Point3f(mi.Float([-1,1,0]),mi.Float([0,0,0]),mi.Float([0,0,1]))
           n=mi.Normal3f(mi.Float([0,0,0]),mi.Float([1,1,1]),mi.Float([0,0,0]))
           f=mi.Vector3u(mi.UInt32([0]),mi.UInt32([1]),mi.UInt32([2]))
-          props=mi.Properties()
-          bsdf=None
+          props=mi.Properties(); bsdf=None
+          diffuse={'type':'diffuse','reflectance':{'type':'rgb','value':[.5,.5,.5]}}
+          principled={'type':'principled','base_color':{'type':'rgb','value':[.49,.505,.52]},'metallic':1.0,'roughness':.25,'anisotropic':.155,'clearcoat':.01,'clearcoat_gloss':.8,'specular':.47}
           if mode in ('props_bsdf','props_bsdf_normals'):
-              bsdf=mi.load_dict({'type':'diffuse','reflectance':{'type':'rgb','value':[.5,.5,.5]}})
-              props['bsdf']=bsdf
-          mesh=mi.Mesh('tri',3,1,props,mode in ('normals','props_bsdf_normals','set_bsdf'),False)
+              bsdf=mi.load_dict(diffuse); props['bsdf']=bsdf
+          if mode in ('principled','principled_aov','principled_aov_bench'):
+              bsdf=mi.load_dict(principled); props['bsdf']=bsdf
+          have_normals=mode not in ('docs','props_bsdf')
+          mesh=mi.Mesh('tri',3,1,props,have_normals,False)
           params=mi.traverse(mesh)
-          params['vertex_positions']=dr.ravel(p)
-          params['faces']=dr.ravel(f)
-          if mode in ('normals','props_bsdf_normals','set_bsdf'):
-              params['vertex_normals']=dr.ravel(n)
+          params['vertex_positions']=dr.ravel(p); params['faces']=dr.ravel(f)
+          if have_normals: params['vertex_normals']=dr.ravel(n)
           params.update()
           if mode=='set_bsdf':
-              bsdf=mi.load_dict({'type':'diffuse','reflectance':{'type':'rgb','value':[.5,.5,.5]}})
-              mesh.set_bsdf(bsdf)
-          print('PRELOAD',mode,mesh,flush=True)
-          scene=mi.load_dict({
-              'type':'scene',
-              'integrator':{'type':'path'},
+              bsdf=mi.load_dict(diffuse); mesh.set_bsdf(bsdf)
+          integrator={'type':'path'}
+          if mode in ('principled_aov','principled_aov_bench'):
+              integrator={'type':'aov','aovs':'albedo:albedo,normal:sh_normal','beauty':{'type':'path','max_depth':14,'rr_depth':5}}
+          scene_dict={
+              'type':'scene','integrator':integrator,
               'light':{'type':'constant','radiance':1.0},
               'sensor':{
-                  'type':'perspective',
+                  'type':'thinlens' if mode in ('principled_aov','principled_aov_bench') else 'perspective',
                   'to_world':mi.ScalarTransform4f.look_at(origin=[0,-4,1],target=[0,0,.3],up=[0,0,1]),
-                  'film':{'type':'hdrfilm','width':8,'height':8},
+                  'film':{'type':'hdrfilm','width':8,'height':8,'component_format':'float32'},
                   'sampler':{'type':'independent','sample_count':1},
               },
               'tri':mesh,
-          })
+          }
+          if mode in ('principled_aov','principled_aov_bench'):
+              scene_dict['sensor']['focus_distance']=4.0; scene_dict['sensor']['aperture_radius']=.02
+          if mode=='principled_aov_bench':
+              scene_dict['bench']={'type':'rectangle','to_world':mi.ScalarTransform4f.translate([0,0,-.1]) @ mi.ScalarTransform4f.scale([3,3,1]),'bsdf':{'type':'principled','base_color':{'type':'rgb','value':[.105,.1,.094]},'metallic':0.0,'roughness':.5,'specular':.34,'clearcoat':0.0}}
+          print('PRELOAD',mode,mesh,flush=True)
+          scene=mi.load_dict(scene_dict)
           print('LOADED',mode,flush=True)
-          image=mi.render(scene,spp=1)
-          dr.eval(image)
+          image=mi.render(scene,spp=1); dr.eval(image)
           print('RENDERED',mode,dr.width(image),flush=True)
           PY
           : >/tmp/results.txt
-          for mode in docs normals props_bsdf props_bsdf_normals set_bsdf; do
+          for mode in docs normals props_bsdf props_bsdf_normals set_bsdf principled principled_aov principled_aov_bench; do
             echo "=== $mode ==="
             python /tmp/probe_mesh.py "$mode"
             code=$?
             echo "$mode $code" | tee -a /tmp/results.txt
           done
-          echo '=== RESULTS ==='
-          cat /tmp/results.txt
-          # At minimum the verbatim documentation construction must work.
+          echo '=== RESULTS ==='; cat /tmp/results.txt
           grep -q '^docs 0$' /tmp/results.txt
