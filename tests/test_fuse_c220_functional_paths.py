@@ -118,3 +118,13 @@ def test_nondefault_layer_count_and_park_height(tmp_path):
     tp = toolpath.generate(tmp_path / "short.gcode", layers=5)
     assert toolpath.verify(tp)["layers"] == 5
     assert tp.moves[-1].end[2] > max(m.end[2] for m in tp.deposits)
+
+
+def test_cutaway_handles_completely_removed_sensor_without_null_shape(assembly):
+    import inspect_hotend
+    cut = inspect_hotend.section(assembly)
+    assert len(cut.parts) > 10
+    assert "temperature_sensor_envelope" not in {p.name for p in cut.parts}
+    assert all(p.cad.isValid() and p.cad.Volume() > 0 for p in cut.parts)
+    assert all(p.cad.BoundingBox().ymin > -1e-6 for p in cut.parts)
+    assert all(p.cad.BoundingBox().zmax < printer.BED + 55. + 1e-6 for p in cut.parts)

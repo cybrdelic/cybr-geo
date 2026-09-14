@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: fuse-functional-paths-${{ github.ref }}
@@ -71,9 +72,31 @@ jobs:
           path: deliverables/
           if-no-files-found: error
           retention-days: 30
-      - name: Render corrected printer with the real V9 pipeline
+      - uses: actions/download-artifact@v4
+        with:
+          name: fuse-functional-v9-renders
+          path: previous_v9
+          run-id: 34850079331
+          github-token: ${{ github.token }}
+      - name: Reuse verified completed model stills and render corrected CAD section
         run: |
-          python examples/fuse_c220/render_delivery.py stills
+          python - <<'PY'
+          import hashlib, json, pathlib, shutil
+          previous=pathlib.Path('previous_v9')
+          original=json.loads((previous/'execution.json').read_text())
+          assert original['tested_commit']=='d913877447589414137ee97ec670ce2257ecf834'
+          for name in ('printer.py','toolpath.py','render_delivery.py'):
+              path='examples/fuse_c220/'+name
+              assert hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()==original['source_sha256'][path],path
+          for view in ('hero','printing','drive'):
+              stem='FUSE_C220_'+view
+              report=json.loads((previous/(stem+'.json')).read_text())
+              assert report['render_profile']=='v9' and report['generated_imagery'] is False
+              assert report['spp']==256 and report['max_depth']==14
+              for path in previous.glob(stem+'*'):
+                  shutil.copy2(path,pathlib.Path('deliverables')/path.name)
+          pathlib.Path('deliverables/model_stills_execution.json').write_text(json.dumps(original,indent=2))
+          PY
           python examples/fuse_c220/inspect_hotend.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -106,7 +129,7 @@ jobs:
               shutil.copy2(receipt, target / (stem + '.json'))
           for path in source.glob('*validation.json'):
               shutil.copy2(path, target / path.name)
-          for name in ('tests.xml', 'tests.log', 'execution.json', 'FUSE_C220_calibration.gcode'):
+          for name in ('tests.xml', 'tests.log', 'execution.json', 'model_stills_execution.json', 'FUSE_C220_calibration.gcode'):
               shutil.copy2(source / name, target / name)
           (target / 'README.md').write_text(
               '# FUSE C220 corrected hotend and G-code replay\n\n'

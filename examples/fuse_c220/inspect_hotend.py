@@ -23,6 +23,11 @@ def section(assembly):
     for part in assembly.parts:
         if part.name not in selected:
             continue
+        bounds = part.cad.BoundingBox()
+        # OpenCascade can return a null shape when a cutter removes the whole
+        # sensor. Exclude bodies provably outside the retained half-space first.
+        if bounds.ymax <= 0. or bounds.zmin >= BED + 55.:
+            continue
         shape = part.cad.cut(front).cut(above)
         if shape.Volume() < 1e-8:
             continue
