@@ -1,0 +1,126 @@
+{
+  "available_frames": 12,
+  "selected": [
+    {
+      "frame": 72,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "24541ad2b132c0a0aaadeb79458650addad1f1f63134da46976937409b7bd2cd",
+      "gcode_time_s": 7008.534970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.12595601759918,
+        "y": -15.01909953063057,
+        "z": 36.0,
+        "e": 4243.146417502421
+      },
+      "layer": 179,
+      "move_index": 53475,
+      "move_fraction": 0.9748377233359216,
+      "render_profile": "v9",
+      "deposition_triangles": 2304676,
+      "seconds_to_render": 115.435731684,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 74,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "230b785cefe3c16d4eb78c869ed1b01b45568806b60ddca854b49764028e0ac4",
+      "gcode_time_s": 7008.6183039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.891400034258368,
+        "y": -13.843401363746153,
+        "z": 36.0,
+        "e": 4243.192786365556
+      },
+      "layer": 179,
+      "move_index": 53476,
+      "move_fraction": 0.6606839858834268,
+      "render_profile": "v9",
+      "deposition_triangles": 2304720,
+      "seconds_to_render": 108.22916234299998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 76,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "92b2211c9b3b4569a3c3356464574e6aa35045ab7e231791e16e53a87f8da643",
+      "gcode_time_s": 7008.701637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.378198614977123,
+        "y": -12.903560015936094,
+        "z": 36.0,
+        "e": 4243.228000896416
+      },
+      "layer": 179,
+      "move_index": 53477,
+      "move_fraction": 0.18194596827535256,
+      "render_profile": "v9",
+      "deposition_triangles": 2304764,
+      "seconds_to_render": 106.23527659799993,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 79,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "f8a43e78278a275248aa305397cf72b2af037f528be28da4d7a5200a4c4f488b",
+      "gcode_time_s": 7008.826637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.9229614700445,
+        "y": -10.780450298536508,
+        "z": 36.0,
+        "e": 4243.300758239646
+      },
+      "layer": 179,
+      "move_index": 53478,
+      "move_fraction": 0.25361869921433683,
+      "render_profile": "v9",
+      "deposition_triangles": 2304808,
+      "seconds_to_render": 107.90079249999997,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 81,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "fb2fc7aea40f61ba2a79d43c06e10b1d73df86f9a37192606915fd9018e2edb9",
+      "gcode_time_s": 7008.909970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 29.026663385640063,
+        "y": -9.215070995074157,
+        "z": 36.0,
+        "e": 4243.352562434448
+      },
+      "layer": 179,
+      "move_index": 53479,
+      "move_fraction": 0.00459726443138292,
+      "render_profile": "v9",
+      "deposition_triangles": 2304852,
+      "seconds_to_render": 105.51801063000016,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 83,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e3510c20afcb2f70cd0af6f9fa8cd790164bed5a80679726bddeea3756f805c5",
+      "gcode_time_s": 7008.9933039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.790717892536662,
+        "y": -7.41324747917524,
+        "z": 36.0,
+        "e": 4243.412561787007
+      },
+      "layer": 179,
+      "move_index": 53479,
+      "move_fraction": 0.8542695360414038,
+      "render_profile": "v9",
+      "deposition_triangles": 2304852,
+      "seconds_to_render": 104.787119652,
+      "burned_in_explanatory_labels": true
+    }
+  ],
+  "operation": "contact sheet and JPEG display copies; no content synthesis"
+}
