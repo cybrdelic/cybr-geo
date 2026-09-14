@@ -82,7 +82,7 @@ jobs:
       - name: Record tested tree and honest recovery scope
         run: |
           python - <<'PY'
-          import datetime,json,os,pathlib,subprocess,xml.etree.ElementTree as ET
+          import datetime,json,os,pathlib,xml.etree.ElementTree as ET
           report=pathlib.Path('/tmp/recovery-integration-results')
           suites=ET.parse(report/'tests.xml').getroot().iter('testsuite')
           counts={k:0 for k in ('tests','failures','errors','skipped')}
@@ -94,31 +94,21 @@ jobs:
           out=pathlib.Path('docs/validation/recent_source/master-integration-2026-09-14.json')
           out.write_text(json.dumps(record,indent=2)+'\n')
           (report/'result.json').write_text(json.dumps(record,indent=2)+'\n')
-          guide=pathlib.Path('docs/RECENT_CHAT_RECOVERY.md')
-          guide.write_text('''# Recent-chat source integration — 2026-09-14
-
-The recovery branch is integrated with master without reverting newer shared geometry, native-renderer, or skatepark changes.
-
-## Active source
-
-- FUSE C220 printer: `examples/fuse_c220/`; tests: `tests/test_fuse_c220_recovery.py`.
-- REACH/REACH-2 forearm and elbow: `examples/reach*`, `tools/reach*`, `tools/export_reach2_v5_cad.py`, and `tests/test_reach*`. The newest recovered assembly is `examples/reach2_orbit_integrated_v5.py` with the v5b variant also preserved.
-- New printer renders dispatch through the current shared V9 entrypoint. Historical media and mocked adapter tests are not evidence of a new Mitsuba render.
-
-## Preserved source snapshots
-
-`archive/published_branches/2026-09-14/` contains pinned REACH-2 v5, procedural-face, and CYBR YARD snapshots. These are provenance archives, not replacements for active `src/` or the shared renderer. Snapshot bytes and active recovered forearm files were checked against their publication receipt before the merge.
-
-## Explicitly incomplete publication
-
-CELL-01/AERIS, Hot Springs v4, clouds v4, BACKLOT-01, spectral quartz, and Prismatic II have not been fully imported as ordinary repository source. The previous transfer stopped at 8 of 22 encoded parts. Those `.chat_recovery/source.part*` transport fragments are excluded from the merged tree; their exact contents remain in commit `a7c4a7f1ab4da2c2ea532d849e8c9a55d1df2e33` and its ancestors. The separately delivered `cybr-recent-chat-source-payload.zip` holds the recovered source and printer preview/video. Large historical CAD and render deliveries are not claimed to be fully published.
-
-## Verification
-
-See `docs/validation/recent_source/master-integration-2026-09-14.json` and its linked Actions run for the tested base, source-integrity counts, regression results, and transport checksums. The full active and legacy Python suites are run, not only the earlier 20 targeted checks. Skips are reported rather than counted as passes.
-
-This is source integration and numerical/software verification, not physical build certification, a full mechanical/thermal safety analysis, or a newly rendered delivery.
-''')
+          sections=[
+              '# Recent-chat source integration — 2026-09-14',
+              'The recovery branch is integrated with master without reverting newer shared geometry, native-renderer, or skatepark changes.',
+              '## Active source',
+              'FUSE C220 printer: `examples/fuse_c220/`; tests: `tests/test_fuse_c220_recovery.py`. REACH/REACH-2 forearm and elbow: `examples/reach*`, `tools/reach*`, `tools/export_reach2_v5_cad.py`, and `tests/test_reach*`. The newest recovered assembly is `examples/reach2_orbit_integrated_v5.py`; the v5b variant is also preserved.',
+              'New printer renders dispatch through the current shared V9 entrypoint. Historical media and mocked adapter tests are not evidence of a new Mitsuba render.',
+              '## Preserved source snapshots',
+              '`archive/published_branches/2026-09-14/` contains pinned REACH-2 v5, procedural-face, and CYBR YARD snapshots. These are provenance archives, not replacements for active `src/` or the shared renderer. Snapshot bytes and active recovered forearm files were checked against their publication receipt before the merge.',
+              '## Explicitly incomplete publication',
+              'CELL-01/AERIS, Hot Springs v4, clouds v4, BACKLOT-01, spectral quartz, and Prismatic II have not been fully imported as ordinary repository source. The previous transfer stopped at 8 of 22 encoded parts. Those `.chat_recovery/source.part*` transport fragments are excluded from the merged tree; their exact contents remain in commit `a7c4a7f1ab4da2c2ea532d849e8c9a55d1df2e33` and its ancestors. The separately delivered `cybr-recent-chat-source-payload.zip` holds the recovered source and printer preview/video. Large historical CAD and render deliveries are not claimed to be fully published.',
+              '## Verification',
+              'See `docs/validation/recent_source/master-integration-2026-09-14.json` and its linked Actions run for the tested base, source-integrity counts, regression results, and transport checksums. The full active and legacy Python suites are run, not only the earlier 20 targeted checks. Skips are reported rather than counted as passes.',
+              'This is source integration and numerical/software verification, not physical build certification, a full mechanical/thermal safety analysis, or a newly rendered delivery.'
+          ]
+          pathlib.Path('docs/RECENT_CHAT_RECOVERY.md').write_text('\n\n'.join(sections)+'\n')
           PY
           git diff --exit-code "$EXPECTED_MASTER" -- src native pyproject.toml requirements-tested.txt
       - name: Commit and push only after verification; refuse races
