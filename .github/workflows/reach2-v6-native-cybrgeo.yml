@@ -1,0 +1,77 @@
+name: CYBR REACH-2 v6 Native CYBR GEO
+
+on:
+  push:
+    branches: [feat/reach2-native-cybrgeo-v6]
+  workflow_dispatch:
+
+jobs:
+  validate-build-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libegl1 curl
+      - name: Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-orbit-v3-tested.txt
+          python -m pip install --no-deps -e .
+          python -m pip install 'mitsuba>=3.6,<3.8'
+      - name: Validate native CYBR GEO model and engineering
+        run: |
+          python examples/reach2_cybrgeo_v6.py
+          python tools/reach2_cybrgeo_v6_engineering.py --out /tmp/reach2v6/REACH2_v6_engineering.json --require-pass
+      - name: Install Intel Open Image Denoise 2.5.1
+        run: |
+          set -euxo pipefail
+          curl -L --fail --retry 3 -o /tmp/oidn.tar.gz https://github.com/RenderKit/oidn/releases/download/v2.5.1/oidn-2.5.1.x86_64.linux.tar.gz
+          echo '743c3e2aff8c220d5d70fe6cb970fb3d36f2702d2693c61d1d148e404cf37cd6  /tmp/oidn.tar.gz' | sha256sum -c -
+          mkdir -p /tmp/oidn && tar -xzf /tmp/oidn.tar.gz -C /tmp/oidn
+          OIDN_ROOT=$(find /tmp/oidn -maxdepth 1 -mindepth 1 -type d -name 'oidn-*' | head -1)
+          echo "$OIDN_ROOT/bin" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$OIDN_ROOT/lib:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
+      - name: Native CYBR GEO export and V9 render
+        run: |
+          python tools/reach2_cybrgeo_v6_build.py --out /tmp/reach2v6 --spp 256
+      - name: Verify native provenance
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          p=Path('/tmp/reach2v6')
+          m=json.loads((p/'REACH2_v6_manifest.json').read_text())
+          e=json.loads((p/'REACH2_v6_engineering.json').read_text())
+          assert m['generated_imagery'] is False
+          assert m['geometry_api']=='cybrgeo.Assembly/cybrgeo.from_shape'
+          assert m['render_api']=='cybrgeo.photoreal.render'
+          assert m['engineering_qualified'] is True and e['qualified'] is True
+          assert m['analytic_brep_parts']==m['parts']
+          for name in ('hero','output','rear'):
+              with Image.open(p/f'REACH2_v6_{name}.png') as im:
+                  assert im.size==(1200,900);im.verify()
+          assert (p/'REACH2_v6_ORBIT_analytic.step').stat().st_size>100000
+          assert (p/'REACH2_v6_ORBIT.glb').stat().st_size>100000
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CYBR-REACH-2-v6-NATIVE-CYBRGEO
+          path: |
+            /tmp/reach2v6/REACH2_v6_hero.png
+            /tmp/reach2v6/REACH2_v6_output.png
+            /tmp/reach2v6/REACH2_v6_rear.png
+            /tmp/reach2v6/REACH2_v6_ORBIT_analytic.step
+            /tmp/reach2v6/REACH2_v6_ORBIT.glb
+            /tmp/reach2v6/REACH2_v6_manifest.json
+            /tmp/reach2v6/REACH2_v6_engineering.json
+            /tmp/reach2v6/REACH2_v6_validation.json
+          if-no-files-found: error
+          retention-days: 7
