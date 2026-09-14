@@ -1,13 +1,15 @@
 """Runtime dispatch for the true V9 renderer.
 
 The approved ORBIT V9 artifact stays on its exact Mitsuba PLY/``llvm_ad_rgb``
-path. Other CYBR GEO assemblies use the *same* V9 camera, HDRI, physical bench,
+path. Other CYBR GEO assemblies use the same V9 camera, HDRI, physical bench,
 principled materials, path integrator, AOVs, OIDN and ACES/sRGB pipeline, but
-their already-world-transformed geometry is packed into material/variation OBJ
-meshes and loaded with Mitsuba ``scalar_rgb``. This avoids reproducible Mitsuba
-3.7.1 PLY-loader crashes seen on otherwise validated AERIS meshes. OBJ here is
-only a renderer interchange format: no geometry is simplified, decimated,
-moved, replaced, or synthesized.
+their already-world-transformed triangle buffers are handed to Mitsuba as
+procedural ``mi.Mesh`` objects instead of being reparsed through OBJ/PLY loader
+plugins. This is important for large heterogeneous assemblies such as AERIS:
+Mitsuba 3.7.1 reproducibly segfaults in its file-loader path on several valid
+AERIS subsets, while the same topology is safe when placed directly into Mesh
+buffers. No geometry is simplified, decimated, remeshed, moved, replaced, or
+synthesized.
 """
 from __future__ import annotations
 
@@ -21,6 +23,7 @@ ORBIT_REFERENCE_MODEL='cybr_orbit_inspection_wrist'
 
 
 def _scalar_mitsuba():
+    """Select the scalar backend used by the robust generic V9 path."""
     try:
         import mitsuba as mi
     except ImportError as error:
@@ -36,30 +39,6 @@ def _scalar_mitsuba():
         if mi.variant()!='scalar_rgb':
             raise
     return mi,'scalar_rgb'
-
-
-def _write_obj(path:Path,vertices,normals,faces):
-    """Write exact indexed geometry as OBJ with one normal per source vertex."""
-    path.parent.mkdir(parents=True,exist_ok=True)
-    vertices=np.asarray(vertices,dtype=np.float64)
-    normals=np.asarray(normals,dtype=np.float64)
-    faces=np.asarray(faces,dtype=np.int64)
-    if vertices.ndim!=2 or vertices.shape[1]!=3 or normals.shape!=vertices.shape:
-        raise ValueError('Invalid V9 OBJ vertex/normal arrays')
-    if faces.ndim!=2 or faces.shape[1]!=3:
-        raise ValueError('Invalid V9 OBJ triangle array')
-    if not np.isfinite(vertices).all() or not np.isfinite(normals).all():
-        raise ValueError('Non-finite V9 OBJ geometry')
-    if len(faces) and (faces.min()<0 or faces.max()>=len(vertices)):
-        raise ValueError('Out-of-range V9 OBJ index')
-    with path.open('w',encoding='ascii',newline='\n') as stream:
-        stream.write('# CYBR GEO V9 exact render mesh; units are scene millimetres\n')
-        for x,y,z in vertices:
-            stream.write(f'v {x:.9g} {y:.9g} {z:.9g}\n')
-        for x,y,z in normals:
-            stream.write(f'vn {x:.9g} {y:.9g} {z:.9g}\n')
-        for a,b,c in faces+1:
-            stream.write(f'f {a}//{a} {b}//{b} {c}//{c}\n')
 
 
 def _generic_shapes(assembly,time_seconds=0.0,explode=0.0):
@@ -82,22 +61,67 @@ def _generic_shapes(assembly,time_seconds=0.0,explode=0.0):
     shapes=[]
     for (material,bucket),record in sorted(groups.items()):
         label=f'material_{material:02d}_variation_{bucket}'
+        vertices=np.concatenate(record['vertices'],axis=0).astype(np.float32,copy=False)
+        normals=np.concatenate(record['normals'],axis=0).astype(np.float32,copy=False)
+        faces=np.concatenate(record['faces'],axis=0).astype(np.uint32,copy=False)
+        if not np.isfinite(vertices).all() or not np.isfinite(normals).all():
+            raise ValueError(f'Non-finite V9 geometry in {label}')
+        if len(faces) and (faces.min()<0 or int(faces.max())>=len(vertices)):
+            raise ValueError(f'Out-of-range V9 triangle index in {label}')
         shapes.append({
             'label':label,
             'material':material,
             'variation_key':label,
-            'vertices':np.concatenate(record['vertices'],axis=0),
-            'normals':np.concatenate(record['normals'],axis=0),
-            'faces':np.concatenate(record['faces'],axis=0).astype('<i4',copy=False),
+            'vertices':vertices,
+            'normals':normals,
+            'faces':faces,
             'source_parts':record['count'],
         })
     return shapes
 
 
+def _procedural_mesh(mi,record,material):
+    """Create a Mitsuba mesh directly from validated CYBR GEO buffers.
+
+    This deliberately avoids every disk mesh parser. Mitsuba's documented
+    procedural Mesh API exposes flat position/normal/index buffers through
+    ``mi.traverse``; filling those buffers preserves the exact submitted indexed
+    triangles and authored vertex normals.
+    """
+    import drjit as dr
+
+    vertices=record['vertices']
+    normals=record['normals']
+    faces=record['faces']
+
+    bsdf=mi.load_dict(_core.principled(material,record['variation_key']))
+    props=mi.Properties()
+    props['bsdf']=bsdf
+    mesh=mi.Mesh(
+        record['label'],
+        vertex_count=len(vertices),
+        face_count=len(faces),
+        props=props,
+        has_vertex_normals=True,
+        has_vertex_texcoords=False,
+    )
+    params=mi.traverse(mesh)
+    params['vertex_positions']=dr.ravel(mi.Point3f(vertices))
+    params['vertex_normals']=dr.ravel(mi.Normal3f(normals))
+    params['faces']=dr.ravel(mi.Vector3u(faces))
+    params.update()
+
+    # Fail in Python rather than allowing a native renderer failure later if a
+    # future Mitsuba build changes the procedural buffer contract.
+    if int(mesh.vertex_count())!=len(vertices) or int(mesh.face_count())!=len(faces):
+        raise RuntimeError(f'Procedural V9 mesh count mismatch for {record["label"]}')
+    return mesh
+
+
 def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
                       time_seconds=0.0,explode=0.0,azimuth=None,
                       f_stop=None,focus_distance=None):
-    """V9 scene builder differing from reference only in mesh interchange/variant."""
+    """V9 scene builder using procedural Mitsuba meshes for generic assemblies."""
     origin,target,distance,hfov=_core._camera(view,size,azimuth)
     focal=float(view.focal_length_mm)
     fstop=float(f_stop or view.f_stop or V9.reference_f_stop)
@@ -165,15 +189,11 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
     for index,record in enumerate(render_shapes):
         triangle_count+=len(record['faces'])
         source_parts+=record['source_parts']
-        path=mesh_dir/f"{index:04d}_{_core._safe_name(record['label'])}.obj"
-        _write_obj(path,record['vertices'],record['normals'],record['faces'])
-        scene[f'part_{index:04d}']={
-            'type':'obj','filename':str(path),
-            'bsdf':_core.principled(
-                assembly.materials[record['material']],record['variation_key']),
-        }
+        scene[f'part_{index:04d}']=_procedural_mesh(
+            mi,record,assembly.materials[record['material']]
+        )
     if source_parts!=len(assembly.parts):
-        raise RuntimeError('V9 generic serialization lost source parts')
+        raise RuntimeError('V9 procedural serialization lost source parts')
 
     camera={
         'origin':origin.tolist(),'target':target.tolist(),'distance':distance,
@@ -182,13 +202,13 @@ def _large_scene_dict(mi,assembly,view,size,spp,depth,assets,mesh_dir,
     }
     return (
         scene,triangle_count,camera,len(render_shapes),
-        'material-variation-batches-obj-generic',
+        'material-variation-batches-procedural-mesh',
     )
 
 
 def _dispatch(function,assembly,*args,**kwargs):
     # Preserve the exact loader/variant used by the approved V9 artifact itself.
-    # Generic CYBR GEO models get a more robust interchange path while retaining
+    # Generic CYBR GEO models bypass Mitsuba's mesh-file plugins while retaining
     # every visual/transport element that defines V9.
     if assembly.name==ORBIT_REFERENCE_MODEL:
         return function(assembly,*args,**kwargs)
@@ -201,8 +221,8 @@ def _dispatch(function,assembly,*args,**kwargs):
         result=function(assembly,*args,**kwargs)
         if isinstance(result,dict):
             result['generic_v9_dispatch']=(
-                'scalar_rgb + exact OBJ material/variation batches; '
-                'V9 lighting/material/camera/AOV/OIDN/color contract unchanged')
+                'scalar_rgb + exact in-memory procedural Mesh material/variation '
+                'batches; V9 lighting/material/camera/AOV/OIDN/color contract unchanged')
         return result
     finally:
         _core._mitsuba=original_mitsuba
