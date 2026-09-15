@@ -1,0 +1,64 @@
+{
+  "status": "Historical workspace evidence, not a receipt for this port",
+  "workshop": {
+    "table": {
+      "historical_inputs_current": true,
+      "parts": 211,
+      "printed_parts": 15,
+      "motion_samples": 117,
+      "source_review_sha256": "d0800cecd243dfab1f8b5140f464ab6557111f06bfeabf6fcc38f71302829ea6"
+    },
+    "drill": {
+      "historical_inputs_current": true,
+      "parts": 162,
+      "printed_parts": 11,
+      "motion_samples": 107,
+      "source_review_sha256": "eb8b0dbbbb97258420ed280b5d102561040470ff8ae6bc4c3bda11477df8a962"
+    },
+    "bend": {
+      "historical_inputs_current": true,
+      "parts": 48,
+      "printed_parts": 4,
+      "motion_samples": 33,
+      "source_review_sha256": "3d5928a294e32740a5d9783a03cb4794801300c23f6057c03b0e389fca80e2ef"
+    },
+    "vise": {
+      "historical_inputs_current": true,
+      "parts": 104,
+      "printed_parts": 7,
+      "motion_samples": 57,
+      "source_review_sha256": "f63cd58b31e20b281e0662d4747042d08663ac0339ea2ad3f79050c2d0c1073d"
+    },
+    "measure": {
+      "historical_inputs_current": true,
+      "parts": 141,
+      "printed_parts": 9,
+      "motion_samples": 57,
+      "source_review_sha256": "4f396bb14f6f89afa680011b770f74e854833b128efdedccb69a302f3c48a6df"
+    },
+    "press": {
+      "historical_inputs_current": true,
+      "parts": 144,
+      "printed_parts": 8,
+      "motion_samples": 57,
+      "source_review_sha256": "25c606070ee13cbd69546d2bcc33342f8517e8b6acb5d97bff194ff8940695f3"
+    },
+    "electronics": {
+      "historical_inputs_current": true,
+      "parts": 100,
+      "printed_parts": 9,
+      "motion_samples": 33,
+      "source_review_sha256": "3c4c1308aade4716e46ba5f5920477844970b42afae02e2d24c70579308a24d2"
+    }
+  },
+  "spine": {
+    "historical_selected_poses": 6,
+    "historical_blocked_samples": 45,
+    "historical_sweep_samples": 160,
+    "fabrication_release": false
+  },
+  "media": {
+    "spine.jpg": "7028af543e35f915206982221f053d5b3b37630a2c898433e232d5f5454ed1cd",
+    "workshop.jpg": "8f638c7fd37431014c85b2a7df62029a9b040ba3aecf663a005f9f30e1007527"
+  }
+}

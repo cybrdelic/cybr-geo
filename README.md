@@ -4,6 +4,12 @@ Procedural geometry, named CAD/mesh assemblies, internal and exploded inspection
 
 **Both source toolkits are published here:** the newer `lab` CLI (`src/mechanism_lab`) and the original `cybrgeo` CLI (`src/cybrgeo`). Model recipes supply geometry, materials, named parts, camera views and motion transforms. The shared infrastructure handles export, rendering, animation, catalogues and drawings; a new part does not need a new renderer.
 
+## ROAM workshop and mobile workstation studies
+
+[ROAM examples](examples/roam) include seven original bench mechanisms, the articulated shared-spine mobile workstation, portable checked-build commands, and a [manufacturing coverage map](examples/roam/MANUFACTURING.md). These are nominal CAD studies with explicit physical and manufacturing limitations; the workshop does not yet manufacture the complete workstation.
+
+![ROAM workshop mechanisms](examples/roam/media/workshop.jpg)
+
 ## Differential previews
 
 ![Differential motion rendered from geometry](media/differential_preview.gif)
