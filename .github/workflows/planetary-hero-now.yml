@@ -1,0 +1,36 @@
+name: planetary-hero-now
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/planetary-actuator'
+    paths:
+      - '.github/workflows/planetary-hero-now.yml'
+      - 'src/mechanism_lab/models/planetary_actuator.py'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install renderer dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Render actual exposed planetary gearset
+        run: |
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer photoreal --view gearset_hero --size 1280x800 --spp 128 --depth 14 --threads 4 --intent concept --out artifacts/planetary_gearset_hero_real.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: planetary-gearset-hero-real
+          path: artifacts/
+          if-no-files-found: error

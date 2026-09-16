@@ -1,0 +1,67 @@
+name: planetary-internal-render
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/planetary-actuator'
+    paths:
+      - 'src/mechanism_lab/models/planetary_actuator.py'
+      - '.github/workflows/planetary-internal-render.yml'
+
+concurrency:
+  group: planetary-internal-render-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install native and EGL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Verify exposed views still use the validated mechanism
+        run: |
+          python - <<'PY'
+          from mechanism_lab.registry import load
+          a = load('planetary_actuator', rebuild=True)
+          assert len(a.parts) == 60
+          assert a.metadata['design']['sun_teeth'] == 18
+          assert a.metadata['design']['planet_teeth'] == 27
+          assert a.metadata['design']['ring_teeth'] == 72
+          assert 'carrier' in a.views['gearset_hero'].hide
+          assert 'output' in a.views['gearset_hero'].hide
+          assert 'planets' not in a.views['gearset_hero'].hide
+          assert 'ring' not in a.views['gearset_hero'].hide
+          assert 'sun' not in a.views['gearset_hero'].hide
+          assert 'carrier' in a.views['kinematics'].hide
+          print('exposed-view contract OK')
+          PY
+          mkdir -p artifacts
+          lab --root "$GITHUB_WORKSPACE" validate planetary_actuator --out artifacts/planetary_validation.json
+      - name: Photoreal exposed gearset hero
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer photoreal --view gearset_hero --size 1600x1000 --spp 256 --depth 14 --threads 4 --intent concept --out artifacts/planetary_gearset_hero_photoreal.png
+      - name: Photoreal involute mesh macro
+        run: |
+          lab --root "$GITHUB_WORKSPACE" render planetary_actuator --renderer photoreal --view gear_macro --size 1280x800 --spp 192 --depth 14 --threads 4 --intent concept --out artifacts/planetary_gear_macro_photoreal.png
+      - name: Photoreal working-gear proof film
+        run: |
+          lab --root "$GITHUB_WORKSPACE" film planetary_actuator --view kinematics --action motion --seconds 1.5 --size 960x540 --fps 24 --spp 48 --depth 12 --threads 4 --shutter-angle 180 --shutter-samples 3 --intent concept --out artifacts/planetary_gearset_motion_photoreal.mp4
+          lab --root "$GITHUB_WORKSPACE" gif artifacts/planetary_gearset_motion_photoreal.mp4 --out artifacts/planetary_gearset_motion_photoreal.gif --width 640 --fps 12 --seconds 1.5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: planetary-gearset-photoreal
+          path: artifacts/
+          if-no-files-found: error
