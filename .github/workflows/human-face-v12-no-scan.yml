@@ -48,7 +48,7 @@ jobs:
           sys.path[:0]=['src','examples']
           spec=importlib.util.spec_from_file_location('face','examples/procedural_human_face.py')
           m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m)
-          a=m.build(m.FaceParameters(eyelid_closure=.10),quality='preview',hair=False)
+          a=m.build(m.FaceParameters(eyelid_closure=.18),quality='preview',hair=False)
           assert a.metadata['scan_used'] is False
           assert a.metadata['imported_anatomy_mesh'] is False
           assert a.metadata['photographic_skin_textures'] is False
@@ -72,8 +72,8 @@ jobs:
           python tools/render_human_face.py --out build/faces_v12/b --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
             --texture-size 1024 --exposure 1.30 --eyelid-closure .21 \
-            --seed 314159 --eye-spacing 61.0 --eye-height 31.0 --eye-width 26.4 \
-            --eye-opening 8.2 --eye-tilt .40 --nose-projection 15.9 --nose-width .98 \
+            --seed 314159 --eye-spacing 60.7 --eye-height 31.0 --eye-width 22.4 \
+            --eye-opening 5.7 --eye-tilt .30 --nose-projection 19.2 --nose-width .96 \
             --mouth-width 51.2 --upper-lip-fullness 1.08 --lower-lip-fullness 1.06 \
             --jaw-width .94 --skull-width .985 --cheek-width 1.035 --chin-width .91 \
             --brow-weight .88 --skip-export
@@ -82,8 +82,8 @@ jobs:
           python tools/render_human_face.py --out build/faces_v12/c --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
             --texture-size 1024 --exposure 1.30 --eyelid-closure .15 \
-            --seed 161803 --eye-spacing 63.8 --eye-height 29.3 --eye-width 27.8 \
-            --eye-opening 8.5 --eye-tilt .82 --nose-projection 18.9 --nose-width 1.13 \
+            --seed 161803 --eye-spacing 63.1 --eye-height 29.4 --eye-width 23.5 \
+            --eye-opening 6.1 --eye-tilt .60 --nose-projection 23.4 --nose-width 1.10 \
             --mouth-width 54.0 --upper-lip-fullness .91 --lower-lip-fullness .95 \
             --jaw-width 1.08 --skull-width 1.025 --cheek-width 1.055 --chin-width 1.02 \
             --brow-weight 1.12 --skip-export
@@ -91,9 +91,10 @@ jobs:
         run: |
           python tools/render_human_face.py --out build/faces_v12/clay --view portrait \
             --size 480x600 --spp 48 --depth 12 --threads 4 --quality preview \
-            --texture-size 512 --exposure 1.15 --eyelid-closure .10 \
+            --texture-size 512 --exposure 1.15 --eyelid-closure .18 \
             --seed 271828 --clay --skip-export
       - name: Publish v12 no-scan renders
+        continue-on-error: true
         run: |
           mkdir -p media/human_face_v12_no_scan
           cp build/faces_v12/a/CYBR_Procedural_Face_portrait.png media/human_face_v12_no_scan/identity_a.png
@@ -107,9 +108,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add media/human_face_v12_no_scan
-          git commit -m "Add v12 original procedural face renders [skip ci]"
-          git push
+          git commit -m "Add v12 original procedural face renders [skip ci]" || true
+          git fetch origin "$GITHUB_REF_NAME"
+          git rebase "origin/$GITHUB_REF_NAME"
+          git push origin HEAD:"$GITHUB_REF_NAME"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: cybr-geo-human-faces-v12-no-scan
           path: |
