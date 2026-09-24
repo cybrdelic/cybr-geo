@@ -35,7 +35,7 @@ def skin_maps(out,anatomy,size=4096):
     macro=soft_noise(rng,size,28)
     meso=soft_noise(rng,size,180)
     fine=soft_noise(rng,size,720)
-    pigment=.016*macro+.0075*meso+.0028*fine
+    pigment=.012*macro+.0055*meso+.0018*fine
     # Chromophore-inspired artistic color mixing, not a measured spectral model.
     color=np.empty((size,size,3),np.float32)
     for c,value in enumerate([.355,.203,.131]):
@@ -58,17 +58,17 @@ def skin_maps(out,anatomy,size=4096):
     # Sparse neutral follicle pigmentation complements actual modeled stubble.
     beard=np.exp(-((z+59)/30)**4)*front*(1-lips)
     color[...,0]-=.009*beard;color[...,1]-=.004*beard
-    rough=.455+.022*meso+.016*fine
+    rough=.46+.016*meso+.009*fine
     oil=(gaussian(x,z,0,-8,15,23)+.5*gaussian(x,z,0,66,44,20))*front
     rough-=.060*oil;rough=rough*(1-lips)+(.425+.016*meso)*lips
     # Skin furrows and isolated pore dimples in a calibrated 0.06 mm range.
-    impulses=(rng.random((size,size),dtype=np.float32)<.017).astype(np.float32)
+    impulses=(rng.random((size,size),dtype=np.float32)<.012).astype(np.float32)
     impulses*=rng.uniform(.5,1.5,(size,size)).astype(np.float32)
     inner=gaussian_filter(impulses,.72,mode='wrap')*3.4
     rim=gaussian_filter(impulses,1.45,mode='wrap')*2.4
     pores=-.020*inner+.005*rim
     region=.6+.5*gaussian(abs(x),z,38,1,22,25)*front+.25*oil
-    height=pores*region+.0025*fine+.0014*meso
+    height=pores*region+.0017*fine+.0009*meso
     # Vermilion microfolds run across the lips' vertical extent, interrupting
     # at independent phases rather than a single periodic corrugation.
     lipfold=(np.sin(x*3.2+.6*meso)+.35*np.sin(x*6.4+.3*fine))
@@ -107,7 +107,7 @@ def eye_maps(out,seed,size=1024):
     iris*= (1-.77*np.exp(-((r-.978)/.06)**2))[...,None]
     iris[r>1]=[.009,.014,.006]
     save_rgb(out/'iris_color.png',np.clip(iris,.002,1))
-    sclera=np.empty_like(iris);sclera[:]=[.56,.565,.525]
+    sclera=np.empty_like(iris);sclera[:]=[.68,.645,.59]
     n=soft_noise(rng,size,30)
     sclera+=n[...,None]*np.array([.009,.008,.006])
     # Curved, branching small vessels concentrated toward the canthi.
