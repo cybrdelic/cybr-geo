@@ -63,8 +63,8 @@ class Anatomy:
         self.p=p
         z=np.array([-180,-166,-145,-125,-103,-89,-80,-73,-62,-49,-30,
                     -10,15,40,65,90,115,133,141,144.])
-        rx=np.array([171,140,83,49,43,41,42,47,57,63,68,72,75,76,75,
-                     72,61,40,18,0.])
+        rx=np.array([171,140,83,49,43,42,44,50,61,68,72,73,74,75,74,
+                     70,59,39,18,0.])
         front=np.array([-50,-44,-28,-18,-21,-33,-50,-63,-65,-66,-66,
                         -65,-66,-64,-63,-58,-41,-18,4,17.])
         back=np.array([85,85,68,59,52,51,52,55,61,71,84,93,95,95,92,
@@ -83,7 +83,9 @@ class Anatomy:
         skull=1+(self.p.skull_width-1)*smoothstep(-15,70,z)
         cheek=1+(self.p.cheek_width-1)*np.exp(-((z-2)/31)**2)
         chin=1+(self.p.chin_width-1)*np.exp(-((z+76)/16)**2)
-        return rx*jaw*skull*cheek*chin,front,back
+        temple=.972 + .028*(1-np.exp(-((z-48)/23)**2))
+        mandible=1+.025*np.exp(-((z+52)/18)**2)
+        return rx*jaw*skull*cheek*chin*temple*mandible,front,back
 
     def mouth(self,x):
         a=self.p.mouth_width/2
@@ -160,8 +162,13 @@ class Anatomy:
         t=np.clip(t,0,1)
         upper_mask=(z>=line)
         fullness=np.where(upper_mask,self.p.upper_lip_fullness,self.p.lower_lip_fullness)
-        lip=fullness*(1-t**1.55)*(2.45+3.55*np.sin(np.pi*t))
-        d-=lip*inside*((z>=line-lower)&(z<=line+upper))
+        lip=fullness*(1-t**1.55)*(2.35+3.35*np.sin(np.pi*t))
+        lip_region=inside*((z>=line-lower)&(z<=line+upper))
+        d-=lip*lip_region
+        # A neutral closed mouth is a crease in continuous skin, not a literal
+        # black cut through the head mesh.
+        crease=np.exp(-((z-line)/.34)**2)*np.maximum(1-(x/(self.p.mouth_width*.49))**6,0)
+        d+=1.05*crease
         for s in (-1,1):
             d+=1.15*gaussian(x,z,s*(self.p.mouth_width*.485),-39.2,2.5,3.0)
             d+=.28*gaussian(x,z,s*(self.p.mouth_width*.53),-41.2,3.6,5.2)
@@ -286,10 +293,9 @@ def head_mesh(a,quality):
         nx=side*(9.5*a.p.nose_width)+.25;nz=-16.0
         du=x-nx;dz=z-nz
         ur=du+side*.42*dz;vr=dz-side*.10*du
-        remove|=((ur/2.75)**2+(vr/1.03)**2<1)&(y<-66)
-    line,up,lo=a.mouth(x)
-    gap=.43*np.maximum(1-(x/24.8)**2,0)**.6
-    remove|=(np.abs(x)<24.8)&(np.abs(z-line)<gap)&(y<0)
+        remove|=((ur/2.48)**2+(vr/.82)**2<1)&(y<-66)
+    # Closed lips remain continuous geometry. Mouth depth is represented by
+    # the analytic crease in Anatomy.deformation(), not by deleted triangles.
     f=f[~remove]
     p=surface_part('Sculpted_head_neck_and_shoulders',v,f,uv=uv,
                    role='Continuous authored skull, jaw, cheeks, nose, lips, neck and shoulders')
@@ -370,39 +376,41 @@ def tube_collection(name,curves,radii,material,a=None,sides=5):
 
 
 def eyelid_bridge(a,side):
-    """Skin-thickness strips that connect the facial aperture to the ocular surface.
+    """Finite eyelid thickness wrapping from facial skin to the eyeball.
 
-    v10/v12-prebridge left a literal geometric gap between the cut head mesh and
-    the eyeball, which read as a black graphic outline. These strips are generated
-    analytically from the same eye-opening curves and sphere dimensions.
+    The strip follows the actual spherical ocular surface all the way inward.
+    Multiple rows avoid the v10/v12 black canthus cavity caused by a short,
+    nearly-flat bridge that stopped before reaching the eye.
     """
     c=a.eye(side)
-    q=np.linspace(-.995,.995,161)
+    q=np.linspace(-.992,.992,181)
     x=c[0]+side*q*(a.p.eye_width/2)
     _,upper,lower=a.eye_opening(x,side)
-    strips=[]
+    parts=[]
     for name,z in [('upper',upper),('lower',lower)]:
-        outer_y=a.front(x,z)-.025
+        outer_y=a.front(x,z)-.018
         dx=x-c[0];dz=z-c[2]
         sphere=np.maximum(1-(dx/12.45)**2-(dz/11.85)**2,0)
         ocular_y=c[1]-11.82*np.sqrt(sphere)
-        # Inner lip sits just in front of the sclera/cornea and slightly toward
-        # the aperture center, giving finite lid thickness without covering iris.
-        toward=np.where(name=='upper',-.18,.18)
-        inner_z=z+toward
-        inner_y=np.minimum(outer_y+.85,ocular_y-.035)
-        v=np.stack([
-            np.column_stack([x,outer_y,z]),
-            np.column_stack([x,inner_y,inner_z])
-        ],axis=0).reshape(-1,3)
-        f=grid_faces(2,len(q),reverse=(name=='lower'))
-        uv=a.uv(v)
-        strips.append(surface_part(
+        # Inner lid approaches the ocular surface. The slight vertical inset
+        # creates a real posterior lid edge rather than coplanar surfaces.
+        inset_z=z+(-.20 if name=='upper' else .20)
+        rows=7
+        t=np.linspace(0,1,rows)[:,None]
+        ease=t*t*(3-2*t)
+        xx=np.broadcast_to(x,(rows,len(x)))
+        zz=z[None,:]*(1-ease)+inset_z[None,:]*ease
+        yy=outer_y[None,:]*(1-ease)+(ocular_y[None,:]-.045)*ease
+        # Near the canthi, taper thickness smoothly into the facial attachment.
+        canthus=np.maximum(1-q*q,0)[None,:]**.35
+        yy=outer_y[None,:]+(yy-outer_y[None,:])*canthus
+        v=np.stack([xx,yy,zz],-1).reshape(-1,3)
+        f=grid_faces(rows,len(q),reverse=(name=='lower'))
+        parts.append(surface_part(
             ('Left' if side<0 else 'Right')+f'_eyelid_{name}_thickness',
-            v,f,SKIN,uv,
-            role='Procedural eyelid thickness bridging facial skin to ocular surface'))
-    return strips
-
+            v,f,SKIN,a.uv(v),
+            role='Procedural eyelid thickness continuously wrapping to ocular surface'))
+    return parts
 
 def eyelids(a,side):
     """Continuous upper/lower moist margins following the analytic eye opening."""
@@ -420,15 +428,34 @@ def eyelids(a,side):
     return wet,margin
 
 
+def nostril_rim(a,side):
+    """Analytic alar rim surrounding the recessed nostril slit."""
+    cx=side*(9.5*a.p.nose_width)+.25;cz=-16.
+    theta=np.linspace(0,2*np.pi,161)
+    # Outer and inner rotated ellipses form a thin skin annulus.
+    rings=[]
+    for scale,depth in [(1.07,-.02),(.80,.72)]:
+        ur=2.75*scale*np.cos(theta);vr=1.03*scale*np.sin(theta)
+        du=ur-side*.42*vr;dz=vr+side*.10*ur
+        x=cx+du;z=cz+dz
+        y=a.front(x,z)+depth
+        rings.append(np.column_stack([x,y,z]))
+    v=np.stack(rings,axis=0).reshape(-1,3)
+    return surface_part(
+        ('Left' if side<0 else 'Right')+'_nostril_alar_rim',
+        v,grid_faces(2,len(theta)),SKIN,a.uv(v),
+        role='Procedural alar rim around recessed nostril opening')
+
+
 def nasal_cavity(a,side):
     """Recessed rotated slit matching the alar opening, not a circular black disk."""
     cx=side*(9.5*a.p.nose_width)+.25;cz=-16.
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=2.9*r*np.cos(theta);vr=1.12*r*np.sin(theta)
+    ur=2.62*r*np.cos(theta);vr=.92*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
-    y=a.front(x,z)+4.2+2.5*(1-r*r)
+    y=a.front(x,z)+2.7+2.0*(1-r*r)
     vertices=np.stack([x,y,z],-1).reshape(-1,3)
     return surface_part(('Left' if side<0 else 'Right')+'_nasal_vestibule',
                         vertices,grid_faces(24,129,reverse=True),CAVITY,a.uv(vertices))
@@ -529,7 +556,7 @@ def build(parameters=None,quality='final',hair=True):
     parts=head_mesh(a,quality)+[mouth_interior(a)]
     for side in (-1,1):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
-        parts.append(nasal_cavity(a,side));parts.append(ear(a,side))
+        parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
         parts.extend(eyelid_bridge(a,side));parts.append(wet)
         parts.append(ellipsoid(prefix+'_sclera',c,[12.45,11.85,11.85],SCLERA,iris_cut=True))
@@ -549,9 +576,9 @@ def build(parameters=None,quality='final',hair=True):
     if hair:parts.append(stubble(a,rng,quality))
     materials=[Material('Procedural skin',(.37,.215,.145),rough=.45,ior=1.4,
                         material_source='Seeded mathematical pigment and pore fields'),
-               Material('Moist eyelid margin',(.35,.13,.095),rough=.26),
+               Material('Moist eyelid margin',(.43,.22,.17),rough=.31),
                Material('Recessed oral and nasal mucosa',(.075,.022,.018),rough=.48),
-               Material('Procedural sclera',(.63,.65,.59),rough=.28),
+               Material('Procedural sclera',(.69,.675,.61),rough=.34),
                Material('Procedural hazel iris',(.12,.095,.033),rough=.4),
                Material('Pupil interior',(.001,.001,.001),rough=.7),
                Material('Ocular clear surface',(.97,.99,1.),rough=.018,ior=1.376,opacity=.03),
