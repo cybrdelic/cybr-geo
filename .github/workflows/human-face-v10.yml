@@ -11,6 +11,7 @@ on:
       - 'tools/procedural_face_materials.py'
       - 'tools/render_procedural_face.py'
       - 'tools/render_human_face.py'
+      - 'tools/orbit_mitsuba_photo.py'
       - 'tests/test_procedural_human_face.py'
       - '.github/workflows/human-face-v10.yml'
 
