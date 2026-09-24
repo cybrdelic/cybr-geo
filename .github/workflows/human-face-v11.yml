@@ -1,0 +1,97 @@
+name: Photoreal morphable human faces v11
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/photoreal-human-faces-v11'
+    paths:
+      - 'assets/portrait/sources.json'
+      - 'examples/reference_scan_face.py'
+      - 'examples/morphable_human_face.py'
+      - 'tools/fetch_portrait_assets.py'
+      - 'tools/render_reference_scan_face.py'
+      - 'tools/render_morphable_face.py'
+      - 'tools/orbit_mitsuba_photo.py'
+      - 'tests/test_reference_scan_face.py'
+      - 'tests/test_morphable_human_face.py'
+      - '.github/workflows/human-face-v11.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: human-face-v11-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install focused portrait dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 trimesh==4.11.1 mitsuba==3.7.1 pytest==9.0.2 setuptools==82.0.1
+          python -m pip install --no-deps -e .
+      - name: Fetch and verify attributed portrait assets
+        run: python tools/fetch_portrait_assets.py
+      - name: Verify reference and morph geometry
+        run: |
+          PYTHONPATH=src python -m pytest -q tests/test_reference_scan_face.py tests/test_morphable_human_face.py
+      - name: Provision pinned OIDN
+        run: |
+          python - <<'PY'
+          from mechanism_lab.v9 import ensure_oidn
+          print(ensure_oidn())
+          PY
+      - name: Render canonical topology
+        run: |
+          python tools/render_morphable_face.py --out build/faces_v11/a --view portrait \
+            --size 640x800 --spp 96 --batch-spp 32 --depth 14 --threads 4 \
+            --exposure 1.05 --skip-export
+      - name: Render morph B
+        run: |
+          python tools/render_morphable_face.py --out build/faces_v11/b --view portrait \
+            --size 640x800 --spp 96 --batch-spp 32 --depth 14 --threads 4 \
+            --exposure 1.05 --skip-export \
+            --skull-width -0.045 --temple-width -0.025 --cheek-width -0.06 \
+            --jaw-width -0.09 --lower-face-length -0.035 --face-length -0.018 \
+            --nose-width -0.07 --nose-projection-mm -2.2 --mouth-width -0.035 \
+            --chin-projection-mm -1.4 --brow-projection-mm -0.5 --asymmetry -0.32
+      - name: Render morph C
+        run: |
+          python tools/render_morphable_face.py --out build/faces_v11/c --view portrait \
+            --size 640x800 --spp 96 --batch-spp 32 --depth 14 --threads 4 \
+            --exposure 1.05 --skip-export \
+            --skull-width 0.055 --temple-width 0.035 --cheek-width 0.075 \
+            --jaw-width 0.11 --lower-face-length 0.042 --face-length 0.015 \
+            --nose-width 0.075 --nose-projection-mm 3.2 --mouth-width 0.045 \
+            --chin-projection-mm 2.2 --brow-projection-mm 0.8 --asymmetry 0.28
+      - name: Publish verified v11 renders
+        run: |
+          mkdir -p media/human_face_v11
+          cp build/faces_v11/a/CYBR_Morphable_Face_portrait.png media/human_face_v11/canonical.png
+          cp build/faces_v11/b/CYBR_Morphable_Face_portrait.png media/human_face_v11/morph_b.png
+          cp build/faces_v11/c/CYBR_Morphable_Face_portrait.png media/human_face_v11/morph_c.png
+          cp build/faces_v11/a/CYBR_Morphable_Face_portrait.json media/human_face_v11/canonical.json
+          cp build/faces_v11/b/CYBR_Morphable_Face_portrait.json media/human_face_v11/morph_b.json
+          cp build/faces_v11/c/CYBR_Morphable_Face_portrait.json media/human_face_v11/morph_c.json
+          cp assets/portrait/LeePerrySmith_License.txt media/human_face_v11/LeePerrySmith_License.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/human_face_v11
+          git commit -m "Add v11 morphable human face renders [skip ci]"
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-geo-human-faces-v11
+          path: |
+            media/human_face_v11/
+          if-no-files-found: error
+          retention-days: 30
