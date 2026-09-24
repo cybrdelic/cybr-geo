@@ -1,0 +1,80 @@
+name: Photoreal procedural human faces v10
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/photoreal-human-faces-v10'
+    paths:
+      - 'examples/procedural_human_face.py'
+      - 'examples/human_face.py'
+      - 'tools/procedural_face_materials.py'
+      - 'tools/render_procedural_face.py'
+      - 'tools/render_human_face.py'
+      - 'tests/test_procedural_human_face.py'
+      - '.github/workflows/human-face-v10.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: human-face-v10-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++ libcairo2
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps -e .
+      - name: Verify face geometry
+        run: |
+          PYTHONPATH=src python -m pytest -q tests/test_procedural_human_face.py -k "not blink"
+      - name: Provision pinned OIDN
+        run: |
+          python - <<'PY'
+          from mechanism_lab.v9 import ensure_oidn
+          print(ensure_oidn())
+          PY
+      - name: Render identity A
+        run: |
+          python tools/render_human_face.py --out build/faces/a --view portrait             --size 640x800 --spp 96 --depth 12 --threads 4 --quality preview             --texture-size 1024 --exposure 1.35 --eyelid-closure 0             --seed 271828 --eye-spacing 61 --eye-height 30 --nose-projection 18.5             --mouth-width 51 --jaw-width 1.0 --skull-width 1.0 --brow-weight 1.0             --skip-export
+      - name: Render identity B
+        run: |
+          python tools/render_human_face.py --out build/faces/b --view portrait             --size 640x800 --spp 96 --depth 12 --threads 4 --quality preview             --texture-size 1024 --exposure 1.35 --eyelid-closure 0             --seed 314159 --eye-spacing 58.5 --eye-height 31.5 --nose-projection 16.8             --mouth-width 47.0 --jaw-width 0.90 --skull-width 0.97 --brow-weight 0.84             --skip-export
+      - name: Render identity C
+        run: |
+          python tools/render_human_face.py --out build/faces/c --view portrait             --size 640x800 --spp 96 --depth 12 --threads 4 --quality preview             --texture-size 1024 --exposure 1.35 --eyelid-closure 0             --seed 161803 --eye-spacing 64.0 --eye-height 29.0 --nose-projection 20.5             --mouth-width 54.0 --jaw-width 1.09 --skull-width 1.04 --brow-weight 1.18             --skip-export
+      - name: Publish rendered previews to branch
+        run: |
+          mkdir -p media/human_face_v10
+          cp build/faces/a/CYBR_Procedural_Face_portrait.png media/human_face_v10/identity_a.png
+          cp build/faces/b/CYBR_Procedural_Face_portrait.png media/human_face_v10/identity_b.png
+          cp build/faces/c/CYBR_Procedural_Face_portrait.png media/human_face_v10/identity_c.png
+          cp build/faces/a/CYBR_Procedural_Face_portrait.json media/human_face_v10/identity_a.json
+          cp build/faces/b/CYBR_Procedural_Face_portrait.json media/human_face_v10/identity_b.json
+          cp build/faces/c/CYBR_Procedural_Face_portrait.json media/human_face_v10/identity_c.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/human_face_v10
+          git commit -m "Add v10 procedural face renders [skip ci]"
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-geo-human-faces-v10
+          path: |
+            media/human_face_v10/
+            build/faces/*/texture_provenance.json
+          if-no-files-found: error
+          retention-days: 30
