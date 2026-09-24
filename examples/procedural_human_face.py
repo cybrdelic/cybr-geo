@@ -359,6 +359,16 @@ def tube_collection(name,curves,radii,material,a=None,sides=5):
     return surface_part(name,v,np.concatenate(fs),material,a.uv(v) if a else None)
 
 
+def ocular_front_y(a,side,x,z):
+    """Front Y of the actual procedural corneal/tear surface."""
+    ec=a.eye(side)
+    dx=np.asarray(x)-ec[0];dz=np.asarray(z)-ec[2]
+    sph=np.maximum(1-(dx/14.25)**2-(dz/12.38)**2,0)
+    y=ec[1]-12.48*np.sqrt(sph)
+    bulge=.72*np.exp(-((dx*dx+dz*dz)/(5.7**2))**2)
+    return y-bulge
+
+
 def eyelid_patch(a,side):
     """Upper/lower organic lid surfaces replacing the generic orbital head mesh.
 
@@ -389,9 +399,7 @@ def eyelid_patch(a,side):
         ('lower',inner_lower,outer_lower,.42),
     ]:
         outer_y=a.base_front(outer_x,outer_z)
-        dx=inner_x-ec[0];dz=inner_z-ec[2]
-        sph=np.maximum(1-(dx/14.15)**2-(dz/12.25)**2,0)
-        inner_y=ec[1]-12.22*np.sqrt(sph)-.035
+        inner_y=ocular_front_y(a,side,inner_x,inner_z)-.075
 
         rows=11
         t=np.linspace(0,1,rows)[:,None]
@@ -473,11 +481,9 @@ def closed_blink_seal(a,side):
     s=np.linspace(-1,1,rows)[:,None]
     xx=np.broadcast_to(x,(rows,len(x)))
     zz=center[None,:]+s*half[None,:]
-    dx=xx-ec[0];dz=zz-ec[2]
-    sph=np.maximum(1-(dx/14.15)**2-(dz/12.25)**2,0)
-    ocular_y=ec[1]-12.22*np.sqrt(sph)
-    # A shallow convex lid skin sheet in front of the ocular surface.
-    yy=ocular_y-.56-.14*shape[None,:]*(1-s*s)
+    cornea_y=ocular_front_y(a,side,xx,zz)
+    # A shallow convex lid skin sheet in front of the actual cornea.
+    yy=cornea_y-.34-.12*shape[None,:]*(1-s*s)
     v=np.stack([xx,yy,zz],-1).reshape(-1,3)
     return surface_part(
         ('Left' if side<0 else 'Right')+'_closed_eyelid_seal',
@@ -490,12 +496,8 @@ def eyelids(a,side):
     q=np.linspace(-.995,.995,129)
     x=c[0]+side*q*(a.p.eye_width/2)
     _,upper,lower=a.eye_opening(x,side)
-    def ocular_y(xx,zz):
-        dx=xx-c[0];dz=zz-c[2]
-        sph=np.maximum(1-(dx/14.15)**2-(dz/12.25)**2,0)
-        return c[1]-12.22*np.sqrt(sph)-.055
-    upper_curve=np.column_stack([x,ocular_y(x,upper),upper])
-    lower_curve=np.column_stack([x[::-1],ocular_y(x[::-1],lower[::-1]),lower[::-1]])
+    upper_curve=np.column_stack([x,ocular_front_y(a,side,x,upper)-.085,upper])
+    lower_curve=np.column_stack([x[::-1],ocular_front_y(a,side,x[::-1],lower[::-1])-.075,lower[::-1]])
     margin=np.concatenate([upper_curve,lower_curve[1:]],axis=0)
     name=('Left' if side<0 else 'Right')+'_eyelids'
     wet=tube_collection(name+'_wet_margin',[upper_curve,lower_curve],
