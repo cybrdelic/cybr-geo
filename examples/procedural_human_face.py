@@ -16,15 +16,23 @@ from mechanism_lab.core import Assembly, Material, Part, View
 @dataclass(frozen=True)
 class FaceParameters:
     seed: int = 271828
-    eye_spacing: float = 61.0
+    eye_spacing: float = 62.0
     eye_height: float = 30.0
+    eye_width: float = 23.6
+    eye_opening: float = 7.4
+    eye_tilt: float = 0.85
     nose_projection: float = 18.5
-    mouth_width: float = 51.0
-    jaw_width: float = 1.0
+    nose_width: float = 1.0
+    mouth_width: float = 53.0
+    upper_lip_fullness: float = 1.0
+    lower_lip_fullness: float = 1.0
+    jaw_width: float = 1.04
     skull_width: float = 1.0
+    cheek_width: float = 1.0
+    chin_width: float = 1.0
     brow_weight: float = 1.0
     skin_relief: float = .0025
-    eyelid_closure: float = 1.0
+    eyelid_closure: float = 0.10
 
 
 ZMIN, ZMAX = -180., 144.
@@ -55,12 +63,12 @@ class Anatomy:
         self.p=p
         z=np.array([-180,-166,-145,-125,-103,-89,-80,-73,-62,-49,-30,
                     -10,15,40,65,90,115,133,141,144.])
-        rx=np.array([171,140,81,46,39,38,39,41,51,58,64,69,73,74,73,
-                     71,60,39,18,0.])
-        front=np.array([-50,-44,-28,-18,-20,-30,-47,-61,-64,-65,-65,
-                        -64,-65,-63,-62,-57,-40,-18,4,17.])
-        back=np.array([85,85,67,58,51,50,51,54,60,70,83,92,94,94,91,
-                       82,66,48,32,17.])
+        rx=np.array([171,140,83,49,43,41,42,47,57,63,68,72,75,76,75,
+                     72,61,40,18,0.])
+        front=np.array([-50,-44,-28,-18,-21,-33,-50,-63,-65,-66,-66,
+                        -65,-66,-64,-63,-58,-41,-18,4,17.])
+        back=np.array([85,85,68,59,52,51,52,55,61,71,84,93,95,95,92,
+                       83,67,49,32,17.])
         # Smooth the interpolated profiles themselves; isolated control points
         # must not leave rings or discontinuous curvature across the sculpture.
         zz=np.linspace(ZMIN,ZMAX,4097)
@@ -71,31 +79,40 @@ class Anatomy:
 
     def section(self,z):
         rx,front,back=[f(np.clip(z,ZMIN,ZMAX)) for f in self.profile]
-        jaw=1+(self.p.jaw_width-1)*np.exp(-((z+55)/35)**2)
+        jaw=1+(self.p.jaw_width-1)*np.exp(-((z+55)/34)**2)
         skull=1+(self.p.skull_width-1)*smoothstep(-15,70,z)
-        return rx*jaw*skull,front,back
+        cheek=1+(self.p.cheek_width-1)*np.exp(-((z-2)/31)**2)
+        chin=1+(self.p.chin_width-1)*np.exp(-((z+76)/16)**2)
+        return rx*jaw*skull*cheek*chin,front,back
 
     def mouth(self,x):
         a=self.p.mouth_width/2
         q=np.clip(np.abs(x)/a,0,1)
-        line=-42.-.65*np.exp(-(x/5.0)**2)+1.05*q*q
+        line=-39.2-.9*np.exp(-(x/5.4)**2)+.85*q*q
         span=np.maximum(1-q*q,0)
-        upper=(3.8+2.15*np.exp(-((np.abs(x)-6.)/4.1)**2)
-               -.55*np.exp(-(x/2.2)**2))*span**.68
-        lower=6.25*span**.76
+        upper=self.p.upper_lip_fullness*(4.35+2.35*np.exp(-((np.abs(x)-6.2)/4.4)**2)
+               -.82*np.exp(-(x/2.4)**2))*span**.70
+        lower=self.p.lower_lip_fullness*6.85*span**.78
         return line,upper,lower
 
     def eye(self,side):
-        return np.array([side*self.p.eye_spacing/2,-46.8,
-                         self.p.eye_height+(.22 if side<0 else -.12)])
+        return np.array([side*self.p.eye_spacing/2,-47.6,
+                         self.p.eye_height+(.16 if side<0 else -.10)])
 
     def eye_opening(self,x,side):
         c=self.eye(side)
-        q=(x-c[0])*side/13.7
+        half=self.p.eye_width/2
+        q=(x-c[0])*side/half
         shape=np.maximum(1-q*q,0)
         closure=self.p.eyelid_closure
-        center=c[2]+1.15*q-closure*3.1*shape
-        return q,center+(1-closure)*4.5*shape**.7,center-(1-closure)*4.05*shape**.76
+        tilt=self.p.eye_tilt*q
+        center=c[2]+tilt-.35*shape
+        opening=self.p.eye_opening*(1-closure)
+        upper=center+.54*opening*shape**.72
+        lower=center-.46*opening*shape**.78
+        # The medial and lateral canthi close before the sphere ends, eliminating
+        # the black corner wedges present in v10.
+        return q,upper,lower
 
     def deformation(self,x,z):
         """Front-facing displacement in Y; negative displacement projects out."""
@@ -118,10 +135,14 @@ class Anatomy:
         # Nasal bridge, dorsum, tip lobule, alar cartilage and columella.
         d-=9.4*gaussian(x,z,.3,14,7.0,17)
         d-=4.0*gaussian(x,z,.4,4,8.8,13)
-        d-=self.p.nose_projection*gaussian(x,z,.45,-5.7,7.35,7.2)
+        d-=self.p.nose_projection*gaussian(x,z,.35,-5.8,7.4,7.6)
         for s in (-1,1):
-            d-=9.3*gaussian(x,z,s*10.9,-13.0,4.9,5.3)
-            d+=1.6*gaussian(x,z,s*15.5,-15,2.0,5.1)
+            alar_x=s*(10.3*self.p.nose_width)
+            d-=8.6*gaussian(x,z,alar_x,-12.8,5.1,5.7)
+            # Alar-facial groove and lateral bank make the nostril read as a slit
+            # underneath real volume instead of a punched black circle.
+            d+=1.15*gaussian(x,z,s*(15.1*self.p.nose_width),-13.6,2.2,5.0)
+            d-=1.45*gaussian(x,z,s*(13.4*self.p.nose_width),-10.4,2.4,3.0)
         d-=6.5*gaussian(x,z,.45,-17.3,3.0,3.4)
         d+=2.0*gaussian(x,z,0,-21.7,5.8,2.5)
         # Orbicularis/muzzle, philtrum pillars, chin and mental crease.
@@ -137,7 +158,9 @@ class Anatomy:
         t=np.where(z>=line,(z-line)/np.maximum(upper,.001),
                    (line-z)/np.maximum(lower,.001))
         t=np.clip(t,0,1)
-        lip=(1-t**1.5)*(2.6+3.8*np.sin(np.pi*t))
+        upper_mask=(z>=line)
+        fullness=np.where(upper_mask,self.p.upper_lip_fullness,self.p.lower_lip_fullness)
+        lip=fullness*(1-t**1.45)*(3.0+4.25*np.sin(np.pi*t))
         d-=lip*inside*((z>=line-lower)&(z<=line+upper))
         for s in (-1,1):
             d+=1.65*gaussian(x,z,s*25,-41.0,2.8,3.3)
@@ -178,19 +201,20 @@ class Anatomy:
         y=np.array(base,copy=True)
         for side in (-1,1):
             c=self.eye(side);lx=(x-c[0])*side;lz=z-c[2]
-            sphere=1-(lx/14.7)**2-(lz/12.4)**2
-            cap=c[1]-13.05*np.sqrt(np.maximum(sphere,0))
-            cap-=1.28*np.exp(-((lx*lx+lz*lz)/(5.5**2))**2)
-            target=np.where(sphere>0,smooth_minimum(base,cap-.30,5.),base)
-            ellipse=(lx/19.2)**2+((lz-1.35*lx/19.2)/np.where(lz>=0,10.8,9.4))**2
-            blend=1-smoothstep(.76,1.,ellipse)
+            sphere=1-(lx/12.55)**2-(lz/11.85)**2
+            cap=c[1]-11.92*np.sqrt(np.maximum(sphere,0))
+            cap-=1.05*np.exp(-((lx*lx+lz*lz)/(5.0**2))**2)
+            target=np.where(sphere>0,smooth_minimum(base,cap-.22,4.2),base)
+            ellipse=(lx/17.0)**2+((lz-.85*lx/17.0)/np.where(lz>=0,9.1,8.2))**2
+            blend=1-smoothstep(.72,1.,ellipse)
             y+=(target-base)*blend
-            q=np.clip(lx/13.7,-1,1)
-            seam=1.15*q-self.p.eyelid_closure*3.1*(1-q*q)
-            extent=np.maximum(1-q*q,0)**.7
-            y+=self.p.eyelid_closure*.12*np.exp(-((lz-seam)/.21)**2)*extent*blend
-            y+=.10*np.exp(-((lz-7.9-.5*q)/.38)**2)*extent*blend
-            y-=.15*np.exp(-((lz-seam+2.1)/1.4)**2)*extent*blend
+            q=np.clip(lx/(self.p.eye_width/2),-1,1)
+            shape=np.maximum(1-q*q,0)
+            _,upper,lower=self.eye_opening(x,side)
+            # Real upper/lower lid folds follow the palpebral opening rather
+            # than an arbitrary horizontal seam.
+            y+=.12*np.exp(-((z-upper-2.3)/.52)**2)*shape*blend
+            y-=.10*np.exp(-((z-lower+1.55)/.58)**2)*shape*blend
         return y
 
     def front(self,x,z):
@@ -253,8 +277,10 @@ def head_mesh(a,quality):
             q,upper,lower=a.eye_opening(x,side)
             remove|=(abs(q)<1)&(z<upper)&(z>lower)&(y<0)
         # Open apertures lead to separately modeled recessed nasal vestibules.
-        nx=side*9.7+.35;nz=-16.0
-        remove|=(((x-nx)/3.15)**2+((z-nz)/1.65)**2<1)&(y<-65)
+        nx=side*(9.5*a.p.nose_width)+.25;nz=-16.0
+        u=x-nx;v=z-nz
+        ur=u+side*.42*v;vr=v-side*.10*u
+        remove|=((ur/2.75)**2+(vr/1.03)**2<1)&(y<-66)
     line,up,lo=a.mouth(x)
     gap=.43*np.maximum(1-(x/24.8)**2,0)**.6
     remove|=(np.abs(x)<24.8)&(np.abs(z-line)<gap)&(y<0)
@@ -270,7 +296,7 @@ def head_mesh(a,quality):
     labels=np.zeros(len(p.faces),np.int8)
     for label,side in [(1,-1),(2,1)]:
         c=a.eye(side);lx=(center[:,0]-c[0])*side;lz=center[:,2]-c[2]
-        ellipse=(lx/19.2)**2+((lz-1.35*lx/19.2)/np.where(lz>=0,10.8,9.4))**2
+        ellipse=(lx/17.0)**2+((lz-.85*lx/17.0)/np.where(lz>=0,9.1,8.2))**2
         labels[(ellipse<1.05)&(center[:,1]<0)]=label
     parts=[]
     for label,name in enumerate(['Sculpted_head_neck_and_shoulders','Left_eyelids','Right_eyelids']):
@@ -338,31 +364,33 @@ def tube_collection(name,curves,radii,material,a=None,sides=5):
 
 
 def eyelids(a,side):
-    """The actual lids belong to the head mesh; add only their moist margin."""
-    c=a.eye(side);closure=a.p.eyelid_closure
-    theta=np.linspace(0,2*np.pi,257)
-    q=np.cos(theta);shape=np.maximum(1-q*q,0)
-    mx=13.7*q
-    mz=1.15*q-closure*3.1*shape+(1-closure)*np.where(np.sin(theta)>=0,
-            4.5*shape**.7,-4.05*shape**.76)
-    x=c[0]+side*mx;z=c[2]+mz
-    margin=np.column_stack([x,a.front(x,z)-.055,z])
+    """Continuous upper/lower moist margins following the analytic eye opening."""
+    c=a.eye(side)
+    q=np.linspace(-.995,.995,129)
+    x=c[0]+side*q*(a.p.eye_width/2)
+    _,upper,lower=a.eye_opening(x,side)
+    upper_curve=np.column_stack([x,a.front(x,upper)-.045,upper])
+    lower_curve=np.column_stack([x[::-1],a.front(x[::-1],lower[::-1])-.045,lower[::-1]])
+    margin=np.concatenate([upper_curve,lower_curve[1:]],axis=0)
     name=('Left' if side<0 else 'Right')+'_eyelids'
-    wet_curve=margin[:129] if closure==1 else margin
-    wet=tube_collection(name+'_wet_margin',[wet_curve],[.105],LID,a,6)
+    wet=tube_collection(name+'_wet_margin',[upper_curve,lower_curve],
+                        [np.full(len(upper_curve),.085),np.full(len(lower_curve),.070)],
+                        LID,a,6)
     return wet,margin
 
 
 def nasal_cavity(a,side):
-    cx=side*9.7+.35;cz=-16.
+    """Recessed rotated slit matching the alar opening, not a circular black disk."""
+    cx=side*(9.5*a.p.nose_width)+.25;cz=-16.
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    x=cx+3.26*r*np.cos(theta)
-    z=cz+1.77*r*np.sin(theta)
-    y=a.front(x,z)+6.5*(1-r*r)
-    v=np.stack([x,y,z],-1).reshape(-1,3)
+    ur=2.9*r*np.cos(theta);vr=1.12*r*np.sin(theta)
+    u=ur-side*.42*vr;v=vr+side*.10*ur
+    x=cx+u;z=cz+v
+    y=a.front(x,z)+4.2+2.5*(1-r*r)
+    vertices=np.stack([x,y,z],-1).reshape(-1,3)
     return surface_part(('Left' if side<0 else 'Right')+'_nasal_vestibule',
-                        v,grid_faces(24,129,reverse=True),CAVITY,a.uv(v))
+                        vertices,grid_faces(24,129,reverse=True),CAVITY,a.uv(vertices))
 
 
 def mouth_interior(a):
@@ -462,17 +490,17 @@ def build(parameters=None,quality='final',hair=True):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
         parts.append(nasal_cavity(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side);parts.append(wet)
-        parts.append(ellipsoid(prefix+'_sclera',c,[14.5,12.8,12.2],SCLERA,iris_cut=True))
+        parts.append(ellipsoid(prefix+'_sclera',c,[12.45,11.85,11.85],SCLERA,iris_cut=True))
         caruncle=c+np.array([-side*12.65,-6.9,-.85])
         parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[1.2,.85,.65],LID,nu=48,nv=32))
-        parts.append(disk(prefix+'_iris_stroma',c,5.72,IRIS,
-                          lambda r:-12.3+.035*r*r,rmin=1.9))
-        parts.append(disk(prefix+'_pupil',c,1.92,PUPIL,lambda r:np.full_like(r,-11.95),nr=12))
+        parts.append(disk(prefix+'_iris_stroma',c,5.65,IRIS,
+                          lambda r:-11.55+.030*r*r,rmin=1.75))
+        parts.append(disk(prefix+'_pupil',c,1.78,PUPIL,lambda r:np.full_like(r,-11.32),nr=12))
         # Clear ocular envelope over an independently recessed iris and pupil.
-        cornea=ellipsoid(prefix+'_ocular_tear_surface',c,[14.7,13.05,12.4],CORNEA)
+        cornea=ellipsoid(prefix+'_ocular_tear_surface',c,[12.65,12.02,12.05],CORNEA)
         v=cornea.vertices.copy();dx=v[:,0]-c[0];dz=v[:,2]-c[2]
         frontal=v[:,1]<c[1]
-        bulge=1.28*np.exp(-((dx*dx+dz*dz)/(5.5**2))**2)
+        bulge=.82*np.exp(-((dx*dx+dz*dz)/(5.4**2))**2)
         v[frontal,1]-=bulge[frontal]
         parts.append(surface_part(cornea.name,v,cornea.faces,CORNEA,cornea.portrait_uv))
         if hair:parts.append(eyebrow_and_lashes(a,side,margin,rng))
@@ -480,15 +508,15 @@ def build(parameters=None,quality='final',hair=True):
     materials=[Material('Procedural skin',(.37,.215,.145),rough=.45,ior=1.4,
                         material_source='Seeded mathematical pigment and pore fields'),
                Material('Moist eyelid margin',(.35,.13,.095),rough=.26),
-               Material('Recessed oral and nasal mucosa',(.042,.009,.007),rough=.58),
+               Material('Recessed oral and nasal mucosa',(.075,.022,.018),rough=.48),
                Material('Procedural sclera',(.63,.65,.59),rough=.28),
                Material('Procedural hazel iris',(.12,.095,.033),rough=.4),
                Material('Pupil interior',(.001,.001,.001),rough=.7),
                Material('Ocular clear surface',(.97,.99,1.),rough=.018,ior=1.376,opacity=.03),
                Material('Brown keratin fibers',(.026,.013,.007),rough=.52)]
     views={
-        'portrait':View(az=-77,el=1.3,target=(0,-12,-10),scale=167,focal_length_mm=85,f_stop=16,floor=False),
-        'front':View(az=-90,el=.4,target=(0,-12,-9),scale=163,focal_length_mm=85,f_stop=16,floor=False),
+        'portrait':View(az=-79,el=1.3,target=(0,-18,4),scale=145,focal_length_mm=85,f_stop=16,floor=False),
+        'front':View(az=-90,el=.4,target=(0,-18,4),scale=143,focal_length_mm=85,f_stop=16,floor=False),
         'profile':View(az=-34,el=1.0,target=(0,0,-8),scale=164,focal_length_mm=85,f_stop=16,floor=False),
         'detail':View(az=-78,el=0,target=(0,-64,7),scale=80,focal_length_mm=100,f_stop=16,floor=False)}
     metadata={'units':'mm','geometry_source':'Original analytic surfaces and hand-authored landmark parameters',
