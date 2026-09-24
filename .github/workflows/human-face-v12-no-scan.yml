@@ -72,21 +72,27 @@ jobs:
           python tools/render_human_face.py --out build/faces_v12/b --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
             --texture-size 1024 --exposure 1.30 --eyelid-closure .13 \
-            --seed 314159 --eye-spacing 60.5 --eye-height 31.0 --eye-width 23.0 \
-            --eye-opening 7.0 --eye-tilt .45 --nose-projection 16.7 --nose-width .91 \
-            --mouth-width 51.5 --upper-lip-fullness 1.18 --lower-lip-fullness 1.13 \
-            --jaw-width .94 --skull-width .98 --cheek-width 1.04 --chin-width .92 \
+            --seed 314159 --eye-spacing 61.0 --eye-height 31.0 --eye-width 26.4 \
+            --eye-opening 8.2 --eye-tilt .40 --nose-projection 15.9 --nose-width .98 \
+            --mouth-width 51.2 --upper-lip-fullness 1.08 --lower-lip-fullness 1.06 \
+            --jaw-width .94 --skull-width .985 --cheek-width 1.035 --chin-width .91 \
             --brow-weight .88 --skip-export
       - name: Render procedural identity C
         run: |
           python tools/render_human_face.py --out build/faces_v12/c --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
             --texture-size 1024 --exposure 1.30 --eyelid-closure .08 \
-            --seed 161803 --eye-spacing 63.5 --eye-height 29.2 --eye-width 24.2 \
-            --eye-opening 7.2 --eye-tilt 1.0 --nose-projection 20.2 --nose-width 1.10 \
-            --mouth-width 54.5 --upper-lip-fullness .93 --lower-lip-fullness .96 \
-            --jaw-width 1.13 --skull-width 1.035 --cheek-width 1.05 --chin-width 1.08 \
-            --brow-weight 1.17 --skip-export
+            --seed 161803 --eye-spacing 63.8 --eye-height 29.3 --eye-width 27.8 \
+            --eye-opening 8.5 --eye-tilt .82 --nose-projection 18.9 --nose-width 1.13 \
+            --mouth-width 54.0 --upper-lip-fullness .91 --lower-lip-fullness .95 \
+            --jaw-width 1.08 --skull-width 1.025 --cheek-width 1.055 --chin-width 1.02 \
+            --brow-weight 1.12 --skip-export
+      - name: Render procedural clay proof
+        run: |
+          python tools/render_human_face.py --out build/faces_v12/clay --view portrait \
+            --size 480x600 --spp 48 --depth 12 --threads 4 --quality preview \
+            --texture-size 512 --exposure 1.15 --eyelid-closure .10 \
+            --seed 271828 --clay --skip-export
       - name: Publish v12 no-scan renders
         run: |
           mkdir -p media/human_face_v12_no_scan
@@ -96,6 +102,8 @@ jobs:
           cp build/faces_v12/a/CYBR_Procedural_Face_portrait.json media/human_face_v12_no_scan/identity_a.json
           cp build/faces_v12/b/CYBR_Procedural_Face_portrait.json media/human_face_v12_no_scan/identity_b.json
           cp build/faces_v12/c/CYBR_Procedural_Face_portrait.json media/human_face_v12_no_scan/identity_c.json
+          cp build/faces_v12/clay/CYBR_Procedural_Face_portrait_clay.png media/human_face_v12_no_scan/clay.png
+          cp build/faces_v12/clay/CYBR_Procedural_Face_portrait_clay.json media/human_face_v12_no_scan/clay.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add media/human_face_v12_no_scan
