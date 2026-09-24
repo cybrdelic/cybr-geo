@@ -46,8 +46,8 @@ def materials(out,clay=False):
     dictionaries=[
         {'type':'bumpmap','texture':bitmap(out/'skin_height.png',True),'scale':.032,
          'bsdf':{'type':'principled','base_color':bitmap(out/'skin_color.png'),
-                 'roughness':bitmap(out/'skin_roughness.png',True),'specular':.42,
-                 'flatness':.13,'clearcoat':.035,'clearcoat_gloss':.48}},
+                 'roughness':bitmap(out/'skin_roughness.png',True),'specular':.33,
+                 'flatness':.27,'clearcoat':.014,'clearcoat_gloss':.42}},
         {'type':'principled','base_color':{'type':'rgb','value':[.30,.11,.085]},
          'roughness':.24,'specular':.4},
         {'type':'diffuse','reflectance':{'type':'rgb','value':[.025,.005,.003]}},
