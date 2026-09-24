@@ -163,12 +163,12 @@ class Anatomy:
         ul=np.clip((line-z)/np.maximum(lower,.001),0,1)
         upper_region=inside&(z>=line)&(z<=line+upper)
         lower_region=inside&(z<line)&(z>=line-lower)
-        upper_roll=self.p.upper_lip_fullness*3.65*np.sin(np.pi*uu)**.82*span**.46
-        lower_roll=self.p.lower_lip_fullness*3.95*np.sin(np.pi*ul)**.88*span**.50
+        upper_roll=self.p.upper_lip_fullness*2.85*np.sin(np.pi*uu)**.86*span**.52
+        lower_roll=self.p.lower_lip_fullness*3.25*np.sin(np.pi*ul)**.90*span**.54
         d-=np.where(upper_region,upper_roll,0)
         d-=np.where(lower_region,lower_roll,0)
         crease=np.exp(-((z-line)/.42)**2)*span**.82*inside
-        d+=.58*crease
+        d+=.44*crease
         for s in (-1,1):
             d+=1.15*gaussian(x,z,s*(self.p.mouth_width*.485),-39.2,2.5,3.0)
             d+=.28*gaussian(x,z,s*(self.p.mouth_width*.53),-41.2,3.6,5.2)
@@ -565,7 +565,9 @@ def nasal_cavity(a,side):
     ur=3.55*r*np.cos(theta);vr=1.34*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
-    y=a.front(x,z)+2.7+2.0*(1-r*r)
+    # The interior starts almost flush with the alar rim and then curves
+    # inward, avoiding an empty black moat around the nostril opening.
+    y=a.front(x,z)+.28+3.7*(1-r*r)
     vertices=np.stack([x,y,z],-1).reshape(-1,3)
     return surface_part(('Left' if side<0 else 'Right')+'_nasal_vestibule',
                         vertices,grid_faces(24,129,reverse=True),CAVITY,a.uv(vertices))
@@ -669,6 +671,7 @@ def build(parameters=None,quality='final',hair=True):
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
         parts.extend(eyelid_patch(a,side))
+        parts.extend(canthus_patches(a,side))
         seal=closed_blink_seal(a,side)
         if seal is not None:parts.append(seal)
         parts.append(wet)
