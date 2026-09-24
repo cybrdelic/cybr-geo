@@ -7,7 +7,7 @@
   "spp": 48,
   "depth": 12,
   "seed": 271828,
-  "render_seconds": 14.180089473724365,
+  "render_seconds": 14.107937335968018,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.15,
   "bump_height_range_mm": 0.032,
@@ -328,7 +328,7 @@
         [
           -49.805499999999995,
           -64.48925081753235,
-          29.441101004739163
+          29.41591333231143
         ],
         [
           -12.194500000000001,
@@ -377,7 +377,7 @@
         [
           -12.194500000000001,
           -50.386676385846506,
-          30.918044798133995
+          30.923257275394363
         ]
       ]
     },
@@ -414,14 +414,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.76927109765933,
-          -60.063427762444846,
-          26.655624443921944
+          -42.76921915114791,
+          -60.161623985576696,
+          26.366558760598906
         ],
         [
-          -19.229258241671218,
-          -54.312392914184706,
-          33.52458844076181
+          -19.229927038526903,
+          -54.31708210827914,
+          33.23221564734346
         ]
       ]
     },
@@ -502,14 +502,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -19.55,
-          -55.0,
-          28.660000003249998
+          -20.880000000000003,
+          -55.87,
+          29.1300000024
         ],
         [
-          -17.150000000000002,
-          -53.3,
-          29.95999999675
+          -19.32,
+          -54.63,
+          30.0899999976
         ]
       ]
     },
@@ -812,7 +812,7 @@
         [
           12.194500000000001,
           -64.75301442386093,
-          29.181101004739162
+          29.155913332311428
         ],
         [
           49.805499999999995,
@@ -861,7 +861,7 @@
         [
           49.805499999999995,
           -50.57824568101418,
-          30.658044798133993
+          30.66325727539436
         ]
       ]
     },
@@ -898,14 +898,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.229258241671218,
-          -60.063427762444846,
-          26.395624443921943
+          19.229927038526903,
+          -60.161623985576696,
+          26.106558760598904
         ],
         [
-          42.76927109765933,
-          -54.312392914184706,
-          33.26458844076181
+          42.76921915114791,
+          -54.31708210827914,
+          32.97221564734346
         ]
       ]
     },
@@ -986,14 +986,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          17.150000000000002,
-          -55.0,
-          28.400000003249996
+          19.32,
+          -55.87,
+          28.870000002399998
         ],
         [
-          19.55,
-          -53.3,
-          29.699999996749998
+          20.880000000000003,
+          -54.63,
+          29.829999997599998
         ]
       ]
     },
@@ -1143,21 +1143,21 @@
     ],
     "encoded_height_normalization_mm": 0.06,
     "files": {
-      "skin_color.png": "e67446c11dee06b79f5bdc99af4e37c8ea39233bcdfdf55c0e12b3230dc79d72",
-      "skin_roughness.png": "60cdcfe8d329a4c2c17979c9aefc0abf1a77313bc00f6b45daf9a829fa90e04f",
-      "skin_height.png": "bacfe0acfe939d5abdf10ccfbd94e18f910510a9b755ede0e183ec207803cbaf",
+      "skin_color.png": "c49614a86c5167527a900507726eaf3d1b8bdf8aabd3fc83df17feaebed0434a",
+      "skin_roughness.png": "8545002408c92e4ce8872b34b432fc16d715f6a6b9662d4e61983952c960177f",
+      "skin_height.png": "2985c8fc5b6c88fcea1c4f872bcc8ab98f6d59ca2b3b2a7d555dd72c78b9746b",
       "iris_color.png": "1f8002845c5590481410324ad819cb50e73ff3a996b1a09120d182487980867f",
-      "sclera_color.png": "b9a0da03e233ac4dce62707ce45443fd5d1c7550180d82266ec0854ddb87e93a"
+      "sclera_color.png": "a12fe7e84cf57f0edb46d384eec616914665493fc11139e68904b9efffa662a8"
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "8a07800402a8ca40ba92a66d54a45f77bc32a00d3a822457846e828892bf13cf",
-    "tools/procedural_face_materials.py": "67deb828c2fcdec2cb54a2216a97dd7a555cdf6db8c00e268cff472a463be304",
-    "tools/render_procedural_face.py": "8ffbc08d0a0ff49efef326c99883ac3ac83fafe1cae215e927d7e53e573949e7",
+    "examples/procedural_human_face.py": "39596c240453b6b5dda86a64fa44fa78462bf8363b9b3abf0df9ff9851f857b6",
+    "tools/procedural_face_materials.py": "578a1e8c405d913fe3d86916f6d99510778f06b0bdb3b24df73bba93936937df",
+    "tools/render_procedural_face.py": "c60e5177545135eea895b32c62a857f7bfc0009a90696c527b6df207de1acbae",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "b1be1a4988be8b9ad6367b4b824c83110f1c744d3d9bf4a7a4e17c6a61f9c854",
-  "sha256": "fabe6a40fcd07b16b8f0f569946880215d5d3bb3954a19c38745a394aad94cfd"
+  "png_pixels_sha256": "1bde753bf0db798ce68c41de4c19cffb6cd143f08b7f9225290b2d3fb6f841d9",
+  "sha256": "c0b313e847444ddcaa003f7a9497c5c242aa3cd1ac746ec57b043ba37735d3ef"
 }
