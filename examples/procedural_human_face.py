@@ -464,7 +464,7 @@ def closed_blink_seal(a,side):
     x=ec[0]+side*q*(a.p.eye_width/2)
     _,upper,lower=a.eye_opening(x,side)
     center=(upper+lower)*.5
-    half=.34*shape**.65
+    half=.54*shape**.65+.03
     dx=x-ec[0];dz=center-ec[2]
     sph=np.maximum(1-(dx/14.15)**2-(dz/12.25)**2,0)
     ocular_y=ec[1]-12.22*np.sqrt(sph)
