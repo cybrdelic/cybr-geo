@@ -47,19 +47,21 @@ def test_referenced_geometry_and_ear_charts_are_nondegenerate(closed):
             assert (jac>1e-14).all()
 
 
-def test_dedicated_procedural_eyelid_patches_exist_and_are_skin(closed):
-    lids=[p for p in closed.parts if '_procedural_' in p.name and p.name.endswith('_eyelid')]
-    assert len(lids)==4
-    assert {p.name for p in lids}=={
-        'Left_procedural_upper_eyelid','Left_procedural_lower_eyelid',
-        'Right_procedural_upper_eyelid','Right_procedural_lower_eyelid'}
-    for lid in lids:
-        assert lid.material==SKIN
-        assert lid.provenance=='original-procedural'
-        assert 'no-scan' in lid.tags
-        assert len(lid.faces)>1000
-        # The lid patch must have real depth rather than being a flat decal.
-        assert np.ptp(lid.vertices[:,1])>.5
+def test_continuous_lid_skin_and_exact_visible_eye_patches(closed):
+    # Closed eyes remain part of the one continuous procedural head surface.
+    assert not [p for p in closed.parts if 'visible_sclera' in p.name or 'visible_cornea' in p.name]
+    head=next(p for p in closed.parts if p.name=='Sculpted_head_neck_and_shoulders')
+    assert head.material==SKIN and 'no-scan' in head.tags
+
+    opened=build(FaceParameters(eyelid_closure=0),quality='preview',hair=False)
+    sclera=[p for p in opened.parts if p.name.endswith('_visible_sclera')]
+    cornea=[p for p in opened.parts if p.name.endswith('_visible_cornea')]
+    assert len(sclera)==2 and len(cornea)==2
+    for patch in sclera+cornea:
+        assert patch.provenance=='original-procedural'
+        assert 'no-scan' in patch.tags
+        assert len(patch.faces)>1000
+        assert np.isfinite(patch.vertices).all()
 
 
 def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
@@ -78,8 +80,8 @@ def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
             hit=scene.ray_intersect(ray)
             assert bool(np.asarray(hit.is_valid())[0])
             name=hit.shape[0].id()
-            assert ('eyelid' in name) if closure else ('ocular_tear_surface' in name),name
-        nx=9.7+.35;nz=-16.
+            assert ('Sculpted_head_neck_and_shoulders' in name) if closure else ('visible_cornea' in name),name
+        nx=10.2*anatomy.p.nose_width+.20;nz=-16.4
         hit=scene.ray_intersect(mi.Ray3f(mi.Point3f(nx,-150,nz),mi.Vector3f(0,1,0)))
         assert 'nasal_vestibule' in hit.shape[0].id()
         y=-150+float(np.asarray(hit.t)[0])
