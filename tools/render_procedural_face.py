@@ -114,7 +114,7 @@ def scene(assembly,out,args):
             'bsdf':{'type':'diffuse','reflectance':{'type':'rgb','value':[.038,.049,.058]}}}}
     mats=materials(out,args.clay)
     for i,p in enumerate(assembly.parts):
-        if args.clay and p.material in (CORNEA,HAIR,LID):continue
+        if args.clay and p.material in (CORNEA,HAIR):continue
         d[f'anatomy_{i}']=mesh_shape(p,mats[p.material])
     loaded=mi.load_dict(d)
     direction=target-origin;direction/=np.linalg.norm(direction)
