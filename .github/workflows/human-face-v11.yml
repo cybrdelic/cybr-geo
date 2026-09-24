@@ -37,7 +37,7 @@ jobs:
       - name: Install focused portrait dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 trimesh==4.11.1 mitsuba==3.7.1 pytest==9.0.2 setuptools==82.0.1
+          python -m pip install numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 trimesh==4.11.1 mitsuba==3.9.1 pytest==9.0.2 setuptools==82.0.1
           python -m pip install --no-deps -e .
       - name: Fetch and verify attributed portrait assets
         run: python tools/fetch_portrait_assets.py
