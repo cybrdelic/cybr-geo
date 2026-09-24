@@ -278,8 +278,8 @@ def head_mesh(a,quality):
             remove|=(abs(q)<1)&(z<upper)&(z>lower)&(y<0)
         # Open apertures lead to separately modeled recessed nasal vestibules.
         nx=side*(9.5*a.p.nose_width)+.25;nz=-16.0
-        u=x-nx;v=z-nz
-        ur=u+side*.42*v;vr=v-side*.10*u
+        du=x-nx;dz=z-nz
+        ur=du+side*.42*dz;vr=dz-side*.10*du
         remove|=((ur/2.75)**2+(vr/1.03)**2<1)&(y<-66)
     line,up,lo=a.mouth(x)
     gap=.43*np.maximum(1-(x/24.8)**2,0)**.6
