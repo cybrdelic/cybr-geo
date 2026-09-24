@@ -7,7 +7,7 @@
   "spp": 96,
   "depth": 14,
   "seed": 314159,
-  "render_seconds": 31.02442741394043,
+  "render_seconds": 54.150850772857666,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.3,
   "bump_height_range_mm": 0.032,
@@ -27,11 +27,11 @@
     ],
     "focal_length_mm": 85,
     "f_stop": 16,
-    "focus_distance_mm": 491.79962158203125,
+    "focus_distance_mm": 491.7973937988281,
     "focus_point_mm": [
-      10.678386521977487,
-      -72.93553626572253,
-      5.269995102402158
+      10.678811493640495,
+      -72.93772255539807,
+      5.270045644862815
     ],
     "filter": "Gaussian .42",
     "environment": "Analytic constant fill; no HDR photograph"
@@ -107,7 +107,7 @@
       "bounds_mm": [
         [
           -170.48948938552059,
-          -91.72523738878449,
+          -91.7255776900807,
           -180.0
         ],
         [
@@ -151,12 +151,12 @@
       "bounds_mm": [
         [
           -47.92423174744681,
-          -65.01143148154556,
+          -65.01040287979188,
           22.600606860158308
         ],
         [
           -12.70930738718092,
-          -52.621361535904484,
+          -52.62027438113529,
           40.55255936675462
         ]
       ]
@@ -195,12 +195,12 @@
       "bounds_mm": [
         [
           12.69983331148856,
-          -65.19050635308409,
+          -65.1915349548378,
           22.600606860158308
         ],
         [
           47.95998322448871,
-          -52.65838630685043,
+          -52.65952232849558,
           40.55255936675462
         ]
       ]
@@ -239,12 +239,12 @@
       "bounds_mm": [
         [
           -25.0,
-          -72.65826388062231,
+          -71.69198411891293,
           -41.239352551930935
         ],
         [
           25.0,
-          -63.43895190273948,
+          -62.72449619068335,
           -38.03005705894381
         ]
       ]
@@ -283,12 +283,12 @@
       "bounds_mm": [
         [
           -11.332633894081667,
-          -76.82353754392318,
+          -76.81986789012079,
           -17.156899255749835
         ],
         [
           -5.457366105918332,
-          -71.41086983822926,
+          -71.40521618214117,
           -14.843100744250163
         ]
       ]
@@ -338,6 +338,94 @@
       ]
     },
     {
+      "name": "Left_eyelid_upper_thickness",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural eyelid thickness bridging facial skin to ocular surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 322,
+      "triangles": 320,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -41.6925,
+          -62.32874073927926,
+          30.64794560045981
+        ],
+        [
+          -18.807499999999997,
+          -55.32794908994714,
+          34.12363660871899
+        ]
+      ]
+    },
+    {
+      "name": "Left_eyelid_lower_thickness",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural eyelid thickness bridging facial skin to ocular surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 322,
+      "triangles": 320,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -41.6925,
+          -62.35093956440766,
+          27.98865141791056
+        ],
+        [
+          -18.807499999999997,
+          -55.35633512445331,
+          31.70725228459988
+        ]
+      ]
+    },
+    {
       "name": "Left_eyelids_wet_margin",
       "material": 1,
       "group": "anatomy",
@@ -371,12 +459,12 @@
       "bounds_mm": [
         [
           -41.75454623215246,
-          -62.432241162746855,
+          -62.43105037560025,
           27.918700678526967
         ],
         [
           -18.74344915720507,
-          -56.1284465823969,
+          -56.127290429402635,
           34.208628052903975
         ]
       ]
@@ -634,14 +722,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -58.44300458431748,
-          -66.15238131457286,
+          -58.4430045758833,
+          -66.15191833517935,
           26.431049329934257
         ],
         [
-          -15.564822371073012,
-          -42.069662896303434,
-          53.43091176561551
+          -15.564822288348036,
+          -42.069063357403095,
+          53.43091175222701
         ]
       ]
     },
@@ -679,12 +767,12 @@
       "bounds_mm": [
         [
           5.957366105918332,
-          -77.37676479547405,
+          -77.38054760190518,
           -17.156899255749835
         ],
         [
           11.832633894081667,
-          -71.08423945819189,
+          -71.09035695036972,
           -14.843100744250163
         ]
       ]
@@ -734,6 +822,94 @@
       ]
     },
     {
+      "name": "Right_eyelid_upper_thickness",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural eyelid thickness bridging facial skin to ocular surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 322,
+      "triangles": 320,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          18.807499999999997,
+          -62.361854494842014,
+          30.38794560045981
+        ],
+        [
+          41.6925,
+          -55.31760256275675,
+          33.86363660871899
+        ]
+      ]
+    },
+    {
+      "name": "Right_eyelid_lower_thickness",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural eyelid thickness bridging facial skin to ocular surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 322,
+      "triangles": 320,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          18.807499999999997,
+          -62.38868805577359,
+          27.72865141791056
+        ],
+        [
+          41.6925,
+          -55.34864043495964,
+          31.447252284599877
+        ]
+      ]
+    },
+    {
       "name": "Right_eyelids_wet_margin",
       "material": 1,
       "group": "anatomy",
@@ -767,12 +943,12 @@
       "bounds_mm": [
         [
           18.74344915720507,
-          -62.467584142778925,
+          -62.46879167721256,
           27.658700678526966
         ],
         [
           41.75454623215246,
-          -56.1157283356566,
+          -56.11689835664598,
           33.94862805290398
         ]
       ]
@@ -1031,13 +1207,13 @@
       "bounds_mm": [
         [
           15.550309770312195,
-          -66.20933641350986,
+          -66.20980390191625,
           26.21539496431451
         ],
         [
-          57.60780710371172,
-          -43.22764661334839,
-          52.97433716399029
+          57.60780711287241,
+          -43.228207954996506,
+          52.97433720286467
         ]
       ]
     },
@@ -1075,12 +1251,12 @@
       "bounds_mm": [
         [
           -63.42746756109697,
-          -71.08662669218562,
+          -71.08812278520476,
           -85.1462820920627
         ],
         [
           63.602091566316915,
-          -16.90188235905474,
+          -16.893751850451718,
           -23.996005759858686
         ]
       ]
@@ -1099,21 +1275,21 @@
     ],
     "encoded_height_normalization_mm": 0.06,
     "files": {
-      "skin_color.png": "569699e421c6ada9d750ef132cd6421b3aa8d277801b4ae6b66807a68de219db",
-      "skin_roughness.png": "cd45d4697029ca35fcf0486ff04447b16f2365f7109c89b4894629edf522c825",
-      "skin_height.png": "dfb2b43bbcf085bfa02a7fdec2ec1d20e8d642d72fd3f02deebce2a4911cf687",
-      "iris_color.png": "8b95f793171014617a2889ffc8bee7bab416f825da91f35c13c7221b05dec161",
-      "sclera_color.png": "12af4e65a93ee9736ae330477245e81d891b351c9296174668ad7f31570396e9"
+      "skin_color.png": "abd811868cc71418edd0936293ab355195c0ac4131f93c518b5146d8080d0740",
+      "skin_roughness.png": "42fc652ba6f40536afaffa0e112c39d68210c46ba8c27faf45c140541587bb9d",
+      "skin_height.png": "b262495e8851ce6ba5fee4615fa2501364245419eea52b308a5d58c6a4e99fd5",
+      "iris_color.png": "2cc42f6afd7ee902caebef287c9833279e00498bf54e2a8374bc29d399d05611",
+      "sclera_color.png": "32f24bc460cc5f336a43ab857f31ea86e13bc8e7363a855955baeb72958b6fbb"
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "eb4d6262be4216a70803691ef3e1bb2993f9d8782604420ed443c40329259879",
-    "tools/procedural_face_materials.py": "a8e76a0e52f9d38861325ed8d35429f3ea0d01e31f5f54dcc9ca41edbfbd199f",
+    "examples/procedural_human_face.py": "1566af4dad141228b7ca361897ec190b95e263f6fd513f4dffbefb952405249d",
+    "tools/procedural_face_materials.py": "9aa75c97eff17043980b84306396c81805fb4e51ae634dcd47d727ad89831c7a",
     "tools/render_procedural_face.py": "a89f7d3b20ca53ad2cb114b0684e9146c8961a17c61eda3310bec70cab16dc9f",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "baf8eefa802c5ab2655ca3993bd75d489e04642866cc9714fb238dc0cbbcca60",
-  "sha256": "a18e28b402c6cde5fbd64c8ac048cf7049b3a223db4397a0fed2a029bc1ecb76"
+  "png_pixels_sha256": "3b892296b0e921e4fabc1103a63cb8f60a605ae050d2850d37f07c91d967dcbc",
+  "sha256": "e1789bf20484b787d0c5766b4a01cda64569f4ea9667e538143f915805db4759"
 }
