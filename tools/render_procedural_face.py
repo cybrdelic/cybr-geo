@@ -46,8 +46,8 @@ def materials(out,clay=False):
     dictionaries=[
         {'type':'bumpmap','texture':bitmap(out/'skin_height.png',True),'scale':.032,
          'bsdf':{'type':'principled','base_color':bitmap(out/'skin_color.png'),
-                 'roughness':bitmap(out/'skin_roughness.png',True),'specular':.35,
-                 'flatness':.19,'clearcoat':.025,'clearcoat_gloss':.55}},
+                 'roughness':bitmap(out/'skin_roughness.png',True),'specular':.42,
+                 'flatness':.13,'clearcoat':.035,'clearcoat_gloss':.48}},
         {'type':'principled','base_color':{'type':'rgb','value':[.30,.11,.085]},
          'roughness':.24,'specular':.4},
         {'type':'diffuse','reflectance':{'type':'rgb','value':[.025,.005,.003]}},
@@ -166,13 +166,21 @@ def main():
     p.add_argument('--skip-export',action='store_true');p.add_argument('--reuse-textures',action='store_true')
     p.add_argument('--oidn',default=os.environ.get('OIDN_BIN','auto'),help='OIDN executable, or auto to use CYBR GEO pinned provisioning')
     p.add_argument('--seed',type=int,default=271828);p.add_argument('--exposure',type=float,default=1.)
-    p.add_argument('--eyelid-closure',type=float,default=1.,help='0=open, 1=closed; modifies actual lid geometry')
-    p.add_argument('--eye-spacing',type=float,default=61.0)
+    p.add_argument('--eyelid-closure',type=float,default=.10,help='0=open, 1=closed; modifies actual lid geometry')
+    p.add_argument('--eye-spacing',type=float,default=62.0)
     p.add_argument('--eye-height',type=float,default=30.0)
+    p.add_argument('--eye-width',type=float,default=23.6)
+    p.add_argument('--eye-opening',type=float,default=7.4)
+    p.add_argument('--eye-tilt',type=float,default=.85)
     p.add_argument('--nose-projection',type=float,default=18.5)
-    p.add_argument('--mouth-width',type=float,default=51.0)
-    p.add_argument('--jaw-width',type=float,default=1.0)
+    p.add_argument('--nose-width',type=float,default=1.0)
+    p.add_argument('--mouth-width',type=float,default=53.0)
+    p.add_argument('--upper-lip-fullness',type=float,default=1.0)
+    p.add_argument('--lower-lip-fullness',type=float,default=1.0)
+    p.add_argument('--jaw-width',type=float,default=1.04)
     p.add_argument('--skull-width',type=float,default=1.0)
+    p.add_argument('--cheek-width',type=float,default=1.0)
+    p.add_argument('--chin-width',type=float,default=1.0)
     p.add_argument('--brow-weight',type=float,default=1.0)
     p.add_argument('--skin-relief',type=float,default=.0025)
     args=p.parse_args();args.out=args.out.resolve();args.out.mkdir(parents=True,exist_ok=True)
@@ -185,8 +193,12 @@ def main():
     if not 0<=args.eyelid_closure<=1:p.error('Eyelid closure must be between zero and one')
     params=FaceParameters(seed=args.seed,eyelid_closure=args.eyelid_closure,
         eye_spacing=args.eye_spacing,eye_height=args.eye_height,
-        nose_projection=args.nose_projection,mouth_width=args.mouth_width,
+        eye_width=args.eye_width,eye_opening=args.eye_opening,eye_tilt=args.eye_tilt,
+        nose_projection=args.nose_projection,nose_width=args.nose_width,
+        mouth_width=args.mouth_width,upper_lip_fullness=args.upper_lip_fullness,
+        lower_lip_fullness=args.lower_lip_fullness,
         jaw_width=args.jaw_width,skull_width=args.skull_width,
+        cheek_width=args.cheek_width,chin_width=args.chin_width,
         brow_weight=args.brow_weight,skin_relief=args.skin_relief)
     if args.oidn=='auto': args.oidn=str(ensure_oidn())
     print('Building original procedural anatomy',flush=True);t=time.time()
