@@ -1,0 +1,63 @@
+{
+  "image": "CYBR_Morphable_Face_portrait.png",
+  "resolution": [
+    640,
+    800
+  ],
+  "spp": 96,
+  "depth": 14,
+  "seconds": 33.79211354255676,
+  "total_seconds": 37.14435958862305,
+  "renderer": "CYBR GEO / Mitsuba LLVM CPU path tracing",
+  "denoiser": "Intel OIDN / HDR + albedo + shading-normal guides",
+  "image_generation": false,
+  "camera": {
+    "camera_mm": [
+      132.89446877355368,
+      -510.968909507778,
+      45.93058586137383
+    ],
+    "target_mm": [
+      0.0,
+      -15.0,
+      28.0
+    ],
+    "focal_length_mm": 85,
+    "f_stop": 16,
+    "focus_distance_mm": 442.41497802734375,
+    "gaussian_filter_stddev": 0.42,
+    "fill_light_position_mm": [
+      300.0,
+      -220.0,
+      110.0
+    ],
+    "fill_light_scale": 1.0,
+    "framing_distance_mm": 513.7777777777777,
+    "focus_method": "Central ray intersection with actual morphed skin",
+    "focus_point_mm": [
+      18.45880023080595,
+      -83.88918030813193,
+      30.490525794571504
+    ]
+  },
+  "morph_parameters": {
+    "skull_width": 0.055,
+    "temple_width": 0.035,
+    "cheek_width": 0.075,
+    "jaw_width": 0.11,
+    "lower_face_length": 0.042,
+    "face_length": 0.015,
+    "nose_width": 0.075,
+    "mouth_width": 0.045,
+    "nose_projection_mm": 3.2,
+    "brow_projection_mm": 0.8,
+    "chin_projection_mm": 2.2,
+    "asymmetry": 0.28
+  },
+  "canonical_topology": "Infinite, 3D Head Scan by Lee Perry-Smith / CC BY 3.0",
+  "source_license": "CC BY 3.0",
+  "identity_generation_limit": "These are smooth deformations of one attributed canonical scan, not a statistical population model and not independent scanned identities.",
+  "triangles": 282944,
+  "pixel_sha256": "c16223de3f09ca04ec4181480d2b60639e21965e9d54bf4e726c6d7f4a2ac8ed",
+  "sha256": "fe35970b977936707a8390f1446ed11c33abc88ac162f986e4e0a02604ae12bb"
+}
