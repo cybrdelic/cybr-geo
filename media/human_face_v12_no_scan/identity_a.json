@@ -1,0 +1,1119 @@
+{
+  "image": "CYBR_Procedural_Face_portrait.png",
+  "resolution": [
+    640,
+    800
+  ],
+  "spp": 96,
+  "depth": 14,
+  "seed": 271828,
+  "render_seconds": 31.65215826034546,
+  "mitsuba_version": "3.7.1",
+  "exposure_multiplier": 1.3,
+  "bump_height_range_mm": 0.032,
+  "renderer": "CYBR GEO ORBIT v9 / Mitsuba LLVM CPU path tracing",
+  "denoiser": "Intel OIDN, beauty + albedo + world-space geometric normal, HDR/high",
+  "tone_mapping": "Unchanged v9 ACES approximation and sRGB transfer",
+  "camera": {
+    "origin_mm": [
+      104.494024755061,
+      -555.5751546985498,
+      16.427617168201344
+    ],
+    "target_mm": [
+      0.0,
+      -18.0,
+      4.0
+    ],
+    "focal_length_mm": 85,
+    "f_stop": 16,
+    "focus_distance_mm": 491.6306457519531,
+    "focus_point_mm": [
+      10.710620331539502,
+      -73.10136484015476,
+      5.273828713424878
+    ],
+    "filter": "Gaussian .42",
+    "environment": "Analytic constant fill; no HDR photograph"
+  },
+  "source": {
+    "units": "mm",
+    "geometry_source": "Original analytic surfaces and hand-authored landmark parameters",
+    "scan_used": false,
+    "photographic_skin_textures": false,
+    "imported_anatomy_mesh": false,
+    "image_generation": false,
+    "parameters": {
+      "seed": 271828,
+      "eye_spacing": 62.0,
+      "eye_height": 30.0,
+      "eye_width": 23.6,
+      "eye_opening": 7.4,
+      "eye_tilt": 0.85,
+      "nose_projection": 18.5,
+      "nose_width": 1.0,
+      "mouth_width": 53.0,
+      "upper_lip_fullness": 1.0,
+      "lower_lip_fullness": 1.0,
+      "jaw_width": 1.04,
+      "skull_width": 1.0,
+      "cheek_width": 1.0,
+      "chin_width": 1.0,
+      "brow_weight": 1.0,
+      "skin_relief": 0.0025,
+      "eyelid_closure": 0.1
+    },
+    "quality": "preview",
+    "renderer_reference": "CYBR GEO ORBIT v9, 40797a6fa756ce209b5e21dd83f2df1e41dbd5fb",
+    "limitations": [
+      "Artistic anatomy; not measured or medically validated.",
+      "Skin scattering uses a surface BSDF approximation, not multilayer tissue transport.",
+      "Distinct anatomical surfaces intersect where hidden; this is a render assembly, not a watertight print."
+    ],
+    "input_assets": []
+  },
+  "geometry": [
+    {
+      "name": "Sculpted_head_neck_and_shoulders",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Region of the continuous authored anatomical skin surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "shared-boundary-skin"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 226927,
+      "triangles": 451475,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -170.4895123779087,
+          -93.1525684688309,
+          -180.0
+        ],
+        [
+          170.4895123779087,
+          95.0,
+          143.99
+        ]
+      ]
+    },
+    {
+      "name": "Left_eyelids",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Region of the continuous authored anatomical skin surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "shared-boundary-skin"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 722,
+      "triangles": 1221,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -48.37563576907114,
+          -64.88039990902432,
+          21.745751978891832
+        ],
+        [
+          -13.406273062992428,
+          -52.26549882859618,
+          39.697704485488146
+        ]
+      ]
+    },
+    {
+      "name": "Right_eyelids",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Region of the continuous authored anatomical skin surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "shared-boundary-skin"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 730,
+      "triangles": 1216,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          13.406273062992394,
+          -65.04292317692062,
+          20.890897097625327
+        ],
+        [
+          48.359195807289275,
+          -52.31408704003242,
+          39.697704485488146
+        ]
+      ]
+    },
+    {
+      "name": "Recessed_closed_mouth_cavity",
+      "material": 2,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Recessed_closed_mouth_cavity",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 2160,
+      "triangles": 3938,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -25.0,
+          -71.83398155748426,
+          -41.239353947316495
+        ],
+        [
+          25.0,
+          -63.47083517030142,
+          -38.046078647349574
+        ]
+      ]
+    },
+    {
+      "name": "Left_nasal_vestibule",
+      "material": 2,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_nasal_vestibule",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 3096,
+      "triangles": 5760,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -12.187633894081667,
+          -76.22476707546467,
+          -17.156899255749835
+        ],
+        [
+          -6.312366105918333,
+          -71.10516062074154,
+          -14.843100744250163
+        ]
+      ]
+    },
+    {
+      "name": "Left_sculpted_pinna",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_sculpted_pinna",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 25700,
+      "triangles": 50432,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -82.71848492081918,
+          -6.062356201393445,
+          -25.5
+        ],
+        [
+          -65.5737813051887,
+          17.111757604231265,
+          33.5
+        ]
+      ]
+    },
+    {
+      "name": "Left_eyelids_wet_margin",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_eyelids_wet_margin",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 1548,
+      "triangles": 3088,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -42.80423798160639,
+          -62.54916586424771,
+          26.61062444954452
+        ],
+        [
+          -19.19247238268562,
+          -55.61434842244874,
+          33.5715884370034
+        ]
+      ]
+    },
+    {
+      "name": "Left_sclera",
+      "material": 3,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_sclera",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 10449,
+      "triangles": 19690,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -43.45,
+          -59.45,
+          18.31000005925
+        ],
+        [
+          -18.55,
+          -35.75,
+          42.00999994075
+        ]
+      ]
+    },
+    {
+      "name": "Left_lacrimal_caruncle",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_lacrimal_caruncle",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 1617,
+      "triangles": 3072,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -19.55,
+          -55.35,
+          28.660000003249998
+        ],
+        [
+          -17.150000000000002,
+          -53.65,
+          29.95999999675
+        ]
+      ]
+    },
+    {
+      "name": "Left_iris_stroma",
+      "material": 4,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_iris_stroma",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 6176,
+      "triangles": 11904,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -36.65,
+          -59.058125000000004,
+          24.509999999999998
+        ],
+        [
+          -25.35,
+          -58.192325000000004,
+          35.81
+        ]
+      ]
+    },
+    {
+      "name": "Left_pupil",
+      "material": 5,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_pupil",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 2316,
+      "triangles": 4032,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -32.78,
+          -58.92,
+          28.38
+        ],
+        [
+          -29.22,
+          -58.92,
+          31.94
+        ]
+      ]
+    },
+    {
+      "name": "Left_ocular_tear_surface",
+      "material": 6,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_ocular_tear_surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 10449,
+      "triangles": 20480,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -43.65,
+          -60.440000000000005,
+          18.110000060249998
+        ],
+        [
+          -18.35,
+          -35.58,
+          42.209999939750006
+        ]
+      ]
+    },
+    {
+      "name": "Left_individual_brow_hairs_and_lashes",
+      "material": 7,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_individual_brow_hairs_and_lashes",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 19830,
+      "triangles": 37016,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -57.42763485922723,
+          -66.63938068180344,
+          25.14017357168422
+        ],
+        [
+          -15.59613655604378,
+          -44.20884246315983,
+          52.41982409243468
+        ]
+      ]
+    },
+    {
+      "name": "Right_nasal_vestibule",
+      "material": 2,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_nasal_vestibule",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 3096,
+      "triangles": 5760,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          6.812366105918333,
+          -76.71274995301552,
+          -17.156899255749835
+        ],
+        [
+          12.687633894081667,
+          -70.85276545421779,
+          -14.843100744250163
+        ]
+      ]
+    },
+    {
+      "name": "Right_sculpted_pinna",
+      "material": 0,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_sculpted_pinna",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 25700,
+      "triangles": 50432,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          65.5737813051887,
+          -6.062356201393445,
+          -25.5
+        ],
+        [
+          82.71848492081918,
+          17.111757604231265,
+          33.5
+        ]
+      ]
+    },
+    {
+      "name": "Right_eyelids_wet_margin",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_eyelids_wet_margin",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 1548,
+      "triangles": 3088,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          19.19247238268562,
+          -62.5759641746144,
+          26.35062444954452
+        ],
+        [
+          42.80423798160639,
+          -55.592833813654806,
+          33.3115884370034
+        ]
+      ]
+    },
+    {
+      "name": "Right_sclera",
+      "material": 3,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_sclera",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 10449,
+      "triangles": 19690,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          18.55,
+          -59.45,
+          18.05000005925
+        ],
+        [
+          43.45,
+          -35.75,
+          41.74999994075
+        ]
+      ]
+    },
+    {
+      "name": "Right_lacrimal_caruncle",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_lacrimal_caruncle",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 1617,
+      "triangles": 3072,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          17.150000000000002,
+          -55.35,
+          28.400000003249996
+        ],
+        [
+          19.55,
+          -53.65,
+          29.699999996749998
+        ]
+      ]
+    },
+    {
+      "name": "Right_iris_stroma",
+      "material": 4,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_iris_stroma",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 6176,
+      "triangles": 11904,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          25.35,
+          -59.058125000000004,
+          24.25
+        ],
+        [
+          36.65,
+          -58.192325000000004,
+          35.55
+        ]
+      ]
+    },
+    {
+      "name": "Right_pupil",
+      "material": 5,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_pupil",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 2316,
+      "triangles": 4032,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          29.22,
+          -58.92,
+          28.119999999999997
+        ],
+        [
+          32.78,
+          -58.92,
+          31.68
+        ]
+      ]
+    },
+    {
+      "name": "Right_ocular_tear_surface",
+      "material": 6,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_ocular_tear_surface",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 10449,
+      "triangles": 20480,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          18.35,
+          -60.440000000000005,
+          17.850000060249997
+        ],
+        [
+          43.65,
+          -35.58,
+          41.94999993975
+        ]
+      ]
+    },
+    {
+      "name": "Right_individual_brow_hairs_and_lashes",
+      "material": 7,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_individual_brow_hairs_and_lashes",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 19830,
+      "triangles": 37016,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          15.717614762950332,
+          -66.64040359343637,
+          24.878835016629925
+        ],
+        [
+          58.16964864485899,
+          -43.28404400670194,
+          52.56226717093864
+        ]
+      ]
+    },
+    {
+      "name": "Individual_shaved_facial_hair_shafts",
+      "material": 7,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Individual_shaved_facial_hair_shafts",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 54192,
+      "triangles": 90320,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -65.28716113049182,
+          -71.07340811189633,
+          -85.1688999692872
+        ],
+        [
+          64.73261789868505,
+          -17.51410223899782,
+          -23.99683960849856
+        ]
+      ]
+    }
+  ],
+  "texture_provenance": {
+    "source": "Deterministic numeric fields only; no input images or meshes",
+    "seed": 271828,
+    "skin_resolution": [
+      1024,
+      1024
+    ],
+    "eye_resolution": [
+      1024,
+      1024
+    ],
+    "encoded_height_normalization_mm": 0.06,
+    "files": {
+      "skin_color.png": "e4f678984364210c4ab8d148fd49571bc2fe4e8e1872f4a0e733edb9d8dcfdf2",
+      "skin_roughness.png": "981744f2ef7a087c740a1d6eb2724155d0a54a8286e7a6cfeff7f0c3bf03bc4c",
+      "skin_height.png": "895c8f3b4bc5285bbff7ac1aac327bf43bbccb538351538a8bca6156f8915d64",
+      "iris_color.png": "ac56765c076be0908ea2eabd25150553ee0e6a6944b3d2856fb2aaf193eeedaa",
+      "sclera_color.png": "2e520310c776248a0f0ed24aec6c05083186fd30d0cd5887e48a2363cc61a8cb"
+    }
+  },
+  "source_code_sha256": {
+    "examples/procedural_human_face.py": "eb4d6262be4216a70803691ef3e1bb2993f9d8782604420ed443c40329259879",
+    "tools/procedural_face_materials.py": "a8e76a0e52f9d38861325ed8d35429f3ea0d01e31f5f54dcc9ca41edbfbd199f",
+    "tools/render_procedural_face.py": "a89f7d3b20ca53ad2cb114b0684e9146c8961a17c61eda3310bec70cab16dc9f",
+    "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
+  },
+  "model_sha256": null,
+  "finite_radiance": true,
+  "png_pixels_sha256": "ff6ad0784656be27ee80bce30de58e4792527de2a1508db5900d4c078b112f4b",
+  "sha256": "9ae6fe1fa60125e3bc12ef7fb8ec47d0aab31c9ab05077d733e92b9cdf46cd9b"
+}
