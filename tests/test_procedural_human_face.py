@@ -47,14 +47,19 @@ def test_referenced_geometry_and_ear_charts_are_nondegenerate(closed):
             assert (jac>1e-14).all()
 
 
-def test_lids_share_exact_skin_boundary_positions_and_normals(closed):
-    body=next(p for p in closed.parts if p.name=='Sculpted_head_neck_and_shoulders')
-    lookup={tuple(v):n for v,n in zip(body.vertices,body.normals)}
-    for name in ['Left_eyelids','Right_eyelids']:
-        lid=next(p for p in closed.parts if p.name==name)
-        shared=[(i,lookup[tuple(v)]) for i,v in enumerate(lid.vertices) if tuple(v) in lookup]
-        assert len(shared)>30
-        assert all(np.array_equal(lid.normals[i],normal) for i,normal in shared)
+def test_dedicated_procedural_eyelid_patches_exist_and_are_skin(closed):
+    lids=[p for p in closed.parts if '_procedural_' in p.name and p.name.endswith('_eyelid')]
+    assert len(lids)==4
+    assert {p.name for p in lids}=={
+        'Left_procedural_upper_eyelid','Left_procedural_lower_eyelid',
+        'Right_procedural_upper_eyelid','Right_procedural_lower_eyelid'}
+    for lid in lids:
+        assert lid.material==SKIN
+        assert lid.provenance=='original-procedural'
+        assert 'no-scan' in lid.tags
+        assert len(lid.faces)>1000
+        # The lid patch must have real depth rather than being a flat decal.
+        assert np.ptp(lid.vertices[:,1])>.5
 
 
 def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
@@ -73,7 +78,7 @@ def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
             hit=scene.ray_intersect(ray)
             assert bool(np.asarray(hit.is_valid())[0])
             name=hit.shape[0].id()
-            assert ('eyelids' in name) if closure else ('ocular_tear_surface' in name),name
+            assert ('eyelid' in name) if closure else ('ocular_tear_surface' in name),name
         nx=9.7+.35;nz=-16.
         hit=scene.ray_intersect(mi.Ray3f(mi.Point3f(nx,-150,nz),mi.Vector3f(0,1,0)))
         assert 'nasal_vestibule' in hit.shape[0].id()
