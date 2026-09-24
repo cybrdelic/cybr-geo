@@ -32,7 +32,7 @@ class FaceParameters:
     chin_width: float = 0.93
     brow_weight: float = 1.0
     skin_relief: float = .0025
-    eyelid_closure: float = 0.10
+    eyelid_closure: float = 0.18
 
 
 ZMIN, ZMAX = -180., 144.
@@ -108,10 +108,10 @@ class Anatomy:
         shape=np.maximum(1-q*q,0)
         closure=self.p.eyelid_closure
         tilt=self.p.eye_tilt*q
-        center=c[2]+tilt-.35*shape
+        center=c[2]+tilt-.18*shape
         opening=self.p.eye_opening*(1-closure)
-        upper=center+.54*opening*shape**.72
-        lower=center-.46*opening*shape**.78
+        upper=center+.47*opening*shape**.74
+        lower=center-.53*opening*shape**.82
         # The medial and lateral canthi close before the sphere ends, eliminating
         # the black corner wedges present in v10.
         return q,upper,lower
@@ -214,11 +214,11 @@ class Anatomy:
         y=np.array(base,copy=True)
         for side in (-1,1):
             c=self.eye(side);lx=(x-c[0])*side;lz=z-c[2]
-            sphere=1-(lx/12.55)**2-(lz/11.85)**2
-            cap=c[1]-11.92*np.sqrt(np.maximum(sphere,0))
+            sphere=1-(lx/12.15)**2-(lz/11.35)**2
+            cap=c[1]-12.08*np.sqrt(np.maximum(sphere,0))
             cap-=1.05*np.exp(-((lx*lx+lz*lz)/(5.0**2))**2)
             target=np.where(sphere>0,smooth_minimum(base,cap-.22,4.2),base)
-            ellipse=(lx/17.0)**2+((lz-.85*lx/17.0)/np.where(lz>=0,9.1,8.2))**2
+            ellipse=(lx/16.2)**2+((lz-.55*lx/16.2)/np.where(lz>=0,8.7,7.8))**2
             blend=1-smoothstep(.72,1.,ellipse)
             y+=(target-base)*blend
             q=np.clip(lx/(self.p.eye_width/2),-1,1)
@@ -424,6 +424,35 @@ def eyelid_patch(a,side):
             role='Original procedural eyelid surface from orbital boundary to eyeball')
         parts.append(p)
     return parts
+
+
+def canthus_patches(a,side):
+    """Finite medial/lateral canthal tissue sealing the socket corners."""
+    c=a.eye(side)
+    patches=[]
+    for label,q0 in [('medial',-.94),('lateral',.94)]:
+        q=np.linspace(q0-.055,q0+.055,18)
+        q=np.clip(q,-.997,.997)
+        x=c[0]+side*q*(a.p.eye_width/2)
+        _,upper,lower=a.eye_opening(x,side)
+        t=np.linspace(0,1,10)[:,None]
+        xx=np.broadcast_to(x,(len(t),len(q)))
+        zz=lower[None,:]*(1-t)+upper[None,:]*t
+        outer=a.front(xx,zz)
+        dx=xx-c[0];dz=zz-c[2]
+        sphere=np.maximum(1-(dx/12.1)**2-(dz/11.35)**2,0)
+        eye_y=c[1]-12.0*np.sqrt(sphere)
+        # Ease from skin rim to moist ocular corner, leaving no background slit.
+        blend=np.sin(np.pi*t)**2
+        yy=np.minimum(outer+.32*blend,eye_y-.025)
+        v=np.stack([xx,yy,zz],-1).reshape(-1,3)
+        p=surface_part(
+            ('Left' if side<0 else 'Right')+f'_{label}_canthus',
+            v,grid_faces(len(t),len(q),reverse=(label=='lateral')),
+            LID,a.uv(v),
+            role='Procedural medial/lateral canthal tissue closing orbital aperture')
+        patches.append(p)
+    return patches
 
 
 def eyelid_bridge(a,side):
@@ -641,8 +670,8 @@ def build(parameters=None,quality='final',hair=True):
         if seal is not None:parts.append(seal)
         parts.append(wet)
         parts.append(ellipsoid(prefix+'_sclera',c,[14.15,12.25,12.25],SCLERA,iris_cut=True))
-        caruncle=c+np.array([-side*12.65,-6.9,-.85])
-        parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[1.2,.85,.65],LID,nu=48,nv=32))
+        caruncle=c+np.array([-side*10.9,-8.0,-.55])
+        parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.78,.62,.48],LID,nu=48,nv=32))
         parts.append(disk(prefix+'_iris_stroma',c,5.85,IRIS,
                           lambda r:-12.03+.025*r*r,rmin=1.78))
         parts.append(disk(prefix+'_pupil',c,1.82,PUPIL,lambda r:np.full_like(r,-11.82),nr=12))
