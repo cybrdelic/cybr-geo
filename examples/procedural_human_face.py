@@ -154,21 +154,21 @@ class Anatomy:
         d+=.28*gaussian(x,z,.1,-27.2,1.8,5.5)
         d+=1.8*gaussian(x,z,0,-57,17,3.4)
         d-=3.9*gaussian(x,z,.25,-69,21,9)
-        # Actual vermilion volumes are part of the head mesh.
+        # Continuous vermilion rolls. Volume peaks away from the contact
+        # seam, while the closed-mouth line itself recesses slightly.
         line,upper,lower=self.mouth(x)
+        span=np.maximum(1-(x/(self.p.mouth_width/2))**2,0)
         inside=ax<self.p.mouth_width/2
-        t=np.where(z>=line,(z-line)/np.maximum(upper,.001),
-                   (line-z)/np.maximum(lower,.001))
-        t=np.clip(t,0,1)
-        upper_mask=(z>=line)
-        fullness=np.where(upper_mask,self.p.upper_lip_fullness,self.p.lower_lip_fullness)
-        lip=fullness*(1-t**1.55)*(2.35+3.35*np.sin(np.pi*t))
-        lip_region=inside*((z>=line-lower)&(z<=line+upper))
-        d-=lip*lip_region
-        # A neutral closed mouth is a crease in continuous skin, not a literal
-        # black cut through the head mesh.
-        crease=np.exp(-((z-line)/.46)**2)*np.maximum(1-(x/(self.p.mouth_width*.485))**8,0)
-        d+=.34*crease
+        uu=np.clip((z-line)/np.maximum(upper,.001),0,1)
+        ul=np.clip((line-z)/np.maximum(lower,.001),0,1)
+        upper_region=inside&(z>=line)&(z<=line+upper)
+        lower_region=inside&(z<line)&(z>=line-lower)
+        upper_roll=self.p.upper_lip_fullness*3.65*np.sin(np.pi*uu)**.82*span**.46
+        lower_roll=self.p.lower_lip_fullness*3.95*np.sin(np.pi*ul)**.88*span**.50
+        d-=np.where(upper_region,upper_roll,0)
+        d-=np.where(lower_region,lower_roll,0)
+        crease=np.exp(-((z-line)/.42)**2)*span**.82*inside
+        d+=.58*crease
         for s in (-1,1):
             d+=1.15*gaussian(x,z,s*(self.p.mouth_width*.485),-39.2,2.5,3.0)
             d+=.28*gaussian(x,z,s*(self.p.mouth_width*.53),-41.2,3.6,5.2)
@@ -295,7 +295,7 @@ def head_mesh(a,quality):
         nx=side*(10.2*a.p.nose_width)+.20;nz=-16.4
         du=x-nx;dz=z-nz
         ur=du+side*.42*dz;vr=dz-side*.10*du
-        remove|=((ur/3.05)**2+(vr/1.12)**2<1)&(y<-65.5)
+        remove|=((ur/3.42)**2+(vr/1.27)**2<1)&(y<-65.3)
     # Closed lips remain continuous geometry. Mouth depth is represented by
     # the analytic crease in Anatomy.deformation(), not by deleted triangles.
     f=f[~remove]
@@ -388,10 +388,13 @@ def eyelid_patch(a,side):
     inner_upper=inner_upper-overlap
     inner_lower=inner_lower+overlap
 
-    # Outer lid boundaries follow a wider asymmetric orbital ellipse.
-    outer_x=ec[0]+side*q*18.9
-    outer_upper=ec[2]+.65*a.p.eye_tilt*q+10.7*shape**.56
-    outer_lower=ec[2]+.40*a.p.eye_tilt*q-8.8*shape**.60
+    # Outer lid boundaries reproduce the exact orbital ellipse removed by
+    # head_mesh(), with a tiny overlap to guarantee watertight visual coverage.
+    overlap=1.018
+    outer_x=ec[0]+side*q*(19.0*overlap)
+    root=np.sqrt(np.maximum(1-q*q,0))
+    outer_upper=ec[2]+.55*q+(11.8*overlap)*root
+    outer_lower=ec[2]+.55*q-(9.8*overlap)*root
 
     parts=[]
     for name,inner_z,outer_z,bulge in [
@@ -542,7 +545,7 @@ def nostril_rim(a,side):
     # Outer and inner rotated ellipses form a thin skin annulus.
     rings=[]
     for scale,depth in [(1.07,-.02),(.80,.72)]:
-        ur=3.22*scale*np.cos(theta);vr=1.23*scale*np.sin(theta)
+        ur=3.62*scale*np.cos(theta);vr=1.38*scale*np.sin(theta)
         du=ur-side*.42*vr;dz=vr+side*.10*ur
         x=cx+du;z=cz+dz
         y=a.front(x,z)+depth
@@ -559,7 +562,7 @@ def nasal_cavity(a,side):
     cx=side*(10.2*a.p.nose_width)+.20;cz=-16.4
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=3.18*r*np.cos(theta);vr=1.20*r*np.sin(theta)
+    ur=3.55*r*np.cos(theta);vr=1.34*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
     y=a.front(x,z)+2.7+2.0*(1-r*r)
@@ -660,7 +663,7 @@ def stubble(a,rng,quality):
 
 def build(parameters=None,quality='final',hair=True):
     p=parameters or FaceParameters();a=Anatomy(p);rng=np.random.default_rng(p.seed)
-    parts=head_mesh(a,quality)+[mouth_interior(a)]
+    parts=head_mesh(a,quality)
     for side in (-1,1):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
