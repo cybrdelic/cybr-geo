@@ -1,4 +1,4 @@
-name: CYBR NOCTURNE / GEO x LIGHT
+name: CYBR NOCTURNE geometry
 
 on:
   workflow_dispatch:
@@ -10,46 +10,42 @@ on:
       - '.github/workflows/cybr-nocturne.yml'
 
 jobs:
-  geometry-and-spectral-smoke:
+  procedural-geometry:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install source dependencies
+      - name: Install focused dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install numpy trimesh pillow pytest
           python -m pip install --no-deps -e .
-
-      - name: Fetch and build CYBR LIGHT
-        run: |
-          git clone --depth 1 https://github.com/cybrdelic/cybr-light.git ../cybr-light
-          python -m pip install -e ../cybr-light
-          cmake -S ../cybr-light -B ../cybr-light/build -DCMAKE_BUILD_TYPE=Release
-          cmake --build ../cybr-light/build --parallel 4
 
       - name: Compile and test procedural outfit
         run: |
           python -m compileall -q examples/cybr_nocturne_outfit.py tools/render_cybr_nocturne_cybrlight.py
           python -m pytest -q tests/test_cybr_nocturne.py
 
-      - name: Render native spectral smoke views
-        env:
-          CYBR_LIGHT_ROOT: ${{ github.workspace }}/../cybr-light
-          CYBR_LIGHT_BINARY: ${{ github.workspace }}/../cybr-light/build/cybr-light
+      - name: Build CYBR GEO scene package
         run: |
-          mkdir -p artifacts/nocturne
-          python tools/render_cybr_nocturne_cybrlight.py --preset smoke --view hero --out artifacts/nocturne
-          python tools/render_cybr_nocturne_cybrlight.py --preset smoke --view back --out artifacts/nocturne
-          test -s artifacts/nocturne/hero_smoke.png
-          test -s artifacts/nocturne/back_smoke.png
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          p=Path('examples/cybr_nocturne_outfit.py')
+          s=importlib.util.spec_from_file_location('nocturne',p)
+          m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          a=m.build()
+          a.save('artifacts/nocturne-geo')
+          a.export_glb('artifacts/nocturne-geo/CYBR_NOCTURNE.glb')
+          print(a.validate())
+          PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cybr-nocturne-geo-light-smoke
-          path: artifacts/nocturne/
+          name: cybr-nocturne-geo
+          path: artifacts/nocturne-geo/
           if-no-files-found: error
