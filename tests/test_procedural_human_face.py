@@ -12,7 +12,7 @@ from procedural_human_face import build,FaceParameters,Anatomy,SKIN
 
 @pytest.fixture(scope='module')
 def closed():
-    return build(quality='preview',hair=False)
+    return build(FaceParameters(eyelid_closure=1.0),quality='preview',hair=False)
 
 
 def test_anatomy_builds_without_any_file_reads(monkeypatch,closed):
@@ -21,7 +21,7 @@ def test_anatomy_builds_without_any_file_reads(monkeypatch,closed):
     with monkeypatch.context() as m:
         m.setattr(builtins,'open',no_files)
         m.setattr(Path,'open',no_files)
-        again=build(quality='preview',hair=False)
+        again=build(FaceParameters(eyelid_closure=1.0),quality='preview',hair=False)
     assert again.metadata['input_assets']==[]
     assert again.metadata['scan_used'] is False
     assert len(again.parts)==len(closed.parts)
@@ -79,3 +79,13 @@ def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
         assert 'nasal_vestibule' in hit.shape[0].id()
         y=-150+float(np.asarray(hit.t)[0])
         assert y>float(anatomy.front(nx,nz))+2.
+
+
+def test_no_scan_or_imported_anatomy_contract():
+    assembly=build(FaceParameters(eyelid_closure=.10),quality='preview',hair=False)
+    assert assembly.metadata['scan_used'] is False
+    assert assembly.metadata['imported_anatomy_mesh'] is False
+    assert assembly.metadata['photographic_skin_textures'] is False
+    assert assembly.metadata['image_generation'] is False
+    assert assembly.metadata['input_assets']==[]
+    assert all('no-scan' in p.tags for p in assembly.parts if p.group=='anatomy')
