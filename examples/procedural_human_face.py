@@ -160,10 +160,11 @@ class Anatomy:
         t=np.clip(t,0,1)
         upper_mask=(z>=line)
         fullness=np.where(upper_mask,self.p.upper_lip_fullness,self.p.lower_lip_fullness)
-        lip=fullness*(1-t**1.45)*(3.0+4.25*np.sin(np.pi*t))
+        lip=fullness*(1-t**1.55)*(2.45+3.55*np.sin(np.pi*t))
         d-=lip*inside*((z>=line-lower)&(z<=line+upper))
         for s in (-1,1):
-            d+=1.65*gaussian(x,z,s*25,-41.0,2.8,3.3)
+            d+=1.15*gaussian(x,z,s*(self.p.mouth_width*.485),-39.2,2.5,3.0)
+            d+=.28*gaussian(x,z,s*(self.p.mouth_width*.53),-41.2,3.6,5.2)
         # Nasolabial furrow and its gently convex lateral bank.
         fold=14.7+.34*np.clip(-z-17,0,34)
         extent=smoothstep(-52,-42,z)*(1-smoothstep(-18,-11,z))
@@ -182,6 +183,11 @@ class Anatomy:
         d-=2.0*np.exp(-((z-clavicle)/3.6)**2)*np.exp(-((ax-62)/49)**4)
         d+=2.3*gaussian(x,z,0,-146,8,6)
         d-=.45*gaussian(x,z,-37,-7,20,19)
+        # Low-frequency deterministic asymmetry prevents a perfectly mirrored
+        # mannequin face without reading any external identity data.
+        seed_phase=(self.p.seed % 104729)/104729.*(2*np.pi)
+        d+=.24*np.sin(seed_phase)*np.tanh(x/28.)*gaussian(x,z,0,-4,66,78)
+        d+=.16*np.cos(seed_phase*.73)*np.tanh(x/21.)*gaussian(x,z,0,-52,58,36)
         # Analytic low-amplitude skin relief in world coordinates, no asset input.
         d+=self.p.skin_relief*(np.sin(x*2.9+np.sin(z*1.3))*np.sin(z*3.2)
                              +.45*np.sin(x*7.1+z*5.3))
@@ -363,6 +369,41 @@ def tube_collection(name,curves,radii,material,a=None,sides=5):
     return surface_part(name,v,np.concatenate(fs),material,a.uv(v) if a else None)
 
 
+def eyelid_bridge(a,side):
+    """Skin-thickness strips that connect the facial aperture to the ocular surface.
+
+    v10/v12-prebridge left a literal geometric gap between the cut head mesh and
+    the eyeball, which read as a black graphic outline. These strips are generated
+    analytically from the same eye-opening curves and sphere dimensions.
+    """
+    c=a.eye(side)
+    q=np.linspace(-.995,.995,161)
+    x=c[0]+side*q*(a.p.eye_width/2)
+    _,upper,lower=a.eye_opening(x,side)
+    strips=[]
+    for name,z in [('upper',upper),('lower',lower)]:
+        outer_y=a.front(x,z)-.025
+        dx=x-c[0];dz=z-c[2]
+        sphere=np.maximum(1-(dx/12.45)**2-(dz/11.85)**2,0)
+        ocular_y=c[1]-11.82*np.sqrt(sphere)
+        # Inner lip sits just in front of the sclera/cornea and slightly toward
+        # the aperture center, giving finite lid thickness without covering iris.
+        toward=np.where(name=='upper',-.18,.18)
+        inner_z=z+toward
+        inner_y=np.minimum(outer_y+.85,ocular_y-.035)
+        v=np.stack([
+            np.column_stack([x,outer_y,z]),
+            np.column_stack([x,inner_y,inner_z])
+        ],axis=0).reshape(-1,3)
+        f=grid_faces(2,len(q),reverse=(name=='lower'))
+        uv=a.uv(v)
+        strips.append(surface_part(
+            ('Left' if side<0 else 'Right')+f'_eyelid_{name}_thickness',
+            v,f,SKIN,uv,
+            role='Procedural eyelid thickness bridging facial skin to ocular surface'))
+    return strips
+
+
 def eyelids(a,side):
     """Continuous upper/lower moist margins following the analytic eye opening."""
     c=a.eye(side)
@@ -489,7 +530,8 @@ def build(parameters=None,quality='final',hair=True):
     for side in (-1,1):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
         parts.append(nasal_cavity(a,side));parts.append(ear(a,side))
-        wet,margin=eyelids(a,side);parts.append(wet)
+        wet,margin=eyelids(a,side)
+        parts.extend(eyelid_bridge(a,side));parts.append(wet)
         parts.append(ellipsoid(prefix+'_sclera',c,[12.45,11.85,11.85],SCLERA,iris_cut=True))
         caruncle=c+np.array([-side*12.65,-6.9,-.85])
         parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[1.2,.85,.65],LID,nu=48,nv=32))
