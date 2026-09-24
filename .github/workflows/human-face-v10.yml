@@ -31,12 +31,10 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - name: Install render dependencies
+      - name: Install focused face-render dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++ libcairo2
           python -m pip install --upgrade pip
-          python -m pip install -r requirements-tested.txt
+          python -m pip install numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 trimesh==4.11.1 mitsuba==3.7.1 pytest==9.0.2 setuptools==82.0.1
           python -m pip install --no-deps -e .
       - name: Verify face geometry
         run: |
