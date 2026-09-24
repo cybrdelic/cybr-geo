@@ -51,16 +51,16 @@ def skin_maps(out,anatomy,size=4096):
     color*=1-.075*freckles[...,None]*freckle_zone[...,None]
     line,upper,lower=anatomy.mouth(x)
     rel=np.where(z>=line,(z-line)/np.maximum(upper,.001),(line-z)/np.maximum(lower,.001))
-    lips=(1-smoothstep(.82,1.18,rel))*smoothstep(anatomy.p.mouth_width/2+.3,
-                anatomy.p.mouth_width/2-1.2,abs(x))*front
-    lip_color=np.stack([.245+.010*meso,.132+.005*meso,.108+.004*meso],-1)
+    lips=(1-smoothstep(.68,1.32,rel))*smoothstep(anatomy.p.mouth_width/2+1.4,
+                anatomy.p.mouth_width/2-2.3,abs(x))*front
+    lip_color=np.stack([.235+.010*meso,.145+.006*meso,.120+.005*meso],-1)
     color=color*(1-lips[...,None])+lip_color*lips[...,None]
     # Sparse neutral follicle pigmentation complements actual modeled stubble.
     beard=np.exp(-((z+59)/30)**4)*front*(1-lips)
     color[...,0]-=.009*beard;color[...,1]-=.004*beard
     rough=.455+.022*meso+.016*fine
     oil=(gaussian(x,z,0,-8,15,23)+.5*gaussian(x,z,0,66,44,20))*front
-    rough-=.075*oil;rough=rough*(1-lips)+(.385+.018*meso)*lips
+    rough-=.060*oil;rough=rough*(1-lips)+(.425+.016*meso)*lips
     # Skin furrows and isolated pore dimples in a calibrated 0.06 mm range.
     impulses=(rng.random((size,size),dtype=np.float32)<.017).astype(np.float32)
     impulses*=rng.uniform(.5,1.5,(size,size)).astype(np.float32)
@@ -107,7 +107,7 @@ def eye_maps(out,seed,size=1024):
     iris*= (1-.77*np.exp(-((r-.978)/.06)**2))[...,None]
     iris[r>1]=[.009,.014,.006]
     save_rgb(out/'iris_color.png',np.clip(iris,.002,1))
-    sclera=np.empty_like(iris);sclera[:]=[.62,.64,.59]
+    sclera=np.empty_like(iris);sclera[:]=[.56,.565,.525]
     n=soft_noise(rng,size,30)
     sclera+=n[...,None]*np.array([.009,.008,.006])
     # Curved, branching small vessels concentrated toward the canthi.
