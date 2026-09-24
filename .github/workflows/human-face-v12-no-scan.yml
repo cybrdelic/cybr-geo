@@ -65,13 +65,13 @@ jobs:
         run: |
           python tools/render_human_face.py --out build/faces_v12/a --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
-            --texture-size 1024 --exposure 1.30 --eyelid-closure .10 \
+            --texture-size 1024 --exposure 1.30 --eyelid-closure .18 \
             --seed 271828 --skip-export
       - name: Render procedural identity B
         run: |
           python tools/render_human_face.py --out build/faces_v12/b --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
-            --texture-size 1024 --exposure 1.30 --eyelid-closure .13 \
+            --texture-size 1024 --exposure 1.30 --eyelid-closure .21 \
             --seed 314159 --eye-spacing 61.0 --eye-height 31.0 --eye-width 26.4 \
             --eye-opening 8.2 --eye-tilt .40 --nose-projection 15.9 --nose-width .98 \
             --mouth-width 51.2 --upper-lip-fullness 1.08 --lower-lip-fullness 1.06 \
@@ -81,7 +81,7 @@ jobs:
         run: |
           python tools/render_human_face.py --out build/faces_v12/c --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
-            --texture-size 1024 --exposure 1.30 --eyelid-closure .08 \
+            --texture-size 1024 --exposure 1.30 --eyelid-closure .15 \
             --seed 161803 --eye-spacing 63.8 --eye-height 29.3 --eye-width 27.8 \
             --eye-opening 8.5 --eye-tilt .82 --nose-projection 18.9 --nose-width 1.13 \
             --mouth-width 54.0 --upper-lip-fullness .91 --lower-lip-fullness .95 \
