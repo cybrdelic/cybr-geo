@@ -7,7 +7,7 @@
   "spp": 96,
   "depth": 14,
   "seed": 314159,
-  "render_seconds": 52.788424491882324,
+  "render_seconds": 51.93808889389038,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.3,
   "bump_height_range_mm": 0.032,
@@ -102,7 +102,7 @@
       ],
       "finish_origin": null,
       "vertices": 228380,
-      "triangles": 450292,
+      "triangles": 454264,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
@@ -250,8 +250,8 @@
       ]
     },
     {
-      "name": "Left_procedural_upper_eyelid",
-      "material": 0,
+      "name": "Left_visible_sclera",
+      "material": 3,
       "group": "anatomy",
       "motion": "fixed",
       "center": [
@@ -264,7 +264,7 @@
         0.0,
         0.0
       ],
-      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
+      "role": "Procedural sclera patch exactly filling the palpebral aperture",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -277,68 +277,24 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 2211,
-      "triangles": 4000,
+      "vertices": 13896,
+      "triangles": 13477,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -49.59529,
-          -64.87076361923432,
-          30.929654424279672
+          -40.878,
+          -59.52999035324702,
+          28.463330909804043
         ],
         [
-          -11.104710000000004,
-          -50.315915405065056,
-          43.18488756981479
+          -19.822000000000003,
+          -53.75815128055889,
+          33.23164682675101
         ]
       ]
     },
     {
-      "name": "Left_procedural_lower_eyelid",
-      "material": 0,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 2211,
-      "triangles": 4000,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -49.59529,
-          -65.17701733727009,
-          21.16855926297916
-        ],
-        [
-          -11.104710000000004,
-          -50.79809545652823,
-          31.40214429336285
-        ]
-      ]
-    },
-    {
-      "name": "Left_medial_canthus",
+      "name": "Left_lacrimal_caruncle",
       "material": 1,
       "group": "anatomy",
       "motion": "fixed",
@@ -352,7 +308,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "role": "Left_lacrimal_caruncle",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -365,25 +321,25 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 180,
-      "triangles": 306,
+      "vertices": 1107,
+      "triangles": 2080,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -20.438000000000002,
-          -62.04522401350424,
-          30.174232317900504
+          -20.962,
+          -58.8,
+          30.430000001899998
         ],
         [
-          -19.206000000000003,
-          -61.41429315279611,
-          31.538206762340632
+          -19.802000000000003,
+          -58.2,
+          31.1899999981
         ]
       ]
     },
     {
-      "name": "Left_lateral_canthus",
-      "material": 1,
+      "name": "Left_iris_stroma",
+      "material": 4,
       "group": "anatomy",
       "motion": "fixed",
       "center": [
@@ -396,7 +352,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "role": "Left_iris_stroma",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -409,19 +365,107 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 180,
-      "triangles": 306,
+      "vertices": 6176,
+      "triangles": 11904,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -41.494,
-          -56.63104623521123,
-          30.705232317900503
+          -35.75,
+          -59.597512,
+          25.759999999999998
         ],
         [
-          -40.262,
-          -55.35540624547271,
-          32.069206762340634
+          -24.950000000000003,
+          -59.0668,
+          36.56
+        ]
+      ]
+    },
+    {
+      "name": "Left_pupil",
+      "material": 5,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_pupil",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 2316,
+      "triangles": 4032,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -31.970000000000002,
+          -59.480000000000004,
+          29.54
+        ],
+        [
+          -28.73,
+          -59.480000000000004,
+          32.78
+        ]
+      ]
+    },
+    {
+      "name": "Left_visible_cornea",
+      "material": 6,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural clear corneal patch over visible sclera and iris",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 12852,
+      "triangles": 25192,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -40.822,
+          -60.449999852491025,
+          28.503188745082873
+        ],
+        [
+          -19.878,
+          -55.67965856395858,
+          33.19194536663786
         ]
       ]
     },
@@ -466,226 +510,6 @@
           -19.177202808814748,
           -55.078323435031294,
           33.150612860919004
-        ]
-      ]
-    },
-    {
-      "name": "Left_sclera",
-      "material": 3,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Left_sclera",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 10449,
-      "triangles": 19816,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -44.5,
-          -59.5,
-          18.91000006125
-        ],
-        [
-          -16.200000000000003,
-          -35.0,
-          43.409999938750005
-        ]
-      ]
-    },
-    {
-      "name": "Left_lacrimal_caruncle",
-      "material": 1,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Left_lacrimal_caruncle",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 1617,
-      "triangles": 3072,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -20.230000000000004,
-          -55.87,
-          30.1300000024
-        ],
-        [
-          -18.67,
-          -54.63,
-          31.0899999976
-        ]
-      ]
-    },
-    {
-      "name": "Left_iris_stroma",
-      "material": 4,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Left_iris_stroma",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 6176,
-      "triangles": 11904,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -36.2,
-          -59.20079,
-          25.310000000000002
-        ],
-        [
-          -24.5,
-          -58.424437499999996,
-          37.01
-        ]
-      ]
-    },
-    {
-      "name": "Left_pupil",
-      "material": 5,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Left_pupil",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 2316,
-      "triangles": 4032,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -32.17,
-          -59.07,
-          29.34
-        ],
-        [
-          -28.53,
-          -59.07,
-          32.98
-        ]
-      ]
-    },
-    {
-      "name": "Left_ocular_tear_surface",
-      "material": 6,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Left_ocular_tear_surface",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 10449,
-      "triangles": 20480,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -44.6,
-          -60.45,
-          18.780000061899997
-        ],
-        [
-          -16.1,
-          -34.769999999999996,
-          43.5399999381
         ]
       ]
     },
@@ -866,8 +690,8 @@
       ]
     },
     {
-      "name": "Right_procedural_upper_eyelid",
-      "material": 0,
+      "name": "Right_visible_sclera",
+      "material": 3,
       "group": "anatomy",
       "motion": "fixed",
       "center": [
@@ -880,7 +704,7 @@
         0.0,
         0.0
       ],
-      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
+      "role": "Procedural sclera patch exactly filling the palpebral aperture",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -893,68 +717,24 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 2211,
-      "triangles": 4000,
+      "vertices": 13896,
+      "triangles": 13477,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          11.104710000000004,
-          -65.04621847522415,
-          30.66965442427967
+          19.822000000000003,
+          -59.52999035324702,
+          28.20333090980404
         ],
         [
-          49.59529,
-          -50.32780959306946,
-          42.924887569814786
+          40.878,
+          -53.75815128055889,
+          32.97164682675101
         ]
       ]
     },
     {
-      "name": "Right_procedural_lower_eyelid",
-      "material": 0,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 2211,
-      "triangles": 4000,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          11.104710000000004,
-          -65.38897093892888,
-          20.908559262979153
-        ],
-        [
-          49.59529,
-          -50.81244266359307,
-          31.142144293362847
-        ]
-      ]
-    },
-    {
-      "name": "Right_medial_canthus",
+      "name": "Right_lacrimal_caruncle",
       "material": 1,
       "group": "anatomy",
       "motion": "fixed",
@@ -968,7 +748,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "role": "Right_lacrimal_caruncle",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -981,25 +761,25 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 180,
-      "triangles": 306,
+      "vertices": 1107,
+      "triangles": 2080,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.206000000000003,
-          -62.051385498482254,
-          29.914232317900503
+          19.802000000000003,
+          -58.8,
+          30.170000001899997
         ],
         [
-          20.438000000000002,
-          -61.414688529789046,
-          31.27820676234063
+          20.962,
+          -58.2,
+          30.929999998099998
         ]
       ]
     },
     {
-      "name": "Right_lateral_canthus",
-      "material": 1,
+      "name": "Right_iris_stroma",
+      "material": 4,
       "group": "anatomy",
       "motion": "fixed",
       "center": [
@@ -1012,7 +792,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "role": "Right_iris_stroma",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -1025,19 +805,107 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 180,
-      "triangles": 306,
+      "vertices": 6176,
+      "triangles": 11904,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          40.262,
-          -56.62660440149505,
-          30.4452323179005
+          24.950000000000003,
+          -59.597512,
+          25.5
         ],
         [
-          41.494,
-          -55.350486840078425,
-          31.80920676234063
+          35.75,
+          -59.0668,
+          36.3
+        ]
+      ]
+    },
+    {
+      "name": "Right_pupil",
+      "material": 5,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_pupil",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 2316,
+      "triangles": 4032,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          28.73,
+          -59.480000000000004,
+          29.279999999999998
+        ],
+        [
+          31.970000000000002,
+          -59.480000000000004,
+          32.519999999999996
+        ]
+      ]
+    },
+    {
+      "name": "Right_visible_cornea",
+      "material": 6,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural clear corneal patch over visible sclera and iris",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 12852,
+      "triangles": 25192,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          19.878,
+          -60.449999852491025,
+          28.243188745082872
+        ],
+        [
+          40.822,
+          -55.67965856395858,
+          32.931945366637855
         ]
       ]
     },
@@ -1082,226 +950,6 @@
           41.52245362408977,
           -55.078323435031294,
           32.890612860919006
-        ]
-      ]
-    },
-    {
-      "name": "Right_sclera",
-      "material": 3,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Right_sclera",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 10449,
-      "triangles": 19816,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          16.200000000000003,
-          -59.5,
-          18.650000061249997
-        ],
-        [
-          44.5,
-          -35.0,
-          43.14999993875
-        ]
-      ]
-    },
-    {
-      "name": "Right_lacrimal_caruncle",
-      "material": 1,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Right_lacrimal_caruncle",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 1617,
-      "triangles": 3072,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          18.67,
-          -55.87,
-          29.870000002399998
-        ],
-        [
-          20.230000000000004,
-          -54.63,
-          30.829999997599998
-        ]
-      ]
-    },
-    {
-      "name": "Right_iris_stroma",
-      "material": 4,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Right_iris_stroma",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 6176,
-      "triangles": 11904,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          24.5,
-          -59.20079,
-          25.049999999999997
-        ],
-        [
-          36.2,
-          -58.424437499999996,
-          36.75
-        ]
-      ]
-    },
-    {
-      "name": "Right_pupil",
-      "material": 5,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Right_pupil",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 2316,
-      "triangles": 4032,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          28.53,
-          -59.07,
-          29.08
-        ],
-        [
-          32.17,
-          -59.07,
-          32.72
-        ]
-      ]
-    },
-    {
-      "name": "Right_ocular_tear_surface",
-      "material": 6,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Right_ocular_tear_surface",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 10449,
-      "triangles": 20480,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          16.1,
-          -60.45,
-          18.5200000619
-        ],
-        [
-          44.6,
-          -34.769999999999996,
-          43.2799999381
         ]
       ]
     },
@@ -1415,13 +1063,13 @@
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "e30c23a16313db358c1156da07a730b26629b6369c09135438233a89003aff5f",
+    "examples/procedural_human_face.py": "c280bc316dbe8eb9a7acc16abb01f47a8db231bfcfd07ce31008bf4f9655dccd",
     "tools/procedural_face_materials.py": "578a1e8c405d913fe3d86916f6d99510778f06b0bdb3b24df73bba93936937df",
     "tools/render_procedural_face.py": "e48b85ca4e6bdd36d4da7ae54f69ace70aa1696f4c9f7d1843fbf5ee8003777b",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "3dbe5be30e5e39aaf43b7b191f4708115e2fdb9979cf09877e9ccc901bf18841",
-  "sha256": "7be11ee19e09fbd17ba7c5ef57620ead52abb181bb9538b479b23ab933ced638"
+  "png_pixels_sha256": "a6d690887a8ac23862f41fe863edbc2ccf4fb80f32b5547a7d51d7c6c870a4a9",
+  "sha256": "12361751d3a869f9b5ca77608e31359cd96adc83965a8356021cb9f2860ebab7"
 }
