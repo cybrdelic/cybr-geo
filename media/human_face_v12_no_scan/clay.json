@@ -1,15 +1,15 @@
 {
-  "image": "CYBR_Procedural_Face_portrait.png",
+  "image": "CYBR_Procedural_Face_portrait_clay.png",
   "resolution": [
-    640,
-    800
+    480,
+    600
   ],
-  "spp": 96,
-  "depth": 14,
+  "spp": 48,
+  "depth": 12,
   "seed": 271828,
-  "render_seconds": 54.19155979156494,
+  "render_seconds": 13.952889680862427,
   "mitsuba_version": "3.7.1",
-  "exposure_multiplier": 1.3,
+  "exposure_multiplier": 1.15,
   "bump_height_range_mm": 0.032,
   "renderer": "CYBR GEO ORBIT v9 / Mitsuba LLVM CPU path tracing",
   "denoiser": "Intel OIDN, beauty + albedo + world-space geometric normal, HDR/high",
@@ -734,50 +734,6 @@
       ]
     },
     {
-      "name": "Left_individual_brow_hairs_and_lashes",
-      "material": 7,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Left_individual_brow_hairs_and_lashes",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 18360,
-      "triangles": 34272,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -57.42781465853973,
-          -66.47111293005251,
-          25.001417546639047
-        ],
-        [
-          -15.596102347020802,
-          -41.28687343430932,
-          52.419846696827776
-        ]
-      ]
-    },
-    {
       "name": "Right_nasal_vestibule",
       "material": 2,
       "group": "anatomy",
@@ -1260,102 +1216,14 @@
           42.2799999381
         ]
       ]
-    },
-    {
-      "name": "Right_individual_brow_hairs_and_lashes",
-      "material": 7,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Right_individual_brow_hairs_and_lashes",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 18360,
-      "triangles": 34272,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          15.717614762950332,
-          -66.58371243565188,
-          24.981448225268565
-        ],
-        [
-          58.16981853966771,
-          -40.314003698890936,
-          52.56226717093864
-        ]
-      ]
-    },
-    {
-      "name": "Individual_shaved_facial_hair_shafts",
-      "material": 7,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Individual_shaved_facial_hair_shafts",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "deterministic"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 58572,
-      "triangles": 97620,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -67.9946924012345,
-          -72.49734983588681,
-          -85.18028372288931
-        ],
-        [
-          68.00676146809818,
-          -15.687889653316818,
-          -23.998597273835973
-        ]
-      ]
     }
   ],
   "texture_provenance": {
     "source": "Deterministic numeric fields only; no input images or meshes",
     "seed": 271828,
     "skin_resolution": [
-      1024,
-      1024
+      512,
+      512
     ],
     "eye_resolution": [
       1024,
@@ -1363,9 +1231,9 @@
     ],
     "encoded_height_normalization_mm": 0.06,
     "files": {
-      "skin_color.png": "f3061fa79f7303433fb52357acf3732c9cb20dca14a64c5ca01f225e8716c4e2",
-      "skin_roughness.png": "c96bf5c865fa217a53ee4826a1a741525aa81663abb826fc4eaaf224d8088557",
-      "skin_height.png": "c81f9e2488a04979e403c321ff6d78e02527e3dbaa90b3e3d60ebd11099588bf",
+      "skin_color.png": "e67446c11dee06b79f5bdc99af4e37c8ea39233bcdfdf55c0e12b3230dc79d72",
+      "skin_roughness.png": "60cdcfe8d329a4c2c17979c9aefc0abf1a77313bc00f6b45daf9a829fa90e04f",
+      "skin_height.png": "bacfe0acfe939d5abdf10ccfbd94e18f910510a9b755ede0e183ec207803cbaf",
       "iris_color.png": "1f8002845c5590481410324ad819cb50e73ff3a996b1a09120d182487980867f",
       "sclera_color.png": "b9a0da03e233ac4dce62707ce45443fd5d1c7550180d82266ec0854ddb87e93a"
     }
@@ -1378,6 +1246,6 @@
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "36b09c9f7312961f2be06a7ea3428db7856923f54de5a5008ce09e67688690d7",
-  "sha256": "64bf8376c85a258dcc0fae5f9e9a5d5d2941cc1f88e438a6e3827a4915c8ca86"
+  "png_pixels_sha256": "f2d38c0278881d054e31563e6958decb9227f3e129b2119296f78fe09c3942ce",
+  "sha256": "3ee50233fcf1c6ceac37dc238d030ecd0ac2ba591e173945e7da13b0f3788f44"
 }
