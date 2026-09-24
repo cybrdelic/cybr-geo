@@ -1,0 +1,111 @@
+name: Original procedural human faces v12 no-scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/procedural-human-face-v12-no-scan'
+    paths:
+      - 'examples/procedural_human_face.py'
+      - 'examples/human_face.py'
+      - 'tools/procedural_face_materials.py'
+      - 'tools/render_procedural_face.py'
+      - 'tools/render_human_face.py'
+      - 'tools/orbit_mitsuba_photo.py'
+      - 'tests/test_procedural_human_face.py'
+      - '.github/workflows/human-face-v12-no-scan.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: human-face-v12-no-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install focused procedural-face dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 trimesh==4.11.1 mitsuba==3.7.1 pytest==9.0.2 setuptools==82.0.1
+          python -m pip install --no-deps -e .
+      - name: Verify original no-scan geometry
+        run: |
+          PYTHONPATH=src python -m pytest -q tests/test_procedural_human_face.py
+      - name: Verify source has no portrait asset dependency
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import importlib.util, sys
+          sys.path[:0]=['src','examples']
+          spec=importlib.util.spec_from_file_location('face','examples/procedural_human_face.py')
+          m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m)
+          a=m.build(m.FaceParameters(eyelid_closure=.10),quality='preview',hair=False)
+          assert a.metadata['scan_used'] is False
+          assert a.metadata['imported_anatomy_mesh'] is False
+          assert a.metadata['photographic_skin_textures'] is False
+          assert a.metadata['input_assets']==[]
+          print('NO_SCAN_CONTRACT',a.metadata)
+          PY
+      - name: Provision pinned OIDN
+        run: |
+          python - <<'PY'
+          from mechanism_lab.v9 import ensure_oidn
+          print(ensure_oidn())
+          PY
+      - name: Render procedural identity A
+        run: |
+          python tools/render_human_face.py --out build/faces_v12/a --view portrait \
+            --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
+            --texture-size 1024 --exposure 1.30 --eyelid-closure .10 \
+            --seed 271828 --skip-export
+      - name: Render procedural identity B
+        run: |
+          python tools/render_human_face.py --out build/faces_v12/b --view portrait \
+            --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
+            --texture-size 1024 --exposure 1.30 --eyelid-closure .13 \
+            --seed 314159 --eye-spacing 60.5 --eye-height 31.0 --eye-width 23.0 \
+            --eye-opening 7.0 --eye-tilt .45 --nose-projection 16.7 --nose-width .91 \
+            --mouth-width 51.5 --upper-lip-fullness 1.18 --lower-lip-fullness 1.13 \
+            --jaw-width .94 --skull-width .98 --cheek-width 1.04 --chin-width .92 \
+            --brow-weight .88 --skip-export
+      - name: Render procedural identity C
+        run: |
+          python tools/render_human_face.py --out build/faces_v12/c --view portrait \
+            --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
+            --texture-size 1024 --exposure 1.30 --eyelid-closure .08 \
+            --seed 161803 --eye-spacing 63.5 --eye-height 29.2 --eye-width 24.2 \
+            --eye-opening 7.2 --eye-tilt 1.0 --nose-projection 20.2 --nose-width 1.10 \
+            --mouth-width 54.5 --upper-lip-fullness .93 --lower-lip-fullness .96 \
+            --jaw-width 1.13 --skull-width 1.035 --cheek-width 1.05 --chin-width 1.08 \
+            --brow-weight 1.17 --skip-export
+      - name: Publish v12 no-scan renders
+        run: |
+          mkdir -p media/human_face_v12_no_scan
+          cp build/faces_v12/a/CYBR_Procedural_Face_portrait.png media/human_face_v12_no_scan/identity_a.png
+          cp build/faces_v12/b/CYBR_Procedural_Face_portrait.png media/human_face_v12_no_scan/identity_b.png
+          cp build/faces_v12/c/CYBR_Procedural_Face_portrait.png media/human_face_v12_no_scan/identity_c.png
+          cp build/faces_v12/a/CYBR_Procedural_Face_portrait.json media/human_face_v12_no_scan/identity_a.json
+          cp build/faces_v12/b/CYBR_Procedural_Face_portrait.json media/human_face_v12_no_scan/identity_b.json
+          cp build/faces_v12/c/CYBR_Procedural_Face_portrait.json media/human_face_v12_no_scan/identity_c.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/human_face_v12_no_scan
+          git commit -m "Add v12 original procedural face renders [skip ci]"
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-geo-human-faces-v12-no-scan
+          path: |
+            media/human_face_v12_no_scan/
+            build/faces_v12/*/texture_provenance.json
+          if-no-files-found: error
+          retention-days: 30
