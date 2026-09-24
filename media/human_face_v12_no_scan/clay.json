@@ -7,7 +7,7 @@
   "spp": 48,
   "depth": 12,
   "seed": 271828,
-  "render_seconds": 13.884785890579224,
+  "render_seconds": 13.921642303466797,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.15,
   "bump_height_range_mm": 0.032,
@@ -61,7 +61,7 @@
       "chin_width": 1.0,
       "brow_weight": 1.0,
       "skin_relief": 0.0025,
-      "eyelid_closure": 0.1
+      "eyelid_closure": 0.18
     },
     "quality": "preview",
     "renderer_reference": "CYBR GEO ORBIT v9, 40797a6fa756ce209b5e21dd83f2df1e41dbd5fb",
@@ -151,12 +151,12 @@
       "bounds_mm": [
         [
           -13.59415652139845,
-          -79.3127008645576,
+          -81.7327008645576,
           -17.786099843146346
         ],
         [
           -6.40584347860155,
-          -71.67362665568511,
+          -73.77284286558523,
           -15.013900156853651
         ]
       ]
@@ -284,7 +284,7 @@
         [
           -50.24529,
           -64.66578129415967,
-          29.41591333231143
+          29.406716487802342
         ],
         [
           -11.754710000000003,
@@ -333,7 +333,95 @@
         [
           -11.754710000000003,
           -50.06408518927201,
-          30.923257275394363
+          30.930430865885157
+        ]
+      ]
+    },
+    {
+      "name": "Left_medial_canthus",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 180,
+      "triangles": 306,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -20.557000000000002,
+          -62.194855323649584,
+          28.450717182438428
+        ],
+        [
+          -19.259,
+          -61.52708465665685,
+          30.288735598797015
+        ]
+      ]
+    },
+    {
+      "name": "Left_lateral_canthus",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 180,
+      "triangles": 306,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -42.741,
+          -55.95192152335049,
+          29.955217182438428
+        ],
+        [
+          -41.443,
+          -54.543811987226654,
+          31.793235598797015
         ]
       ]
     },
@@ -370,14 +458,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.76921915114791,
-          -60.161623985576696,
-          26.366558760598906
+          -42.76975687588159,
+          -60.24217524634632,
+          26.67504371935232
         ],
         [
-          -19.229927038526903,
-          -54.31708210827914,
-          33.23221564734346
+          -19.229451620733812,
+          -54.31895665408197,
+          32.962885847088835
         ]
       ]
     },
@@ -635,12 +723,12 @@
       "bounds_mm": [
         [
           6.805843478601549,
-          -79.73161369551593,
+          -82.15161369551593,
           -17.786099843146346
         ],
         [
           13.994156521398448,
-          -71.40676143664562,
+          -73.61310588423551,
           -15.013900156853651
         ]
       ]
@@ -768,7 +856,7 @@
         [
           11.754710000000003,
           -64.93705663633231,
-          29.155913332311428
+          29.14671648780234
         ],
         [
           50.24529,
@@ -817,7 +905,95 @@
         [
           50.24529,
           -50.25744146224949,
-          30.66325727539436
+          30.670430865885155
+        ]
+      ]
+    },
+    {
+      "name": "Right_medial_canthus",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 180,
+      "triangles": 306,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          19.259,
+          -62.35410271803833,
+          28.190717182438426
+        ],
+        [
+          20.557000000000002,
+          -61.68647186610903,
+          30.028735598797013
+        ]
+      ]
+    },
+    {
+      "name": "Right_lateral_canthus",
+      "material": 1,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Procedural medial/lateral canthal tissue closing orbital aperture",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 180,
+      "triangles": 306,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          41.443,
+          -56.09104586464249,
+          29.695217182438427
+        ],
+        [
+          42.741,
+          -54.72213670654993,
+          31.533235598797013
         ]
       ]
     },
@@ -854,14 +1030,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.229927038526903,
-          -60.161623985576696,
-          26.106558760598904
+          19.229451620733812,
+          -60.24217524634632,
+          26.41504371935232
         ],
         [
-          42.76921915114791,
-          -54.31708210827914,
-          32.97221564734346
+          42.76975687588159,
+          -54.31895665408197,
+          32.70288584708884
         ]
       ]
     },
@@ -1107,13 +1283,13 @@
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "32072ab17946039753a1c3f1f6e5ab611d75f53dc53e36e9be21e530b6fcdf8d",
+    "examples/procedural_human_face.py": "e30c23a16313db358c1156da07a730b26629b6369c09135438233a89003aff5f",
     "tools/procedural_face_materials.py": "578a1e8c405d913fe3d86916f6d99510778f06b0bdb3b24df73bba93936937df",
-    "tools/render_procedural_face.py": "c60e5177545135eea895b32c62a857f7bfc0009a90696c527b6df207de1acbae",
+    "tools/render_procedural_face.py": "e48b85ca4e6bdd36d4da7ae54f69ace70aa1696f4c9f7d1843fbf5ee8003777b",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "916870e04ead497fda478d5782c6fe5db85594ee4b101f55af576930d7b1260b",
-  "sha256": "542d03b10b0b5a72e3d697993d0e732cb8bd8fd6f30fc0bd30e64328ea84b3cf"
+  "png_pixels_sha256": "31dfff31b813908080ec97d3da2deca214c3b22b56434af09ac11c8092f15af2",
+  "sha256": "564a4ab6ca7ca1eddb692b6e1080e56e714192bb378762b0adf3db7ca5972c06"
 }
