@@ -7,7 +7,7 @@
   "spp": 48,
   "depth": 12,
   "seed": 271828,
-  "render_seconds": 13.952889680862427,
+  "render_seconds": 14.180089473724365,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.15,
   "bump_height_range_mm": 0.032,
@@ -88,12 +88,12 @@
         0.0,
         0.0
       ],
-      "role": "Region of the continuous authored anatomical skin surface",
+      "role": "Continuous authored skull, jaw, cheeks, nose, lips, neck and shoulders",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
         "no-scan",
-        "shared-boundary-skin"
+        "deterministic"
       ],
       "finish_axis": [
         1.0,
@@ -101,8 +101,8 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 226866,
-      "triangles": 451436,
+      "vertices": 228380,
+      "triangles": 450268,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
@@ -114,94 +114,6 @@
           170.4895123779087,
           95.0,
           143.99
-        ]
-      ]
-    },
-    {
-      "name": "Left_eyelids",
-      "material": 0,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Region of the continuous authored anatomical skin surface",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "shared-boundary-skin"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 752,
-      "triangles": 1272,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          -48.65505630035281,
-          -64.33554525713228,
-          21.745751978891832
-        ],
-        [
-          -13.786307019216412,
-          -50.961746911235856,
-          39.697704485488146
-        ]
-      ]
-    },
-    {
-      "name": "Right_eyelids",
-      "material": 0,
-      "group": "anatomy",
-      "motion": "fixed",
-      "center": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "explode": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "role": "Region of the continuous authored anatomical skin surface",
-      "provenance": "original-procedural",
-      "tags": [
-        "original-procedural",
-        "no-scan",
-        "shared-boundary-skin"
-      ],
-      "finish_axis": [
-        1.0,
-        0.0,
-        0.0
-      ],
-      "finish_origin": null,
-      "vertices": 761,
-      "triangles": 1267,
-      "has_analytic_cad": false,
-      "bounds_mm": [
-        [
-          13.786307019216382,
-          -64.53544594662925,
-          20.890897097625327
-        ],
-        [
-          48.675660045989225,
-          -51.22391458725782,
-          39.697704485488146
         ]
       ]
     },
@@ -382,7 +294,7 @@
       ]
     },
     {
-      "name": "Left_eyelid_upper_thickness",
+      "name": "Left_procedural_upper_eyelid",
       "material": 0,
       "group": "anatomy",
       "motion": "fixed",
@@ -396,7 +308,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural eyelid thickness continuously wrapping to ocular surface",
+      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -409,24 +321,24 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 1267,
-      "triangles": 2160,
+      "vertices": 2211,
+      "triangles": 4000,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.705600000000004,
-          -62.164562718434645,
-          29.29385617676279
+          -49.805499999999995,
+          -64.48925081753235,
+          29.441101004739163
         ],
         [
-          -19.2944,
-          -54.726522399391925,
-          33.48659080770296
+          -12.194500000000001,
+          -50.07943720476364,
+          40.87264821543988
         ]
       ]
     },
     {
-      "name": "Left_eyelid_lower_thickness",
+      "name": "Left_procedural_lower_eyelid",
       "material": 0,
       "group": "anatomy",
       "motion": "fixed",
@@ -440,7 +352,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural eyelid thickness continuously wrapping to ocular surface",
+      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -453,19 +365,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 1267,
-      "triangles": 2160,
+      "vertices": 2211,
+      "triangles": 4000,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.705600000000004,
-          -62.211606323189294,
-          26.680621383815506
+          -49.805499999999995,
+          -64.63905402684398,
+          21.354556437529475
         ],
         [
-          -19.2944,
-          -54.774851336353386,
-          31.07625894506876
+          -12.194500000000001,
+          -50.386676385846506,
+          30.918044798133995
         ]
       ]
     },
@@ -503,12 +415,12 @@
       "bounds_mm": [
         [
           -42.76927109765933,
-          -62.2633660412519,
+          -60.063427762444846,
           26.655624443921944
         ],
         [
           -19.229258241671218,
-          -54.901975283000866,
+          -54.312392914184706,
           33.52458844076181
         ]
       ]
@@ -866,7 +778,7 @@
       ]
     },
     {
-      "name": "Right_eyelid_upper_thickness",
+      "name": "Right_procedural_upper_eyelid",
       "material": 0,
       "group": "anatomy",
       "motion": "fixed",
@@ -880,7 +792,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural eyelid thickness continuously wrapping to ocular surface",
+      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -893,24 +805,24 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 1267,
-      "triangles": 2160,
+      "vertices": 2211,
+      "triangles": 4000,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.2944,
-          -62.327552301186444,
-          29.03385617676279
+          12.194500000000001,
+          -64.75301442386093,
+          29.181101004739162
         ],
         [
-          42.705600000000004,
-          -54.848680284209856,
-          33.22659080770296
+          49.805499999999995,
+          -50.270409374975664,
+          40.612648215439876
         ]
       ]
     },
     {
-      "name": "Right_eyelid_lower_thickness",
+      "name": "Right_procedural_lower_eyelid",
       "material": 0,
       "group": "anatomy",
       "motion": "fixed",
@@ -924,7 +836,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural eyelid thickness continuously wrapping to ocular surface",
+      "role": "Original procedural eyelid surface from orbital boundary to eyeball",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -937,19 +849,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 1267,
-      "triangles": 2160,
+      "vertices": 2211,
+      "triangles": 4000,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.2944,
-          -62.37055404396869,
-          26.420621383815504
+          12.194500000000001,
+          -64.91278551493552,
+          21.09455643752947
         ],
         [
-          42.705600000000004,
-          -54.89746549427467,
-          30.816258945068757
+          49.805499999999995,
+          -50.57824568101418,
+          30.658044798133993
         ]
       ]
     },
@@ -987,12 +899,12 @@
       "bounds_mm": [
         [
           19.229258241671218,
-          -62.42255275389323,
+          -60.063427762444846,
           26.395624443921943
         ],
         [
           42.76927109765933,
-          -55.06247572937539,
+          -54.312392914184706,
           33.26458844076181
         ]
       ]
@@ -1239,13 +1151,13 @@
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "c9a9aa5f6d02c65b45406b451a651b735fb7803f592455265cecd9dc7eab5d13",
+    "examples/procedural_human_face.py": "8a07800402a8ca40ba92a66d54a45f77bc32a00d3a822457846e828892bf13cf",
     "tools/procedural_face_materials.py": "67deb828c2fcdec2cb54a2216a97dd7a555cdf6db8c00e268cff472a463be304",
     "tools/render_procedural_face.py": "8ffbc08d0a0ff49efef326c99883ac3ac83fafe1cae215e927d7e53e573949e7",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "f2d38c0278881d054e31563e6958decb9227f3e129b2119296f78fe09c3942ce",
-  "sha256": "3ee50233fcf1c6ceac37dc238d030ecd0ac2ba591e173945e7da13b0f3788f44"
+  "png_pixels_sha256": "b1be1a4988be8b9ad6367b4b824c83110f1c744d3d9bf4a7a4e17c6a61f9c854",
+  "sha256": "fabe6a40fcd07b16b8f0f569946880215d5d3bb3954a19c38745a394aad94cfd"
 }
