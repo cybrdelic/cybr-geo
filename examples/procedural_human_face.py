@@ -408,7 +408,8 @@ def eyelid_patch(a,side):
         yy=outer_y[None,:]+(yy-outer_y[None,:])*canthus
 
         v=np.stack([xx,yy,zz],-1).reshape(-1,3)
-        f=grid_faces(rows,len(q),reverse=(name=='lower'))
+        reverse=((side>0 and name=='upper') or (side<0 and name=='lower'))
+        f=grid_faces(rows,len(q),reverse=reverse)
         p=surface_part(
             ('Left' if side<0 else 'Right')+f'_procedural_{name}_eyelid',
             v,f,SKIN,a.uv(v),
@@ -480,7 +481,7 @@ def closed_blink_seal(a,side):
     v=np.stack([xx,yy,zz],-1).reshape(-1,3)
     return surface_part(
         ('Left' if side<0 else 'Right')+'_closed_eyelid_seal',
-        v,grid_faces(rows,len(q)),SKIN,a.uv(v),
+        v,grid_faces(rows,len(q),reverse=(side<0)),SKIN,a.uv(v),
         role='Procedural finite skin patch for fully closed blink')
 
 def eyelids(a,side):
