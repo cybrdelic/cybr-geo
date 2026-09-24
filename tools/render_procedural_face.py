@@ -24,6 +24,7 @@ import orbit_mitsuba_photo as v9
 from procedural_human_face import (build,Anatomy,FaceParameters,SKIN,LID,CAVITY,
                                     SCLERA,IRIS,PUPIL,CORNEA,HAIR)
 from procedural_face_materials import generate
+from mechanism_lab.v9 import ensure_oidn
 
 
 def bitmap(path,raw=False):
@@ -163,9 +164,17 @@ def main():
     p.add_argument('--texture-size',type=int,default=4096)
     p.add_argument('--clay',action='store_true');p.add_argument('--no-hair',action='store_true')
     p.add_argument('--skip-export',action='store_true');p.add_argument('--reuse-textures',action='store_true')
-    p.add_argument('--oidn',default=os.environ.get('OIDN_BIN','oidnDenoise'))
+    p.add_argument('--oidn',default=os.environ.get('OIDN_BIN','auto'),help='OIDN executable, or auto to use CYBR GEO pinned provisioning')
     p.add_argument('--seed',type=int,default=271828);p.add_argument('--exposure',type=float,default=1.)
     p.add_argument('--eyelid-closure',type=float,default=1.,help='0=open, 1=closed; modifies actual lid geometry')
+    p.add_argument('--eye-spacing',type=float,default=61.0)
+    p.add_argument('--eye-height',type=float,default=30.0)
+    p.add_argument('--nose-projection',type=float,default=18.5)
+    p.add_argument('--mouth-width',type=float,default=51.0)
+    p.add_argument('--jaw-width',type=float,default=1.0)
+    p.add_argument('--skull-width',type=float,default=1.0)
+    p.add_argument('--brow-weight',type=float,default=1.0)
+    p.add_argument('--skin-relief',type=float,default=.0025)
     args=p.parse_args();args.out=args.out.resolve();args.out.mkdir(parents=True,exist_ok=True)
     width,height=map(int,args.size.split('x'))
     if min(width,height,args.spp,args.depth,args.threads,args.texture_size)<1:p.error('Positive settings required')
@@ -174,7 +183,12 @@ def main():
         'examples/procedural_human_face.py','tools/procedural_face_materials.py',
         'tools/render_procedural_face.py','tools/orbit_mitsuba_photo.py']}
     if not 0<=args.eyelid_closure<=1:p.error('Eyelid closure must be between zero and one')
-    params=FaceParameters(seed=args.seed,eyelid_closure=args.eyelid_closure)
+    params=FaceParameters(seed=args.seed,eyelid_closure=args.eyelid_closure,
+        eye_spacing=args.eye_spacing,eye_height=args.eye_height,
+        nose_projection=args.nose_projection,mouth_width=args.mouth_width,
+        jaw_width=args.jaw_width,skull_width=args.skull_width,
+        brow_weight=args.brow_weight,skin_relief=args.skin_relief)
+    if args.oidn=='auto': args.oidn=str(ensure_oidn())
     print('Building original procedural anatomy',flush=True);t=time.time()
     assembly=build(params,args.quality,hair=not(args.no_hair or args.clay))
     print('Geometry:',sum(len(p.faces) for p in assembly.parts),'triangles in',round(time.time()-t,2),'seconds',flush=True)
