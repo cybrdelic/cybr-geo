@@ -371,6 +371,12 @@ def eyelid_patch(a,side):
     shape=np.maximum(1-q*q,0)
     inner_x=ec[0]+side*q*(a.p.eye_width/2)
     _,inner_upper,inner_lower=a.eye_opening(inner_x,side)
+    # A fully closed blink needs finite overlap at the lid seam so a ray cannot
+    # leak through a zero-width shared boundary. The overlap vanishes rapidly
+    # for ordinary open-eye poses.
+    overlap=.42*(a.p.eyelid_closure**6)*shape**.72
+    inner_upper=inner_upper-overlap
+    inner_lower=inner_lower+overlap
 
     # Outer lid boundaries follow a wider asymmetric orbital ellipse.
     outer_x=ec[0]+side*q*18.9
