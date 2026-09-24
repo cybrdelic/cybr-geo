@@ -454,6 +454,32 @@ def eyelid_bridge(a,side):
             role='Procedural eyelid thickness continuously wrapping to ocular surface'))
     return parts
 
+def closed_blink_seal(a,side):
+    """Finite skin seal used only for near-complete eyelid closure."""
+    if a.p.eyelid_closure < .94:
+        return None
+    ec=a.eye(side)
+    q=np.linspace(-.985,.985,201)
+    shape=np.maximum(1-q*q,0)
+    x=ec[0]+side*q*(a.p.eye_width/2)
+    _,upper,lower=a.eye_opening(x,side)
+    center=(upper+lower)*.5
+    half=.34*shape**.65
+    dx=x-ec[0];dz=center-ec[2]
+    sph=np.maximum(1-(dx/14.15)**2-(dz/12.25)**2,0)
+    ocular_y=ec[1]-12.22*np.sqrt(sph)
+    # Closed lid skin sits slightly anterior to the cornea.
+    y=ocular_y-.52-.18*shape
+    v=np.stack([
+        np.column_stack([x,y,center-half]),
+        np.column_stack([x,y-.03,center+half])
+    ],axis=0).reshape(-1,3)
+    return surface_part(
+        ('Left' if side<0 else 'Right')+'_closed_eyelid_seal',
+        v,grid_faces(2,len(q)),SKIN,a.uv(v),
+        role='Procedural finite seal for fully closed blink')
+
+
 def eyelids(a,side):
     """Continuous upper/lower moist margins following the analytic eye opening."""
     c=a.eye(side)
@@ -604,7 +630,10 @@ def build(parameters=None,quality='final',hair=True):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
-        parts.extend(eyelid_patch(a,side));parts.append(wet)
+        parts.extend(eyelid_patch(a,side))
+        seal=closed_blink_seal(a,side)
+        if seal is not None:parts.append(seal)
+        parts.append(wet)
         parts.append(ellipsoid(prefix+'_sclera',c,[14.15,12.25,12.25],SCLERA,iris_cut=True))
         caruncle=c+np.array([-side*12.65,-6.9,-.85])
         parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[1.2,.85,.65],LID,nu=48,nv=32))
