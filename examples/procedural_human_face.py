@@ -285,12 +285,13 @@ def head_mesh(a,quality):
     center=v[f].mean(axis=1);x,y,z=center.T
     remove=np.zeros(len(f),bool)
     for side in (-1,1):
-        # Dedicated eyelid surfaces replace the generic head mesh throughout
-        # the orbital patch. This avoids a literal aperture cut into an otherwise
-        # egg-shaped surface and gives the lids their own curvature/thickness.
-        ec=a.eye(side);lx=(x-ec[0])*side;lz=z-ec[2]
-        orbit=(lx/19.0)**2+((lz-.55*lx/19.0)/np.where(lz>=0,11.8,9.8))**2
-        remove|=(orbit<1.015)&(y<0)
+        # Keep the procedural facial/eyelid skin continuous. Only the true
+        # palpebral opening is removed; the surrounding lid relief stays part
+        # of the same head surface, eliminating orbital replacement seams.
+        if a.p.eyelid_closure < .995:
+            q,upper,lower=a.eye_opening(x,side)
+            aperture=(np.abs(q)<.915)
+            remove|=aperture&(z<upper-.06)&(z>lower+.06)&(y<0)
         # Open apertures lead to separately modeled recessed nasal vestibules.
         nx=side*(10.2*a.p.nose_width)+.20;nz=-16.4
         du=x-nx;dz=z-nz
@@ -357,6 +358,73 @@ def tube_collection(name,curves,radii,material,a=None,sides=5):
         vs.append(v.reshape(-1,3));fs.append(f+offset);offset+=v.size//3
     v=np.concatenate(vs)
     return surface_part(name,v,np.concatenate(fs),material,a.uv(v) if a else None)
+
+
+def sclera_front_y(a,side,x,z):
+    """Front surface of the procedurally parameterized scleral globe."""
+    ec=a.eye(side)
+    dx=np.asarray(x)-ec[0];dz=np.asarray(z)-ec[2]
+    sph=np.maximum(1-(dx/12.45)**2-(dz/11.55)**2,0)
+    return ec[1]-12.28*np.sqrt(sph)
+
+
+def _orient_eye_patch(name,v,f,material,uv,role):
+    p=surface_part(name,v,f,material,uv,role)
+    # Face outward toward -Y. Grid orientation flips between left/right eyes.
+    if np.mean(p.normals[:,1])>0:
+        p=surface_part(name,v,f[:,::-1],material,uv,role)
+    return p
+
+
+def visible_eye_sclera(a,side):
+    """Curved sclera surface that slightly overlaps the analytic eye opening."""
+    ec=a.eye(side)
+    q=np.linspace(-.94,.94,193)
+    t=np.linspace(0,1,72)[:,None]
+    shape=np.maximum(1-q*q,0)
+    x=ec[0]+side*q*(a.p.eye_width/2)
+    _,upper,lower=a.eye_opening(x,side)
+    upper=upper+.12*shape**.72
+    lower=lower-.12*shape**.78
+    xx=np.broadcast_to(x,(len(t),len(q)))
+    zz=lower[None,:]*(1-t)+upper[None,:]*t
+    yy=sclera_front_y(a,side,xx,zz)
+    v=np.stack([xx,yy,zz],-1).reshape(-1,3)
+    f=grid_faces(len(t),len(q))
+    center=v[f].mean(axis=1)
+    radial=(center[:,0]-ec[0])**2+(center[:,2]-ec[2])**2
+    # Iris/pupil are separate recessed geometry.
+    f=f[radial>5.45**2]
+    uv=np.column_stack([
+        .5+(v[:,0]-ec[0])/(2*12.45),
+        .5+(v[:,2]-ec[2])/(2*11.55)])
+    return _orient_eye_patch(
+        ('Left' if side<0 else 'Right')+'_visible_sclera',
+        v,f,SCLERA,uv,
+        'Procedural sclera patch exactly filling the palpebral aperture')
+
+
+def visible_cornea(a,side):
+    """Clear tear-film/cornea patch following the visible palpebral opening."""
+    ec=a.eye(side)
+    q=np.linspace(-.935,.935,189)
+    t=np.linspace(0,1,68)[:,None]
+    shape=np.maximum(1-q*q,0)
+    x=ec[0]+side*q*(a.p.eye_width/2)
+    _,upper,lower=a.eye_opening(x,side)
+    upper=upper+.08*shape**.72
+    lower=lower-.08*shape**.78
+    xx=np.broadcast_to(x,(len(t),len(q)))
+    zz=lower[None,:]*(1-t)+upper[None,:]*t
+    yy=ocular_front_y(a,side,xx,zz)
+    v=np.stack([xx,yy,zz],-1).reshape(-1,3)
+    uv=np.column_stack([
+        .5+(v[:,0]-ec[0])/(2*14.25),
+        .5+(v[:,2]-ec[2])/(2*12.38)])
+    return _orient_eye_patch(
+        ('Left' if side<0 else 'Right')+'_visible_cornea',
+        v,grid_faces(len(t),len(q)),CORNEA,uv,
+        'Procedural clear corneal patch over visible sclera and iris')
 
 
 def ocular_front_y(a,side,x,z):
@@ -670,24 +738,15 @@ def build(parameters=None,quality='final',hair=True):
         prefix='Left' if side<0 else 'Right';c=a.eye(side)
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
-        parts.extend(eyelid_patch(a,side))
-        parts.extend(canthus_patches(a,side))
-        seal=closed_blink_seal(a,side)
-        if seal is not None:parts.append(seal)
-        parts.append(wet)
-        parts.append(ellipsoid(prefix+'_sclera',c,[14.15,12.25,12.25],SCLERA,iris_cut=True))
-        caruncle=c+np.array([-side*10.9,-8.0,-.55])
-        parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.78,.62,.48],LID,nu=48,nv=32))
-        parts.append(disk(prefix+'_iris_stroma',c,5.85,IRIS,
-                          lambda r:-12.03+.025*r*r,rmin=1.78))
-        parts.append(disk(prefix+'_pupil',c,1.82,PUPIL,lambda r:np.full_like(r,-11.82),nr=12))
-        # Clear ocular envelope over an independently recessed iris and pupil.
-        cornea=ellipsoid(prefix+'_ocular_tear_surface',c,[14.25,12.48,12.38],CORNEA)
-        v=cornea.vertices.copy();dx=v[:,0]-c[0];dz=v[:,2]-c[2]
-        frontal=v[:,1]<c[1]
-        bulge=.72*np.exp(-((dx*dx+dz*dz)/(5.7**2))**2)
-        v[frontal,1]-=bulge[frontal]
-        parts.append(surface_part(cornea.name,v,cornea.faces,CORNEA,cornea.portrait_uv))
+        if p.eyelid_closure < .995:
+            parts.append(visible_eye_sclera(a,side))
+            caruncle=c+np.array([-side*(a.p.eye_width*.445),-11.25,-.35])
+            parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.58,.30,.38],LID,nu=40,nv=26))
+            parts.append(disk(prefix+'_iris_stroma',c,5.40,IRIS,
+                              lambda r:-12.40+.020*r*r,rmin=1.62))
+            parts.append(disk(prefix+'_pupil',c,1.62,PUPIL,lambda r:np.full_like(r,-12.23),nr=12))
+            parts.append(visible_cornea(a,side))
+            parts.append(wet)
         if hair:parts.append(eyebrow_and_lashes(a,side,margin,rng))
     if hair:parts.append(stubble(a,rng,quality))
     materials=[Material('Procedural skin',(.37,.215,.145),rough=.45,ior=1.4,
