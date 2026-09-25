@@ -589,8 +589,8 @@ def _underlayer(parts: list[Part]) -> None:
     parts.append(
         _z_loft(
             "underlayer_turtleneck",
-            [(1475, 84, 73, 0, -3), (1598, 82, 71, 0, -5)],
-            MAT_TECH, group="underlayer", role="High technical turtleneck", radial=44,
+            [(1475, 72, 64, 0, -4), (1602, 70, 62, 0, -6)],
+            MAT_WOOL, group="underlayer", role="Close black technical turtleneck", radial=44,
         )
     )
     parts.append(
@@ -640,11 +640,11 @@ def _coat_panels(parts: list[Part]) -> None:
         _curved_panel(
             "coat_front_left_upper",
             [
-                (985, -212, -58, 169, 10),
-                (1110, -218, -54, 173, 12),
-                (1260, -274, -48, 176, 16),
-                (1400, -302, -96, 181, 14),
-                (1490, -286, -136, 174, 10),
+                (985, -178, -58, 168, 9),
+                (1110, -190, -54, 172, 10),
+                (1260, -236, -48, 176, 13),
+                (1400, -286, -96, 180, 12),
+                (1490, -250, -136, 172, 8),
             ],
             MAT_WOOL, group="coat", role="Tailored left front coat panel",
             thickness=6.5, samples_across=16, face="front",
@@ -654,11 +654,11 @@ def _coat_panels(parts: list[Part]) -> None:
         _curved_panel(
             "coat_front_right_upper",
             [
-                (985, 58, 212, 169, 10),
-                (1110, 54, 218, 173, 12),
-                (1260, 48, 274, 176, 16),
-                (1400, 96, 302, 181, 14),
-                (1490, 136, 286, 174, 10),
+                (985, 58, 178, 168, 9),
+                (1110, 54, 190, 172, 10),
+                (1260, 48, 236, 176, 13),
+                (1400, 96, 286, 180, 12),
+                (1490, 136, 250, 172, 8),
             ],
             MAT_WOOL, group="coat", role="Tailored right front coat panel",
             thickness=6.5, samples_across=16, face="front",
@@ -668,11 +668,11 @@ def _coat_panels(parts: list[Part]) -> None:
     # Narrow side pieces close the torso without broadening the silhouette.
     for side, sx in (("left", -1.0), ("right", 1.0)):
         sections = [
-            (985, -224, -205, 92, 5),
-            (1110, -228, -205, 100, 5),
-            (1260, -258, -220, 106, 6),
-            (1400, -312, -262, 100, 6),
-            (1488, -292, -260, 90, 5),
+            (985, -194, -174, 90, 4),
+            (1110, -202, -180, 98, 5),
+            (1260, -232, -205, 104, 5),
+            (1385, -282, -244, 99, 5),
+            (1450, -302, -254, 88, 4),
         ]
         if sx > 0:
             sections = [(z, -x1, -x0, y, bow) for z, x0, x1, y, bow in sections]
@@ -689,11 +689,11 @@ def _coat_panels(parts: list[Part]) -> None:
         _curved_panel(
             "coat_back_center",
             [
-                (975, -132, 132, -168, -9),
-                (1110, -128, 128, -176, -10),
-                (1260, -145, 145, -184, -11),
-                (1400, -174, 174, -188, -11),
-                (1490, -162, 162, -174, -8),
+                (975, -118, 118, -166, -7),
+                (1110, -116, 116, -174, -8),
+                (1260, -132, 132, -182, -9),
+                (1400, -154, 154, -186, -9),
+                (1490, -146, 146, -172, -7),
             ],
             MAT_TECH, group="coat_back", role="Structured centre-back textile panel",
             thickness=6.5, samples_across=16, face="back",
@@ -701,11 +701,11 @@ def _coat_panels(parts: list[Part]) -> None:
     )
     for side, sx in (("left", -1.0), ("right", 1.0)):
         sections = [
-            (975, -232, -132, -160, -7),
-            (1110, -230, -128, -168, -8),
-            (1260, -258, -145, -176, -9),
-            (1400, -310, -172, -180, -9),
-            (1490, -288, -160, -166, -7),
+            (975, -190, -118, -158, -6),
+            (1110, -198, -116, -166, -7),
+            (1260, -230, -132, -174, -8),
+            (1385, -282, -154, -178, -8),
+            (1450, -300, -146, -164, -6),
         ]
         if sx > 0:
             sections = [(z, -x1, -x0, y, bow) for z, x0, x1, y, bow in sections]
@@ -721,38 +721,38 @@ def _coat_panels(parts: list[Part]) -> None:
     tails = {
         "coat_left_front_skirt": (
             [
-                (990, -242, -72, 182, 8),
-                (800, -264, -92, 171, 8),
-                (600, -292, -122, 151, 6),
-                (410, -316, -152, 121, 4),
-                (320, -328, -166, 95, 2),
+                (990, -196, -66, 180, 7),
+                (830, -222, -86, 169, 7),
+                (660, -255, -114, 150, 5),
+                (500, -286, -142, 124, 4),
+                (320, -318, -170, 98, 2),
             ], "front"
         ),
         "coat_right_front_skirt": (
             [
-                (990, 72, 242, 182, 8),
-                (800, 92, 264, 171, 8),
-                (600, 122, 292, 151, 6),
-                (410, 152, 316, 121, 4),
-                (340, 166, 326, 98, 2),
+                (990, 66, 196, 180, 7),
+                (830, 86, 222, 169, 7),
+                (660, 114, 255, 150, 5),
+                (500, 142, 286, 124, 4),
+                (340, 170, 316, 100, 2),
             ], "front"
         ),
         "coat_left_back_tail": (
             [
-                (975, -248, -32, -181, -7),
-                (790, -270, -38, -171, -6),
-                (600, -298, -46, -151, -5),
-                (410, -320, -58, -121, -3),
-                (330, -330, -68, -96, -2),
+                (975, -194, -28, -179, -6),
+                (820, -220, -34, -169, -5),
+                (660, -252, -42, -150, -4),
+                (500, -282, -54, -124, -3),
+                (330, -316, -70, -99, -2),
             ], "back"
         ),
         "coat_right_back_tail": (
             [
-                (975, 32, 248, -181, -7),
-                (790, 38, 270, -171, -6),
-                (600, 46, 298, -151, -5),
-                (410, 58, 320, -121, -3),
-                (330, 68, 330, -96, -2),
+                (975, 28, 194, -179, -6),
+                (820, 34, 220, -169, -5),
+                (660, 42, 252, -150, -4),
+                (500, 54, 282, -124, -3),
+                (330, 70, 316, -99, -2),
             ], "back"
         ),
     }
@@ -811,7 +811,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "left_lapel",
-            [(-258, 1486), (-160, 1472), (-88, 1376), (-132, 1258), (-220, 1322)],
+            [(-232, 1482), (-154, 1468), (-96, 1378), (-132, 1280), (-204, 1330)],
             205, 5.5, MAT_LEATHER, group="coat_trim",
             role="Narrow structured black-leather lapel",
         )
@@ -819,7 +819,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "right_lapel",
-            [(248, 1486), (170, 1471), (108, 1372), (150, 1262), (224, 1324)],
+            [(222, 1482), (164, 1468), (116, 1376), (150, 1282), (208, 1332)],
             205, 5.5, MAT_PURPLE_LEATHER, group="coat_trim",
             role="Narrow deep-amethyst leather lapel",
         )
@@ -827,7 +827,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "right_lapel_outer_binding",
-            (242, 211, 1474), (152, 211, 1268),
+            (216, 208, 1472), (154, 208, 1288),
             10, 5, MAT_LEATHER, group="coat_trim",
             role="Black binding on purple lapel",
         )
@@ -842,28 +842,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
             thickness=5.5, samples_across=14, face="back",
         )
     )
-    parts.append(
-        _polygon_panel(
-            "left_collar_wing",
-            [(-154, 1500), (-119, 1542), (-92, 1588), (-95, 1540), (-126, 1496)],
-            173, 5.5, MAT_WOOL, group="coat_trim", role="Left collar wing",
-        )
-    )
-    parts.append(
-        _polygon_panel(
-            "right_collar_wing",
-            [(154, 1500), (119, 1542), (92, 1588), (95, 1540), (126, 1496)],
-            173, 5.5, MAT_WOOL, group="coat_trim", role="Right collar wing",
-        )
-    )
-    parts.append(
-        _polygon_panel(
-            "right_collar_amethyst_underlay",
-            [(142, 1502), (116, 1536), (102, 1563), (104, 1540), (124, 1502)],
-            166, 3, MAT_PURPLE_SATIN, group="lining",
-            role="Restrained amethyst collar under-edge",
-        )
-    )
+
 
 def _sleeves_gloves_cuffs(parts: list[Part]) -> None:
     for side, sx in (("left", -1.0), ("right", 1.0)):
@@ -991,7 +970,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _curved_panel(
             "front_waist_belt",
-            [(1028, -250, 250, 195, 9), (1064, -250, 250, 195, 9)],
+            [(1028, -205, 205, 190, 7), (1062, -205, 205, 190, 7)],
             MAT_LEATHER, group="harness", role="Tailored front waist belt",
             thickness=7, samples_across=18, face="front",
         )
@@ -999,14 +978,14 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _curved_panel(
             "back_waist_belt",
-            [(1028, -250, 250, -196, -9), (1064, -250, 250, -196, -9)],
+            [(1028, -205, 205, -190, -7), (1062, -205, 205, -190, -7)],
             MAT_LEATHER, group="harness", role="Tailored back waist belt",
             thickness=7, samples_across=18, face="back",
         )
     )
     parts.extend(
         _ring_buckle(
-            "waist_buckle", (62, 211, 1046), (48, 35), 7, 7,
+            "waist_buckle", (54, 204, 1045), (42, 31), 7, 7,
             MAT_METAL, role="Primary waist buckle",
         )
     )
@@ -1286,7 +1265,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v3.5 / tailored procedural couture",
+        "design": "CYBR NOCTURNE v4 / fitted procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
