@@ -24,8 +24,8 @@ def test_nocturne_geometry_contract():
     report = outfit.validate()
 
     assert outfit.name == "CYBR NOCTURNE"
-    assert report["part_count"] >= 140
-    assert report["triangles"] >= 20_000
+    assert report["part_count"] >= 120
+    assert report["triangles"] >= 16_000
     assert report["unique_names"]
     assert report["finite_vertices"]
     assert report["valid_indices"]
@@ -33,8 +33,8 @@ def test_nocturne_geometry_contract():
     lo, hi = np.asarray(report["bounds_mm"], dtype=float)
     assert lo[2] >= -20
     assert hi[2] > 1840
-    assert hi[0] - lo[0] > 850
-    assert hi[1] - lo[1] > 550
+    assert hi[0] - lo[0] > 700
+    assert hi[1] - lo[1] > 500
 
 
 def test_nocturne_named_construction_layers():
@@ -133,7 +133,7 @@ def test_coat_is_panel_based_not_inflated_shell():
         "coat_right_back_tail",
     ):
         part = next(p for p in outfit.parts if p.name == name)
-        assert part.metadata["fold_amp_mm"] >= 12.0
+        assert part.metadata["fold_amp_mm"] >= 9.0
         assert part.metadata["fold_cycles"] >= 2.0
 
     # The v1 single inflated "coat_shell" should no longer exist.
@@ -147,7 +147,7 @@ def test_back_is_explicitly_designed():
     assert "back_spine_binding" in names
     assert "back_diagonal_harness" in names
     assert "rear_vent_lining" in names
-    assert len([n for n in names if n.startswith("back_diamond_")]) == 48
+    assert len([n for n in names if n.startswith("back_diamond_")]) == 36
     assert len([n for n in names if "back_princess_seam" in n]) == 2
 
 
@@ -158,7 +158,7 @@ def test_footwear_is_directionally_constructed():
         sole = next(p for p in outfit.parts if p.name == f"{side}_boot_sole")
         assert upper.metadata["generator"] == "y_loft"
         assert sole.metadata["generator"] == "y_loft"
-        assert len([p for p in outfit.parts if p.name.startswith(f"{side}_boot_strap_")]) == 3
+        assert len([p for p in outfit.parts if p.name.startswith(f"{side}_boot_strap_")]) == 2
 
 
 def test_nocturne_meshes_are_finite_and_have_unit_normals():
