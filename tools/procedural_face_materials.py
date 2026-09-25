@@ -51,16 +51,18 @@ def skin_maps(out,anatomy,size=4096):
     color*=1-.075*freckles[...,None]*freckle_zone[...,None]
     line,upper,lower=anatomy.mouth(x)
     rel=np.where(z>=line,(z-line)/np.maximum(upper,.001),(line-z)/np.maximum(lower,.001))
-    lips=(1-smoothstep(.68,1.32,rel))*smoothstep(anatomy.p.mouth_width/2+1.4,
-                anatomy.p.mouth_width/2-2.3,abs(x))*front
-    lip_color=np.stack([.285+.009*meso,.118+.005*meso,.092+.004*meso],-1)
+    vertical=1-smoothstep(.48,1.42,rel)
+    horizontal=1-smoothstep(anatomy.p.mouth_width/2-4.0,
+                            anatomy.p.mouth_width/2+2.5,abs(x))
+    lips=vertical*horizontal*front
+    lip_color=np.stack([.300+.007*meso,.158+.004*meso,.126+.003*meso],-1)
     color=color*(1-lips[...,None])+lip_color*lips[...,None]
     # Sparse neutral follicle pigmentation complements actual modeled stubble.
     beard=np.exp(-((z+59)/30)**4)*front*(1-lips)
     color[...,0]-=.009*beard;color[...,1]-=.004*beard
     rough=.46+.016*meso+.009*fine
     oil=(gaussian(x,z,0,-8,15,23)+.5*gaussian(x,z,0,66,44,20))*front
-    rough-=.060*oil;rough=rough*(1-lips)+(.395+.014*meso)*lips
+    rough-=.060*oil;rough=rough*(1-lips)+(.44+.010*meso)*lips
     # Skin furrows and isolated pore dimples in a calibrated 0.06 mm range.
     impulses=(rng.random((size,size),dtype=np.float32)<.012).astype(np.float32)
     impulses*=rng.uniform(.5,1.5,(size,size)).astype(np.float32)
@@ -72,7 +74,7 @@ def skin_maps(out,anatomy,size=4096):
     # Vermilion microfolds run across the lips' vertical extent, interrupting
     # at independent phases rather than a single periodic corrugation.
     lipfold=(np.sin(x*3.2+.6*meso)+.35*np.sin(x*6.4+.3*fine))
-    height=height*(1-lips)+(.0024*lipfold+.0009*fine)*lips
+    height=height*(1-lips)+(.0015*lipfold+.0006*fine)*lips
     for h,amp in [(67,.007),(78,.005),(89,.004)]:
         curve=h+.0016*x*x+.28*np.sin(.08*x)
         height-=amp*np.exp(-((z-curve)/.24)**2)*np.exp(-(x/47)**6)*front
