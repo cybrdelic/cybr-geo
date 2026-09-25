@@ -35,7 +35,7 @@ def soft_noise(rng,size,small):
 
 def atlas_coordinates(anatomy,size):
     theta=np.linspace(-np.pi,np.pi,size,dtype=np.float32)[None,:]
-    z=np.linspace(144,-180,size,dtype=np.float32)[:,None]
+    z=np.linspace(ZMAX,ZMIN,size,dtype=np.float32)[:,None]
     rx,_,_=anatomy.skull.section(z)
     x=rx.astype(np.float32)*np.sin(theta)
     zz=np.broadcast_to(z,x.shape)
@@ -44,7 +44,7 @@ def atlas_coordinates(anatomy,size):
 
 
 def skin_maps(out,anatomy,size=2048):
-    from procedural_human_face_v13 import gaussian
+    from procedural_human_face_v13 import gaussian,ZMIN,ZMAX
     rng=np.random.default_rng(anatomy.p.seed+101)
     theta,x,z,front=atlas_coordinates(anatomy,size)
 
@@ -92,9 +92,9 @@ def skin_maps(out,anatomy,size=2048):
     lips=(rel<1).astype(np.float32)*np.clip(1-rel,0,1)**.35
     lips*=np.clip(1-(np.abs(x)/(anatomy.p.mouth_width*.53))**8,0,1)*front
     lip=np.stack([
-        .31+.010*meso,
-        .135+.006*meso,
-        .108+.005*fine,
+        .270+.008*meso,
+        .155+.005*meso,
+        .132+.004*fine,
     ],-1)
     base=base*(1-lips[...,None])+lip*lips[...,None]
 
@@ -104,7 +104,7 @@ def skin_maps(out,anatomy,size=2048):
     oil=(gaussian(x,z,0,-5,15,27)+.55*gaussian(x,z,0,62,42,20))*front
     rough-=.055*oil
     rough+=.018*cheek
-    rough=rough*(1-lips)+(.39+.014*meso)*lips
+    rough=rough*(1-lips)+(.43+.012*meso)*lips
 
     # Multi-scale height. Macro folds are geometric in v13; this map contains
     # pores, furrows, lip microfolds and subtle wrinkles only.
@@ -116,7 +116,7 @@ def skin_maps(out,anatomy,size=2048):
     height=pore*(.62+.28*cheek+.18*oil)+.0012*fine+.00075*meso
 
     lipfold=np.sin(x*2.7+.5*meso)+.28*np.sin(x*5.9+.3*fine)
-    height=height*(1-lips)+(.0020*lipfold+.0008*fine)*lips
+    height=height*(1-lips)+(.00145*lipfold+.00065*fine)*lips
     for h,amp in [(69,.0040),(81,.0032),(92,.0025)]:
         curve=h+.0015*x*x+.22*np.sin(.075*x)
         height-=amp*np.exp(-((z-curve)/.32)**2)*np.exp(-(x/48)**6)*front

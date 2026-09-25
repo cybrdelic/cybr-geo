@@ -40,6 +40,10 @@ def test_semantic_cage_is_real_and_boundary_matches_skull():
     cage=anatomy.cage
     assert cage.control_offsets.shape==(17,13)
     assert cage.control_offsets.size==221
+    assert cage.control_dx.shape==(17,13)
+    assert cage.control_dz.shape==(17,13)
+    assert np.max(np.abs(cage.control_dx))>.5
+    assert np.max(np.abs(cage.control_dz))>.2
     assert len(cage.landmarks)>=25
     assert np.allclose(cage.control_offsets[:,0],0)
     assert np.allclose(cage.control_offsets[:,-1],0)
@@ -131,6 +135,7 @@ def test_eye_and_nostril_apertures_hit_real_procedural_geometry():
 def test_metadata_enforces_no_scan_no_learned_identity(neutral):
     m=neutral.metadata
     assert m['topology']=='semantic-control-cage-subdivision'
+    assert m['vector_control_cage'] is True
     assert m['scan_used'] is False
     assert m['imported_anatomy_mesh'] is False
     assert m['photographic_skin_textures'] is False
