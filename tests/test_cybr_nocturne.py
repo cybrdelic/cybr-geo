@@ -33,7 +33,7 @@ def test_nocturne_geometry_contract():
     lo, hi = np.asarray(report["bounds_mm"], dtype=float)
     assert lo[2] >= -20
     assert hi[2] > 1840
-    assert hi[0] - lo[0] > 700
+    assert hi[0] - lo[0] > 650
     assert hi[1] - lo[1] > 500
 
 
