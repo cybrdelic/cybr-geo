@@ -47,7 +47,7 @@ def materials(out,clay=False):
         {'type':'bumpmap','texture':bitmap(out/'skin_height.png',True),'scale':.017,
          'bsdf':{'type':'principled','base_color':bitmap(out/'skin_color.png'),
                  'roughness':bitmap(out/'skin_roughness.png',True),'specular':.38,
-                 'flatness':.20,'clearcoat':.010,'clearcoat_gloss':.38}},
+                 'flatness':.34,'clearcoat':.008,'clearcoat_gloss':.34}},
         {'type':'principled','base_color':{'type':'rgb','value':[.30,.11,.085]},
          'roughness':.24,'specular':.4},
         {'type':'diffuse','reflectance':{'type':'rgb','value':[.025,.005,.003]}},
@@ -166,21 +166,21 @@ def main():
     p.add_argument('--skip-export',action='store_true');p.add_argument('--reuse-textures',action='store_true')
     p.add_argument('--oidn',default=os.environ.get('OIDN_BIN','auto'),help='OIDN executable, or auto to use CYBR GEO pinned provisioning')
     p.add_argument('--seed',type=int,default=271828);p.add_argument('--exposure',type=float,default=1.)
-    p.add_argument('--eyelid-closure',type=float,default=.10,help='0=open, 1=closed; modifies actual lid geometry')
+    p.add_argument('--eyelid-closure',type=float,default=.06,help='0=open, 1=closed; modifies actual lid geometry')
     p.add_argument('--eye-spacing',type=float,default=62.0)
     p.add_argument('--eye-height',type=float,default=30.0)
-    p.add_argument('--eye-width',type=float,default=26.5)
-    p.add_argument('--eye-opening',type=float,default=6.6)
-    p.add_argument('--eye-tilt',type=float,default=.18)
+    p.add_argument('--eye-width',type=float,default=28.0)
+    p.add_argument('--eye-opening',type=float,default=8.4)
+    p.add_argument('--eye-tilt',type=float,default=.24)
     p.add_argument('--nose-projection',type=float,default=21.5)
     p.add_argument('--nose-width',type=float,default=1.06)
     p.add_argument('--mouth-width',type=float,default=52.0)
     p.add_argument('--upper-lip-fullness',type=float,default=.92)
     p.add_argument('--lower-lip-fullness',type=float,default=.96)
-    p.add_argument('--jaw-width',type=float,default=1.055)
+    p.add_argument('--jaw-width',type=float,default=1.02)
     p.add_argument('--skull-width',type=float,default=.965)
     p.add_argument('--cheek-width',type=float,default=1.045)
-    p.add_argument('--chin-width',type=float,default=.98)
+    p.add_argument('--chin-width',type=float,default=.90)
     p.add_argument('--brow-weight',type=float,default=1.0)
     p.add_argument('--skin-relief',type=float,default=.0025)
     args=p.parse_args();args.out=args.out.resolve();args.out.mkdir(parents=True,exist_ok=True)
