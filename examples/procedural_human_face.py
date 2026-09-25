@@ -77,6 +77,42 @@ class Anatomy:
             y=gaussian_filter1d(PchipInterpolator(z,a)(zz),8.,mode='nearest')
             self.profile.append(PchipInterpolator(zz,y))
 
+        # Hand-authored anthropometric macro landmarks. These are not measured
+        # from a person or imported from a face dataset: they are explicit
+        # anatomical design constraints in the same millimetre coordinate system
+        # as the rest of this procedural recipe. Values are desired front/back
+        # corrections to the smooth cranium shell at each (x,z) location.
+        macro=[]
+        def add(x0,z0,delta,symmetric=True):
+            macro.append((x0,z0,delta))
+            if symmetric and x0:
+                macro.append((-x0,z0,delta))
+        add(0,90,.5,False)
+        add(0,65,1.4,False)
+        add(0,48,-.4,False)
+        add(20,50,-.8)
+        add(36,43,-1.25)
+        add(56,46,.85)
+        add(48,18,-4.4)
+        add(34,10,-5.2)
+        add(53,0,-4.0)
+        add(39,-14,-3.5)
+        add(52,-30,-1.8)
+        add(50,-50,.7)
+        add(46,-66,-2.7)
+        add(31,-73,-4.0)
+        add(16,-78,-4.3)
+        add(0,-72,-5.0,False)
+        add(0,-87,.5,False)
+        self._macro_xz=np.asarray([(q[0],q[1]) for q in macro],dtype=float)
+        self._macro_delta=np.asarray([q[2] for q in macro],dtype=float)
+        dx=(self._macro_xz[:,None,0]-self._macro_xz[None,:,0])/24.
+        dz=(self._macro_xz[:,None,1]-self._macro_xz[None,:,1])/23.
+        K=np.exp(-.5*(dx*dx+dz*dz))
+        # Small ridge keeps the authored control field stable when nearby
+        # symmetric landmarks have similar influence.
+        self._macro_weights=np.linalg.solve(K+np.eye(len(K))*.035,self._macro_delta)
+
     def section(self,z):
         rx,front,back=[f(np.clip(z,ZMIN,ZMAX)) for f in self.profile]
         jaw=1+(self.p.jaw_width-1)*np.exp(-((z+55)/34)**2)
@@ -86,6 +122,22 @@ class Anatomy:
         temple=.972 + .028*(1-np.exp(-((z-48)/23)**2))
         mandible=1+.014*np.exp(-((z+52)/18)**2)
         return rx*jaw*skull*cheek*chin*temple*mandible,front,back
+
+    def shell_front(self,x,z):
+        """Unmodified front shell before facial soft-tissue/anatomy fields."""
+        rx,front,back=self.section(z)
+        q=np.clip(np.asarray(x)/np.maximum(rx,.01),-.999999,.999999)
+        c=np.sqrt(np.maximum(1-q*q,0))
+        mid=(front+back)/2
+        return mid-(mid-front)*c*(1+.28*q*q)
+
+    def macro_landmark_field(self,x,z):
+        """Smooth facial-plane correction through authored anatomical landmarks."""
+        xx,zz=np.broadcast_arrays(np.asarray(x,float),np.asarray(z,float))
+        dx=(xx[...,None]-self._macro_xz[:,0])/24.
+        dz=(zz[...,None]-self._macro_xz[:,1])/23.
+        K=np.exp(-.5*(dx*dx+dz*dz))
+        return np.sum(K*self._macro_weights,axis=-1)
 
     def mouth(self,x):
         a=self.p.mouth_width/2
@@ -118,18 +170,18 @@ class Anatomy:
 
     def deformation(self,x,z):
         """Front-facing displacement in Y; negative displacement projects out."""
-        d=np.zeros(np.broadcast_shapes(np.shape(x),np.shape(z)))
+        d=self.macro_landmark_field(x,z)
         ax=np.abs(x)
         # Zygoma, malar volume, submalar hollow, temporalis and masseter.
         for s in (-1,1):
-            d-=3.9*gaussian(x,z,s*43,4,16,15)
-            d-=2.5*gaussian(x,z,s*48,-25,14,21)
-            d+=2.0*gaussian(x,z,s*51,-12,11,11)
-            d+=2.0*gaussian(x,z,s*64,40,9,20)
+            d-=1.55*gaussian(x,z,s*43,4,16,15)
+            d-=1.05*gaussian(x,z,s*48,-25,14,21)
+            d+=1.15*gaussian(x,z,s*51,-12,11,11)
+            d+=1.10*gaussian(x,z,s*64,40,9,20)
             c=self.eye(s)
-            d+=2.6*gaussian(x,z,c[0],c[2],16.6,9.4)
-            d-=4.1*self.p.brow_weight*gaussian(x,z,s*29,47,18.2,6.2)
-            d-=1.1*gaussian(x,z,s*34,16,18,4.5)
+            d+=1.55*gaussian(x,z,c[0],c[2],16.6,9.4)
+            d-=2.65*self.p.brow_weight*gaussian(x,z,s*29,47,18.2,6.2)
+            d-=.72*gaussian(x,z,s*34,16,18,4.5)
             # Tear trough, softened into the cheek rather than a painted line.
             trough=16.5+.1*(ax-23.)
             d+=.7*np.exp(-((z-trough)/1.4)**2)*np.exp(-((x-s*26)/13)**2)
@@ -202,11 +254,10 @@ class Anatomy:
         return d
 
     def base_front(self,x,z):
-        rx,front,back=self.section(z)
-        q=np.clip(x/np.maximum(rx,.01),-.999999,.999999)
+        rx,_,_=self.section(z)
+        q=np.clip(np.asarray(x)/np.maximum(rx,.01),-.999999,.999999)
         c=np.sqrt(np.maximum(1-q*q,0))
-        mid=(front+back)/2
-        base=mid-(mid-front)*c*(1+.28*q*q)
+        base=self.shell_front(x,z)
         # Deformations fade before the side seam of the parametric skull.
         return base+self.deformation(x,z)*smoothstep(0,.55,c)
 
@@ -758,6 +809,7 @@ def build(parameters=None,quality='final',hair=True):
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
         if p.eyelid_closure < .995:
+            parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.28,11.55],SCLERA))
             parts.append(visible_eye_sclera(a,side))
             caruncle=c+np.array([-side*(a.p.eye_width*.445),-11.25,-.35])
             parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.58,.30,.38],LID,nu=40,nv=26))
