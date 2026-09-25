@@ -556,7 +556,7 @@ def _mannequin(parts: list[Part]) -> None:
             )
         )
 
-    for side, x in (("left", -108), ("right", 108)):
+    for side, x in (("left", -118), ("right", 118)):
         parts.append(
             _z_loft(
                 f"mannequin_{side}_leg",
@@ -856,7 +856,7 @@ def _sleeves_gloves_cuffs(parts: list[Part]) -> None:
         parts.append(
             _tube(
                 f"coat_{side}_sleeve", path,
-                [(79, 74), (74, 69), (66, 62), (56, 52), (48, 44)],
+                [(72, 68), (68, 64), (60, 57), (51, 48), (44, 41)],
                 MAT_WOOL, group="sleeves", role="Slim tailored coat sleeve", radial=36,
             )
         )
@@ -864,7 +864,7 @@ def _sleeves_gloves_cuffs(parts: list[Part]) -> None:
             parts.append(
                 _z_loft(
                     f"{side}_cuff_band_{k+1}",
-                    [(z - 9, 52, 48, sx * 368, 29), (z + 9, 53, 49, sx * 368, 29)],
+                    [(z - 9, 48, 44, sx * 368, 29), (z + 9, 49, 45, sx * 368, 29)],
                     MAT_LEATHER, group="cuffs", role="Leather cuff strap", radial=28,
                 )
             )
@@ -1101,7 +1101,7 @@ def _boots(parts: list[Part]) -> None:
         parts.append(
             _z_loft(
                 f"{side}_boot_shaft",
-                [(48, 86, 73, x, -2), (135, 84, 71, x, -3), (225, 80, 67, x, -5), (300, 76, 64, x, -7)],
+                [(48, 80, 69, x, -2), (135, 78, 67, x, -3), (225, 75, 64, x, -5), (300, 72, 61, x, -7)],
                 MAT_LEATHER, group="footwear", role="Slim leather boot shaft", radial=42,
             )
         )
@@ -1109,12 +1109,12 @@ def _boots(parts: list[Part]) -> None:
             _y_loft(
                 f"{side}_boot_upper",
                 [
-                    (-80, 71, 43, x, 66),
-                    (-10, 87, 52, x, 67),
-                    (100, 92, 58, x, 66),
-                    (205, 88, 53, x, 62),
-                    (285, 73, 41, x, 56),
-                    (325, 48, 27, x, 51),
+                    (-80, 67, 42, x, 66),
+                    (-10, 82, 50, x, 67),
+                    (100, 86, 55, x, 66),
+                    (205, 83, 51, x, 62),
+                    (285, 69, 39, x, 56),
+                    (325, 45, 26, x, 51),
                 ],
                 MAT_LEATHER, group="footwear",
                 role="Tapered constructed leather boot upper", radial=42,
@@ -1135,7 +1135,7 @@ def _boots(parts: list[Part]) -> None:
         )
         parts.append(
             _box(
-                f"{side}_boot_heel", (x, -47, 36), (140, 88, 54),
+                f"{side}_boot_heel", (x, -47, 36), (124, 82, 52),
                 MAT_RUBBER, group="footwear", role="Compact architectural boot heel",
             )
         )
@@ -1265,7 +1265,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v4 / fitted procedural couture",
+        "design": "CYBR NOCTURNE v4.1 / fitted procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
