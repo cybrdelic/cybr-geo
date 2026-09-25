@@ -80,67 +80,79 @@ def _materials(scene) -> list[int]:
         scene.material(
             name="mannequin_graphite",
             type="plastic",
-            color=(0.070, 0.075, 0.085),
-            roughness=0.76,
-            ior_a=1.46,
-        ),
-        scene.material(
-            name="obsidian_shell_textile",
-            type="plastic",
-            color=(0.013, 0.017, 0.024),
-            roughness=0.58,
-            ior_a=1.47,
-        ),
-        scene.material(
-            name="graphite_technical_weave",
-            type="plastic",
-            color=(0.040, 0.048, 0.060),
+            color=(0.040, 0.043, 0.050),
             roughness=0.72,
             ior_a=1.46,
         ),
         scene.material(
-            name="ink_satin_lining",
+            name="nocturne_black_wool",
             type="plastic",
-            color=(0.080, 0.018, 0.105),
-            roughness=0.24,
-            ior_a=1.49,
+            color=(0.016, 0.018, 0.024),
+            roughness=0.60,
+            ior_a=1.47,
         ),
         scene.material(
-            name="blackened_anisotropic_metal",
+            name="graphite_technical_textile",
+            type="plastic",
+            color=(0.026, 0.032, 0.042),
+            roughness=0.48,
+            ior_a=1.47,
+        ),
+        scene.material(
+            name="deep_amethyst_satin",
+            type="plastic",
+            color=(0.105, 0.018, 0.155),
+            roughness=0.18,
+            ior_a=1.50,
+        ),
+        scene.material(
+            name="black_calf_leather",
+            type="plastic",
+            color=(0.018, 0.020, 0.024),
+            roughness=0.24,
+            ior_a=1.52,
+        ),
+        scene.material(
+            name="brushed_gunmetal",
             type="metal",
             eta=(0.30, 0.38, 0.52),
             k=(3.90, 3.35, 2.70),
-            roughness=0.18,
-            alpha_u=0.075,
-            alpha_v=0.24,
+            roughness=0.15,
+            alpha_u=0.055,
+            alpha_v=0.21,
         ),
         scene.material(
-            name="spectral_indigo_trim",
-            type="metal",
-            eta=(0.16, 0.39, 1.20),
-            k=(3.55, 2.75, 1.72),
-            roughness=0.20,
-            alpha_u=0.09,
-            alpha_v=0.16,
+            name="deep_amethyst_leather",
+            type="plastic",
+            color=(0.120, 0.022, 0.175),
+            roughness=0.21,
+            ior_a=1.52,
         ),
         scene.material(
             name="carbon_rubber",
             type="plastic",
-            color=(0.010, 0.013, 0.018),
+            color=(0.008, 0.010, 0.014),
             roughness=0.90,
             ior_a=1.50,
+        ),
+        scene.material(
+            name="black_seam_binding",
+            type="plastic",
+            color=(0.030, 0.033, 0.040),
+            roughness=0.38,
+            ior_a=1.48,
         ),
     ]
 
 
 def _camera(view: str, Camera):
     if view == "front":
-        return Camera(origin=(0.0, 1.12, -4.15), target=(0.0, 0.96, -0.02), fov=29, aperture=0.0, focus=4.2)
+        return Camera(origin=(0.0, 1.08, -4.45), target=(0.0, 0.96, -0.02), fov=26, aperture=0.0, focus=4.45)
     if view == "back":
-        return Camera(origin=(-0.75, 1.18, 4.05), target=(0.0, 0.94, 0.0), fov=31, aperture=0.0, focus=4.1)
+        return Camera(origin=(0.58, 1.12, 4.38), target=(0.0, 0.96, 0.0), fov=27, aperture=0.0, focus=4.42)
     if view == "detail":
-        return Camera(origin=(1.18, 1.53, -2.15), target=(0.02, 1.25, -0.08), fov=31, aperture=0.018, focus=2.45)
-    return Camera(origin=(2.35, 1.34, -4.25), target=(0.0, 0.98, -0.04), fov=31, aperture=0.012, focus=4.75)
+        return Camera(origin=(1.08, 1.50, -2.28), target=(0.02, 1.26, -0.10), fov=28, aperture=0.014, focus=2.55)
+    return Camera(origin=(1.95, 1.26, -4.55), target=(0.0, 0.96, -0.02), fov=27, aperture=0.010, focus=4.90)
 
 
 def build_scene(view: str = "hero", preset: str = "preview"):
@@ -154,7 +166,8 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     scene.asset_base = str(ROOT)
     budgets = {
         "smoke": (320, 480, 8, 6),
-        "preview": (640, 960, 64, 10),
+        "proof": (480, 720, 24, 8),
+        "preview": (640, 960, 72, 10),
         "reference": (900, 1350, 256, 14),
     }
     width, height, spp, bands = budgets[preset]
@@ -167,7 +180,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
         rr_depth=5,
         threads=max(1, min(8, os.cpu_count() or 4)),
         seed=90210,
-        exposure=1.05,
+        exposure=1.22,
         mis=True,
         nee=True,
         film_format="openexr",
@@ -199,26 +212,27 @@ def build_scene(view: str = "hero", preset: str = "preview"):
 
     # Broad emitters create fashion-studio gradients in addition to spectral
     # environment lobes. These are geometry seen by the same path integrator.
-    key = scene.material(name="key_softbox", type="emitter", color=(1.0, 0.96, 0.90), emission=10.0, kelvin=5200)
-    fill = scene.material(name="fill_softbox", type="emitter", color=(0.73, 0.84, 1.0), emission=6.0, kelvin=7200)
-    rim = scene.material(name="rim_strip", type="emitter", color=(0.58, 0.66, 1.0), emission=13.0, kelvin=9000)
-    scene.rectangle((-2.15, 3.15, -1.95), (1.55, 0.0, 0.35), (0.0, 1.65, 0.0), key)
-    scene.rectangle((2.45, 2.05, -0.75), (0.95, 0.0, 0.20), (0.0, 1.25, 0.0), fill)
-    scene.rectangle((-1.90, 2.25, 1.25), (0.75, 0.0, 0.0), (0.0, 1.55, 0.25), rim)
+    key = scene.material(name="key_softbox", type="emitter", color=(1.0, 0.96, 0.91), emission=16.0, kelvin=5100)
+    fill = scene.material(name="fill_softbox", type="emitter", color=(0.72, 0.83, 1.0), emission=9.0, kelvin=7200)
+    rim = scene.material(name="rim_strip", type="emitter", color=(0.62, 0.70, 1.0), emission=15.0, kelvin=8800)
+    front = scene.material(name="front_card", type="emitter", color=(0.86, 0.82, 1.0), emission=3.5, kelvin=6500)
+    scene.rectangle((-2.00, 3.05, -2.05), (1.65, 0.0, 0.35), (0.0, 1.75, 0.0), key)
+    scene.rectangle((2.15, 2.15, -1.00), (1.00, 0.0, 0.20), (0.0, 1.35, 0.0), fill)
+    scene.rectangle((-1.80, 2.35, 1.18), (0.82, 0.0, 0.0), (0.0, 1.62, 0.22), rim)
+    scene.rectangle((0.0, 1.30, -2.75), (0.85, 0.0, 0.0), (0.0, 0.72, 0.0), front)
 
-    scene.environment.update(color=[0.31, 0.38, 0.55], strength=0.075)
+    scene.environment.update(color=[0.34, 0.40, 0.58], strength=0.11)
     scene.environment["lobes"] = [
-        {"direction": [-0.58, 0.71, -0.38], "exponent": 18, "strength": 0.62, "kelvin": 6800},
-        {"direction": [0.42, 0.43, 0.76], "exponent": 28, "strength": 0.30, "kelvin": 9600},
+        {"direction": [-0.58, 0.71, -0.38], "exponent": 16, "strength": 0.78, "kelvin": 6600},
+        {"direction": [0.42, 0.43, 0.76], "exponent": 26, "strength": 0.38, "kelvin": 9000},
     ]
 
-    # A small point source makes the black hardware read without flattening the textile.
-    scene.point_light((1.7, 2.55, -2.0), intensity=(1.0, 0.84, 0.70), scale=16.0)
+    scene.point_light((1.55, 2.48, -2.05), intensity=(1.0, 0.86, 0.74), scale=20.0)
 
     scene.notes.extend(
         [
             "Geometry source: examples/cybr_nocturne_outfit.py in CYBR GEO.",
-            "All outfit surfaces are explicit procedural meshes; no scan or image-generation input.",
+            "All outfit surfaces are explicit procedural meshes; no scan, generated mesh, or generated texture input.",
             "CYBR GEO millimetres/Z-up are converted to CYBR LIGHT metres/Y-up without mirroring.",
             "Preview is spectral path tracing with display transform only; no denoising.",
         ]
@@ -229,7 +243,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--view", choices=("hero", "front", "back", "detail"), default="hero")
-    parser.add_argument("--preset", choices=("smoke", "preview", "reference"), default="preview")
+    parser.add_argument("--preset", choices=("smoke", "proof", "preview", "reference"), default="preview")
     parser.add_argument("--out", type=Path, default=ROOT / "rendered" / "cybr_nocturne")
     parser.add_argument("--export-only", action="store_true")
     parser.add_argument("--executable", type=Path, help="Explicit CYBR LIGHT native renderer executable")
