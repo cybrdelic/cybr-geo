@@ -599,6 +599,37 @@ def _underlayer(parts: list[Part]) -> None:
             MAT_METAL, group="hardware", role="Minimal throat zipper hardware",
         )
     )
+    # Fitted vest panels beneath the open coat/lapels.
+    parts.append(
+        _polygon_panel(
+            "vest_left_front",
+            [(-150, 1400), (-18, 1335), (-26, 1088), (-150, 1095)],
+            187, 5, MAT_TECH, group="underlayer",
+            role="Structured left technical-vest panel",
+        )
+    )
+    parts.append(
+        _polygon_panel(
+            "vest_right_front",
+            [(150, 1400), (18, 1335), (26, 1088), (150, 1095)],
+            187, 5, MAT_TECH, group="underlayer",
+            role="Structured right technical-vest panel",
+        )
+    )
+    parts.append(
+        _oriented_box(
+            "vest_left_diagonal_seam",
+            (-132, 193, 1365), (-32, 193, 1260),
+            5, 3, MAT_STITCH, group="underlayer", role="Vest diagonal seam",
+        )
+    )
+    parts.append(
+        _oriented_box(
+            "vest_right_diagonal_seam",
+            (132, 193, 1365), (32, 193, 1260),
+            5, 3, MAT_STITCH, group="underlayer", role="Vest diagonal seam",
+        )
+    )
 
 def _coat_panels(parts: list[Part]) -> None:
     """Tailored coat assembled from fitted upper panels and tapered long tails."""
@@ -865,20 +896,43 @@ def _sleeves_gloves_cuffs(parts: list[Part]) -> None:
             )
         )
         parts.append(
-            _ellipsoid(
-                f"{side}_glove_palm", (sx * 368, 39, 842), (42, 31, 89),
-                MAT_LEATHER, group="gloves", role="Tailored leather glove palm", subdivisions=2,
+            _z_loft(
+                f"{side}_glove_palm",
+                [
+                    (788, 31, 20, sx * 368, 46),
+                    (835, 39, 25, sx * 368, 42),
+                    (882, 40, 27, sx * 368, 36),
+                    (928, 34, 24, sx * 368, 30),
+                ],
+                MAT_LEATHER, group="gloves", role="Shaped leather glove palm", radial=28,
             )
         )
-        for idx, off in enumerate((-21, -7, 7, 21)):
+        # Four fingers with slightly different lengths.
+        finger_specs = [
+            (-22, 814, 755),
+            (-7, 816, 748),
+            (8, 815, 751),
+            (22, 810, 762),
+        ]
+        for idx, (off, z0, z1) in enumerate(finger_specs):
             x = sx * (368 + off)
             parts.append(
                 _tube(
                     f"{side}_glove_finger_{idx+1}",
-                    [(x, 55, 812), (x, 58, 765)], [(7, 6), (6, 5)],
+                    [(x, 58, z0), (x, 61, z1)],
+                    [(6.5, 5.5), (5.5, 4.5)],
                     MAT_LEATHER, group="gloves", role="Procedural glove finger", radial=10,
                 )
             )
+        # Thumb angles inward and forward from the palm.
+        parts.append(
+            _tube(
+                f"{side}_glove_thumb",
+                [(sx * 348, 55, 850), (sx * 334, 70, 815), (sx * 330, 73, 790)],
+                [(8.0, 7.0), (7.0, 6.0), (6.0, 5.0)],
+                MAT_LEATHER, group="gloves", role="Procedural glove thumb", radial=10,
+            )
+        )
 
 def _epaulettes(parts: list[Part]) -> None:
     """Compact layered shoulder straps inspired by couture epaulettes, not armor."""
@@ -1232,7 +1286,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v3.3 / tailored procedural couture",
+        "design": "CYBR NOCTURNE v3.4 / tailored procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
