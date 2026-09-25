@@ -63,8 +63,8 @@ class Anatomy:
         self.p=p
         z=np.array([-180,-166,-145,-125,-103,-89,-80,-73,-62,-49,-30,
                     -10,15,40,65,90,115,133,141,144.])
-        rx=np.array([171,140,83,49,43,42,44,50,61,68,72,73,74,75,74,
-                     70,59,39,18,0.])
+        rx=np.array([171,140,83,49,43,42,40,47,64,69,72,73,74,74,72,
+                     68,56,38,18,0.])
         front=np.array([-50,-44,-28,-18,-21,-33,-50,-63,-65,-66,-66,
                         -65,-66,-64,-63,-58,-41,-18,4,17.])
         back=np.array([85,85,68,59,52,51,52,55,61,71,84,93,95,95,92,
@@ -93,16 +93,17 @@ class Anatomy:
         add(20,50,-.8)
         add(36,43,-1.25)
         add(56,46,.85)
-        add(48,18,-4.4)
-        add(34,10,-5.2)
-        add(53,0,-4.0)
-        add(39,-14,-3.5)
-        add(52,-30,-1.8)
-        add(50,-50,.7)
-        add(46,-66,-2.7)
-        add(31,-73,-4.0)
-        add(16,-78,-4.3)
-        add(0,-72,-5.0,False)
+        add(48,18,-5.4)
+        add(34,10,-6.0)
+        add(53,0,-4.4)
+        add(36,-10,-3.0)
+        add(48,-23,1.45)
+        add(53,-32,-.9)
+        add(50,-50,-1.15)
+        add(46,-66,-3.55)
+        add(31,-73,-4.65)
+        add(16,-78,-4.7)
+        add(0,-72,-5.6,False)
         add(0,-87,.5,False)
         self._macro_xz=np.asarray([(q[0],q[1]) for q in macro],dtype=float)
         self._macro_delta=np.asarray([q[2] for q in macro],dtype=float)
@@ -162,8 +163,8 @@ class Anatomy:
         tilt=self.p.eye_tilt*q
         center=c[2]+tilt-.18*shape
         opening=self.p.eye_opening*(1-closure)
-        upper=center+.47*opening*shape**.74
-        lower=center-.53*opening*shape**.82
+        upper=center+.44*opening*shape**.70
+        lower=center-.39*opening*shape**.84
         # The medial and lateral canthi close before the sphere ends, eliminating
         # the black corner wedges present in v10.
         return q,upper,lower
@@ -194,12 +195,12 @@ class Anatomy:
         d-=self.p.nose_projection*gaussian(x,z,.20,-7.8,8.4,7.6)
         for s in (-1,1):
             alar_x=s*(10.8*self.p.nose_width)
-            d-=8.6*gaussian(x,z,alar_x,-13.3,6.0,5.5)
+            d-=10.1*gaussian(x,z,alar_x,-13.4,6.2,5.7)
             # Distinct alar bank, alar-facial groove and nostril sill.
             d+=1.05*gaussian(x,z,s*(16.0*self.p.nose_width),-13.5,2.4,5.0)
             d-=1.15*gaussian(x,z,s*(13.8*self.p.nose_width),-10.8,2.8,3.4)
             d-=1.05*gaussian(x,z,s*(8.2*self.p.nose_width),-17.0,3.0,2.0)
-        d-=5.4*gaussian(x,z,.2,-17.6,3.3,4.0)
+        d-=7.0*gaussian(x,z,.2,-17.7,3.4,4.2)
         d-=1.25*gaussian(x,z,0,-13.8,2.6,5.4)
         d+=1.0*gaussian(x,z,0,-21.3,6.4,2.8)
         # Orbicularis/muzzle, philtrum pillars, chin and mental crease.
@@ -356,7 +357,7 @@ def head_mesh(a,quality):
         nx=side*(10.2*a.p.nose_width)+.20;nz=-16.4
         du=x-nx;dz=z-nz
         ur=du+side*.42*dz;vr=dz-side*.10*du
-        remove|=((ur/3.75)**2+(vr/1.48)**2<1)&(y<-65.0)
+        remove|=((ur/5.15)**2+(vr/1.12)**2<1)&(y<-64.8)
     # Closed lips remain continuous geometry. Mouth depth is represented by
     # the analytic crease in Anatomy.deformation(), not by deleted triangles.
     f=f[~remove]
@@ -674,8 +675,8 @@ def eyelid_skin_rims(a,side):
     _,upper,lower=a.eye_opening(x,side)
     parts=[]
     configs=[
-        ('upper',upper,upper+6.2*shape**.78,.72),
-        ('lower',lower,lower-3.8*shape**.82,.32),
+        ('upper',upper,upper+5.35*shape**.80,.34),
+        ('lower',lower,lower-3.05*shape**.84,.15),
     ]
     for name,inner_z,outer_z,depth in configs:
         outer_y=a.front(x,outer_z)-.025
@@ -690,7 +691,7 @@ def eyelid_skin_rims(a,side):
         arch=np.sin(np.pi*t)**1.15*shape[None,:]**.64
         yy-=depth*arch
         # A tiny outward offset avoids coplanar z-fighting with the continuous head.
-        yy-=.018*(1-ease)*shape[None,:]
+        yy-=.010*(1-ease)*shape[None,:]
         v=np.stack([xx,yy,zz],-1).reshape(-1,3)
         part=_orient_eye_patch(
             ('Left' if side<0 else 'Right')+f'_{name}_lid_sheet',
@@ -723,7 +724,7 @@ def nostril_rim(a,side):
     # Outer and inner rotated ellipses form a thin skin annulus.
     rings=[]
     for scale,depth in [(1.07,-.02),(.80,.72)]:
-        ur=4.65*scale*np.cos(theta);vr=1.82*scale*np.sin(theta)
+        ur=5.35*scale*np.cos(theta);vr=1.24*scale*np.sin(theta)
         du=ur-side*.42*vr;dz=vr+side*.10*ur
         x=cx+du;z=cz+dz
         y=a.front(x,z)+depth
@@ -740,7 +741,7 @@ def nasal_cavity(a,side):
     cx=side*(10.2*a.p.nose_width)+.20;cz=-16.4
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=4.52*r*np.cos(theta);vr=1.76*r*np.sin(theta)
+    ur=5.22*r*np.cos(theta);vr=1.20*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
     # The interior starts almost flush with the alar rim and then curves
@@ -858,8 +859,8 @@ def build(parameters=None,quality='final',hair=True):
             eye_front=float(a.front(c[0],c[2]))
             iris_offset=eye_front-.82-c[1]
             pupil_offset=eye_front-.86-c[1]
-            iris_center=c+np.array([0.,0.,-.62])
-            parts.append(disk(prefix+'_iris_stroma',iris_center,5.08,IRIS,
+            iris_center=c+np.array([0.,0.,-.92])
+            parts.append(disk(prefix+'_iris_stroma',iris_center,4.88,IRIS,
                               lambda r:iris_offset+.006*r*r,rmin=1.54))
             parts.append(disk(prefix+'_pupil',iris_center,1.56,PUPIL,
                               lambda r:np.full_like(r,pupil_offset),nr=12))
