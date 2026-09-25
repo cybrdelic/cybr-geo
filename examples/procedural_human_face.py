@@ -775,7 +775,7 @@ def build(parameters=None,quality='final',hair=True):
     materials=[Material('Procedural skin',(.37,.215,.145),rough=.45,ior=1.4,
                         material_source='Seeded mathematical pigment and pore fields'),
                Material('Moist eyelid margin',(.43,.22,.17),rough=.31),
-               Material('Recessed oral and nasal mucosa',(.075,.022,.018),rough=.48),
+               Material('Recessed oral and nasal mucosa',(.13,.040,.030),rough=.52),
                Material('Procedural sclera',(.69,.675,.61),rough=.34),
                Material('Procedural hazel iris',(.12,.095,.033),rough=.4),
                Material('Pupil interior',(.001,.001,.001),rough=.7),
