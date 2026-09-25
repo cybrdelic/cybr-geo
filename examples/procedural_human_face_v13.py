@@ -221,7 +221,7 @@ class NoseSystem:
         x,z=np.broadcast_arrays(np.asarray(x,float),np.asarray(z,float))
         d=np.zeros(x.shape,float)
         # Nasal bones / bridge / dorsum.
-        bridge=(1-smoothstep(-20,-7,z))*smoothstep(48,30,z)
+        bridge=smoothstep(-20,-7,z)*(1-smoothstep(30,48,z))
         bridge=np.exp(-.5*(x/5.2)**2)*bridge
         d-=5.4*bridge
         d-=5.1*gaussian(x,z,0,6,7.7,18)
