@@ -1,0 +1,101 @@
+name: Procedural human face v13 semantic cage
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feat/procedural-human-face-v13-semantic-cage'
+    paths:
+      - 'examples/procedural_human_face_v13.py'
+      - 'tools/procedural_face_v13_materials.py'
+      - 'tools/render_procedural_face_v13.py'
+      - 'tools/render_human_face_v13.py'
+      - 'tests/test_procedural_human_face_v13.py'
+      - '.github/workflows/human-face-v13-semantic-cage.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: human-face-v13-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install focused v13 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 trimesh==4.11.1 mitsuba==3.7.1 pytest==9.0.2 setuptools==82.0.1
+          python -m pip install --no-deps -e .
+      - name: Verify semantic-cage geometry
+        run: |
+          PYTHONPATH=src python -m pytest -q tests/test_procedural_human_face_v13.py
+      - name: Verify no-scan/no-learned contract
+        run: |
+          python - <<'PY'
+          import importlib.util,sys
+          sys.path[:0]=['src','examples']
+          spec=importlib.util.spec_from_file_location('v13','examples/procedural_human_face_v13.py')
+          m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m)
+          a=m.build(m.FaceParameters(),quality='preview',hair=False)
+          assert a.metadata['scan_used'] is False
+          assert a.metadata['imported_anatomy_mesh'] is False
+          assert a.metadata['photographic_skin_textures'] is False
+          assert a.metadata['learned_face_model'] is False
+          assert a.metadata['image_generation'] is False
+          assert a.metadata['input_assets']==[]
+          assert a.metadata['topology']=='semantic-control-cage-subdivision'
+          print(a.metadata)
+          PY
+      - name: Provision pinned OIDN
+        run: |
+          python - <<'PY'
+          from mechanism_lab.v9 import ensure_oidn
+          print(ensure_oidn())
+          PY
+      - name: Render identity A
+        run: |
+          python tools/render_human_face_v13.py --out build/v13/a --view portrait \
+            --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
+            --texture-size 1024 --seed 271828 --skip-export
+      - name: Render identity B
+        run: |
+          python tools/render_human_face_v13.py --out build/v13/b --view portrait \
+            --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
+            --texture-size 1024 --seed 314159 --bizygomatic-width 134 \
+            --bigonial-width 100 --intercanthal-width 33 --eye-width 27 \
+            --eye-opening 6.5 --eye-tilt .10 --nasal-width 33 --nasal-projection 19 \
+            --mouth-width 50 --upper-lip-fullness .92 --lower-lip-fullness 1.04 \
+            --chin-height 22 --forehead-width 128 --asymmetry .28 --skip-export
+      - name: Render identity C
+        run: |
+          python tools/render_human_face_v13.py --out build/v13/c --view portrait \
+            --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
+            --texture-size 1024 --seed 161803 --bizygomatic-width 145 \
+            --bigonial-width 116 --intercanthal-width 35 --eye-width 29 \
+            --eye-opening 7.3 --eye-tilt .34 --nasal-width 38 --nasal-projection 24 \
+            --mouth-width 55 --upper-lip-fullness 1.06 --lower-lip-fullness .96 \
+            --chin-height 26 --forehead-width 134 --asymmetry .18 --skip-export
+      - name: Render clay topology proof
+        run: |
+          python tools/render_human_face_v13.py --out build/v13/clay --view portrait \
+            --size 480x600 --spp 48 --depth 12 --threads 4 --quality preview \
+            --texture-size 512 --seed 271828 --clay --no-hair --skip-export
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cybr-geo-human-face-v13-${{ github.sha }}
+          path: |
+            build/v13/*/CYBR_V13_Face_*.png
+            build/v13/*/CYBR_V13_Face_*.json
+            build/v13/*/texture_provenance.json
+          if-no-files-found: warn
+          retention-days: 30
