@@ -460,9 +460,6 @@ def visible_eye_sclera(a,side):
     yy=hypothetical_skin+.10-.78*core
     v=np.stack([xx,yy,zz],-1).reshape(-1,3)
     f=grid_faces(len(t),len(q))
-    center=v[f].mean(axis=1)
-    radial=(center[:,0]-ec[0])**2+(center[:,2]-ec[2])**2
-    f=f[radial>5.18**2]
     uv=np.column_stack([
         .5+(v[:,0]-ec[0])/(2*(a.p.eye_width/2)),
         .5+(v[:,2]-ec[2])/(2*max(a.p.eye_opening,1.))])
@@ -662,14 +659,50 @@ def closed_blink_seal(a,side):
         v,grid_faces(rows,len(q),reverse=(side<0)),SKIN,a.uv(v),
         role='Procedural finite skin patch for fully closed blink')
 
+def eyelid_skin_rims(a,side):
+    """Finite procedural skin ribbons forming upper/lower eyelid edges.
+
+    The continuous head supplies the orbital skin. These narrow ribbons overlap
+    the deleted palpebral boundary by a fraction of a millimetre and roll inward
+    toward the eye surface, giving the opening an actual lid edge instead of a
+    texture-like cut.
+    """
+    ec=a.eye(side)
+    q=np.linspace(-.985,.985,185)
+    shape=np.sqrt(np.maximum(1-q*q,0))
+    x=ec[0]+side*q*(a.p.eye_width/2)
+    _,upper,lower=a.eye_opening(x,side)
+    parts=[]
+    for name,inner_z,outer_z,depth in [
+        ('upper',upper,upper+1.55*shape,.42),
+        ('lower',lower,lower-1.05*shape,.24),
+    ]:
+        outer_y=a.front(x,outer_z)
+        inner_y=a.front(x,inner_z)-.10
+        rows=6
+        t=np.linspace(0,1,rows)[:,None]
+        ease=t*t*(3-2*t)
+        xx=np.broadcast_to(x,(rows,len(x)))
+        zz=outer_z[None,:]*(1-ease)+inner_z[None,:]*ease
+        yy=outer_y[None,:]*(1-ease)+inner_y[None,:]*ease
+        yy-=depth*np.sin(np.pi*t)*shape[None,:]**.72
+        v=np.stack([xx,yy,zz],-1).reshape(-1,3)
+        part=_orient_eye_patch(
+            ('Left' if side<0 else 'Right')+f'_{name}_lid_rim',
+            v,grid_faces(rows,len(q)),SKIN,a.uv(v),
+            'Procedural finite eyelid rim blended into continuous facial skin')
+        parts.append(part)
+    return parts
+
+
 def eyelids(a,side):
     """Continuous upper/lower moist margins following the analytic eye opening."""
     c=a.eye(side)
     q=np.linspace(-.995,.995,129)
     x=c[0]+side*q*(a.p.eye_width/2)
     _,upper,lower=a.eye_opening(x,side)
-    upper_curve=np.column_stack([x,ocular_front_y(a,side,x,upper)-.085,upper])
-    lower_curve=np.column_stack([x[::-1],ocular_front_y(a,side,x[::-1],lower[::-1])-.075,lower[::-1]])
+    upper_curve=np.column_stack([x,a.front(x,upper)-.16,upper])
+    lower_curve=np.column_stack([x[::-1],a.front(x[::-1],lower[::-1])-.13,lower[::-1]])
     margin=np.concatenate([upper_curve,lower_curve[1:]],axis=0)
     name=('Left' if side<0 else 'Right')+'_eyelids'
     wet=tube_collection(name+'_wet_margin',[upper_curve,lower_curve],
@@ -811,14 +844,18 @@ def build(parameters=None,quality='final',hair=True):
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
         if p.eyelid_closure < .995:
-            parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.28,11.55],SCLERA,iris_cut=True))
-            caruncle=c+np.array([-side*(a.p.eye_width*.445),-11.25,-.35])
-            parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.58,.30,.38],LID,nu=40,nv=26))
-            iris_offset=-12.40
-            pupil_offset=-12.43
-            parts.append(disk(prefix+'_iris_stroma',c,5.45,IRIS,
-                              lambda r:iris_offset+.010*r*r,rmin=1.62))
-            parts.append(disk(prefix+'_pupil',c,1.62,PUPIL,
+            parts.extend(eyelid_skin_rims(a,side))
+            parts.append(visible_eye_sclera(a,side))
+            caruncle=c+np.array([-side*(a.p.eye_width*.445),-.35,-.35])
+            # Move the moist caruncle to the actual front eye surface.
+            caruncle[1]=float(a.front(caruncle[0],caruncle[2]))-.22
+            parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.62,.28,.40],LID,nu=40,nv=26))
+            eye_front=float(a.front(c[0],c[2]))
+            iris_offset=eye_front-.82-c[1]
+            pupil_offset=eye_front-.86-c[1]
+            parts.append(disk(prefix+'_iris_stroma',c,5.08,IRIS,
+                              lambda r:iris_offset+.006*r*r,rmin=1.54))
+            parts.append(disk(prefix+'_pupil',c,1.56,PUPIL,
                               lambda r:np.full_like(r,pupil_offset),nr=12))
             parts.append(visible_cornea(a,side))
             parts.append(wet)
