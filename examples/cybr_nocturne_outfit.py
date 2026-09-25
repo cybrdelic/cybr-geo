@@ -725,7 +725,7 @@ def _coat_panels(parts: list[Part]) -> None:
                 (800, -264, -92, 171, 8),
                 (600, -292, -122, 151, 6),
                 (410, -316, -152, 121, 4),
-                (255, -334, -176, 92, 2),
+                (320, -328, -166, 95, 2),
             ], "front"
         ),
         "coat_right_front_skirt": (
@@ -734,7 +734,7 @@ def _coat_panels(parts: list[Part]) -> None:
                 (800, 92, 264, 171, 8),
                 (600, 122, 292, 151, 6),
                 (410, 152, 316, 121, 4),
-                (255, 176, 334, 92, 2),
+                (340, 166, 326, 98, 2),
             ], "front"
         ),
         "coat_left_back_tail": (
@@ -743,7 +743,7 @@ def _coat_panels(parts: list[Part]) -> None:
                 (790, -270, -38, -171, -6),
                 (600, -298, -46, -151, -5),
                 (410, -320, -58, -121, -3),
-                (250, -336, -72, -92, -2),
+                (330, -330, -68, -96, -2),
             ], "back"
         ),
         "coat_right_back_tail": (
@@ -752,7 +752,7 @@ def _coat_panels(parts: list[Part]) -> None:
                 (790, 38, 270, -171, -6),
                 (600, 46, 298, -151, -5),
                 (410, 58, 320, -121, -3),
-                (250, 72, 336, -92, -2),
+                (330, 68, 330, -96, -2),
             ], "back"
         ),
     }
@@ -784,17 +784,17 @@ def _coat_panels(parts: list[Part]) -> None:
     for name, sections, face in (
         (
             "left_lining_flash",
-            [(955, -78, -66, 174, 2), (720, -101, -88, 158, 2), (470, -132, -118, 127, 1), (275, -179, -164, 96, 1)],
+            [(955, -78, -66, 174, 2), (720, -101, -88, 158, 2), (470, -132, -118, 127, 1), (336, -170, -156, 99, 1)],
             "front",
         ),
         (
             "right_lining_flash",
-            [(955, 66, 78, 174, 2), (720, 88, 101, 158, 2), (470, 118, 132, 127, 1), (275, 164, 179, 96, 1)],
+            [(955, 66, 78, 174, 2), (720, 88, 101, 158, 2), (470, 118, 132, 127, 1), (344, 156, 170, 101, 1)],
             "front",
         ),
         (
             "rear_vent_lining",
-            [(900, -22, 22, -174, -2), (650, -28, 28, -154, -2), (430, -34, 34, -124, -1), (265, -40, 40, -95, -1)],
+            [(900, -22, 22, -174, -2), (650, -28, 28, -154, -2), (430, -34, 34, -124, -1), (338, -38, 38, -98, -1)],
             "back",
         ),
     ):
@@ -1286,7 +1286,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v3.4 / tailored procedural couture",
+        "design": "CYBR NOCTURNE v3.5 / tailored procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
