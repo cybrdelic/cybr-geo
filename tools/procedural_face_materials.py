@@ -53,14 +53,14 @@ def skin_maps(out,anatomy,size=4096):
     rel=np.where(z>=line,(z-line)/np.maximum(upper,.001),(line-z)/np.maximum(lower,.001))
     lips=(1-smoothstep(.68,1.32,rel))*smoothstep(anatomy.p.mouth_width/2+1.4,
                 anatomy.p.mouth_width/2-2.3,abs(x))*front
-    lip_color=np.stack([.235+.010*meso,.145+.006*meso,.120+.005*meso],-1)
+    lip_color=np.stack([.285+.009*meso,.118+.005*meso,.092+.004*meso],-1)
     color=color*(1-lips[...,None])+lip_color*lips[...,None]
     # Sparse neutral follicle pigmentation complements actual modeled stubble.
     beard=np.exp(-((z+59)/30)**4)*front*(1-lips)
     color[...,0]-=.009*beard;color[...,1]-=.004*beard
     rough=.46+.016*meso+.009*fine
     oil=(gaussian(x,z,0,-8,15,23)+.5*gaussian(x,z,0,66,44,20))*front
-    rough-=.060*oil;rough=rough*(1-lips)+(.425+.016*meso)*lips
+    rough-=.060*oil;rough=rough*(1-lips)+(.395+.014*meso)*lips
     # Skin furrows and isolated pore dimples in a calibrated 0.06 mm range.
     impulses=(rng.random((size,size),dtype=np.float32)<.012).astype(np.float32)
     impulses*=rng.uniform(.5,1.5,(size,size)).astype(np.float32)
@@ -72,7 +72,7 @@ def skin_maps(out,anatomy,size=4096):
     # Vermilion microfolds run across the lips' vertical extent, interrupting
     # at independent phases rather than a single periodic corrugation.
     lipfold=(np.sin(x*3.2+.6*meso)+.35*np.sin(x*6.4+.3*fine))
-    height=height*(1-lips)+(.0032*lipfold+.0012*fine)*lips
+    height=height*(1-lips)+(.0024*lipfold+.0009*fine)*lips
     for h,amp in [(67,.007),(78,.005),(89,.004)]:
         curve=h+.0016*x*x+.28*np.sin(.08*x)
         height-=amp*np.exp(-((z-curve)/.24)**2)*np.exp(-(x/47)**6)*front
@@ -99,15 +99,15 @@ def eye_maps(out,seed,size=1024):
     radnoise=.4*np.sin(r*43+theta*3)+.3*np.sin(r*87-theta*8)
     amber=np.exp(-((r-.42)/.23)**2)
     iris=np.empty((size,size,3),np.float32)
-    iris[...,0]=.075+.115*amber+.018*fibers+.004*radnoise
-    iris[...,1]=.091+.027*amber+.018*fibers+.005*radnoise
-    iris[...,2]=.033+.005*amber+.009*fibers+.003*radnoise
+    iris[...,0]=.058+.090*amber+.015*fibers+.003*radnoise
+    iris[...,1]=.064+.024*amber+.013*fibers+.004*radnoise
+    iris[...,2]=.027+.006*amber+.007*fibers+.002*radnoise
     crypts=np.maximum(-fibers-.65,0)*np.exp(-((r-.52)/.19)**2)
     iris*=1-.33*np.clip(crypts,0,1)[...,None]
     iris*= (1-.77*np.exp(-((r-.978)/.06)**2))[...,None]
     iris[r>1]=[.009,.014,.006]
     save_rgb(out/'iris_color.png',np.clip(iris,.002,1))
-    sclera=np.empty_like(iris);sclera[:]=[.68,.645,.59]
+    sclera=np.empty_like(iris);sclera[:]=[.52,.505,.465]
     n=soft_noise(rng,size,30)
     sclera+=n[...,None]*np.array([.009,.008,.006])
     # Curved, branching small vessels concentrated toward the canthi.
