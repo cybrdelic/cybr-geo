@@ -16,7 +16,7 @@ from scipy.interpolate import PchipInterpolator, RectBivariateSpline
 from mechanism_lab.core import Assembly, Material, Part, View
 
 SKIN, LID, CAVITY, SCLERA, IRIS, PUPIL, CORNEA, HAIR = range(8)
-ZMIN, ZMAX = -180.0, 135.0
+ZMIN, ZMAX = -180.0, 128.0
 
 
 def smoothstep(a,b,x):
@@ -76,8 +76,8 @@ class FaceParameters:
     bizygomatic_width:float=139.0
     bigonial_width:float=104.0
     intercanthal_width:float=34.0
-    eye_width:float=27.5
-    eye_opening:float=7.2
+    eye_width:float=29.0
+    eye_opening:float=8.2
     eye_height:float=30.0
     eye_tilt:float=0.22
     nasal_width:float=38.0
@@ -126,11 +126,11 @@ class ProceduralSkull:
         back=self.back(src_z)
         # Analytic ellipsoidal cranial vault for a rounded human scalp.
         t=smoothstep(52.,72.,z)
-        q=np.clip((z-55.)/80.,-1.,1.)
+        q=np.clip((z-55.)/73.,-1.,1.)
         root=np.sqrt(np.maximum(1-q*q,0))
-        dome_half=72.*self.p.skull_width*root
-        dome_front=17.-82.*root
-        dome_back=17.+82.*root
+        dome_half=69.*self.p.skull_width*root
+        dome_front=15.-76.*root
+        dome_back=15.+76.*root
         half=half*(1-t)+dome_half*t
         front=front*(1-t)+dome_front*t
         back=back*(1-t)+dome_back*t
@@ -203,7 +203,7 @@ class EyeSystem:
             globe=self.globe_front_y(x,z,side)
             # Project periorbital skin toward the physical eyeball while leaving
             # enough thickness for the lid and orbicularis tissue.
-            target=np.minimum(base,globe-.62)
+            target=np.maximum(base,globe-.62)
             y+=(target-base)*blend*.86
             q,upper,lower=self.opening(x,side)
             shape=np.maximum(1-q*q,0)
@@ -301,6 +301,13 @@ class MouthSystem:
         d-=.55*gaussian(x,z,3.0,-28,1.7,5.0)
         d+=1.2*gaussian(x,z,0,-57,17,3.5)
         d-=3.0*gaussian(x,z,0,-70,20,9)
+        # Oral commissures and nasolabial transition.
+        corner=a*.96
+        d+=.42*gaussian(np.abs(x),z,corner,-39.5,2.7,3.2)
+        fold=15.0+.31*np.clip(-z-17,0,34)
+        extent=smoothstep(-53,-43,z)*(1-smoothstep(-19,-11,z))
+        d+=.22*np.exp(-((np.abs(x)-fold)/1.6)**2)*extent
+        d-=.25*np.exp(-((np.abs(x)-fold-3.6)/4.1)**2)*extent
         return d
 
 
