@@ -660,37 +660,42 @@ def closed_blink_seal(a,side):
         role='Procedural finite skin patch for fully closed blink')
 
 def eyelid_skin_rims(a,side):
-    """Finite procedural skin ribbons forming upper/lower eyelid edges.
+    """Broad procedural upper/lower eyelid sheets over continuous facial skin.
 
-    The continuous head supplies the orbital skin. These narrow ribbons overlap
-    the deleted palpebral boundary by a fraction of a millimetre and roll inward
-    toward the eye surface, giving the opening an actual lid edge instead of a
-    texture-like cut.
+    The head remains underneath, so the outer sheet can overlap it safely. The
+    inner edge hugs the analytic palpebral opening while the outer edge blends
+    several millimetres into the orbital skin, producing real lid volume rather
+    than a cut-hole rim.
     """
     ec=a.eye(side)
-    q=np.linspace(-.985,.985,185)
+    q=np.linspace(-.992,.992,205)
     shape=np.sqrt(np.maximum(1-q*q,0))
     x=ec[0]+side*q*(a.p.eye_width/2)
     _,upper,lower=a.eye_opening(x,side)
     parts=[]
-    for name,inner_z,outer_z,depth in [
-        ('upper',upper,upper+1.55*shape,.42),
-        ('lower',lower,lower-1.05*shape,.24),
-    ]:
-        outer_y=a.front(x,outer_z)
-        inner_y=a.front(x,inner_z)-.10
-        rows=6
+    configs=[
+        ('upper',upper,upper+6.2*shape**.78,.72),
+        ('lower',lower,lower-3.8*shape**.82,.32),
+    ]
+    for name,inner_z,outer_z,depth in configs:
+        outer_y=a.front(x,outer_z)-.025
+        inner_y=a.front(x,inner_z)-.13
+        rows=12
         t=np.linspace(0,1,rows)[:,None]
         ease=t*t*(3-2*t)
         xx=np.broadcast_to(x,(rows,len(x)))
         zz=outer_z[None,:]*(1-ease)+inner_z[None,:]*ease
         yy=outer_y[None,:]*(1-ease)+inner_y[None,:]*ease
-        yy-=depth*np.sin(np.pi*t)*shape[None,:]**.72
+        # Pretarsal lid volume peaks between the skin blend and the wet margin.
+        arch=np.sin(np.pi*t)**1.15*shape[None,:]**.64
+        yy-=depth*arch
+        # A tiny outward offset avoids coplanar z-fighting with the continuous head.
+        yy-=.018*(1-ease)*shape[None,:]
         v=np.stack([xx,yy,zz],-1).reshape(-1,3)
         part=_orient_eye_patch(
-            ('Left' if side<0 else 'Right')+f'_{name}_lid_rim',
+            ('Left' if side<0 else 'Right')+f'_{name}_lid_sheet',
             v,grid_faces(rows,len(q)),SKIN,a.uv(v),
-            'Procedural finite eyelid rim blended into continuous facial skin')
+            'Broad original procedural eyelid sheet blended over continuous face')
         parts.append(part)
     return parts
 
@@ -853,9 +858,10 @@ def build(parameters=None,quality='final',hair=True):
             eye_front=float(a.front(c[0],c[2]))
             iris_offset=eye_front-.82-c[1]
             pupil_offset=eye_front-.86-c[1]
-            parts.append(disk(prefix+'_iris_stroma',c,5.08,IRIS,
+            iris_center=c+np.array([0.,0.,-.62])
+            parts.append(disk(prefix+'_iris_stroma',iris_center,5.08,IRIS,
                               lambda r:iris_offset+.006*r*r,rmin=1.54))
-            parts.append(disk(prefix+'_pupil',c,1.56,PUPIL,
+            parts.append(disk(prefix+'_pupil',iris_center,1.56,PUPIL,
                               lambda r:np.full_like(r,pupil_offset),nr=12))
             parts.append(visible_cornea(a,side))
             parts.append(wet)
