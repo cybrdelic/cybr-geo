@@ -325,7 +325,7 @@ class SemanticFaceCage:
         dx=(xy[:,None,0]-xy[None,:,0])/23.
         dz=(xy[:,None,1]-xy[None,:,1])/24.
         K=np.exp(-.5*(dx*dx+dz*dz))
-        self.weights=np.linalg.solve(K+np.eye(len(K))*.035,self.landmarks[:,2])
+        self.weights=np.linalg.solve(K+np.eye(len(K))*.004,self.landmarks[:,2])
 
         dy=np.empty((len(self.rows),len(self.cols)),float)
         for i,z in enumerate(self.rows):
