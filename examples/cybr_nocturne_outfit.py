@@ -917,9 +917,9 @@ def _epaulettes(parts: list[Part]) -> None:
     """Compact layered shoulder straps inspired by couture epaulettes, not armor."""
     for side, sx in (("left", -1.0), ("right", 1.0)):
         straps = [
-            ((sx * 278, 18, 1477), (sx * 340, 16, 1454), 20),
-            ((sx * 286, 18, 1454), (sx * 350, 16, 1428), 18),
-            ((sx * 294, 18, 1432), (sx * 356, 16, 1404), 16),
+            ((sx * 278, 118, 1477), (sx * 340, 104, 1454), 20),
+            ((sx * 286, 116, 1454), (sx * 350, 102, 1428), 18),
+            ((sx * 294, 112, 1432), (sx * 356, 98, 1404), 16),
         ]
         for i, (a, b, width) in enumerate(straps):
             parts.append(
@@ -932,7 +932,7 @@ def _epaulettes(parts: list[Part]) -> None:
             parts.extend(
                 _ring_buckle(
                     f"{side}_epaulette_buckle_{i+1}",
-                    (b[0], 25, b[2]), (21, 18), 4, 5,
+                    (b[0], 126, b[2]), (21, 18), 4, 5,
                     MAT_METAL, role="Small shoulder buckle",
                 )
             )
@@ -1163,6 +1163,25 @@ def _boots(parts: list[Part]) -> None:
             )
         )
 
+def _apply_fashion_proportions(parts: list[Part]) -> None:
+    """Apply the final non-uniform tailoring pass to all explicit geometry.
+
+    The original construction coordinates were intentionally generous for
+    panel authoring.  This pass gives the assembled figure a fashion-model
+    shoulder/height ratio without discarding any panel topology or hardware.
+    """
+    for part in parts:
+        if part.group == "footwear":
+            sx = 0.88
+        elif part.name == "mannequin_head":
+            sx = 0.90
+        else:
+            sx = 0.82
+        part.vertices[:, 0] *= sx
+        mesh = trimesh.Trimesh(vertices=part.vertices, faces=part.faces, process=False)
+        part.normals = np.asarray(mesh.vertex_normals, dtype=np.float64)
+
+
 def build() -> Assembly:
     materials = [
         Material(
@@ -1263,9 +1282,10 @@ def build() -> Assembly:
     _back_pattern_and_seams(parts)
     _trousers(parts)
     _boots(parts)
+    _apply_fashion_proportions(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v4.1 / fitted procedural couture",
+        "design": "CYBR NOCTURNE v5 / slender procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
