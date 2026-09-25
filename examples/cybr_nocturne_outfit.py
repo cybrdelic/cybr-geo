@@ -609,8 +609,8 @@ def _coat_panels(parts: list[Part]) -> None:
         _curved_panel(
             "coat_front_left_upper",
             [
-                (985, -238, -58, 166, 11),
-                (1110, -232, -54, 170, 13),
+                (985, -212, -58, 169, 10),
+                (1110, -218, -54, 173, 12),
                 (1260, -274, -48, 176, 16),
                 (1400, -302, -96, 181, 14),
                 (1490, -286, -136, 174, 10),
@@ -623,8 +623,8 @@ def _coat_panels(parts: list[Part]) -> None:
         _curved_panel(
             "coat_front_right_upper",
             [
-                (985, 58, 238, 166, 11),
-                (1110, 54, 232, 170, 13),
+                (985, 58, 212, 169, 10),
+                (1110, 54, 218, 173, 12),
                 (1260, 48, 274, 176, 16),
                 (1400, 96, 302, 181, 14),
                 (1490, 136, 286, 174, 10),
@@ -637,11 +637,11 @@ def _coat_panels(parts: list[Part]) -> None:
     # Narrow side pieces close the torso without broadening the silhouette.
     for side, sx in (("left", -1.0), ("right", 1.0)):
         sections = [
-            (985, -246, -220, 92, 5),
-            (1110, -242, -214, 100, 6),
-            (1260, -270, -226, 106, 6),
-            (1400, -318, -266, 100, 6),
-            (1488, -296, -264, 90, 5),
+            (985, -224, -205, 92, 5),
+            (1110, -228, -205, 100, 5),
+            (1260, -258, -220, 106, 6),
+            (1400, -312, -262, 100, 6),
+            (1488, -292, -260, 90, 5),
         ]
         if sx > 0:
             sections = [(z, -x1, -x0, y, bow) for z, x0, x1, y, bow in sections]
@@ -670,11 +670,11 @@ def _coat_panels(parts: list[Part]) -> None:
     )
     for side, sx in (("left", -1.0), ("right", 1.0)):
         sections = [
-            (975, -296, -132, -154, -8),
-            (1110, -286, -128, -164, -9),
-            (1260, -302, -145, -174, -10),
-            (1400, -318, -172, -178, -10),
-            (1490, -294, -160, -164, -8),
+            (975, -232, -132, -160, -7),
+            (1110, -230, -128, -168, -8),
+            (1260, -258, -145, -176, -9),
+            (1400, -310, -172, -180, -9),
+            (1490, -288, -160, -166, -7),
         ]
         if sx > 0:
             sections = [(z, -x1, -x0, y, bow) for z, x0, x1, y, bow in sections]
@@ -753,17 +753,17 @@ def _coat_panels(parts: list[Part]) -> None:
     for name, sections, face in (
         (
             "left_lining_flash",
-            [(955, -73, -43, 174, 3), (720, -88, -48, 158, 2), (470, -125, -74, 127, 2), (275, -172, -110, 96, 1)],
+            [(955, -78, -66, 174, 2), (720, -101, -88, 158, 2), (470, -132, -118, 127, 1), (275, -179, -164, 96, 1)],
             "front",
         ),
         (
             "right_lining_flash",
-            [(955, 43, 73, 174, 3), (720, 48, 88, 158, 2), (470, 74, 125, 127, 2), (275, 110, 172, 96, 1)],
+            [(955, 66, 78, 174, 2), (720, 88, 101, 158, 2), (470, 118, 132, 127, 1), (275, 164, 179, 96, 1)],
             "front",
         ),
         (
             "rear_vent_lining",
-            [(900, -38, 38, -174, -2), (650, -48, 48, -154, -2), (430, -60, 60, -124, -1), (265, -70, 70, -95, -1)],
+            [(900, -22, 22, -174, -2), (650, -28, 28, -154, -2), (430, -34, 34, -124, -1), (265, -40, 40, -95, -1)],
             "back",
         ),
     ):
@@ -780,7 +780,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "left_lapel",
-            [(-284, 1488), (-164, 1472), (-82, 1372), (-132, 1238), (-232, 1315)],
+            [(-258, 1486), (-160, 1472), (-88, 1376), (-132, 1258), (-220, 1322)],
             205, 5.5, MAT_LEATHER, group="coat_trim",
             role="Narrow structured black-leather lapel",
         )
@@ -788,7 +788,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "right_lapel",
-            [(284, 1488), (174, 1470), (95, 1368), (148, 1240), (238, 1318)],
+            [(248, 1486), (170, 1471), (108, 1372), (150, 1262), (224, 1324)],
             205, 5.5, MAT_PURPLE_LEATHER, group="coat_trim",
             role="Narrow deep-amethyst leather lapel",
         )
@@ -796,7 +796,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "right_lapel_outer_binding",
-            (276, 211, 1475), (150, 211, 1248),
+            (242, 211, 1474), (152, 211, 1268),
             10, 5, MAT_LEATHER, group="coat_trim",
             role="Black binding on purple lapel",
         )
@@ -814,21 +814,21 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "left_collar_wing",
-            [(-172, 1500), (-126, 1548), (-90, 1594), (-94, 1540), (-134, 1494)],
+            [(-154, 1500), (-119, 1542), (-92, 1588), (-95, 1540), (-126, 1496)],
             173, 5.5, MAT_WOOL, group="coat_trim", role="Left collar wing",
         )
     )
     parts.append(
         _polygon_panel(
             "right_collar_wing",
-            [(172, 1500), (126, 1548), (90, 1594), (94, 1540), (134, 1494)],
+            [(154, 1500), (119, 1542), (92, 1588), (95, 1540), (126, 1496)],
             173, 5.5, MAT_WOOL, group="coat_trim", role="Right collar wing",
         )
     )
     parts.append(
         _polygon_panel(
             "right_collar_amethyst_underlay",
-            [(157, 1502), (122, 1539), (102, 1568), (105, 1540), (132, 1501)],
+            [(142, 1502), (116, 1536), (102, 1563), (104, 1540), (124, 1502)],
             166, 3, MAT_PURPLE_SATIN, group="lining",
             role="Restrained amethyst collar under-edge",
         )
@@ -1232,7 +1232,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v3.2 / tailored procedural couture",
+        "design": "CYBR NOCTURNE v3.3 / tailored procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
