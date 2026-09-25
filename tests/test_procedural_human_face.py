@@ -54,7 +54,7 @@ def test_continuous_lid_skin_and_exact_visible_eye_patches(closed):
     assert head.material==SKIN and 'no-scan' in head.tags
 
     opened=build(FaceParameters(eyelid_closure=0),quality='preview',hair=False)
-    sclera=[p for p in opened.parts if p.name.endswith('_visible_sclera')]
+    sclera=[p for p in opened.parts if p.name.endswith('_sclera_globe')]
     cornea=[p for p in opened.parts if p.name.endswith('_visible_cornea')]
     assert len(sclera)==2 and len(cornea)==2
     for patch in sclera+cornea:
