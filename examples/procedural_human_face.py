@@ -151,8 +151,8 @@ class Anatomy:
         return line,upper,lower
 
     def eye(self,side):
-        return np.array([side*self.p.eye_spacing/2,-47.25,
-                         self.p.eye_height+(.16 if side<0 else -.10)])
+        return np.array([side*self.p.eye_spacing/2,-51.05,
+                         self.p.eye_height+(.12 if side<0 else -.08)])
 
     def eye_opening(self,x,side):
         c=self.eye(side)
@@ -680,7 +680,7 @@ def eyelid_skin_rims(a,side):
     ]
     for name,inner_z,outer_z,depth in configs:
         outer_y=a.front(x,outer_z)-.025
-        inner_y=a.front(x,inner_z)-.13
+        inner_y=ocular_front_y(a,side,x,inner_z)-.045
         rows=12
         t=np.linspace(0,1,rows)[:,None]
         ease=t*t*(3-2*t)
@@ -707,8 +707,8 @@ def eyelids(a,side):
     q=np.linspace(-.995,.995,129)
     x=c[0]+side*q*(a.p.eye_width/2)
     _,upper,lower=a.eye_opening(x,side)
-    upper_curve=np.column_stack([x,a.front(x,upper)-.16,upper])
-    lower_curve=np.column_stack([x[::-1],a.front(x[::-1],lower[::-1])-.13,lower[::-1]])
+    upper_curve=np.column_stack([x,ocular_front_y(a,side,x,upper)-.060,upper])
+    lower_curve=np.column_stack([x[::-1],ocular_front_y(a,side,x[::-1],lower[::-1])-.052,lower[::-1]])
     margin=np.concatenate([upper_curve,lower_curve[1:]],axis=0)
     name=('Left' if side<0 else 'Right')+'_eyelids'
     wet=tube_collection(name+'_wet_margin',[upper_curve,lower_curve],
@@ -851,20 +851,23 @@ def build(parameters=None,quality='final',hair=True):
         wet,margin=eyelids(a,side)
         if p.eyelid_closure < .995:
             parts.extend(eyelid_skin_rims(a,side))
-            parts.append(visible_eye_sclera(a,side))
-            caruncle=c+np.array([-side*(a.p.eye_width*.445),-.35,-.35])
-            # Move the moist caruncle to the actual front eye surface.
-            caruncle[1]=float(a.front(caruncle[0],caruncle[2]))-.22
-            parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.62,.28,.40],LID,nu=40,nv=26))
-            eye_front=float(a.front(c[0],c[2]))
-            iris_offset=eye_front-.82-c[1]
-            pupil_offset=eye_front-.86-c[1]
-            iris_center=c+np.array([0.,0.,-.92])
-            parts.append(disk(prefix+'_iris_stroma',iris_center,4.88,IRIS,
-                              lambda r:iris_offset+.006*r*r,rmin=1.54))
-            parts.append(disk(prefix+'_pupil',iris_center,1.56,PUPIL,
-                              lambda r:np.full_like(r,pupil_offset),nr=12))
-            parts.append(visible_cornea(a,side))
+            # Full procedural globe guarantees every ray through the palpebral
+            # opening lands on eye geometry. The iris aperture is removed only
+            # from the anterior sclera.
+            parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.28,11.55],SCLERA,iris_cut=True))
+            caruncle=c+np.array([-side*(a.p.eye_width*.445),-11.85,-.32])
+            parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.58,.34,.38],LID,nu=40,nv=26))
+            iris_center=c+np.array([0.,0.,-.42])
+            parts.append(disk(prefix+'_iris_stroma',iris_center,5.42,IRIS,
+                              lambda r:-12.43+.010*r*r,rmin=1.62))
+            parts.append(disk(prefix+'_pupil',iris_center,1.62,PUPIL,
+                              lambda r:np.full_like(r,-12.46),nr=12))
+            cornea=ellipsoid(prefix+'_ocular_tear_surface',c,[12.62,12.72,11.72],CORNEA)
+            cv=cornea.vertices.copy();dx=cv[:,0]-c[0];dz=cv[:,2]-c[2]
+            frontal=cv[:,1]<c[1]
+            bulge=.58*np.exp(-((dx*dx+dz*dz)/(5.45**2))**2)
+            cv[frontal,1]-=bulge[frontal]
+            parts.append(surface_part(cornea.name,cv,cornea.faces,CORNEA,cornea.portrait_uv))
             parts.append(wet)
         if hair:parts.append(eyebrow_and_lashes(a,side,margin,rng))
     if hair:parts.append(stubble(a,rng,quality))
