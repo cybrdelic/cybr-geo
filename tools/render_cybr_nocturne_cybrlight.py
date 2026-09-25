@@ -192,6 +192,12 @@ def build_scene(view: str = "hero", preset: str = "preview"):
 
     material_map = _materials(scene)
     for part in outfit.parts:
+        # The procedural body is a construction/dress-form guide.  In the
+        # beauty render the clothing replaces torso, limbs and pelvis; keeping
+        # those hidden surfaces caused gray mannequin geometry to punch through
+        # small garment gaps.  Only the faceless head remains visible.
+        if part.group == "mannequin" and part.name != "mannequin_head":
+            continue
         vertices, normals = _convert_mesh(part.vertices, part.normals)
         scene.mesh(
             vertices,
@@ -244,7 +250,8 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     scene.notes.extend(
         [
             "Geometry source: examples/cybr_nocturne_outfit.py in CYBR GEO.",
-            "All outfit surfaces are explicit procedural meshes; no scan, generated mesh, or generated texture input.",
+            "All visible outfit surfaces are explicit procedural meshes; no scan, generated mesh, or generated texture input.",
+            "The dress-form torso/limbs are construction guides and are omitted from beauty renders; only the procedural faceless head is visible.",
             "CYBR GEO millimetres/Z-up are converted to CYBR LIGHT metres/Y-up without mirroring.",
             "Preview is spectral path tracing with display transform only; no denoising.",
         ]
