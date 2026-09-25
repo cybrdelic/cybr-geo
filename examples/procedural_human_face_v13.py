@@ -406,7 +406,8 @@ class SemanticFaceCage:
             t=np.clip(outside,0,1)
             y=y*(1-t)+shell*t
         top_t=np.clip((z-84.)/6.,0,1)
-        y-=.10*np.sin(np.pi*top_t)
+        side_fade=1-np.clip((np.abs(u)-.92)/.08,0,1)
+        y-=.10*np.sin(np.pi*top_t)*side_fade
         v=np.stack([x,y,z],-1).reshape(-1,3)
         uv=self.skull.uv(v)
         f=grid_faces(rows,cols)
