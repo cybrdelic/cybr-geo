@@ -87,29 +87,29 @@ def _materials(scene) -> list[int]:
         scene.material(
             name="nocturne_black_wool",
             type="plastic",
-            color=(0.008, 0.009, 0.012),
-            roughness=0.74,
+            color=(0.004, 0.005, 0.007),
+            roughness=0.78,
             ior_a=1.47,
         ),
         scene.material(
             name="graphite_technical_textile",
             type="plastic",
-            color=(0.015, 0.018, 0.024),
-            roughness=0.58,
+            color=(0.009, 0.011, 0.015),
+            roughness=0.64,
             ior_a=1.47,
         ),
         scene.material(
             name="deep_amethyst_satin",
             type="plastic",
-            color=(0.060, 0.010, 0.085),
-            roughness=0.30,
+            color=(0.032, 0.005, 0.046),
+            roughness=0.36,
             ior_a=1.50,
         ),
         scene.material(
             name="black_calf_leather",
             type="plastic",
-            color=(0.010, 0.011, 0.014),
-            roughness=0.34,
+            color=(0.006, 0.007, 0.009),
+            roughness=0.40,
             ior_a=1.52,
         ),
         scene.material(
@@ -124,8 +124,8 @@ def _materials(scene) -> list[int]:
         scene.material(
             name="deep_amethyst_leather",
             type="plastic",
-            color=(0.055, 0.010, 0.082),
-            roughness=0.31,
+            color=(0.028, 0.004, 0.043),
+            roughness=0.46,
             ior_a=1.52,
         ),
         scene.material(
@@ -181,7 +181,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
         rr_depth=5,
         threads=max(1, min(8, os.cpu_count() or 4)),
         seed=90210,
-        exposure=1.12,
+        exposure=0.98,
         mis=True,
         nee=True,
         film_format="openexr",
@@ -211,8 +211,8 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     floor = scene.material(
         name="charcoal_studio_floor",
         type="plastic",
-        color=(0.006, 0.007, 0.010),
-        roughness=0.52,
+        color=(0.002, 0.0025, 0.0035),
+        roughness=0.58,
         ior_a=1.48,
     )
     scene.quad((-5.0, 0.0, -5.0), (0.0, 0.0, 10.0), (10.0, 0.0, 0.0), floor)
