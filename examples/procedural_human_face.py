@@ -357,7 +357,7 @@ def head_mesh(a,quality):
         nx=side*(10.2*a.p.nose_width)+.20;nz=-16.4
         du=x-nx;dz=z-nz
         ur=du+side*.42*dz;vr=dz-side*.10*du
-        remove|=((ur/5.75)**2+(vr/1.10)**2<1)&(y<-64.8)
+        remove|=((ur/5.85)**2+(vr/1.78)**2<1)&(y<-64.6)
     # Closed lips remain continuous geometry. Mouth depth is represented by
     # the analytic crease in Anatomy.deformation(), not by deleted triangles.
     f=f[~remove]
@@ -712,7 +712,7 @@ def eyelids(a,side):
     margin=np.concatenate([upper_curve,lower_curve[1:]],axis=0)
     name=('Left' if side<0 else 'Right')+'_eyelids'
     wet=tube_collection(name+'_wet_margin',[upper_curve,lower_curve],
-                        [np.full(len(upper_curve),.038),np.full(len(lower_curve),.025)],
+                        [np.full(len(upper_curve),.020),np.full(len(lower_curve),.013)],
                         LID,a,6)
     return wet,margin
 
@@ -724,7 +724,7 @@ def nostril_rim(a,side):
     # Outer and inner rotated ellipses form a thin skin annulus.
     rings=[]
     for scale,depth in [(1.07,-.02),(.80,.72)]:
-        ur=5.85*scale*np.cos(theta);vr=1.22*scale*np.sin(theta)
+        ur=5.95*scale*np.cos(theta);vr=1.86*scale*np.sin(theta)
         du=ur-side*.42*vr;dz=vr+side*.10*ur
         x=cx+du;z=cz+dz
         y=a.front(x,z)+depth
@@ -741,7 +741,7 @@ def nasal_cavity(a,side):
     cx=side*(10.2*a.p.nose_width)+.20;cz=-16.4
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=5.70*r*np.cos(theta);vr=1.18*r*np.sin(theta)
+    ur=5.82*r*np.cos(theta);vr=1.80*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
     # The interior starts almost flush with the alar rim and then curves
@@ -807,7 +807,7 @@ def eyebrow_and_lashes(a,side,margin,rng):
         xx=x+dx*t;zz=z+dz*t
         yy=a.front(xx,zz)-.08-.24*np.sin(np.pi*t)
         curves.append(np.column_stack([xx,yy,zz]));radii.append(rng.uniform(.022,.043)*(1-.85*t))
-    for upper,count in [(True,48),(False,14)]:
+    for upper,count in [(True,34),(False,8)]:
         angles=np.linspace(.08,np.pi-.08,count) if upper else np.linspace(np.pi+.12,2*np.pi-.12,count)
         for angle in angles:
             j=int(angle/(2*np.pi)*(len(margin)-1))
@@ -816,7 +816,7 @@ def eyebrow_and_lashes(a,side,margin,rng):
             xx=root[0]+side*np.cos(angle)*1.5*t
             yy=root[1]-length*(.73*t-.2*t*t)
             zz=root[2]+(1 if upper else -1)*length*.57*t*t
-            curves.append(np.column_stack([xx,yy,zz]));radii.append((.020 if upper else .011)*(1-.94*t))
+            curves.append(np.column_stack([xx,yy,zz]));radii.append((.012 if upper else .006)*(1-.94*t))
     return tube_collection(('Left' if side<0 else 'Right')+'_individual_brow_hairs_and_lashes',
                            curves,radii,HAIR,a,5)
 
@@ -851,6 +851,7 @@ def build(parameters=None,quality='final',hair=True):
         wet,margin=eyelids(a,side)
         if p.eyelid_closure < .995:
             parts.extend(eyelid_skin_rims(a,side))
+            parts.extend(canthus_patches(a,side))
             # Full procedural globe guarantees every ray through the palpebral
             # opening lands on eye geometry. The iris aperture is removed only
             # from the anterior sclera.
