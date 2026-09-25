@@ -80,36 +80,36 @@ def _materials(scene) -> list[int]:
         scene.material(
             name="mannequin_graphite",
             type="plastic",
-            color=(0.040, 0.043, 0.050),
-            roughness=0.72,
+            color=(0.030, 0.032, 0.037),
+            roughness=0.78,
             ior_a=1.46,
         ),
         scene.material(
             name="nocturne_black_wool",
             type="plastic",
-            color=(0.016, 0.018, 0.024),
-            roughness=0.60,
+            color=(0.008, 0.009, 0.012),
+            roughness=0.74,
             ior_a=1.47,
         ),
         scene.material(
             name="graphite_technical_textile",
             type="plastic",
-            color=(0.026, 0.032, 0.042),
-            roughness=0.48,
+            color=(0.015, 0.018, 0.024),
+            roughness=0.58,
             ior_a=1.47,
         ),
         scene.material(
             name="deep_amethyst_satin",
             type="plastic",
-            color=(0.105, 0.018, 0.155),
-            roughness=0.18,
+            color=(0.060, 0.010, 0.085),
+            roughness=0.30,
             ior_a=1.50,
         ),
         scene.material(
             name="black_calf_leather",
             type="plastic",
-            color=(0.018, 0.020, 0.024),
-            roughness=0.24,
+            color=(0.010, 0.011, 0.014),
+            roughness=0.34,
             ior_a=1.52,
         ),
         scene.material(
@@ -117,15 +117,15 @@ def _materials(scene) -> list[int]:
             type="metal",
             eta=(0.30, 0.38, 0.52),
             k=(3.90, 3.35, 2.70),
-            roughness=0.15,
-            alpha_u=0.055,
-            alpha_v=0.21,
+            roughness=0.24,
+            alpha_u=0.10,
+            alpha_v=0.24,
         ),
         scene.material(
             name="deep_amethyst_leather",
             type="plastic",
-            color=(0.120, 0.022, 0.175),
-            roughness=0.21,
+            color=(0.055, 0.010, 0.082),
+            roughness=0.31,
             ior_a=1.52,
         ),
         scene.material(
@@ -138,8 +138,8 @@ def _materials(scene) -> list[int]:
         scene.material(
             name="black_seam_binding",
             type="plastic",
-            color=(0.030, 0.033, 0.040),
-            roughness=0.38,
+            color=(0.015, 0.017, 0.022),
+            roughness=0.50,
             ior_a=1.48,
         ),
     ]
@@ -147,12 +147,12 @@ def _materials(scene) -> list[int]:
 
 def _camera(view: str, Camera):
     if view == "front":
-        return Camera(origin=(0.0, 1.08, -4.45), target=(0.0, 0.96, -0.02), fov=26, aperture=0.0, focus=4.45)
+        return Camera(origin=(0.0, 1.10, -4.55), target=(0.0, 0.96, -0.02), fov=25, aperture=0.0, focus=4.55)
     if view == "back":
-        return Camera(origin=(0.58, 1.12, 4.38), target=(0.0, 0.96, 0.0), fov=27, aperture=0.0, focus=4.42)
+        return Camera(origin=(0.34, 1.10, 4.48), target=(0.0, 0.96, 0.0), fov=25, aperture=0.0, focus=4.50)
     if view == "detail":
-        return Camera(origin=(1.08, 1.50, -2.28), target=(0.02, 1.26, -0.10), fov=28, aperture=0.014, focus=2.55)
-    return Camera(origin=(1.95, 1.26, -4.55), target=(0.0, 0.96, -0.02), fov=27, aperture=0.010, focus=4.90)
+        return Camera(origin=(0.95, 1.50, -2.35), target=(0.0, 1.28, -0.08), fov=27, aperture=0.012, focus=2.55)
+    return Camera(origin=(1.10, 1.18, -4.55), target=(0.0, 0.96, -0.02), fov=25, aperture=0.008, focus=4.70)
 
 
 def build_scene(view: str = "hero", preset: str = "preview"):
@@ -166,7 +166,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     scene.asset_base = str(ROOT)
     budgets = {
         "smoke": (320, 480, 8, 6),
-        "proof": (480, 720, 32, 8),
+        "proof": (480, 720, 40, 8),
         "preview": (640, 960, 72, 10),
         "reference": (900, 1350, 256, 14),
     }
@@ -180,7 +180,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
         rr_depth=5,
         threads=max(1, min(8, os.cpu_count() or 4)),
         seed=90210,
-        exposure=1.32,
+        exposure=1.12,
         mis=True,
         nee=True,
         film_format="openexr",
@@ -204,8 +204,8 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     floor = scene.material(
         name="charcoal_studio_floor",
         type="plastic",
-        color=(0.028, 0.032, 0.040),
-        roughness=0.64,
+        color=(0.006, 0.007, 0.010),
+        roughness=0.52,
         ior_a=1.48,
     )
     scene.quad((-5.0, 0.0, -5.0), (0.0, 0.0, 10.0), (10.0, 0.0, 0.0), floor)
@@ -219,26 +219,26 @@ def build_scene(view: str = "hero", preset: str = "preview"):
         name="overhead_softbox",
         type="emitter",
         color=(1.0, 0.96, 0.92),
-        emission=18.0,
+        emission=12.0,
         kelvin=5200,
     )
     scene.rectangle((-1.55, 4.15, -0.70), (3.10, 0.0, 0.0), (0.0, 0.0, 1.40), overhead)
 
     if view == "back":
-        scene.directional_light((0.38, -1.0, 0.62), irradiance=3.3)
-        scene.directional_light((-0.58, -0.70, 0.30), irradiance=1.55)
-        scene.point_light((-1.55, 2.20, 2.25), intensity=(0.78, 0.86, 1.0), scale=20.0)
-        scene.point_light((1.75, 1.62, 1.35), intensity=(1.0, 0.78, 0.62), scale=9.0)
+        scene.directional_light((0.38, -1.0, 0.62), irradiance=2.5)
+        scene.directional_light((-0.58, -0.70, 0.30), irradiance=1.05)
+        scene.point_light((-1.55, 2.20, 2.25), intensity=(0.78, 0.86, 1.0), scale=12.0)
+        scene.point_light((1.75, 1.62, 1.35), intensity=(1.0, 0.78, 0.62), scale=5.0)
     else:
-        scene.directional_light((-0.38, -1.0, -0.62), irradiance=3.4)
-        scene.directional_light((0.58, -0.72, -0.28), irradiance=1.50)
+        scene.directional_light((-0.38, -1.0, -0.62), irradiance=2.6)
+        scene.directional_light((0.58, -0.72, -0.28), irradiance=1.05)
         scene.point_light((1.55, 2.20, -2.35), intensity=(1.0, 0.84, 0.70), scale=20.0)
         scene.point_light((-1.65, 1.70, -1.35), intensity=(0.72, 0.82, 1.0), scale=9.0)
 
-    scene.environment.update(color=[0.36, 0.41, 0.58], strength=0.14)
+    scene.environment.update(color=[0.24, 0.28, 0.40], strength=0.08)
     scene.environment["lobes"] = [
-        {"direction": [-0.58, 0.72, -0.34], "exponent": 14, "strength": 0.62, "kelvin": 6500},
-        {"direction": [0.48, 0.50, 0.72], "exponent": 22, "strength": 0.32, "kelvin": 8500},
+        {"direction": [-0.58, 0.72, -0.34], "exponent": 14, "strength": 0.42, "kelvin": 6500},
+        {"direction": [0.48, 0.50, 0.72], "exponent": 22, "strength": 0.22, "kelvin": 8500},
     ]
 
     scene.notes.extend(
