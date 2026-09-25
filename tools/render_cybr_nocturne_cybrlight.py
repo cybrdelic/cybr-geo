@@ -166,6 +166,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     scene.asset_base = str(ROOT)
     budgets = {
         "smoke": (320, 480, 8, 6),
+        "iterate": (480, 720, 12, 6),
         "proof": (480, 720, 40, 8),
         "preview": (640, 960, 72, 10),
         "reference": (900, 1350, 256, 14),
@@ -262,7 +263,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--view", choices=("hero", "front", "back", "detail"), default="hero")
-    parser.add_argument("--preset", choices=("smoke", "proof", "preview", "reference"), default="preview")
+    parser.add_argument("--preset", choices=("smoke", "iterate", "proof", "preview", "reference"), default="preview")
     parser.add_argument("--out", type=Path, default=ROOT / "rendered" / "cybr_nocturne")
     parser.add_argument("--export-only", action="store_true")
     parser.add_argument("--executable", type=Path, help="Explicit CYBR LIGHT native renderer executable")
