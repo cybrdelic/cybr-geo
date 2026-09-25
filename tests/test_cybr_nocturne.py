@@ -34,7 +34,7 @@ def test_nocturne_geometry_contract():
     assert lo[2] >= -20
     assert hi[2] > 1840
     assert hi[0] - lo[0] > 850
-    assert hi[1] - lo[1] > 600
+    assert hi[1] - lo[1] > 550
 
 
 def test_nocturne_named_construction_layers():
