@@ -76,8 +76,8 @@ class FaceParameters:
     bizygomatic_width:float=139.0
     bigonial_width:float=108.0
     intercanthal_width:float=34.0
-    eye_width:float=28.0
-    eye_opening:float=7.0
+    eye_width:float=25.5
+    eye_opening:float=6.1
     eye_height:float=30.0
     eye_tilt:float=0.22
     nasal_width:float=35.0
@@ -103,7 +103,7 @@ class ProceduralSkull:
         # Half-widths combine cranium, neck/shoulder base, zygoma and mandible.
         half=np.array([171,140,82,49,42,41,45,53, p.bigonial_width*.50,
                        64, p.bizygomatic_width*.50, p.bizygomatic_width*.50,
-                       p.forehead_width*.50,65,63,58,39,18,0.],float)
+                       p.forehead_width*.50,64,65,60,43,21,0.],float)
         front=np.array([-50,-44,-29,-19,-22,-34,-52,-63,-65,-66,-66,-66,
                         -64,-61,-55,-39,-18,4,17.],float)
         back=np.array([85,85,68,59,52,51,52,56,63,73,86,94,96,94,88,70,49,32,17.],float)
@@ -113,7 +113,7 @@ class ProceduralSkull:
 
         # Face-width profile is independent of the cranium latitude structure.
         fz=np.array([-105,-92,-80,-68,-55,-42,-25,-5,15,35,55,75,100,112.],float)
-        fw=np.array([28,37,45,51,p.bigonial_width*.50,59,66,
+        fw=np.array([22,30,39,48,p.bigonial_width*.50,59,66,
                      p.bizygomatic_width*.50,p.bizygomatic_width*.50,
                      68,p.forehead_width*.50,63,58,52],float)
         self.face_half=PchipInterpolator(fz,fw)
@@ -223,17 +223,17 @@ class NoseSystem:
         # Nasal bones / bridge / dorsum.
         bridge=smoothstep(-20,-7,z)*(1-smoothstep(30,48,z))
         bridge=np.exp(-.5*(x/5.2)**2)*bridge
-        d-=5.4*bridge
-        d-=5.1*gaussian(x,z,0,6,7.7,18)
-        d-=self.p.nasal_projection*gaussian(x,z,0,-8.2,8.4,7.8)
+        d-=7.0*bridge
+        d-=6.8*gaussian(x,z,0,6,8.6,19)
+        d-=self.p.nasal_projection*gaussian(x,z,0,-8.2,9.5,8.5)
         # Lower lateral cartilage and alae.
         ala=self.p.nasal_width*.31
         for s in (-1,1):
-            d-=8.5*gaussian(x,z,s*ala,-13.5,5.3,5.7)
+            d-=10.2*gaussian(x,z,s*ala,-13.5,6.1,6.2)
             d+=1.2*gaussian(x,z,s*(ala+5.2),-13.5,2.4,5.0)
             d-=1.0*gaussian(x,z,s*(ala-2.4),-17.0,2.7,2.2)
         # Columella and soft-triangle underside.
-        d-=5.0*gaussian(x,z,0,-17.8,3.0,4.0)
+        d-=6.2*gaussian(x,z,0,-17.8,3.4,4.4)
         d+=1.0*gaussian(x,z,0,-22.0,6.4,2.8)
         return d
 
@@ -279,11 +279,11 @@ class MouthSystem:
         up=inside&(z>=line)&(z<=line+upper)
         lo=inside&(z<line)&(z>=line-lower)
         # Perioral muzzle and actual lip rolls.
-        d-=2.1*gaussian(x,z,0,-38,24,15)
-        d-=np.where(up,1.70*np.sin(np.pi*uu)**.92*span**.62,0)
-        d-=np.where(lo,2.15*np.sin(np.pi*ul)**.94*span**.66,0)
+        d-=1.35*gaussian(x,z,0,-38,24,15)
+        d-=np.where(up,1.05*np.sin(np.pi*uu)**.92*span**.64,0)
+        d-=np.where(lo,1.38*np.sin(np.pi*ul)**.94*span**.68,0)
         # Closed contact seam, philtrum and labiomental crease.
-        d+=.28*np.exp(-((z-line)/.40)**2)*span**.84*inside
+        d+=.18*np.exp(-((z-line)/.40)**2)*span**.84*inside
         d-=.55*gaussian(x,z,-3.0,-28,1.7,5.0)
         d-=.55*gaussian(x,z,3.0,-28,1.7,5.0)
         d+=1.2*gaussian(x,z,0,-57,17,3.5)
@@ -295,7 +295,7 @@ class SemanticFaceCage:
     """Original semantic control cage sampled into a dense subdivision surface."""
     def __init__(self,p:FaceParameters,skull:ProceduralSkull,eyes:EyeSystem,nose:NoseSystem,mouth:MouthSystem):
         self.p=p; self.skull=skull; self.eyes=eyes; self.nose=nose; self.mouth=mouth
-        self.rows=np.array([-102,-90,-78,-66,-54,-42,-30,-18,-6,8,22,36,50,66,84,102,112.],float)
+        self.rows=np.array([-102,-90,-78,-66,-54,-42,-30,-18,-6,8,22,36,50,62,72,82,90.],float)
         self.cols=np.array([-1,-.84,-.68,-.52,-.36,-.20,0,.20,.36,.52,.68,.84,1.],float)
 
         # Explicit semantic landmark corrections to the cranium shell.
@@ -305,20 +305,20 @@ class SemanticFaceCage:
             if sym and x: lm.append((-x,z,dy))
         add(0,95,.4,False)
         add(0,66,-.3,False)
-        add(23,48,-2.0)
-        add(43,42,-1.1)
+        add(23,48,-2.8)
+        add(43,42,-1.7)
         add(58,45,.8)
         add(31,31,1.2)       # orbital hollow
-        add(47,17,-4.3)      # zygoma
-        add(37,5,-4.7)       # malar
-        add(54,-8,-2.1)
-        add(48,-23,.8)       # submalar hollow
-        add(34,-22,-1.7)     # maxilla
-        add(48,-50,-1.1)     # masseter
-        add(50,-63,-2.2)     # mandibular body
-        add(37,-75,-3.0)
-        add(20,-82,-3.6)
-        add(0,-78,-4.4,False) # menton/chin pad
+        add(47,17,-6.0)      # zygoma
+        add(37,5,-5.8)       # malar
+        add(54,-8,-2.8)
+        add(48,-23,1.7)       # submalar hollow
+        add(34,-22,-2.5)     # maxilla
+        add(48,-50,-2.2)     # masseter
+        add(50,-63,-3.3)     # mandibular body
+        add(37,-75,-4.0)
+        add(20,-82,-4.8)
+        add(0,-78,-5.8,False) # menton/chin pad
         add(0,-93,.2,False)
         self.landmarks=np.asarray(lm,float)
         xy=self.landmarks[:,:2]
@@ -369,7 +369,7 @@ class SemanticFaceCage:
         return y+asym
 
     def sample_patch(self,quality='preview'):
-        rows,cols=(240,241) if quality=='preview' else (420,421)
+        rows,cols=(230,241) if quality=='preview' else (400,421)
         zz=np.linspace(self.rows[0],self.rows[-1],rows)
         uu=np.linspace(-1.015,1.015,cols)
         u,z=np.meshgrid(uu,zz)
@@ -424,7 +424,7 @@ def head_shell(a:HumanAnatomy,quality='preview'):
     center=v[f].mean(axis=1)
     x,y,zc=center.T
     w=a.skull.face_half_width(np.clip(zc,-105,112))
-    in_z=(zc>-100)&(zc<110)
+    in_z=(zc>-100)&(zc<88)
     in_x=np.abs(x)<w*.985
     remove=in_z&in_x&(y<5)
     f=f[~remove]
@@ -596,10 +596,10 @@ def build(parameters=None,quality='final',hair=True):
         parts.append(ear(a,side))
         c=a.eyes.center(side)
         if p.eyelid_closure<.995:
-            parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.35,11.65],SCLERA,iris_cut=True))
-            parts.append(disk(prefix+'_iris',c,5.45,IRIS,-12.42,rmin=1.62))
-            parts.append(disk(prefix+'_pupil',c,1.62,PUPIL,-12.45,nr=12))
-            cornea=ellipsoid(prefix+'_corneal_tear_surface',c,[12.55,12.58,11.75],CORNEA,nu=120,nv=76)
+            parts.append(ellipsoid(prefix+'_sclera_globe',c,[15.2,12.55,12.0],SCLERA,iris_cut=True))
+            parts.append(disk(prefix+'_iris',c,4.65,IRIS,-12.62,rmin=1.48))
+            parts.append(disk(prefix+'_pupil',c,1.50,PUPIL,-12.66,nr=12))
+            cornea=ellipsoid(prefix+'_corneal_tear_surface',c,[15.3,12.72,12.1],CORNEA,nu=120,nv=76)
             vv=cornea.vertices.copy()
             dx=vv[:,0]-c[0]; dz=vv[:,2]-c[2]
             frontal=vv[:,1]<c[1]
