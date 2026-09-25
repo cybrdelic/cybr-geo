@@ -7,7 +7,7 @@
   "spp": 96,
   "depth": 14,
   "seed": 161803,
-  "render_seconds": 52.329456090927124,
+  "render_seconds": 54.340986013412476,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.3,
   "bump_height_range_mm": 0.032,
@@ -27,11 +27,11 @@
     ],
     "focal_length_mm": 85,
     "f_stop": 16,
-    "focus_distance_mm": 492.80316162109375,
+    "focus_distance_mm": 491.6356506347656,
     "focus_point_mm": [
-      10.486951341620411,
-      -71.95068763981845,
-      5.247227454782305
+      10.709665600680168,
+      -73.09645317567822,
+      5.273715165979018
     ],
     "filter": "Gaussian .42",
     "environment": "Analytic constant fill; no HDR photograph"
@@ -107,7 +107,7 @@
       "bounds_mm": [
         [
           -170.48952157486391,
-          -97.51595938746647,
+          -99.86933522346258,
           -180.0
         ],
         [
@@ -151,12 +151,12 @@
       "bounds_mm": [
         [
           -14.614156521398451,
-          -81.96744451113139,
+          -84.49104563830625,
           -17.786099843146346
         ],
         [
           -7.425843478601552,
-          -73.71067079005257,
+          -75.58473192015066,
           -15.013900156853651
         ]
       ]
@@ -195,12 +195,12 @@
       "bounds_mm": [
         [
           -14.942728293514138,
-          -82.55988898854937,
+          -85.11264356050454,
           -17.926301145998192
         ],
         [
           -7.097271706485865,
-          -73.92209884007173,
+          -75.60890646135623,
           -14.873698854001805
         ]
       ]
@@ -264,7 +264,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural sclera patch exactly filling the palpebral aperture",
+      "role": "Procedural sclera constrained to the analytic eyelid boundary",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -277,19 +277,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 13896,
-      "triangles": 14262,
+      "vertices": 15990,
+      "triangles": 17742,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.595,
-          -59.5299968384002,
-          26.476379250111588
+          -42.9475,
+          -62.2966054354652,
+          26.357645155512653
         ],
         [
-          -20.505000000000003,
-          -52.79980960515898,
-          31.989347378594292
+          -20.152500000000003,
+          -55.61284385586147,
+          32.10682716872897
         ]
       ]
     },
@@ -370,14 +370,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -36.95,
-          -59.597512,
-          24.159999999999997
+          -36.89,
+          -61.73750032560851,
+          24.22
         ],
         [
-          -26.15,
-          -59.0668,
-          34.96
+          -26.21,
+          -61.477944325608505,
+          34.9
         ]
       ]
     },
@@ -414,14 +414,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -33.17,
-          -59.480000000000004,
-          27.939999999999998
+          -33.19,
+          -61.8131003256085,
+          27.919999999999998
         ],
         [
-          -29.93,
-          -59.480000000000004,
-          31.18
+          -29.91,
+          -61.8131003256085,
+          31.2
         ]
       ]
     },
@@ -440,7 +440,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural clear corneal patch over visible sclera and iris",
+      "role": "Procedural corneal patch constrained to the analytic eyelid boundary",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -453,19 +453,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 12852,
-      "triangles": 25192,
+      "vertices": 14184,
+      "triangles": 27832,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.53625,
-          -60.44997762531551,
-          26.515933994634675
+          -42.77125,
+          -62.37012569725732,
+          26.42691684253419
         ],
         [
-          -20.56375,
-          -55.120287320238255,
-          31.950238215637324
+          -20.32875,
+          -55.75811192531054,
+          32.038245532499445
         ]
       ]
     },
@@ -546,14 +546,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -57.905823842539085,
-          -67.12237008359283,
+          -57.9058238425391,
+          -67.15468576791098,
           25.01982365312318
         ],
         [
-          -15.408083298510768,
-          -42.7735692582299,
-          53.62104347930117
+          -15.408116648520242,
+          -42.77356925824266,
+          53.62104361202873
         ]
       ]
     },
@@ -591,12 +591,12 @@
       "bounds_mm": [
         [
           7.82584347860155,
-          -82.3677417688782,
+          -84.81157942788835,
           -17.786099843146346
         ],
         [
           15.01415652139845,
-          -73.47907369592878,
+          -75.27417793933125,
           -15.013900156853651
         ]
       ]
@@ -635,12 +635,12 @@
       "bounds_mm": [
         [
           7.497271706485863,
-          -82.9796829476727,
+          -85.45157969575659,
           -17.926301145998192
         ],
         [
           15.342728293514137,
-          -73.65894555442159,
+          -75.29261152207197,
           -14.873698854001805
         ]
       ]
@@ -704,7 +704,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural sclera patch exactly filling the palpebral aperture",
+      "role": "Procedural sclera constrained to the analytic eyelid boundary",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -717,19 +717,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 13896,
-      "triangles": 14262,
+      "vertices": 15990,
+      "triangles": 17742,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          20.505000000000003,
-          -59.5299968384002,
-          26.216379250111586
+          20.152500000000003,
+          -62.394035921359446,
+          26.09764515551265
         ],
         [
-          42.595,
-          -52.79980960515898,
-          31.72934737859429
+          42.9475,
+          -55.70934287769836,
+          31.846827168728968
         ]
       ]
     },
@@ -810,14 +810,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          26.15,
-          -59.597512,
-          23.9
+          26.21,
+          -61.76833659983602,
+          23.959999999999997
         ],
         [
-          36.95,
-          -59.0668,
-          34.699999999999996
+          36.89,
+          -61.508780599836015,
+          34.64
         ]
       ]
     },
@@ -854,14 +854,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          29.93,
-          -59.480000000000004,
-          27.679999999999996
+          29.91,
+          -61.84393659983601,
+          27.659999999999997
         ],
         [
-          33.17,
-          -59.480000000000004,
-          30.919999999999998
+          33.19,
+          -61.84393659983601,
+          30.939999999999998
         ]
       ]
     },
@@ -880,7 +880,7 @@
         0.0,
         0.0
       ],
-      "role": "Procedural clear corneal patch over visible sclera and iris",
+      "role": "Procedural corneal patch constrained to the analytic eyelid boundary",
       "provenance": "original-procedural",
       "tags": [
         "original-procedural",
@@ -893,19 +893,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 12852,
-      "triangles": 25192,
+      "vertices": 14184,
+      "triangles": 27832,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          20.56375,
-          -60.44997762531551,
-          26.255933994634674
+          20.32875,
+          -62.465569534263096,
+          26.16691684253419
         ],
         [
-          42.53625,
-          -55.120287320238255,
-          31.690238215637322
+          42.77125,
+          -55.850524744668824,
+          31.778245532499444
         ]
       ]
     },
@@ -987,13 +987,13 @@
       "bounds_mm": [
         [
           15.517026338392139,
-          -67.12830637187383,
+          -67.16436965978012,
           24.924314821465092
         ],
         [
-          58.17435918201974,
-          -42.51630016027913,
-          52.98237929947407
+          58.17435918201975,
+          -42.51630016029171,
+          52.98238023670223
         ]
       ]
     },
@@ -1025,19 +1025,19 @@
         0.0
       ],
       "finish_origin": null,
-      "vertices": 60996,
-      "triangles": 101660,
+      "vertices": 61020,
+      "triangles": 101700,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -67.98127961690797,
-          -72.60555014312996,
-          -85.18045249464203
+          -67.97878355324409,
+          -73.84464449240409,
+          -85.17986439605127
         ],
         [
-          68.11367913248347,
-          -17.984794641067094,
-          -23.997493983344942
+          68.11350143805647,
+          -17.98389390038096,
+          -23.9983984017492
         ]
       ]
     }
@@ -1055,21 +1055,21 @@
     ],
     "encoded_height_normalization_mm": 0.06,
     "files": {
-      "skin_color.png": "895f3c5d2c7869cba196928e05ddcab85a4f9e2f934c6c46dd7153eb5b6a6326",
-      "skin_roughness.png": "95a128fbd217b87cc179acb87fd669e6f637903f5a32141b1236381bea9e5577",
-      "skin_height.png": "8ca2ea3a30cd496118245ea7611de4224465a5629fbc142b2bb7569b28d19e2e",
+      "skin_color.png": "7fbf8359bc486dab8796a24c828d9d4df4aed4441aeff6fa09ee8cf6eba82a0b",
+      "skin_roughness.png": "91749b9c02b32f193dad1eefff95da7824ac0f0f2384d9f8eebc5036ecebc0c8",
+      "skin_height.png": "3cb3a52e7121468476c38dfdebb22ba4cddb41ccee159f74f7311a2caa9b6585",
       "iris_color.png": "3be6f2fcebb92a614e742797b820a0484ae2f0b45dcf925dc6bdc3950c7630e3",
       "sclera_color.png": "081e4d5de945accbb982a205865ebf70c8f7b0392c026898190022742e4a8e4b"
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "c280bc316dbe8eb9a7acc16abb01f47a8db231bfcfd07ce31008bf4f9655dccd",
+    "examples/procedural_human_face.py": "056692095a78f8d1dc935632034c4cfd7fd23306389edb01a53716e1aea245df",
     "tools/procedural_face_materials.py": "578a1e8c405d913fe3d86916f6d99510778f06b0bdb3b24df73bba93936937df",
     "tools/render_procedural_face.py": "e48b85ca4e6bdd36d4da7ae54f69ace70aa1696f4c9f7d1843fbf5ee8003777b",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "25a23a514fcdd30949a8637cd955732fb1c4ba80136448becaf7ec98d853477b",
-  "sha256": "728b22d441e9b94a349e63a2fa09f132e813e9601508918a4bd734e7ac5c5f5b"
+  "png_pixels_sha256": "67c24cb5f550d96e09279d1bf2395ecbfbcce16f3b95010904436cbc84a9cdbe",
+  "sha256": "724e4553fa18958718056b9e8b34b21d196a66b22cd29dfbd21828a24689162d"
 }
