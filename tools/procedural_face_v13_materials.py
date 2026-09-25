@@ -68,9 +68,9 @@ def skin_maps(out,anatomy,size=2048):
 
     # Simple chromophore mixing in linear RGB.
     base=np.empty((size,size,3),np.float32)
-    base[...,0]=.50-.27*melanin+.115*hemoglobin
-    base[...,1]=.34-.23*melanin+.030*hemoglobin
-    base[...,2]=.245-.18*melanin-.025*hemoglobin
+    base[...,0]=.455-.235*melanin+.090*hemoglobin
+    base[...,1]=.335-.205*melanin+.028*hemoglobin
+    base[...,2]=.265-.155*melanin-.012*hemoglobin
     base+=fine[...,None]*np.array([.0028,.0022,.0017],np.float32)
 
     # Under-eye and beard-region variation.
@@ -93,9 +93,9 @@ def skin_maps(out,anatomy,size=2048):
     lips=(rel<1).astype(np.float32)*np.clip(1-rel,0,1)**.35
     lips*=np.clip(1-(np.abs(x)/(anatomy.p.mouth_width*.53))**8,0,1)*front
     lip=np.stack([
-        .270+.008*meso,
-        .155+.005*meso,
-        .132+.004*fine,
+        .245+.007*meso,
+        .170+.004*meso,
+        .150+.004*fine,
     ],-1)
     base=base*(1-lips[...,None])+lip*lips[...,None]
 
@@ -105,7 +105,7 @@ def skin_maps(out,anatomy,size=2048):
     oil=(gaussian(x,z,0,-5,15,27)+.55*gaussian(x,z,0,62,42,20))*front
     rough-=.055*oil
     rough+=.018*cheek
-    rough=rough*(1-lips)+(.43+.012*meso)*lips
+    rough=rough*(1-lips)+(.455+.010*meso)*lips
 
     # Multi-scale height. Macro folds are geometric in v13; this map contains
     # pores, furrows, lip microfolds and subtle wrinkles only.

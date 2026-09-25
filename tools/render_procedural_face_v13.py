@@ -51,7 +51,7 @@ def materials(out,clay=False):
     skin={
         'type':'bumpmap',
         'texture':bitmap(out/'skin_height.png',True),
-        'scale':.015,
+        'scale':.011,
         'bsdf':{
             'type':'principled',
             'base_color':bitmap(out/'skin_color.png'),
@@ -222,10 +222,10 @@ def main():
     # Anthropometric parameters.
     parser.add_argument('--face-height',type=float,default=121.)
     parser.add_argument('--bizygomatic-width',type=float,default=139.)
-    parser.add_argument('--bigonial-width',type=float,default=108.)
+    parser.add_argument('--bigonial-width',type=float,default=104.)
     parser.add_argument('--intercanthal-width',type=float,default=34.)
-    parser.add_argument('--eye-width',type=float,default=25.5)
-    parser.add_argument('--eye-opening',type=float,default=6.1)
+    parser.add_argument('--eye-width',type=float,default=27.5)
+    parser.add_argument('--eye-opening',type=float,default=7.2)
     parser.add_argument('--eye-height',type=float,default=30.)
     parser.add_argument('--eye-tilt',type=float,default=.22)
     parser.add_argument('--nasal-width',type=float,default=38.)
@@ -235,7 +235,7 @@ def main():
     parser.add_argument('--lower-lip-fullness',type=float,default=1.)
     parser.add_argument('--chin-height',type=float,default=24.)
     parser.add_argument('--gonial-angle',type=float,default=124.)
-    parser.add_argument('--forehead-width',type=float,default=131.)
+    parser.add_argument('--forehead-width',type=float,default=129.)
     parser.add_argument('--skull-width',type=float,default=1.)
     parser.add_argument('--brow-weight',type=float,default=1.)
     parser.add_argument('--eyelid-closure',type=float,default=.10)

@@ -74,10 +74,10 @@ class FaceParameters:
     # Anthropometric controls (mm unless noted).
     face_height:float=121.0
     bizygomatic_width:float=139.0
-    bigonial_width:float=108.0
+    bigonial_width:float=104.0
     intercanthal_width:float=34.0
-    eye_width:float=25.5
-    eye_opening:float=6.1
+    eye_width:float=27.5
+    eye_opening:float=7.2
     eye_height:float=30.0
     eye_tilt:float=0.22
     nasal_width:float=38.0
@@ -87,7 +87,7 @@ class FaceParameters:
     lower_lip_fullness:float=1.0
     chin_height:float=24.0
     gonial_angle:float=124.0
-    forehead_width:float=131.0
+    forehead_width:float=129.0
     skull_width:float=1.0
     brow_weight:float=1.0
     eyelid_closure:float=.10
@@ -101,9 +101,9 @@ class ProceduralSkull:
         self.p=p
         z=np.array([-180,-165,-145,-124,-103,-88,-76,-64,-50,-32,-10,15,40,65,90,108,121,129,132.],float)
         # Half-widths combine cranium, neck/shoulder base, zygoma and mandible.
-        half=np.array([171,140,82,49,42,41,45,53, p.bigonial_width*.50,
-                       64, p.bizygomatic_width*.50, p.bizygomatic_width*.50,
-                       p.forehead_width*.50,64,66,62,49,26,0.],float)
+        half=np.array([171,140,82,49,41,40,43,50, p.bigonial_width*.50,
+                       62, p.bizygomatic_width*.50, p.bizygomatic_width*.50,
+                       p.forehead_width*.50,64,65,61,51,30,0.],float)
         front=np.array([-50,-44,-29,-19,-22,-34,-52,-63,-65,-66,-66,-66,
                         -64,-61,-55,-45,-27,-5,12.],float)
         back=np.array([85,85,68,59,52,51,52,56,63,73,86,94,96,94,88,76,57,36,12.],float)
@@ -222,10 +222,10 @@ class NoseSystem:
         d=np.zeros(x.shape,float)
         # Nasal bones / bridge / dorsum.
         bridge=smoothstep(-20,-7,z)*(1-smoothstep(30,48,z))
-        bridge=np.exp(-.5*(x/5.2)**2)*bridge
-        d-=7.0*bridge
-        d-=6.8*gaussian(x,z,0,6,8.6,19)
-        d-=self.p.nasal_projection*gaussian(x,z,0,-8.2,9.5,8.5)
+        bridge=np.exp(-.5*(x/4.4)**2)*bridge
+        d-=8.4*bridge
+        d-=7.8*gaussian(x,z,0,6,7.8,19)
+        d-=self.p.nasal_projection*gaussian(x,z,0,-8.2,8.8,8.7)
         # Lower lateral cartilage and alae.
         ala=self.p.nasal_width*.31
         for s in (-1,1):
@@ -279,9 +279,9 @@ class MouthSystem:
         up=inside&(z>=line)&(z<=line+upper)
         lo=inside&(z<line)&(z>=line-lower)
         # Perioral muzzle and actual lip rolls.
-        d-=1.35*gaussian(x,z,0,-38,24,15)
-        d-=np.where(up,.72*np.sin(np.pi*uu)**.92*span**.66,0)
-        d-=np.where(lo,.95*np.sin(np.pi*ul)**.94*span**.70,0)
+        d-=1.70*gaussian(x,z,0,-38,24,15)
+        d-=np.where(up,1.08*np.sin(np.pi*uu)**.92*span**.68,0)
+        d-=np.where(lo,1.42*np.sin(np.pi*ul)**.94*span**.72,0)
         # Closed contact seam, philtrum and labiomental crease.
         d+=.18*np.exp(-((z-line)/.40)**2)*span**.84*inside
         d-=.55*gaussian(x,z,-3.0,-28,1.7,5.0)
@@ -387,6 +387,13 @@ class SemanticFaceCage:
                               +.35*np.cos(phase*.71)*np.tanh(x/23.)*gaussian(x,z,0,-50,58,38))
         return y+asym
 
+    def vector_offset(self,x,z):
+        """Interpolate XYZ cage displacement at arbitrary facial coordinates."""
+        x,z=np.broadcast_arrays(np.asarray(x,float),np.asarray(z,float))
+        w=self.skull.face_half_width(z)
+        u=np.clip(x/np.maximum(w,.01),-1,1)
+        return self.spline_dx.ev(z,u),self.spline_dz.ev(z,u)
+
     def sample_patch(self,quality='preview'):
         rows,cols=(230,241) if quality=='preview' else (400,421)
         base_z=np.linspace(self.rows[0],self.rows[-1],rows)
@@ -439,27 +446,43 @@ class HumanAnatomy:
         return self.skull.uv(v)
 
 
-def head_shell(a:HumanAnatomy,quality='preview'):
-    rows,cols=(300,481) if quality=='preview' else (520,801)
+def unified_head_mesh(a:HumanAnatomy,quality='preview'):
+    """Single continuous skull/face mesh deformed by the semantic XYZ cage.
+
+    The control cage remains the semantic design representation, but the final
+    rendered skin has one topology and one normal field from occiput to chin.
+    """
+    rows,cols=(420,641) if quality=='preview' else (700,1001)
     theta=np.linspace(-np.pi,np.pi,cols)
     zz=np.linspace(ZMIN,ZMAX-.01,rows)
-    tt,z=np.meshgrid(theta,zz)
-    v=a.skull.point(tt,z).reshape(-1,3)
+    tt,z0=np.meshgrid(theta,zz)
+    base=a.skull.point(tt,z0)
+    x0=base[...,0];y0=base[...,1]
+    frontness=np.clip(np.cos(tt),0,1)
+    # Cage influence vanishes smoothly before the ears/back of skull and above
+    # the superior forehead, preventing any patch seam.
+    side_blend=smoothstep(.08,.78,frontness)
+    vertical=smoothstep(-110,-95,z0)*(1-smoothstep(84,103,z0))
+    blend=side_blend*vertical
+
+    dx,dz=a.cage.vector_offset(x0,z0)
+    x=x0+blend*dx
+    z=z0+blend*dz
+    target_y=a.cage.surface_y(x,z)
+    y=y0+blend*(target_y-y0)
+
+    v=np.stack([x,y,z],-1).reshape(-1,3)
     uv=a.skull.uv(v)
     f=grid_faces(rows,cols)
     center=v[f].mean(axis=1)
-    x,y,zc=center.T
-    w=a.skull.face_half_width(np.clip(zc,-105,112))
-    in_z=(zc>-100)&(zc<90)
-    in_x=np.abs(x)<w*.985
-    remove=in_z&in_x&(y<5)
+    cx,cy,cz=center.T
+    remove=a.eyes.aperture_mask(cx,cz,cy)|a.nose.nostril_mask(cx,cz,cy)
     f=f[~remove]
     return surface_part(
-        'Procedural_cranium_mandible_neck_shoulders',v,f,SKIN,uv,
-        role='Original procedural cranium, posterior skull, mandible boundary, neck and shoulders',
-        tags=('procedural-skull-scaffold',),
+        'Unified_semantic_cage_human_skin',v,f,SKIN,uv,
+        role='One continuous procedural skull/face skin surface deformed by XYZ semantic cage',
+        tags=('unified-skin-topology','vector-cage-driven'),
     )
-
 
 def ellipsoid(name,center,radii,material,nu=128,nv=80,iris_cut=False):
     theta=np.linspace(-np.pi,np.pi,nu+1)
@@ -615,7 +638,7 @@ def build(parameters=None,quality='final',hair=True):
     a=HumanAnatomy(p)
     rng=np.random.default_rng(p.seed)
 
-    parts=[head_shell(a,quality),a.cage.sample_patch(quality)]
+    parts=[unified_head_mesh(a,quality)]
     for side in (-1,1):
         prefix='Left' if side<0 else 'Right'
         parts.extend(nostril_parts(a,side))
@@ -655,9 +678,10 @@ def build(parameters=None,quality='final',hair=True):
     }
     meta={
         'units':'mm',
-        'geometry_source':'Original procedural skull scaffold + semantic anthropometric control cage + analytic local anatomy systems',
+        'geometry_source':'Single continuous procedural skull/face mesh driven by XYZ semantic anthropometric cage + analytic local anatomy systems',
         'topology':'semantic-control-cage-subdivision',
         'vector_control_cage':True,
+        'unified_skin_topology':True,
         'scan_used':False,
         'imported_anatomy_mesh':False,
         'photographic_skin_textures':False,

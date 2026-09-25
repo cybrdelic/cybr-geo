@@ -71,8 +71,8 @@ jobs:
           python tools/render_human_face_v13.py --out build/v13/b --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
             --texture-size 1024 --seed 314159 --bizygomatic-width 134 \
-            --bigonial-width 100 --intercanthal-width 33 --eye-width 27 \
-            --eye-opening 6.3 --eye-tilt .10 --nasal-width 34 --nasal-projection 21 \
+            --bigonial-width 98 --intercanthal-width 33 --eye-width 27 \
+            --eye-opening 6.8 --eye-tilt .10 --nasal-width 34 --nasal-projection 21 \
             --mouth-width 50 --upper-lip-fullness .92 --lower-lip-fullness 1.04 \
             --chin-height 22 --forehead-width 128 --asymmetry .28 --skip-export
       - name: Render identity C
@@ -80,8 +80,8 @@ jobs:
           python tools/render_human_face_v13.py --out build/v13/c --view portrait \
             --size 640x800 --spp 96 --depth 14 --threads 4 --quality preview \
             --texture-size 1024 --seed 161803 --bizygomatic-width 145 \
-            --bigonial-width 116 --intercanthal-width 35 --eye-width 29 \
-            --eye-opening 6.8 --eye-tilt .30 --nasal-width 40 --nasal-projection 27 \
+            --bigonial-width 112 --intercanthal-width 35 --eye-width 29 \
+            --eye-opening 7.5 --eye-tilt .30 --nasal-width 40 --nasal-projection 27 \
             --mouth-width 55 --upper-lip-fullness 1.06 --lower-lip-fullness .96 \
             --chin-height 26 --forehead-width 134 --asymmetry .18 --skip-export
       - name: Render clay topology proof

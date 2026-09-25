@@ -64,12 +64,12 @@ def test_semantic_cage_is_real_and_boundary_matches_skull():
 
 def test_v13_geometry_is_nondegenerate_and_semantic(neutral):
     names={p.name for p in neutral.parts}
-    assert 'Semantic_face_subdivision_surface' in names
-    assert 'Procedural_cranium_mandible_neck_shoulders' in names
-    face=next(p for p in neutral.parts if p.name=='Semantic_face_subdivision_surface')
+    assert 'Unified_semantic_cage_human_skin' in names
+    face=next(p for p in neutral.parts if p.name=='Unified_semantic_cage_human_skin')
     assert face.material==SKIN
-    assert 'semantic-face-surface' in face.tags
-    assert len(face.faces)>50000
+    assert 'unified-skin-topology' in face.tags
+    assert 'vector-cage-driven' in face.tags
+    assert len(face.faces)>150000
 
     for p in neutral.parts:
         assert np.isfinite(p.vertices).all(),p.name
@@ -124,7 +124,7 @@ def test_eye_and_nostril_apertures_hit_real_procedural_geometry():
                 if closure<.995:
                     assert ('corneal_tear_surface' in name or 'sclera_globe' in name or 'iris' in name),name
                 else:
-                    assert name=='Semantic_face_subdivision_surface',name
+                    assert name=='Unified_semantic_cage_human_skin',name
 
         cx,cz=anatomy.nose.nostril_center(1)
         hit=scene.ray_intersect(mi.Ray3f(mi.Point3f(float(cx),-160.,float(cz)),mi.Vector3f(0,1,0)))
@@ -136,6 +136,7 @@ def test_metadata_enforces_no_scan_no_learned_identity(neutral):
     m=neutral.metadata
     assert m['topology']=='semantic-control-cage-subdivision'
     assert m['vector_control_cage'] is True
+    assert m['unified_skin_topology'] is True
     assert m['scan_used'] is False
     assert m['imported_anatomy_mesh'] is False
     assert m['photographic_skin_textures'] is False
