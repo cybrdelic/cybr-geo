@@ -906,7 +906,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
         _polygon_panel(
             "left_lapel",
             [(-316, 1512), (-132, 1488), (-54, 1360), (-118, 1200), (-292, 1325)],
-            203,
+            258,
             10,
             MAT_LEATHER,
             group="coat_trim",
@@ -917,7 +917,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
         _polygon_panel(
             "right_lapel",
             [(318, 1512), (134, 1488), (62, 1365), (142, 1210), (300, 1330)],
-            204,
+            258,
             10,
             MAT_PURPLE_LEATHER,
             group="coat_trim",
@@ -928,8 +928,8 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "right_lapel_outer_binding",
-            (310, 210, 1504),
-            (146, 214, 1218),
+            (310, 266, 1504),
+            (146, 266, 1218),
             13,
             8,
             MAT_LEATHER,
@@ -960,7 +960,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
         _polygon_panel(
             "left_collar_wing",
             [(-318, 1508), (-208, 1568), (-96, 1616), (-102, 1534), (-218, 1488)],
-            168,
+            208,
             9,
             MAT_WOOL,
             group="coat_trim",
@@ -982,7 +982,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
         _polygon_panel(
             "left_collar_amethyst_underlay",
             [(-282, 1510), (-196, 1558), (-118, 1590), (-124, 1538), (-210, 1502)],
-            158,
+            198,
             4,
             MAT_PURPLE_SATIN,
             group="lining",
@@ -1080,22 +1080,7 @@ def _sleeves_gloves_cuffs(parts: list[Part]) -> None:
 def _epaulettes(parts: list[Part]) -> None:
     """Layered leather shoulder treatment instead of bulky armor."""
     for side, sx in (("left", -1.0), ("right", 1.0)):
-        # base pad
-        if sx < 0:
-            poly = [(-306, 1505), (-386, 1486), (-398, 1458), (-314, 1468)]
-        else:
-            poly = [(306, 1505), (386, 1486), (398, 1458), (314, 1468)]
-        parts.append(
-            _polygon_panel(
-                f"{side}_epaulette_base",
-                poly,
-                18,
-                12,
-                MAT_LEATHER,
-                group="epaulettes",
-                role="Structured leather shoulder epaulette",
-            )
-        )
+        # No vertical base plate: the layered straps themselves form the epaulette.
         # layered straps running over shoulder.
         for i, (inner_x, outer_x, z0, z1) in enumerate(
             [
@@ -1134,8 +1119,8 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "front_diagonal_harness",
-            (-224, 218, 1480),
-            (188, 220, 1060),
+            (-224, 266, 1480),
+            (188, 258, 1060),
             34,
             11,
             MAT_LEATHER,
@@ -1147,8 +1132,8 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "back_diagonal_harness",
-            (-210, -218, 1470),
-            (192, -218, 1090),
+            (-210, -258, 1470),
+            (192, -252, 1090),
             32,
             10,
             MAT_LEATHER,
@@ -1159,7 +1144,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.extend(
         _ring_buckle(
             "front_harness_buckle",
-            (-26, 229, 1280),
+            (-26, 276, 1280),
             (44, 38),
             7,
             8,
@@ -1170,7 +1155,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.extend(
         _ring_buckle(
             "back_harness_buckle",
-            (20, -230, 1285),
+            (20, -270, 1285),
             (42, 36),
             7,
             8,
@@ -1182,7 +1167,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _curved_panel(
             "front_waist_belt",
-            [(1030, -300, 300, 188, 20), (1072, -300, 300, 188, 20)],
+            [(1030, -300, 300, 220, 24), (1072, -300, 300, 220, 24)],
             MAT_LEATHER,
             group="harness",
             role="Wide front waist belt",
@@ -1194,7 +1179,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _curved_panel(
             "back_waist_belt",
-            [(1030, -300, 300, -182, -18), (1072, -300, 300, -182, -18)],
+            [(1030, -300, 300, -220, -24), (1072, -300, 300, -220, -24)],
             MAT_LEATHER,
             group="harness",
             role="Wide back waist belt",
@@ -1206,7 +1191,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.extend(
         _ring_buckle(
             "waist_buckle",
-            (72, 210, 1050),
+            (72, 260, 1050),
             (58, 42),
             8,
             9,
@@ -1219,8 +1204,8 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "right_waist_hanging_tab",
-            (292, 188, 1035),
-            (310, 178, 845),
+            (292, 228, 1035),
+            (310, 216, 845),
             42,
             10,
             MAT_LEATHER,
@@ -1231,7 +1216,7 @@ def _harness_and_belt(parts: list[Part]) -> None:
     parts.extend(
         _ring_buckle(
             "right_waist_tab_end",
-            (310, 186, 850),
+            (310, 230, 850),
             (35, 30),
             6,
             8,
@@ -1247,8 +1232,8 @@ def _back_pattern_and_seams(parts: list[Part]) -> None:
     parts.append(
         _oriented_box(
             "back_spine_binding",
-            (0, -218, 1515),
-            (0, -218, 940),
+            (0, -252, 1515),
+            (0, -246, 940),
             30,
             7,
             MAT_LEATHER,
@@ -1266,8 +1251,8 @@ def _back_pattern_and_seams(parts: list[Part]) -> None:
         parts.append(
             _oriented_box(
                 f"back_lattice_pos_{i}",
-                (x0 - 100, -223, z_low),
-                (x0 + 100, -223, z_high),
+                (x0 - 100, -250, z_low),
+                (x0 + 100, -250, z_high),
                 5.0,
                 4.0,
                 MAT_STITCH,
@@ -1278,8 +1263,8 @@ def _back_pattern_and_seams(parts: list[Part]) -> None:
         parts.append(
             _oriented_box(
                 f"back_lattice_neg_{i}",
-                (x0 + 100, -224, z_low),
-                (x0 - 100, -224, z_high),
+                (x0 + 100, -251, z_low),
+                (x0 - 100, -251, z_high),
                 5.0,
                 4.0,
                 MAT_STITCH,
@@ -1290,10 +1275,10 @@ def _back_pattern_and_seams(parts: list[Part]) -> None:
 
     # Major front/back seam bindings.
     seam_paths = {
-        "left_front_princess_seam": [(-225, 202, 1450), (-210, 204, 1280), (-188, 199, 1060), (-165, 170, 760)],
-        "right_front_princess_seam": [(225, 202, 1450), (210, 204, 1280), (188, 199, 1060), (165, 170, 760)],
-        "left_back_princess_seam": [(-205, -210, 1450), (-190, -214, 1270), (-175, -205, 1050), (-160, -170, 760)],
-        "right_back_princess_seam": [(205, -210, 1450), (190, -214, 1270), (175, -205, 1050), (160, -170, 760)],
+        "left_front_princess_seam": [(-225, 252, 1450), (-210, 256, 1280), (-188, 250, 1060), (-165, 220, 760)],
+        "right_front_princess_seam": [(225, 252, 1450), (210, 256, 1280), (188, 250, 1060), (165, 220, 760)],
+        "left_back_princess_seam": [(-205, -252, 1450), (-190, -256, 1270), (-175, -246, 1050), (-160, -214, 760)],
+        "right_back_princess_seam": [(205, -252, 1450), (190, -256, 1270), (175, -246, 1050), (160, -214, 760)],
     }
     for name, path in seam_paths.items():
         parts.append(
@@ -1572,7 +1557,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v2.1 / procedural technical couture",
+        "design": "CYBR NOCTURNE v2.2 / procedural technical couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
