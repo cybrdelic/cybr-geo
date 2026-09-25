@@ -944,9 +944,9 @@ def _lapels_and_collar(parts: list[Part]) -> None:
         _curved_panel(
             "collar_back",
             [
-                (1498, -188, 188, -174, -18),
-                (1560, -178, 178, -166, -16),
-                (1620, -154, 154, -146, -10),
+                (1498, -132, 132, -172, -12),
+                (1558, -118, 118, -160, -9),
+                (1612, -98, 98, -146, -5),
             ],
             MAT_WOOL,
             group="coat_trim",
@@ -959,7 +959,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "left_collar_wing",
-            [(-318, 1508), (-208, 1568), (-96, 1616), (-102, 1534), (-218, 1488)],
+            [(-252, 1510), (-168, 1565), (-92, 1610), (-98, 1540), (-176, 1496)],
             208,
             9,
             MAT_WOOL,
@@ -970,7 +970,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "right_collar_wing",
-            [(318, 1508), (208, 1568), (96, 1616), (102, 1534), (218, 1488)],
+            [(252, 1510), (168, 1565), (92, 1610), (98, 1540), (176, 1496)],
             168,
             9,
             MAT_WOOL,
@@ -981,7 +981,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "left_collar_amethyst_underlay",
-            [(-282, 1510), (-196, 1558), (-118, 1590), (-124, 1538), (-210, 1502)],
+            [(-222, 1511), (-158, 1555), (-108, 1588), (-112, 1542), (-170, 1503)],
             198,
             4,
             MAT_PURPLE_SATIN,
@@ -992,7 +992,7 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "right_collar_amethyst_underlay",
-            [(282, 1510), (196, 1558), (118, 1590), (124, 1538), (210, 1502)],
+            [(222, 1511), (158, 1555), (108, 1588), (112, 1542), (170, 1503)],
             158,
             4,
             MAT_PURPLE_SATIN,
@@ -1242,36 +1242,34 @@ def _back_pattern_and_seams(parts: list[Part]) -> None:
         )
     )
 
-    # Geometric yoke lattice: shallow black-on-black raised lines.
-    z_low, z_high = 1120.0, 1490.0
-    x_extent = 188.0
-    for i in range(7):
-        t = i / 6.0
-        x0 = -x_extent + 2.0 * x_extent * t
-        parts.append(
-            _oriented_box(
-                f"back_lattice_pos_{i}",
-                (x0 - 100, -250, z_low),
-                (x0 + 100, -250, z_high),
-                5.0,
-                4.0,
-                MAT_STITCH,
-                group="back_detail",
-                role="Raised technical-stitch lattice",
+    # Local geometric stitch motifs.  Small diamonds imply embossed technical
+    # quilting without turning the back into a literal cage of raised bars.
+    diamond_centres = [
+        (-70.0, 1415.0), (0.0, 1415.0), (70.0, 1415.0),
+        (-70.0, 1335.0), (0.0, 1335.0), (70.0, 1335.0),
+        (-70.0, 1255.0), (0.0, 1255.0), (70.0, 1255.0),
+        (-70.0, 1175.0), (0.0, 1175.0), (70.0, 1175.0),
+    ]
+    for index, (cx, cz) in enumerate(diamond_centres):
+        top = (cx, -252.0, cz + 28.0)
+        right = (cx + 24.0, -252.0, cz)
+        bottom = (cx, -252.0, cz - 28.0)
+        left = (cx - 24.0, -252.0, cz)
+        for edge_index, (a, b) in enumerate(
+            ((top, right), (right, bottom), (bottom, left), (left, top))
+        ):
+            parts.append(
+                _oriented_box(
+                    f"back_diamond_{index:02d}_edge_{edge_index}",
+                    a,
+                    b,
+                    2.6,
+                    2.2,
+                    MAT_STITCH,
+                    group="back_detail",
+                    role="Subtle raised technical-stitch diamond",
+                )
             )
-        )
-        parts.append(
-            _oriented_box(
-                f"back_lattice_neg_{i}",
-                (x0 + 100, -251, z_low),
-                (x0 - 100, -251, z_high),
-                5.0,
-                4.0,
-                MAT_STITCH,
-                group="back_detail",
-                role="Raised technical-stitch lattice",
-            )
-        )
 
     # Major front/back seam bindings.
     seam_paths = {
@@ -1557,7 +1555,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v2.2 / procedural technical couture",
+        "design": "CYBR NOCTURNE v2.3 / procedural technical couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
