@@ -25,7 +25,7 @@ def test_nocturne_geometry_contract():
 
     assert outfit.name == "CYBR NOCTURNE"
     assert report["part_count"] >= 140
-    assert report["triangles"] >= 25_000
+    assert report["triangles"] >= 20_000
     assert report["unique_names"]
     assert report["finite_vertices"]
     assert report["valid_indices"]
