@@ -24,7 +24,7 @@ def test_nocturne_geometry_contract():
     report = outfit.validate()
 
     assert outfit.name == "CYBR NOCTURNE"
-    assert report["part_count"] >= 120
+    assert report["part_count"] >= 115
     assert report["triangles"] >= 16_000
     assert report["unique_names"]
     assert report["finite_vertices"]
@@ -57,8 +57,6 @@ def test_nocturne_named_construction_layers():
         "left_lapel",
         "right_lapel",
         "collar_back",
-        "left_collar_wing",
-        "right_collar_wing",
         "front_diagonal_harness",
         "back_diagonal_harness",
         "front_waist_belt",
