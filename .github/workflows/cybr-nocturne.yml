@@ -49,3 +49,5 @@ jobs:
           name: cybr-nocturne-geo
           path: artifacts/nocturne-geo/
           if-no-files-found: error
+
+# NOCTURNE v5 proportion verification
