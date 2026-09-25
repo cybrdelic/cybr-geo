@@ -147,8 +147,7 @@ def test_back_is_explicitly_designed():
     assert "back_spine_binding" in names
     assert "back_diagonal_harness" in names
     assert "rear_vent_lining" in names
-    assert len([n for n in names if n.startswith("back_lattice_pos_")]) == 7
-    assert len([n for n in names if n.startswith("back_lattice_neg_")]) == 7
+    assert len([n for n in names if n.startswith("back_diamond_")]) == 48
     assert len([n for n in names if "back_princess_seam" in n]) == 2
 
 
