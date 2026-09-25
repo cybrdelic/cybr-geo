@@ -51,7 +51,7 @@ def test_semantic_cage_is_real_and_boundary_matches_skull():
     assert np.max(np.abs(predicted-cage.landmarks[:,2]))<.55
 
     face=cage.sample_patch('preview')
-    rows,cols=240,241
+    rows,cols=230,241
     vv=face.vertices.reshape(rows,cols,3)
     for edge in (vv[:,0],vv[:,-1]):
         shell=anatomy.skull.front_shell(edge[:,0],edge[:,2])
@@ -108,14 +108,19 @@ def test_eye_and_nostril_apertures_hit_real_procedural_geometry():
 
         for side in (-1,1):
             c=anatomy.eyes.center(side)
-            ray=mi.Ray3f(mi.Point3f(float(c[0]),-160.,float(c[2])),mi.Vector3f(0,1,0))
-            hit=scene.ray_intersect(ray)
-            assert bool(np.asarray(hit.is_valid()).ravel()[0])
-            name=hit.shape[0].id()
-            if closure<.995:
-                assert ('corneal_tear_surface' in name or 'sclera_globe' in name or 'iris' in name),name
-            else:
-                assert name=='Semantic_face_subdivision_surface',name
+            probes=[0.] if closure>=.995 else [-.82,0.,.82]
+            for q in probes:
+                x=float(c[0]+side*q*(anatomy.p.eye_width*.5))
+                _,upper,lower=anatomy.eyes.opening(x,side)
+                z=float((upper+lower)*.5)
+                ray=mi.Ray3f(mi.Point3f(x,-160.,z),mi.Vector3f(0,1,0))
+                hit=scene.ray_intersect(ray)
+                assert bool(np.asarray(hit.is_valid()).ravel()[0])
+                name=hit.shape[0].id()
+                if closure<.995:
+                    assert ('corneal_tear_surface' in name or 'sclera_globe' in name or 'iris' in name),name
+                else:
+                    assert name=='Semantic_face_subdivision_surface',name
 
         cx,cz=anatomy.nose.nostril_center(1)
         hit=scene.ray_intersect(mi.Ray3f(mi.Point3f(float(cx),-160.,float(cz)),mi.Vector3f(0,1,0)))
