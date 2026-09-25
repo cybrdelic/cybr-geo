@@ -18,9 +18,9 @@ class FaceParameters:
     seed: int = 271828
     eye_spacing: float = 62.0
     eye_height: float = 30.0
-    eye_width: float = 28.0
-    eye_opening: float = 11.0
-    eye_tilt: float = 0.28
+    eye_width: float = 26.5
+    eye_opening: float = 6.6
+    eye_tilt: float = 0.18
     nose_projection: float = 21.5
     nose_width: float = 1.06
     mouth_width: float = 52.0
@@ -32,7 +32,7 @@ class FaceParameters:
     chin_width: float = 0.98
     brow_weight: float = 1.0
     skin_relief: float = .0025
-    eyelid_closure: float = 0.08
+    eyelid_closure: float = 0.10
 
 
 ZMIN, ZMAX = -180., 144.
@@ -189,6 +189,8 @@ class Anatomy:
         # Nasal bridge, dorsum, tip lobule, alar cartilage and columella.
         d-=8.4*gaussian(x,z,.25,15,6.6,19)
         d-=5.3*gaussian(x,z,.35,1.5,8.8,13.5)
+        bridge_window=smoothstep(-18,2,z)*(1-smoothstep(34,48,z))
+        d-=3.25*np.exp(-.5*(x/5.2)**2)*bridge_window
         d-=self.p.nose_projection*gaussian(x,z,.20,-7.8,8.4,7.6)
         for s in (-1,1):
             alar_x=s*(10.8*self.p.nose_width)
@@ -216,12 +218,12 @@ class Anatomy:
         ul=np.clip((line-z)/np.maximum(lower,.001),0,1)
         upper_region=inside&(z>=line)&(z<=line+upper)
         lower_region=inside&(z<line)&(z>=line-lower)
-        upper_roll=self.p.upper_lip_fullness*2.25*np.sin(np.pi*uu)**.90*span**.56
-        lower_roll=self.p.lower_lip_fullness*2.65*np.sin(np.pi*ul)**.93*span**.58
+        upper_roll=self.p.upper_lip_fullness*1.35*np.sin(np.pi*uu)**.92*span**.60
+        lower_roll=self.p.lower_lip_fullness*1.72*np.sin(np.pi*ul)**.94*span**.62
         d-=np.where(upper_region,upper_roll,0)
         d-=np.where(lower_region,lower_roll,0)
         crease=np.exp(-((z-line)/.42)**2)*span**.82*inside
-        d+=.36*crease
+        d+=.24*crease
         for s in (-1,1):
             d+=.34*gaussian(x,z,s*(self.p.mouth_width*.485),-39.2,2.8,3.2)
             d+=.10*gaussian(x,z,s*(self.p.mouth_width*.53),-41.2,3.8,5.4)
@@ -683,7 +685,7 @@ def nostril_rim(a,side):
     # Outer and inner rotated ellipses form a thin skin annulus.
     rings=[]
     for scale,depth in [(1.07,-.02),(.80,.72)]:
-        ur=3.90*scale*np.cos(theta);vr=1.55*scale*np.sin(theta)
+        ur=4.65*scale*np.cos(theta);vr=1.82*scale*np.sin(theta)
         du=ur-side*.42*vr;dz=vr+side*.10*ur
         x=cx+du;z=cz+dz
         y=a.front(x,z)+depth
@@ -700,7 +702,7 @@ def nasal_cavity(a,side):
     cx=side*(10.2*a.p.nose_width)+.20;cz=-16.4
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=3.82*r*np.cos(theta);vr=1.50*r*np.sin(theta)
+    ur=4.52*r*np.cos(theta);vr=1.76*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
     # The interior starts almost flush with the alar rim and then curves
@@ -809,16 +811,14 @@ def build(parameters=None,quality='final',hair=True):
         parts.append(nasal_cavity(a,side));parts.append(nostril_rim(a,side));parts.append(ear(a,side))
         wet,margin=eyelids(a,side)
         if p.eyelid_closure < .995:
-            parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.28,11.55],SCLERA))
-            parts.append(visible_eye_sclera(a,side))
+            parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.28,11.55],SCLERA,iris_cut=True))
             caruncle=c+np.array([-side*(a.p.eye_width*.445),-11.25,-.35])
             parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.58,.30,.38],LID,nu=40,nv=26))
-            eye_front=float(a.front(c[0],c[2]))
-            iris_offset=eye_front-.57-c[1]
-            pupil_offset=eye_front-.62-c[1]
-            parts.append(disk(prefix+'_iris_stroma',c,5.34,IRIS,
-                              lambda r:iris_offset+.010*r*r,rmin=1.60))
-            parts.append(disk(prefix+'_pupil',c,1.64,PUPIL,
+            iris_offset=-12.40
+            pupil_offset=-12.43
+            parts.append(disk(prefix+'_iris_stroma',c,5.45,IRIS,
+                              lambda r:iris_offset+.010*r*r,rmin=1.62))
+            parts.append(disk(prefix+'_pupil',c,1.62,PUPIL,
                               lambda r:np.full_like(r,pupil_offset),nr=12))
             parts.append(visible_cornea(a,side))
             parts.append(wet)
