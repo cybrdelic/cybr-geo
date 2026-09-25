@@ -56,7 +56,9 @@ def test_nocturne_named_construction_layers():
         "rear_vent_lining",
         "left_lapel",
         "right_lapel",
-        "collar_outer",
+        "collar_back",
+        "left_collar_wing",
+        "right_collar_wing",
         "front_diagonal_harness",
         "back_diagonal_harness",
         "front_waist_belt",
@@ -122,6 +124,17 @@ def test_coat_is_panel_based_not_inflated_shell():
         assert part.metadata["generator"] == "curved_panel"
         assert part.metadata["thickness_mm"] >= 6.0
         assert part.metadata["samples_across"] >= 8
+
+    # Long coat tails must contain actual drape displacement, not flat slabs.
+    for name in (
+        "coat_left_front_skirt",
+        "coat_right_front_skirt",
+        "coat_left_back_tail",
+        "coat_right_back_tail",
+    ):
+        part = next(p for p in outfit.parts if p.name == name)
+        assert part.metadata["fold_amp_mm"] >= 12.0
+        assert part.metadata["fold_cycles"] >= 2.0
 
     # The v1 single inflated "coat_shell" should no longer exist.
     assert "coat_shell" not in {p.name for p in outfit.parts}
