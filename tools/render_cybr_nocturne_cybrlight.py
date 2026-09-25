@@ -166,7 +166,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
     scene.asset_base = str(ROOT)
     budgets = {
         "smoke": (320, 480, 8, 6),
-        "proof": (480, 720, 24, 8),
+        "proof": (480, 720, 32, 8),
         "preview": (640, 960, 72, 10),
         "reference": (900, 1350, 256, 14),
     }
@@ -180,7 +180,7 @@ def build_scene(view: str = "hero", preset: str = "preview"):
         rr_depth=5,
         threads=max(1, min(8, os.cpu_count() or 4)),
         seed=90210,
-        exposure=1.22,
+        exposure=1.32,
         mis=True,
         nee=True,
         film_format="openexr",
@@ -212,22 +212,34 @@ def build_scene(view: str = "hero", preset: str = "preview"):
 
     # Broad emitters create fashion-studio gradients in addition to spectral
     # environment lobes. These are geometry seen by the same path integrator.
-    key = scene.material(name="key_softbox", type="emitter", color=(1.0, 0.96, 0.91), emission=16.0, kelvin=5100)
-    fill = scene.material(name="fill_softbox", type="emitter", color=(0.72, 0.83, 1.0), emission=9.0, kelvin=7200)
-    rim = scene.material(name="rim_strip", type="emitter", color=(0.62, 0.70, 1.0), emission=15.0, kelvin=8800)
-    front = scene.material(name="front_card", type="emitter", color=(0.86, 0.82, 1.0), emission=3.5, kelvin=6500)
-    scene.rectangle((-2.00, 3.05, -2.05), (1.65, 0.0, 0.35), (0.0, 1.75, 0.0), key)
-    scene.rectangle((2.15, 2.15, -1.00), (1.00, 0.0, 0.20), (0.0, 1.35, 0.0), fill)
-    scene.rectangle((-1.80, 2.35, 1.18), (0.82, 0.0, 0.0), (0.0, 1.62, 0.22), rim)
-    scene.rectangle((0.0, 1.30, -2.75), (0.85, 0.0, 0.0), (0.0, 0.72, 0.0), front)
+    # One overhead geometry softbox gives broad material gradients without
+    # entering either front or rear camera frustum. Directional lights provide
+    # the key/fill/rim and therefore cannot show up as white cards in-frame.
+    overhead = scene.material(
+        name="overhead_softbox",
+        type="emitter",
+        color=(1.0, 0.96, 0.92),
+        emission=18.0,
+        kelvin=5200,
+    )
+    scene.rectangle((-1.55, 4.15, -0.70), (3.10, 0.0, 0.0), (0.0, 0.0, 1.40), overhead)
 
-    scene.environment.update(color=[0.34, 0.40, 0.58], strength=0.11)
+    if view == "back":
+        scene.directional_light((0.38, -1.0, 0.62), irradiance=3.3)
+        scene.directional_light((-0.58, -0.70, 0.30), irradiance=1.55)
+        scene.point_light((-1.55, 2.20, 2.25), intensity=(0.78, 0.86, 1.0), scale=20.0)
+        scene.point_light((1.75, 1.62, 1.35), intensity=(1.0, 0.78, 0.62), scale=9.0)
+    else:
+        scene.directional_light((-0.38, -1.0, -0.62), irradiance=3.4)
+        scene.directional_light((0.58, -0.72, -0.28), irradiance=1.50)
+        scene.point_light((1.55, 2.20, -2.35), intensity=(1.0, 0.84, 0.70), scale=20.0)
+        scene.point_light((-1.65, 1.70, -1.35), intensity=(0.72, 0.82, 1.0), scale=9.0)
+
+    scene.environment.update(color=[0.36, 0.41, 0.58], strength=0.14)
     scene.environment["lobes"] = [
-        {"direction": [-0.58, 0.71, -0.38], "exponent": 16, "strength": 0.78, "kelvin": 6600},
-        {"direction": [0.42, 0.43, 0.76], "exponent": 26, "strength": 0.38, "kelvin": 9000},
+        {"direction": [-0.58, 0.72, -0.34], "exponent": 14, "strength": 0.62, "kelvin": 6500},
+        {"direction": [0.48, 0.50, 0.72], "exponent": 22, "strength": 0.32, "kelvin": 8500},
     ]
-
-    scene.point_light((1.55, 2.48, -2.05), intensity=(1.0, 0.86, 0.74), scale=20.0)
 
     scene.notes.extend(
         [
