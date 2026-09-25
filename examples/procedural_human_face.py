@@ -16,11 +16,11 @@ from mechanism_lab.core import Assembly, Material, Part, View
 @dataclass(frozen=True)
 class FaceParameters:
     seed: int = 271828
-    eye_spacing: float = 61.5
+    eye_spacing: float = 62.0
     eye_height: float = 30.0
-    eye_width: float = 24.8
-    eye_opening: float = 7.1
-    eye_tilt: float = 0.42
+    eye_width: float = 28.0
+    eye_opening: float = 11.0
+    eye_tilt: float = 0.28
     nose_projection: float = 21.5
     nose_width: float = 1.06
     mouth_width: float = 52.0
@@ -32,7 +32,7 @@ class FaceParameters:
     chin_width: float = 0.98
     brow_weight: float = 1.0
     skin_relief: float = .0025
-    eyelid_closure: float = 0.18
+    eyelid_closure: float = 0.08
 
 
 ZMIN, ZMAX = -180., 144.
@@ -225,10 +225,16 @@ class Anatomy:
             q=np.clip(lx/(self.p.eye_width/2),-1,1)
             shape=np.maximum(1-q*q,0)
             _,upper,lower=self.eye_opening(x,side)
-            # Real upper/lower lid folds follow the palpebral opening rather
-            # than an arbitrary horizontal seam.
-            y+=.12*np.exp(-((z-upper-2.3)/.52)**2)*shape*blend
-            y-=.10*np.exp(-((z-lower+1.55)/.58)**2)*shape*blend
+            # Pretarsal lid volume and supratarsal crease. These are actual
+            # surface displacements, not painted eye makeup or image effects.
+            upper_roll=np.exp(-((z-(upper+1.05))/1.25)**2)*shape**.62*blend
+            upper_crease=np.exp(-((z-(upper+3.35))/.72)**2)*shape**.58*blend
+            lower_roll=np.exp(-((z-(lower-.75))/1.05)**2)*shape**.68*blend
+            lower_crease=np.exp(-((z-(lower-2.25))/.82)**2)*shape**.60*blend
+            y-=.34*upper_roll
+            y+=.42*upper_crease
+            y-=.18*lower_roll
+            y+=.12*lower_crease
         return y
 
     def front(self,x,z):
@@ -297,7 +303,7 @@ def head_mesh(a,quality):
         nx=side*(10.2*a.p.nose_width)+.20;nz=-16.4
         du=x-nx;dz=z-nz
         ur=du+side*.42*dz;vr=dz-side*.10*du
-        remove|=((ur/3.42)**2+(vr/1.27)**2<1)&(y<-65.3)
+        remove|=((ur/3.75)**2+(vr/1.48)**2<1)&(y<-65.0)
     # Closed lips remain continuous geometry. Mouth depth is represented by
     # the analytic crease in Anatomy.deformation(), not by deleted triangles.
     f=f[~remove]
@@ -626,7 +632,7 @@ def nostril_rim(a,side):
     # Outer and inner rotated ellipses form a thin skin annulus.
     rings=[]
     for scale,depth in [(1.07,-.02),(.80,.72)]:
-        ur=3.62*scale*np.cos(theta);vr=1.38*scale*np.sin(theta)
+        ur=3.90*scale*np.cos(theta);vr=1.55*scale*np.sin(theta)
         du=ur-side*.42*vr;dz=vr+side*.10*ur
         x=cx+du;z=cz+dz
         y=a.front(x,z)+depth
@@ -643,7 +649,7 @@ def nasal_cavity(a,side):
     cx=side*(10.2*a.p.nose_width)+.20;cz=-16.4
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=3.55*r*np.cos(theta);vr=1.34*r*np.sin(theta)
+    ur=3.82*r*np.cos(theta);vr=1.50*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
     # The interior starts almost flush with the alar rim and then curves
