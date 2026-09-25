@@ -166,21 +166,21 @@ def main():
     p.add_argument('--skip-export',action='store_true');p.add_argument('--reuse-textures',action='store_true')
     p.add_argument('--oidn',default=os.environ.get('OIDN_BIN','auto'),help='OIDN executable, or auto to use CYBR GEO pinned provisioning')
     p.add_argument('--seed',type=int,default=271828);p.add_argument('--exposure',type=float,default=1.)
-    p.add_argument('--eyelid-closure',type=float,default=.10,help='0=open, 1=closed; modifies actual lid geometry')
+    p.add_argument('--eyelid-closure',type=float,default=.08,help='0=open, 1=closed; modifies actual lid geometry')
     p.add_argument('--eye-spacing',type=float,default=62.0)
     p.add_argument('--eye-height',type=float,default=30.0)
-    p.add_argument('--eye-width',type=float,default=23.6)
-    p.add_argument('--eye-opening',type=float,default=7.4)
-    p.add_argument('--eye-tilt',type=float,default=.85)
-    p.add_argument('--nose-projection',type=float,default=18.5)
-    p.add_argument('--nose-width',type=float,default=1.0)
-    p.add_argument('--mouth-width',type=float,default=53.0)
-    p.add_argument('--upper-lip-fullness',type=float,default=1.0)
-    p.add_argument('--lower-lip-fullness',type=float,default=1.0)
-    p.add_argument('--jaw-width',type=float,default=1.04)
-    p.add_argument('--skull-width',type=float,default=1.0)
-    p.add_argument('--cheek-width',type=float,default=1.0)
-    p.add_argument('--chin-width',type=float,default=1.0)
+    p.add_argument('--eye-width',type=float,default=28.0)
+    p.add_argument('--eye-opening',type=float,default=11.0)
+    p.add_argument('--eye-tilt',type=float,default=.28)
+    p.add_argument('--nose-projection',type=float,default=21.5)
+    p.add_argument('--nose-width',type=float,default=1.06)
+    p.add_argument('--mouth-width',type=float,default=52.0)
+    p.add_argument('--upper-lip-fullness',type=float,default=.92)
+    p.add_argument('--lower-lip-fullness',type=float,default=.96)
+    p.add_argument('--jaw-width',type=float,default=1.055)
+    p.add_argument('--skull-width',type=float,default=.965)
+    p.add_argument('--cheek-width',type=float,default=1.045)
+    p.add_argument('--chin-width',type=float,default=.98)
     p.add_argument('--brow-weight',type=float,default=1.0)
     p.add_argument('--skin-relief',type=float,default=.0025)
     args=p.parse_args();args.out=args.out.resolve();args.out.mkdir(parents=True,exist_ok=True)
@@ -238,7 +238,7 @@ def main():
         im.load();pixels=hashlib.sha256(np.asarray(im).tobytes()).hexdigest()
     report={'image':stem+'.png','resolution':[width,height],'spp':args.spp,'depth':args.depth,
             'seed':args.seed,'render_seconds':render_seconds,'mitsuba_version':mi.__version__,
-            'exposure_multiplier':args.exposure,'bump_height_range_mm':.032,
+            'exposure_multiplier':args.exposure,'bump_height_range_mm':.017,
             'renderer':'CYBR GEO ORBIT v9 / Mitsuba LLVM CPU path tracing',
             'denoiser':'Intel OIDN, beauty + albedo + world-space geometric normal, HDR/high',
             'tone_mapping':'Unchanged v9 ACES approximation and sRGB transfer',
