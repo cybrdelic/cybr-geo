@@ -7,10 +7,10 @@
   "spp": 48,
   "depth": 12,
   "seed": 271828,
-  "render_seconds": 13.663038969039917,
+  "render_seconds": 13.498808145523071,
   "mitsuba_version": "3.7.1",
   "exposure_multiplier": 1.15,
-  "bump_height_range_mm": 0.032,
+  "bump_height_range_mm": 0.017,
   "renderer": "CYBR GEO ORBIT v9 / Mitsuba LLVM CPU path tracing",
   "denoiser": "Intel OIDN, beauty + albedo + world-space geometric normal, HDR/high",
   "tone_mapping": "Unchanged v9 ACES approximation and sRGB transfer",
@@ -27,11 +27,11 @@
     ],
     "focal_length_mm": 85,
     "f_stop": 16,
-    "focus_distance_mm": 492.0641174316406,
+    "focus_distance_mm": 489.3006896972656,
     "focus_point_mm": [
-      10.627931324673185,
-      -72.67596677780409,
-      5.2639943968334535
+      11.155082475740414,
+      -75.38792434905037,
+      5.326689203647495
     ],
     "filter": "Gaussian .42",
     "environment": "Analytic constant fill; no HDR photograph"
@@ -47,18 +47,18 @@
       "seed": 271828,
       "eye_spacing": 62.0,
       "eye_height": 30.0,
-      "eye_width": 23.6,
-      "eye_opening": 7.4,
-      "eye_tilt": 0.85,
-      "nose_projection": 18.5,
-      "nose_width": 1.0,
-      "mouth_width": 53.0,
-      "upper_lip_fullness": 1.0,
-      "lower_lip_fullness": 1.0,
-      "jaw_width": 1.04,
-      "skull_width": 1.0,
-      "cheek_width": 1.0,
-      "chin_width": 1.0,
+      "eye_width": 28.0,
+      "eye_opening": 11.0,
+      "eye_tilt": 0.28,
+      "nose_projection": 21.5,
+      "nose_width": 1.06,
+      "mouth_width": 52.0,
+      "upper_lip_fullness": 0.92,
+      "lower_lip_fullness": 0.96,
+      "jaw_width": 1.055,
+      "skull_width": 0.965,
+      "cheek_width": 1.045,
+      "chin_width": 0.98,
       "brow_weight": 1.0,
       "skin_relief": 0.0025,
       "eyelid_closure": 0.08
@@ -102,16 +102,16 @@
       ],
       "finish_origin": null,
       "vertices": 228380,
-      "triangles": 453960,
+      "triangles": 453381,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -170.4895123779087,
-          -95.6694628470664,
+          -170.4895158267669,
+          -100.23981384317855,
           -180.0
         ],
         [
-          170.4895123779087,
+          170.4895158267669,
           95.0,
           143.99
         ]
@@ -150,13 +150,13 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -13.871094466972341,
-          -84.52303939266122,
+          -14.483094466972341,
+          -86.47626577977555,
           -17.94786530851486
         ],
         [
-          -6.128905533027659,
-          -75.24018343723684,
+          -6.740905533027659,
+          -77.0119871425811,
           -14.852134691485135
         ]
       ]
@@ -194,13 +194,13 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -14.230591000616585,
-          -85.16732298136507,
+          -14.842591000616583,
+          -87.1343785826485,
           -18.110092263316616
         ],
         [
-          -5.769408999383416,
-          -75.00965193321997,
+          -6.381408999383416,
+          -76.84254395897422,
           -14.689907736683383
         ]
       ]
@@ -250,6 +250,50 @@
       ]
     },
     {
+      "name": "Left_sclera_globe",
+      "material": 3,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Left_sclera_globe",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 10449,
+      "triangles": 20480,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          -43.45,
+          -59.53,
+          18.61000005775
+        ],
+        [
+          -18.55,
+          -34.97,
+          41.70999994225
+        ]
+      ]
+    },
+    {
       "name": "Left_visible_sclera",
       "material": 3,
       "group": "anatomy",
@@ -278,18 +322,18 @@
       ],
       "finish_origin": null,
       "vertices": 15990,
-      "triangles": 18260,
+      "triangles": 22061,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.446,
-          -62.228843679618386,
-          26.07757716811891
+          -44.58,
+          -66.62818620417748,
+          24.372290690923865
         ],
         [
-          -19.554000000000002,
-          -54.89581291977268,
-          33.49591601821268
+          -17.42,
+          -56.79487356857266,
+          34.98196739497421
         ]
       ]
     },
@@ -326,12 +370,12 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -21.077999999999996,
+          -19.119999999999997,
           -58.8,
           29.430000001899998
         ],
         [
-          -19.918,
+          -17.96,
           -58.2,
           30.1899999981
         ]
@@ -371,12 +415,12 @@
       "bounds_mm": [
         [
           -36.34,
-          -61.61198631497362,
+          -64.07266509390699,
           24.82
         ],
         [
           -25.66,
-          -61.35243031497362,
+          -63.81310909390699,
           35.5
         ]
       ]
@@ -415,12 +459,12 @@
       "bounds_mm": [
         [
           -32.64,
-          -61.687586314973615,
+          -64.148265093907,
           28.52
         ],
         [
           -29.36,
-          -61.687586314973615,
+          -64.148265093907,
           31.8
         ]
       ]
@@ -458,14 +502,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.269,
-          -62.29673089756116,
-          26.146652879359742
+          -44.37,
+          -66.70016645632967,
+          24.442240711424674
         ],
         [
-          -19.731,
-          -55.080724263500954,
-          33.42755434488367
+          -17.630000000000003,
+          -56.9478507948904,
+          34.91205278997379
         ]
       ]
     },
@@ -502,14 +546,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          -42.76907862498351,
-          -60.13976686119442,
-          26.28938035020806
+          -44.9632119873609,
+          -59.43960403310208,
+          24.587120376408915
         ],
         [
-          -19.23004877368585,
-          -54.31661419667589,
-          33.29981118020594
+          -17.036854410802793,
+          -49.9139002664447,
+          34.78019202239242
         ]
       ]
     },
@@ -546,13 +590,13 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          6.5289055330276575,
-          -84.88844849361885,
+          7.140905533027658,
+          -86.8603108721034,
           -17.94786530851486
         ],
         [
-          14.27109446697234,
-          -74.9394333966985,
+          14.88309446697234,
+          -76.73434811982972,
           -14.852134691485135
         ]
       ]
@@ -590,13 +634,13 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          6.169408999383416,
-          -85.54648995712499,
+          6.781408999383416,
+          -87.53132267124204,
           -18.110092263316616
         ],
         [
-          14.630591000616581,
-          -74.69410352054595,
+          15.242591000616581,
+          -76.58906396499164,
           -14.689907736683383
         ]
       ]
@@ -646,6 +690,50 @@
       ]
     },
     {
+      "name": "Right_sclera_globe",
+      "material": 3,
+      "group": "anatomy",
+      "motion": "fixed",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "explode": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "role": "Right_sclera_globe",
+      "provenance": "original-procedural",
+      "tags": [
+        "original-procedural",
+        "no-scan",
+        "deterministic"
+      ],
+      "finish_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "finish_origin": null,
+      "vertices": 10449,
+      "triangles": 20480,
+      "has_analytic_cad": false,
+      "bounds_mm": [
+        [
+          18.55,
+          -59.53,
+          18.350000057749998
+        ],
+        [
+          43.45,
+          -34.97,
+          41.44999994225
+        ]
+      ]
+    },
+    {
       "name": "Right_visible_sclera",
       "material": 3,
       "group": "anatomy",
@@ -674,18 +762,18 @@
       ],
       "finish_origin": null,
       "vertices": 15990,
-      "triangles": 18260,
+      "triangles": 22061,
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.554000000000002,
-          -62.40102143721736,
-          25.81757716811891
+          17.42,
+          -66.83625954933255,
+          24.112290690923864
         ],
         [
-          42.446,
-          -55.06541540007425,
-          33.235916018212684
+          44.58,
+          -57.02178596112565,
+          34.721967394974214
         ]
       ]
     },
@@ -722,12 +810,12 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.918,
+          17.96,
           -58.8,
           29.170000001899997
         ],
         [
-          21.077999999999996,
+          19.119999999999997,
           -58.2,
           29.929999998099998
         ]
@@ -767,12 +855,12 @@
       "bounds_mm": [
         [
           25.66,
-          -61.669932324540994,
+          -64.24319480857167,
           24.56
         ],
         [
           36.34,
-          -61.410376324541,
+          -63.98363880857167,
           35.239999999999995
         ]
       ]
@@ -811,12 +899,12 @@
       "bounds_mm": [
         [
           29.36,
-          -61.745532324540996,
+          -64.31879480857168,
           28.259999999999998
         ],
         [
           32.64,
-          -61.745532324540996,
+          -64.31879480857168,
           31.54
         ]
       ]
@@ -854,14 +942,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.731,
-          -62.47228047954043,
-          25.886652879359744
+          17.630000000000003,
+          -66.90764295008353,
+          24.182240711424676
         ],
         [
-          42.269,
-          -55.242549845591654,
-          33.16755434488366
+          44.37,
+          -57.178137092036664,
+          34.65205278997379
         ]
       ]
     },
@@ -898,14 +986,14 @@
       "has_analytic_cad": false,
       "bounds_mm": [
         [
-          19.23004877368585,
-          -60.13976686119442,
-          26.02938035020806
+          17.036854410802793,
+          -59.43960403310208,
+          24.327120376408914
         ],
         [
-          42.76907862498351,
-          -54.31661419667589,
-          33.03981118020594
+          44.9632119873609,
+          -49.9139002664447,
+          34.52019202239242
         ]
       ]
     }
@@ -923,21 +1011,21 @@
     ],
     "encoded_height_normalization_mm": 0.06,
     "files": {
-      "skin_color.png": "9d925d29ba31dd5c5919b1a6eeb355131b7ff25d38a82cbf0dc743e51f6fe871",
-      "skin_roughness.png": "edb2466cb43639478660a9660124ed14f1be69798376942f6154cf69e868e0d6",
-      "skin_height.png": "5a0f9500d2e12f0f88cffc79b1a1db7330961ab82bfb518be717309f6badc6b2",
+      "skin_color.png": "cb996732a9b8dddc7477ebfd268d7d2df7c11678c3ffb3ebd86557b8fc4bf983",
+      "skin_roughness.png": "da67f5c8cdc8d9b009343689b52b6732a2a757b3d668358b7c7737723f2f8e64",
+      "skin_height.png": "738005f55e8054ea6e0096bfca36e637c1013b572672fda17c3c9a1213118bcf",
       "iris_color.png": "280c668a8f2a5d58352fa897bca0df47ac367b8838002fcf3e24c77cddd70d64",
       "sclera_color.png": "1c069884d9c896c52cacf91b405303f8bb2f7d063f3de38b6c8dc996a1e631fa"
     }
   },
   "source_code_sha256": {
-    "examples/procedural_human_face.py": "535c8853af5bcd86a2d8f3312eadcb637012311ca4e5511650627ecafcf327c7",
+    "examples/procedural_human_face.py": "f5d9d15ad8383f5106e29ea27a27c3d3debd1d63f3de6ffaf824caab8da73496",
     "tools/procedural_face_materials.py": "5757e0f3a1d6f1224dd8d2e084e811fd7ce9425dc9b4c0362382ffac9e95d235",
-    "tools/render_procedural_face.py": "e48b85ca4e6bdd36d4da7ae54f69ace70aa1696f4c9f7d1843fbf5ee8003777b",
+    "tools/render_procedural_face.py": "69633bd25fc841f9327a4815cade1ab41db1e310be37167c09c4276981413b0b",
     "tools/orbit_mitsuba_photo.py": "892c51f93d0645a1f3e857f1cdce12d3eb5dd15a14c4d0a93d9970d804a11393"
   },
   "model_sha256": null,
   "finite_radiance": true,
-  "png_pixels_sha256": "79ab3a43de6b304e2028419d3ae28830d0acc07694c5261463a7387f309176b2",
-  "sha256": "d698655c33172e090cc47cac3ccbd9f76b99604058077e53f9e7165266376cdc"
+  "png_pixels_sha256": "445fbd13cd5ce84170a3c92a1ad9b36679c268a0bc2545a36e650adf5351eca6",
+  "sha256": "5779b790cde209c0a2fda4b05d95155be239f1c7bce3d86239da6a04c95be025"
 }
