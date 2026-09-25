@@ -49,13 +49,13 @@ def test_referenced_geometry_and_ear_charts_are_nondegenerate(closed):
 
 def test_continuous_lid_skin_and_exact_visible_eye_patches(closed):
     # Closed eyes remain part of the one continuous procedural head surface.
-    assert not [p for p in closed.parts if 'visible_sclera' in p.name or 'visible_cornea' in p.name]
+    assert not [p for p in closed.parts if 'sclera_globe' in p.name or 'ocular_tear_surface' in p.name]
     head=next(p for p in closed.parts if p.name=='Sculpted_head_neck_and_shoulders')
     assert head.material==SKIN and 'no-scan' in head.tags
 
     opened=build(FaceParameters(eyelid_closure=0),quality='preview',hair=False)
-    sclera=[p for p in opened.parts if p.name.endswith('_visible_sclera')]
-    cornea=[p for p in opened.parts if p.name.endswith('_visible_cornea')]
+    sclera=[p for p in opened.parts if p.name.endswith('_sclera_globe')]
+    cornea=[p for p in opened.parts if p.name.endswith('_ocular_tear_surface')]
     assert len(sclera)==2 and len(cornea)==2
     for patch in sclera+cornea:
         assert patch.provenance=='original-procedural'
@@ -80,7 +80,7 @@ def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
             hit=scene.ray_intersect(ray)
             assert bool(np.asarray(hit.is_valid())[0])
             name=hit.shape[0].id()
-            assert ('Sculpted_head_neck_and_shoulders' in name) if closure else ('visible_cornea' in name),name
+            assert ('Sculpted_head_neck_and_shoulders' in name) if closure else ('ocular_tear_surface' in name),name
         nx=10.2*anatomy.p.nose_width+.20;nz=-16.4
         hit=scene.ray_intersect(mi.Ray3f(mi.Point3f(nx,-150,nz),mi.Vector3f(0,1,0)))
         assert 'nasal_vestibule' in hit.shape[0].id()
