@@ -34,6 +34,7 @@ def soft_noise(rng,size,small):
 
 
 def atlas_coordinates(anatomy,size):
+    from procedural_human_face_v13 import ZMIN,ZMAX
     theta=np.linspace(-np.pi,np.pi,size,dtype=np.float32)[None,:]
     z=np.linspace(ZMAX,ZMIN,size,dtype=np.float32)[:,None]
     rx,_,_=anatomy.skull.section(z)

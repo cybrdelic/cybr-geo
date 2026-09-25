@@ -622,8 +622,8 @@ def build(parameters=None,quality='final',hair=True):
         c=a.eyes.center(side)
         if p.eyelid_closure<.995:
             parts.append(ellipsoid(prefix+'_sclera_globe',c,[15.2,12.55,12.0],SCLERA))
-            parts.append(disk(prefix+'_iris',c,4.65,IRIS,-12.62,rmin=1.48))
-            parts.append(disk(prefix+'_pupil',c,1.50,PUPIL,-12.66,nr=12))
+            parts.append(disk(prefix+'_iris',c,4.65,IRIS,-12.68,rmin=1.48))
+            parts.append(disk(prefix+'_pupil',c,1.50,PUPIL,-12.72,nr=12))
             cornea=ellipsoid(prefix+'_corneal_tear_surface',c,[15.3,12.72,12.1],CORNEA,nu=120,nv=76)
             vv=cornea.vertices.copy()
             dx=vv[:,0]-c[0]; dz=vv[:,2]-c[2]
