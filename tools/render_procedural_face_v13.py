@@ -51,7 +51,7 @@ def materials(out,clay=False):
     skin={
         'type':'bumpmap',
         'texture':bitmap(out/'skin_height.png',True),
-        'scale':.011,
+        'scale':.008,
         'bsdf':{
             'type':'principled',
             'base_color':bitmap(out/'skin_color.png'),

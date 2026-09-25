@@ -95,6 +95,16 @@ def test_anthropometric_parameters_change_real_cage_shape():
     assert np.ptp(ratios)>.03
 
 
+def test_finite_eyelid_thickness_is_generated():
+    assembly=build(FaceParameters(eyelid_closure=.10),quality='preview',hair=False)
+    lids=[p for p in assembly.parts if 'eyelid_thickness' in p.name]
+    assert len(lids)==4
+    for lid in lids:
+        assert 'eyelid-thickness' in lid.tags
+        assert len(lid.faces)>1000
+        assert np.ptp(lid.vertices[:,1])>.15
+
+
 def test_eye_and_nostril_apertures_hit_real_procedural_geometry():
     import mitsuba as mi
     mi.set_variant('llvm_ad_rgb')

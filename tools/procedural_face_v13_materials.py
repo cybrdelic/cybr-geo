@@ -57,8 +57,8 @@ def skin_maps(out,anatomy,size=2048):
 
     # Chromophore-inspired parameter fields. They are artistic numerical
     # approximations, not measured tissue spectra.
-    melanin=np.clip(.46+.045*macro+.018*meso,0.22,.72)
-    hemoglobin=np.clip(.38+.055*meso+.020*fine,0.15,.68)
+    melanin=np.clip(.46+.034*macro+.014*meso,0.22,.72)
+    hemoglobin=np.clip(.38+.043*meso+.014*fine,0.15,.68)
 
     cheek=(gaussian(np.abs(x),z,40,2,22,25)+.5*gaussian(np.abs(x),z,32,28,23,16))*front
     nose=gaussian(x,z,0,-4,16,25)*front
@@ -109,12 +109,12 @@ def skin_maps(out,anatomy,size=2048):
 
     # Multi-scale height. Macro folds are geometric in v13; this map contains
     # pores, furrows, lip microfolds and subtle wrinkles only.
-    impulses=(rng.random((size,size),dtype=np.float32)<.010).astype(np.float32)
+    impulses=(rng.random((size,size),dtype=np.float32)<.0075).astype(np.float32)
     impulses*=rng.uniform(.5,1.4,(size,size)).astype(np.float32)
     inner=gaussian_filter(impulses,.75,mode='wrap')*3.1
     rim=gaussian_filter(impulses,1.55,mode='wrap')*2.15
     pore=-.016*inner+.004*rim
-    height=pore*(.62+.28*cheek+.18*oil)+.0012*fine+.00075*meso
+    height=pore*(.58+.25*cheek+.15*oil)+.00085*fine+.00055*meso
 
     lipfold=np.sin(x*2.7+.5*meso)+.28*np.sin(x*5.9+.3*fine)
     height=height*(1-lips)+(.00145*lipfold+.00065*fine)*lips

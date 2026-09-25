@@ -16,7 +16,7 @@ from scipy.interpolate import PchipInterpolator, RectBivariateSpline
 from mechanism_lab.core import Assembly, Material, Part, View
 
 SKIN, LID, CAVITY, SCLERA, IRIS, PUPIL, CORNEA, HAIR = range(8)
-ZMIN, ZMAX = -180.0, 132.0
+ZMIN, ZMAX = -180.0, 135.0
 
 
 def smoothstep(a,b,x):
@@ -120,8 +120,21 @@ class ProceduralSkull:
 
     def section(self,z):
         z=np.clip(np.asarray(z,float),ZMIN,ZMAX)
-        half=self.half(z)*self.p.skull_width
-        return half,self.front(z),self.back(z)
+        src_z=np.minimum(z,132.)
+        half=self.half(src_z)*self.p.skull_width
+        front=self.front(src_z)
+        back=self.back(src_z)
+        # Analytic ellipsoidal cranial vault for a rounded human scalp.
+        t=smoothstep(52.,72.,z)
+        q=np.clip((z-55.)/80.,-1.,1.)
+        root=np.sqrt(np.maximum(1-q*q,0))
+        dome_half=72.*self.p.skull_width*root
+        dome_front=17.-82.*root
+        dome_back=17.+82.*root
+        half=half*(1-t)+dome_half*t
+        front=front*(1-t)+dome_front*t
+        back=back*(1-t)+dome_back*t
+        return half,front,back
 
     def face_half_width(self,z):
         z=np.clip(np.asarray(z,float),-105,90)
@@ -248,7 +261,7 @@ class NoseSystem:
             du=x-cx; dz=z-cz
             ur=du+side*.38*dz
             vr=dz-side*.10*du
-            m|=((ur/4.8)**2+(vr/1.80)**2<1)&(y<-63.5)
+            m|=((ur/5.35)**2+(vr/2.02)**2<1)&(y<-63.2)
         return m
 
 
@@ -546,12 +559,43 @@ def eyelid_wet_margin(a:HumanAnatomy,side):
     ),np.concatenate([upper,lower],0)
 
 
+def eyelid_thickness(a:HumanAnatomy,side):
+    """Finite upper/lower lid thickness wrapping continuous skin onto the globe."""
+    e=a.eyes;c=e.center(side)
+    q=np.linspace(-.935,.935,170)
+    shape=np.maximum(1-q*q,0)
+    x=c[0]+side*q*(a.p.eye_width*.5)
+    _,up,lo=e.opening(x,side)
+    parts=[]
+    for name,z,sign in [('upper',up,-1.),('lower',lo,1.)]:
+        outer_y=a.surface_y(x,z)-.015
+        inner_z=z+sign*.32*shape**.65
+        inner_y=e.globe_front_y(x,inner_z,side)-.045
+        rows=5
+        t=np.linspace(0,1,rows)[:,None]
+        ease=t*t*(3-2*t)
+        xx=np.broadcast_to(x,(rows,len(x)))
+        zz=z[None,:]*(1-ease)+inner_z[None,:]*ease
+        yy=outer_y[None,:]*(1-ease)+inner_y[None,:]*ease
+        canthus=shape[None,:]**.30
+        yy=outer_y[None,:]+(yy-outer_y[None,:])*canthus
+        vv=np.stack([xx,yy,zz],-1).reshape(-1,3)
+        ff=grid_faces(rows,len(x),reverse=(name=='lower'))
+        parts.append(surface_part(
+            ('Left' if side<0 else 'Right')+f'_{name}_eyelid_thickness',
+            vv,ff,SKIN,a.uv(vv),
+            role='Finite procedural eyelid thickness wrapping onto eyeball',
+            tags=('eyelid-thickness',)
+        ))
+    return parts
+
+
 def nostril_parts(a:HumanAnatomy,side):
     cx,cz=a.nose.nostril_center(side)
     theta=np.linspace(0,2*np.pi,161)
     rings=[]
     for scale,depth in [(1.10,-.03),(.82,.58)]:
-        ur=5.0*scale*np.cos(theta); vr=1.90*scale*np.sin(theta)
+        ur=5.55*scale*np.cos(theta); vr=2.08*scale*np.sin(theta)
         du=ur-side*.38*vr; dz=vr+side*.10*ur
         x=cx+du; z=cz+dz
         y=a.surface_y(x,z)+depth
@@ -565,7 +609,7 @@ def nostril_parts(a:HumanAnatomy,side):
 
     r=np.linspace(0,1,24)[:,None]
     th=np.linspace(0,2*np.pi,129)
-    ur=4.75*r*np.cos(th); vr=1.78*r*np.sin(th)
+    ur=5.25*r*np.cos(th); vr=1.96*r*np.sin(th)
     du=ur-side*.38*vr; dz=vr+side*.10*ur
     x=cx+du; z=cz+dz
     y=a.surface_y(x,z)+.22+3.8*(1-r*r)
@@ -654,6 +698,7 @@ def build(parameters=None,quality='final',hair=True):
             frontal=vv[:,1]<c[1]
             vv[frontal,1]-=.68*np.exp(-((dx[frontal]**2+dz[frontal]**2)/(5.3**2))**2)
             parts.append(surface_part(cornea.name,vv,cornea.faces,CORNEA,cornea.portrait_uv,role='Procedural cornea and tear film'))
+            parts.extend(eyelid_thickness(a,side))
             wet,margin=eyelid_wet_margin(a,side)
             parts.append(wet)
             car=c+np.array([-side*(p.eye_width*.455),-10.8,-.35])
@@ -671,8 +716,8 @@ def build(parameters=None,quality='final',hair=True):
         Material('Keratin fibers',(.024,.012,.006),rough=.53),
     ]
     views={
-        'portrait':View(az=-79,el=1.5,target=(0,-18,2),scale=146,focal_length_mm=85,f_stop=16,floor=False),
-        'front':View(az=-90,el=.4,target=(0,-18,2),scale=143,focal_length_mm=85,f_stop=16,floor=False),
+        'portrait':View(az=-79,el=1.5,target=(0,-20,9),scale=132,focal_length_mm=85,f_stop=16,floor=False),
+        'front':View(az=-90,el=.4,target=(0,-20,9),scale=130,focal_length_mm=85,f_stop=16,floor=False),
         'profile':View(az=-35,el=1.0,target=(0,0,-5),scale=164,focal_length_mm=85,f_stop=16,floor=False),
         'detail':View(az=-80,el=.2,target=(0,-64,5),scale=79,focal_length_mm=100,f_stop=16,floor=False),
     }
