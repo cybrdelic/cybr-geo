@@ -690,20 +690,20 @@ def _coat_panels(parts: list[Part]) -> None:
     tails = {
         "coat_left_front_skirt": (
             [
-                (990, -270, -62, 157, 10),
-                (800, -286, -54, 145, 9),
-                (600, -305, -46, 125, 7),
-                (410, -322, -38, 98, 5),
-                (255, -334, -32, 70, 3),
+                (990, -268, -70, 157, 10),
+                (800, -286, -90, 145, 9),
+                (600, -306, -120, 125, 7),
+                (410, -324, -150, 98, 5),
+                (255, -338, -176, 70, 3),
             ], "front"
         ),
         "coat_right_front_skirt": (
             [
-                (990, 62, 270, 157, 10),
-                (800, 54, 286, 145, 9),
-                (600, 46, 305, 125, 7),
-                (410, 38, 322, 98, 5),
-                (255, 32, 334, 70, 3),
+                (990, 70, 268, 157, 10),
+                (800, 90, 286, 145, 9),
+                (600, 120, 306, 125, 7),
+                (410, 150, 324, 98, 5),
+                (255, 176, 338, 70, 3),
             ], "front"
         ),
         "coat_left_back_tail": (
@@ -733,6 +733,21 @@ def _coat_panels(parts: list[Part]) -> None:
                 samples_across=20, face=face, fold_amp=9.0, fold_cycles=2.0,
             )
         )
+
+    # Upper rear skirt bridge covers the seat; the centre vent begins below it.
+    parts.append(
+        _curved_panel(
+            "coat_back_vent_bridge",
+            [
+                (975, -92, 92, -158, -6),
+                (880, -86, 86, -151, -5),
+                (790, -74, 74, -142, -4),
+                (710, -60, 60, -132, -3),
+            ],
+            MAT_WOOL, group="coat_skirt", role="Upper rear skirt bridge above centre vent",
+            thickness=6.0, samples_across=10, face="back",
+        )
+    )
 
     # Deep amethyst lining is restricted to narrow slivers inside openings.
     for name, sections, face in (
@@ -799,21 +814,21 @@ def _lapels_and_collar(parts: list[Part]) -> None:
     parts.append(
         _polygon_panel(
             "left_collar_wing",
-            [(-218, 1500), (-150, 1552), (-92, 1602), (-98, 1540), (-160, 1492)],
+            [(-172, 1500), (-126, 1548), (-90, 1594), (-94, 1540), (-134, 1494)],
             173, 5.5, MAT_WOOL, group="coat_trim", role="Left collar wing",
         )
     )
     parts.append(
         _polygon_panel(
             "right_collar_wing",
-            [(218, 1500), (150, 1552), (92, 1602), (98, 1540), (160, 1492)],
+            [(172, 1500), (126, 1548), (90, 1594), (94, 1540), (134, 1494)],
             173, 5.5, MAT_WOOL, group="coat_trim", role="Right collar wing",
         )
     )
     parts.append(
         _polygon_panel(
             "right_collar_amethyst_underlay",
-            [(195, 1502), (145, 1542), (106, 1575), (110, 1541), (155, 1501)],
+            [(157, 1502), (122, 1539), (102, 1568), (105, 1540), (132, 1501)],
             166, 3, MAT_PURPLE_SATIN, group="lining",
             role="Restrained amethyst collar under-edge",
         )
@@ -994,6 +1009,19 @@ def _back_pattern_and_seams(parts: list[Part]) -> None:
         )
 
 def _trousers(parts: list[Part]) -> None:
+    # Waist and hip shell prevents the dress form from showing through the coat opening.
+    parts.append(
+        _z_loft(
+            "trouser_waist_and_hips",
+            [
+                (835, 214, 146, 0, -4),
+                (900, 226, 152, 0, -2),
+                (965, 220, 148, 0, 0),
+                (1005, 205, 142, 0, 0),
+            ],
+            MAT_TECH, group="trousers", role="Tailored technical trouser waist and hip shell", radial=56,
+        )
+    )
     for side, x in (("left", -108), ("right", 108)):
         parts.append(
             _z_loft(
@@ -1204,7 +1232,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v3 / tailored procedural couture",
+        "design": "CYBR NOCTURNE v3.1 / tailored procedural couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
