@@ -18,21 +18,21 @@ class FaceParameters:
     seed: int = 271828
     eye_spacing: float = 62.0
     eye_height: float = 30.0
-    eye_width: float = 26.5
-    eye_opening: float = 6.6
-    eye_tilt: float = 0.18
+    eye_width: float = 28.0
+    eye_opening: float = 8.4
+    eye_tilt: float = 0.24
     nose_projection: float = 21.5
     nose_width: float = 1.06
     mouth_width: float = 52.0
     upper_lip_fullness: float = 0.92
     lower_lip_fullness: float = 0.96
-    jaw_width: float = 1.055
+    jaw_width: float = 1.02
     skull_width: float = 0.965
     cheek_width: float = 1.045
-    chin_width: float = 0.98
+    chin_width: float = 0.90
     brow_weight: float = 1.0
     skin_relief: float = .0025
-    eyelid_closure: float = 0.10
+    eyelid_closure: float = 0.06
 
 
 ZMIN, ZMAX = -180., 144.
@@ -143,7 +143,7 @@ class Anatomy:
     def mouth(self,x):
         a=self.p.mouth_width/2
         q=np.clip(np.abs(x)/a,0,1)
-        line=-39.2-.72*np.exp(-(x/5.4)**2)+.12*q*q
+        line=-39.0-.58*np.exp(-(x/5.4)**2)-.52*q*q
         span=np.maximum(1-q*q,0)
         upper=self.p.upper_lip_fullness*(4.35+2.35*np.exp(-((np.abs(x)-6.2)/4.4)**2)
                -.82*np.exp(-(x/2.4)**2))*span**.70
@@ -195,7 +195,7 @@ class Anatomy:
         d-=self.p.nose_projection*gaussian(x,z,.20,-7.8,8.4,7.6)
         for s in (-1,1):
             alar_x=s*(10.8*self.p.nose_width)
-            d-=10.1*gaussian(x,z,alar_x,-13.4,6.2,5.7)
+            d-=11.2*gaussian(x,z,alar_x,-13.4,6.35,5.8)
             # Distinct alar bank, alar-facial groove and nostril sill.
             d+=1.05*gaussian(x,z,s*(16.0*self.p.nose_width),-13.5,2.4,5.0)
             d-=1.15*gaussian(x,z,s*(13.8*self.p.nose_width),-10.8,2.8,3.4)
@@ -357,7 +357,7 @@ def head_mesh(a,quality):
         nx=side*(10.2*a.p.nose_width)+.20;nz=-16.4
         du=x-nx;dz=z-nz
         ur=du+side*.42*dz;vr=dz-side*.10*du
-        remove|=((ur/5.15)**2+(vr/1.12)**2<1)&(y<-64.8)
+        remove|=((ur/5.75)**2+(vr/1.10)**2<1)&(y<-64.8)
     # Closed lips remain continuous geometry. Mouth depth is represented by
     # the analytic crease in Anatomy.deformation(), not by deleted triangles.
     f=f[~remove]
@@ -675,8 +675,8 @@ def eyelid_skin_rims(a,side):
     _,upper,lower=a.eye_opening(x,side)
     parts=[]
     configs=[
-        ('upper',upper,upper+5.35*shape**.80,.34),
-        ('lower',lower,lower-3.05*shape**.84,.15),
+        ('upper',upper,upper+4.85*shape**.80,.28),
+        ('lower',lower,lower-3.20*shape**.84,.13),
     ]
     for name,inner_z,outer_z,depth in configs:
         outer_y=a.front(x,outer_z)-.025
@@ -724,7 +724,7 @@ def nostril_rim(a,side):
     # Outer and inner rotated ellipses form a thin skin annulus.
     rings=[]
     for scale,depth in [(1.07,-.02),(.80,.72)]:
-        ur=5.35*scale*np.cos(theta);vr=1.24*scale*np.sin(theta)
+        ur=5.85*scale*np.cos(theta);vr=1.22*scale*np.sin(theta)
         du=ur-side*.42*vr;dz=vr+side*.10*ur
         x=cx+du;z=cz+dz
         y=a.front(x,z)+depth
@@ -741,7 +741,7 @@ def nasal_cavity(a,side):
     cx=side*(10.2*a.p.nose_width)+.20;cz=-16.4
     theta=np.linspace(0,2*np.pi,129)
     r=np.linspace(0,1,24)[:,None]
-    ur=5.22*r*np.cos(theta);vr=1.20*r*np.sin(theta)
+    ur=5.70*r*np.cos(theta);vr=1.18*r*np.sin(theta)
     u=ur-side*.42*vr;v=vr+side*.10*ur
     x=cx+u;z=cz+v
     # The interior starts almost flush with the alar rim and then curves
@@ -857,7 +857,7 @@ def build(parameters=None,quality='final',hair=True):
             parts.append(ellipsoid(prefix+'_sclera_globe',c,[12.45,12.28,11.55],SCLERA,iris_cut=True))
             caruncle=c+np.array([-side*(a.p.eye_width*.445),-11.85,-.32])
             parts.append(ellipsoid(prefix+'_lacrimal_caruncle',caruncle,[.58,.34,.38],LID,nu=40,nv=26))
-            iris_center=c+np.array([0.,0.,-.42])
+            iris_center=c+np.array([0.,0.,-.34])
             parts.append(disk(prefix+'_iris_stroma',iris_center,5.42,IRIS,
                               lambda r:-12.43+.010*r*r,rmin=1.62))
             parts.append(disk(prefix+'_pupil',iris_center,1.62,PUPIL,
