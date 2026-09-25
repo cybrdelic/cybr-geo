@@ -335,6 +335,8 @@ def _curved_panel(
     thickness: float = 6.0,
     samples_across: int = 12,
     face: str = "front",
+    fold_amp: float = 0.0,
+    fold_cycles: float = 0.0,
 ) -> Part:
     """Finite-thickness curved garment panel.
 
@@ -351,13 +353,21 @@ def _curved_panel(
         raise ValueError("panel thickness must be > 0")
     sign = 1.0 if face == "front" else -1.0
     rows: list[list[np.ndarray]] = []
-    for z, x0, x1, base_y, bow_y in sections:
+    for row_index, (z, x0, x1, base_y, bow_y) in enumerate(sections):
         row: list[np.ndarray] = []
+        vertical = row_index / max(1, len(sections) - 1)
         for i in range(samples_across + 1):
             t = i / samples_across
             u = 2.0 * t - 1.0
             x = x0 + (x1 - x0) * t
             y = base_y + bow_y * (1.0 - u * u)
+            if fold_amp and fold_cycles:
+                # Longitudinal drape grows toward the hem while the panel edges
+                # remain comparatively quiet.  This is explicit geometry, not
+                # a normal-map or image texture.
+                edge_fade = math.sin(math.pi * t) ** 1.4
+                fold = fold_amp * vertical * edge_fade * math.sin(TAU * fold_cycles * t)
+                y += sign * fold
             row.append(np.array([x, y, z], dtype=float))
         rows.append(row)
 
@@ -428,6 +438,8 @@ def _curved_panel(
             "samples_across": samples_across,
             "thickness_mm": thickness,
             "face": face,
+            "fold_amp_mm": fold_amp,
+            "fold_cycles": fold_cycles,
         },
     )
 
@@ -757,72 +769,80 @@ def _coat_panels(parts: list[Part]) -> None:
         _curved_panel(
             "coat_left_front_skirt",
             [
-                (980, -330, -64, 158, 34),
-                (800, -352, -54, 150, 30),
-                (600, -395, -40, 132, 20),
-                (390, -430, -22, 105, 10),
-                (260, -445, -10, 76, 4),
+                (980, -316, -70, 158, 34),
+                (800, -330, -62, 150, 30),
+                (600, -350, -54, 132, 20),
+                (390, -372, -46, 105, 10),
+                (260, -386, -38, 76, 4),
             ],
             MAT_WOOL,
             group="coat_skirt",
             role="Long left front coat skirt",
             thickness=7,
-            samples_across=14,
+            samples_across=18,
             face="front",
+            fold_amp=14.0,
+            fold_cycles=2.5,
         )
     )
     parts.append(
         _curved_panel(
             "coat_right_front_skirt",
             [
-                (980, 64, 330, 158, 34),
-                (800, 54, 352, 150, 30),
-                (600, 40, 395, 132, 20),
-                (390, 22, 430, 105, 10),
-                (260, 10, 445, 76, 4),
+                (980, 70, 316, 158, 34),
+                (800, 62, 330, 150, 30),
+                (600, 54, 350, 132, 20),
+                (390, 46, 372, 105, 10),
+                (260, 38, 386, 76, 4),
             ],
             MAT_WOOL,
             group="coat_skirt",
             role="Long right front coat skirt",
             thickness=7,
-            samples_across=14,
+            samples_across=18,
             face="front",
+            fold_amp=14.0,
+            fold_cycles=2.5,
         )
     )
     parts.append(
         _curved_panel(
             "coat_left_back_tail",
             [
-                (930, -312, -24, -152, -24),
-                (760, -350, -28, -146, -22),
-                (560, -392, -36, -130, -16),
-                (360, -430, -48, -100, -8),
-                (245, -442, -62, -76, -2),
+                (930, -302, -32, -152, -24),
+                (760, -325, -38, -146, -22),
+                (560, -350, -46, -130, -16),
+                (360, -375, -56, -100, -8),
+                (245, -390, -68, -76, -2),
             ],
             MAT_WOOL,
             group="coat_skirt",
             role="Left rear coat tail with centre vent",
             thickness=7,
-            samples_across=14,
+            samples_across=18,
             face="back",
+            fold_amp=12.0,
+            fold_cycles=2.2,
         )
     )
     parts.append(
         _curved_panel(
             "coat_right_back_tail",
             [
-                (930, 24, 312, -152, -24),
-                (760, 28, 350, -146, -22),
-                (560, 36, 392, -130, -16),
-                (360, 48, 430, -100, -8),
-                (245, 62, 442, -76, -2),
+                (930, 32, 302, -152, -24),
+                (760, 38, 325, -146, -22),
+                (560, 46, 350, -130, -16),
+                (360, 56, 375, -100, -8),
+                (245, 68, 390, -76, -2),
             ],
             MAT_WOOL,
             group="coat_skirt",
             role="Right rear coat tail with centre vent",
             thickness=7,
-            samples_across=14,
+            samples_across=18,
             face="back",
+            fold_amp=12.0,
+            fold_cycles=2.2,
         )
     )
 
@@ -918,33 +938,66 @@ def _lapels_and_collar(parts: list[Part]) -> None:
         )
     )
 
-    # Tall standing collar, built from front/back arcs.
+    # Tall standing collar built as open rear/side panels rather than a closed
+    # rigid oval. This leaves the throat and lapels visually open.
     parts.append(
-        _z_loft(
-            "collar_outer",
+        _curved_panel(
+            "collar_back",
             [
-                (1495, 176, 126, 0, -12),
-                (1560, 170, 122, 0, -20),
-                (1625, 166, 116, 0, -28),
+                (1498, -188, 188, -174, -18),
+                (1560, -178, 178, -166, -16),
+                (1620, -154, 154, -146, -10),
             ],
             MAT_WOOL,
             group="coat_trim",
-            role="High sculpted standing collar",
-            radial=60,
+            role="Open sculpted standing collar back",
+            thickness=7,
+            samples_across=16,
+            face="back",
         )
     )
-    # Purple collar under-edge peeks from behind.
     parts.append(
-        _z_loft(
-            "collar_amethyst_underlay",
-            [
-                (1508, 166, 116, 0, -14),
-                (1565, 158, 110, 0, -20),
-            ],
+        _polygon_panel(
+            "left_collar_wing",
+            [(-318, 1508), (-208, 1568), (-96, 1616), (-102, 1534), (-218, 1488)],
+            168,
+            9,
+            MAT_WOOL,
+            group="coat_trim",
+            role="Left standing collar wing",
+        )
+    )
+    parts.append(
+        _polygon_panel(
+            "right_collar_wing",
+            [(318, 1508), (208, 1568), (96, 1616), (102, 1534), (218, 1488)],
+            168,
+            9,
+            MAT_WOOL,
+            group="coat_trim",
+            role="Right standing collar wing",
+        )
+    )
+    parts.append(
+        _polygon_panel(
+            "left_collar_amethyst_underlay",
+            [(-282, 1510), (-196, 1558), (-118, 1590), (-124, 1538), (-210, 1502)],
+            158,
+            4,
             MAT_PURPLE_SATIN,
             group="lining",
-            role="Amethyst collar underlay",
-            radial=56,
+            role="Amethyst collar under-edge",
+        )
+    )
+    parts.append(
+        _polygon_panel(
+            "right_collar_amethyst_underlay",
+            [(282, 1510), (196, 1558), (118, 1590), (124, 1538), (210, 1502)],
+            158,
+            4,
+            MAT_PURPLE_SATIN,
+            group="lining",
+            role="Amethyst collar under-edge",
         )
     )
 
@@ -1029,9 +1082,9 @@ def _epaulettes(parts: list[Part]) -> None:
     for side, sx in (("left", -1.0), ("right", 1.0)):
         # base pad
         if sx < 0:
-            poly = [(-330, 1515), (-438, 1488), (-452, 1448), (-330, 1462)]
+            poly = [(-306, 1505), (-386, 1486), (-398, 1458), (-314, 1468)]
         else:
-            poly = [(330, 1515), (438, 1488), (452, 1448), (330, 1462)]
+            poly = [(306, 1505), (386, 1486), (398, 1458), (314, 1468)]
         parts.append(
             _polygon_panel(
                 f"{side}_epaulette_base",
@@ -1046,9 +1099,9 @@ def _epaulettes(parts: list[Part]) -> None:
         # layered straps running over shoulder.
         for i, (inner_x, outer_x, z0, z1) in enumerate(
             [
-                (318, 405, 1510, 1472),
-                (332, 424, 1488, 1448),
-                (348, 440, 1464, 1426),
+                (304, 366, 1506, 1480),
+                (314, 378, 1488, 1460),
+                (326, 390, 1468, 1440),
             ]
         ):
             parts.append(
@@ -1067,7 +1120,7 @@ def _epaulettes(parts: list[Part]) -> None:
                 _ring_buckle(
                     f"{side}_epaulette_buckle_{i+1}",
                     (sx * (outer_x - 8), 18, z1 + 6),
-                    (29, 24),
+                    (24, 19),
                     5,
                     7,
                     MAT_METAL,
@@ -1519,7 +1572,7 @@ def build() -> Assembly:
     _boots(parts)
 
     metadata = {
-        "design": "CYBR NOCTURNE v2 / procedural technical couture",
+        "design": "CYBR NOCTURNE v2.1 / procedural technical couture",
         "authoring": "procedural geometry only",
         "reference_intent": "Reconstruct the high-fashion NOCTURNE design language as geometry, not as generated pixels",
         "units": "mm",
