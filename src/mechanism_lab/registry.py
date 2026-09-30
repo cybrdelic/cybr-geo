@@ -67,17 +67,24 @@ def fingerprint(name):
         for p in sorted((root/'assets/differential_v3/geometry').glob('*parts.*')):h.update(p.read_bytes())
     return h.hexdigest()
 
-def load(name, rebuild=False, analytic=False):
-    fn,motion=factory(name);slug=Path(name).stem.replace(':','_')
+def cache_directory(name):
+    slug=Path(name).stem.replace(':','_')
     if name not in BUILTINS:
         slug+='_'+hashlib.sha256(str(Path(name).resolve()).encode()).hexdigest()[:10]
-    root=project_root();out=root/'outputs'/slug;cache=out/'cache';sig=fingerprint(name)
-    valid=(cache/'manifest.json').exists() and (cache/'fingerprint.txt').exists() and (cache/'fingerprint.txt').read_text()==sig
+    return project_root()/'outputs'/slug/'cache'
+
+
+def load(name, rebuild=False, analytic=False):
+    fn,motion=factory(name);cache=cache_directory(name);sig=fingerprint(name)
+    valid=(cache/'manifest.json').exists() and (cache/'validation.json').exists() and (cache/'fingerprint.txt').exists() and (cache/'fingerprint.txt').read_text()==sig
     if valid and not rebuild and not analytic:
         assembly=load_cache(cache)
         assembly.motion_function=motion.bind(assembly) if callable(getattr(motion,'bind',None)) else motion
         return assembly
     assembly=fn()
     if not isinstance(assembly,Assembly):raise TypeError('Recipe must return mechanism_lab.Assembly')
-    validate(assembly);save_cache(assembly,cache);(cache/'fingerprint.txt').write_text(sig)
+    report=validate(assembly);save_cache(assembly,cache)
+    (cache/'validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    # Write the completion marker last; interrupted builds cannot be reused.
+    (cache/'fingerprint.txt').write_text(sig)
     return assembly

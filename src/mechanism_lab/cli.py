@@ -21,6 +21,19 @@ def resolution(text):
     return width,height
 
 
+def positive_int(text):
+    value=int(text)
+    if value<1:raise argparse.ArgumentTypeError('Value must be positive')
+    return value
+
+
+def positive_float(text):
+    import math
+    value=float(text)
+    if not math.isfinite(value) or value<=0:raise argparse.ArgumentTypeError('Value must be finite and positive')
+    return value
+
+
 def _truth_args(q):
     q.add_argument('--intent',choices=['auto','reference','concept','inspection'],default='auto',
                    help='Claim made by the render. auto uses assembly.metadata.truth_intent or fails closed as reference.')
@@ -34,28 +47,35 @@ def parser():
     sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('list',help='List built-in recipes')
     sub.add_parser('doctor',help='Inspect installed dependencies and system tools')
+    q=sub.add_parser('preview',help='Build, check, export GLB and render a native preview in one command')
+    q.add_argument('recipe',nargs='?',default='example_flange')
+    q.add_argument('--view',default='hero');q.add_argument('--size',type=resolution,default=(640,480))
+    q.add_argument('--spp',type=positive_int,default=32);q.add_argument('--depth',type=positive_int,default=8)
+    q.add_argument('--threads',type=positive_int,default=4);q.add_argument('--out',type=Path)
+    q.add_argument('--step',action='store_true',help='Also export analytic STEP (requires CAD-backed parts)')
+    q.add_argument('--rebuild',action='store_true');_truth_args(q)
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
     q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
-    q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=int,default=V9.still_spp);q.add_argument('--depth',type=int,default=V9.still_depth);q.add_argument('--threads',type=int,default=4)
+    q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=positive_int,default=V9.still_spp);q.add_argument('--depth',type=positive_int,default=V9.still_depth);q.add_argument('--threads',type=positive_int,default=4)
     q.add_argument('--supersample',type=int,choices=[1,2,3],default=2,help='PBR raster supersampling factor')
     q.add_argument('--f-stop',type=float,help='Thin-lens aperture; lower values give shallower depth of field')
     q.add_argument('--focus-distance',type=float,help='Focus distance in scene millimetres; defaults to camera distance')
     q.add_argument('--time',type=float,default=0.);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('video',help='V9 path-traced/OIDN video by default; use --renderer pbr for fast engineering preview')
-    q.add_argument('--renderer',choices=['v9','photoreal','pbr'],default='v9');q.add_argument('--spp',type=int,default=V9.video_spp);q.add_argument('--depth',type=int,default=V9.video_depth);q.add_argument('--threads',type=int,default=4)
-    q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=8.)
-    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=V9.video_size);q.add_argument('--fps',type=int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
+    q.add_argument('--renderer',choices=['v9','photoreal','pbr'],default='v9');q.add_argument('--spp',type=positive_int,default=V9.video_spp);q.add_argument('--depth',type=positive_int,default=V9.video_depth);q.add_argument('--threads',type=positive_int,default=4)
+    q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=positive_float,default=8.)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=V9.video_size);q.add_argument('--fps',type=positive_int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('film',help='Final-quality film; V9 path traces and guided-denoises every encoded frame')
-    q.add_argument('recipe');q.add_argument('--renderer',choices=['v9','photoreal'],default='v9');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=float,default=4.)
-    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=V9.film_size);q.add_argument('--fps',type=int,default=24)
-    q.add_argument('--spp',type=int,default=V9.film_spp);q.add_argument('--depth',type=int,default=V9.film_depth);q.add_argument('--threads',type=int,default=4)
+    q.add_argument('recipe');q.add_argument('--renderer',choices=['v9','photoreal'],default='v9');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=positive_float,default=4.)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=V9.film_size);q.add_argument('--fps',type=positive_int,default=24)
+    q.add_argument('--spp',type=positive_int,default=V9.film_spp);q.add_argument('--depth',type=positive_int,default=V9.film_depth);q.add_argument('--threads',type=positive_int,default=4)
     q.add_argument('--shutter-angle',type=float,default=180.);q.add_argument('--shutter-samples',type=int,default=3);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('gif',help='Make a palette-optimized looping GIF from a video')
-    q.add_argument('video',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--start',type=float,default=0.);q.add_argument('--seconds',type=float,default=6.);q.add_argument('--width',type=int,default=640);q.add_argument('--fps',type=int,default=10)
+    q.add_argument('video',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--start',type=float,default=0.);q.add_argument('--seconds',type=positive_float,default=6.);q.add_argument('--width',type=positive_int,default=640);q.add_argument('--fps',type=positive_int,default=10)
     q=sub.add_parser('animate',help='Export a standard node-animated GLB')
-    q.add_argument('recipe');q.add_argument('--seconds',type=float,default=8.);q.add_argument('--fps',type=int,default=24);q.add_argument('--mode',choices=['motion','explode'],default='motion');q.add_argument('--out',type=Path)
+    q.add_argument('recipe');q.add_argument('--seconds',type=positive_float,default=8.);q.add_argument('--fps',type=positive_int,default=24);q.add_argument('--mode',choices=['motion','explode'],default='motion');q.add_argument('--out',type=Path)
     q=sub.add_parser('catalogue',help='Render/export every named part and an offline HTML index')
     q.add_argument('recipe');q.add_argument('--size',type=resolution,default=(640,480));q.add_argument('--out',type=Path)
     q=sub.add_parser('blueprint',aliases=['whiteprint'],help='Create white-background SVG/PDF/DXF drawings')
@@ -90,6 +110,9 @@ def run(args):
     if args.command=='list':print('\n'.join(BUILTINS));return 0
     if args.command=='doctor':return doctor()
     root=project_root()
+    if args.command=='preview':
+        from .preview import preview
+        print(json.dumps(preview(args),indent=2));return 0
     if args.command=='pack':
         from .packaging import pack
         print(json.dumps(pack(root,args.out,args.source_only),indent=2));return 0
@@ -118,6 +141,8 @@ def run(args):
         out=args.out or out;out.mkdir(parents=True,exist_ok=True);export_glb(assembly,out/(assembly.name+'.glb'));export_bom(assembly,out)
         if args.step:export_step(assembly,out/(assembly.name+'_analytic.step'))
         if args.stl:export_stls(assembly,out/'stl')
+        from .registry import cache_directory
+        shutil.copy2(cache_directory(args.recipe)/'validation.json',out/'validation.json')
         print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out)},indent=2))
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
