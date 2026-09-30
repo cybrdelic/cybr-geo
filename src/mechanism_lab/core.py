@@ -310,12 +310,14 @@ def cad_part(name, shape, material=0, tolerance=.022, angular=.045, analytic_nor
 
 
 def validate(assembly: Assembly, expensive=False):
+    if not assembly.parts:
+        raise ValueError('Assembly contains no parts')
     names = [p.name for p in assembly.parts]
     if len(set(names)) != len(names):
         raise ValueError('Duplicate part names')
 
     for i, m in enumerate(assembly.materials):
-        if not all(np.isfinite(m.color)) or any(c < 0 or c > 1 for c in m.color):
+        if len(m.color)!=3 or not all(np.isfinite(m.color)) or any(c < 0 or c > 1 for c in m.color):
             raise ValueError(f'Invalid linear base color for material {i}: {m.name}')
         if not 0 <= m.metal <= 1 or not 0 < m.rough <= 1:
             raise ValueError(f'Invalid metal/roughness for material {i}: {m.name}')
@@ -325,6 +327,13 @@ def validate(assembly: Assembly, expensive=False):
             raise ValueError(f'Invalid anisotropy/opacity for {m.name}')
 
     for name, view in assembly.views.items():
+        numeric = [view.az, view.el, view.scale, view.explode, view.focal_length_mm,
+                   view.sensor_width_mm, view.f_stop, view.environment_strength,
+                   view.background_strength, view.light_size, view.light_intensity,
+                   view.floor_gap_mm, view.floor_roughness, view.exposure]
+        numeric.extend(value for value in (view.focus_distance_mm, view.camera_distance_mm) if value is not None)
+        if not np.isfinite(numeric).all() or len(view.target) != 3 or not np.isfinite(view.target).all():
+            raise ValueError(f'Nonfinite/invalid camera parameters on view {name}')
         if view.studio_style not in {'classic', 'product', 'outdoor'}:
             raise ValueError(f'Invalid studio style on view {name}')
         for color in (view.floor_color, view.background_color):
@@ -340,6 +349,8 @@ def validate(assembly: Assembly, expensive=False):
             raise ValueError(f'Invalid photographic studio parameters on view {name}')
         if view.focus_distance_mm is not None and view.focus_distance_mm <= 0:
             raise ValueError(f'Invalid focus distance on view {name}')
+        if view.camera_distance_mm is not None and view.camera_distance_mm<=0:
+            raise ValueError(f'Invalid camera distance on view {name}')
 
     import trimesh
     results = []
@@ -377,6 +388,8 @@ def validate(assembly: Assembly, expensive=False):
             analytic_valid=p.cad.isValid() if p.cad else None,
             provenance=p.provenance,
         )
+        if row['analytic_valid'] is False:
+            raise ValueError(f'Invalid analytic solid: {p.name}')
         if expensive:
             mesh = trimesh.Trimesh(p.vertices, p.faces, process=True)
             row.update(

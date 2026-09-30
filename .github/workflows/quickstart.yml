@@ -1,0 +1,44 @@
+name: Quickstart
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: quickstart-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: requirements-tested.txt
+      - name: Install documented environment
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y g++ cmake ffmpeg libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
+          python -m pip install -r requirements-tested.txt
+          python -m pip install --no-deps --no-build-isolation -e .
+      - run: make test-core
+      - name: Run documented CAD and native render preview
+        run: lab preview --step --threads 2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quickstart-python-${{ matrix.python }}
+          path: outputs/example_flange/preview/
+          if-no-files-found: error
