@@ -63,7 +63,7 @@ jobs:
           python -m pip install --no-deps -e .
       - name: Run geometry and existing V9 regression gates
         run: |
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 python -m pytest -q tests/test_diy_skatepark.py tests/test_v9_render_profile.py tests/test_photo_material_export.py tests/test_photoreal_contract.py tests/test_analytic_normals.py tests/test_truth_rendering.py --junitxml=skatepark-tests.xml
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 python -m pytest -q tests/test_diy_skatepark.py tests/test_light_rendering.py tests/test_photo_material_export.py tests/test_photoreal_contract.py tests/test_analytic_normals.py tests/test_truth_rendering.py --junitxml=skatepark-tests.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:

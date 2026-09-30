@@ -1,9 +1,7 @@
-"""FUSE C220 delivery using the repository's current Mitsuba/OIDN V9 API.
+"""FUSE C220 stills and frame receipts through the CYBR LIGHT adapter.
 
-The original native-renderer script is retained in the recovery commit history.
-Original delivery images are historical legacy-photoreal results, not rerenders
-from this adapter. Film frames are serialized because v9_dispatch temporarily
-changes module-level Mitsuba dispatch. Every frame has a render receipt.
+Original delivery images retain historical provenance. New film frames are
+serialized to bound geometry/film memory; each frame has a render receipt.
 """
 from __future__ import annotations
 
@@ -22,8 +20,8 @@ from PIL import Image, ImageDraw, ImageFont
 from printer import posed
 from toolpath import parse
 from mechanism_lab.core import load_cache
-from mechanism_lab.render_profiles import V9
-from mechanism_lab.v9_dispatch import render_v9
+from mechanism_lab.render_profiles import LIGHT
+from mechanism_lab.light import render_light
 
 OUT = Path('deliverables')
 WORK = Path('work')
@@ -48,7 +46,7 @@ def fingerprint() -> str:
     paths += sorted((OUT / 'cache').rglob('*'))
     paths.append(OUT / 'FUSE_C220_calibration.gcode')
     records = [(str(p), digest(p)) for p in sorted(set(paths)) if p.is_file()]
-    contract = {'source_files': records, 'profile': asdict(V9), 'size': FRAME_SIZE,
+    contract = {'source_files': records, 'profile': asdict(LIGHT), 'size': FRAME_SIZE,
                 'fps': FPS, 'frame_count': FRAME_COUNT, 'adapter_version': 1}
     return hashlib.sha256(json.dumps(contract, sort_keys=True).encode()).hexdigest()
 
@@ -84,8 +82,8 @@ def stills(assembly, toolpath, preview=False):
         size = (960, 720) if preview else ((1920, 1280) if view == 'printing' else (1920, 1440))
         path = WORK / f'preview_{view}.png' if preview else OUT / f'FUSE_C220_{view}.png'
         start = time.perf_counter()
-        render_v9(scene, path, view_name=view, size=size,
-                  spp=32 if preview else V9.still_spp, depth=V9.still_depth)
+        render_light(scene, path, view_name=view, size=size,
+                  spp=32 if preview else LIGHT.still_spp, depth=LIGHT.still_depth)
         print('DONE', path, 'seconds', round(time.perf_counter() - start, 3), flush=True)
 
 
@@ -140,8 +138,8 @@ def film(assembly, toolpath, only_frames=None):
         scene = replace(scene, views={**scene.views, 'printing': view})
         image = FRAMES / f'{i:05d}.png'
         begin = time.perf_counter()
-        render_receipt = render_v9(scene, image, view_name='printing', size=FRAME_SIZE,
-                                   spp=V9.video_spp, depth=V9.video_depth)
+        render_receipt = render_light(scene, image, view_name='printing', size=FRAME_SIZE,
+                                   spp=LIGHT.video_spp, depth=LIGHT.video_depth)
         label(image, mode, toolpath.moves[move].layer, state.z)
         record = {'frame': i, 'fingerprint': identity, 'sha256': digest(image),
                   'gcode_time_s': t, 'mode': mode, 'state': asdict(state),
@@ -160,16 +158,16 @@ def encode_film(identity=None):
     identity = fingerprint() if identity is None else identity
     records = [read_checkpoint(i, identity) for i in range(FRAME_COUNT)]
     if any(record is None for record in records):
-        raise RuntimeError('Encoding requires all 96 current, checksum-valid V9 frame receipts')
+        raise RuntimeError('Encoding requires all 96 current, checksum-valid CYBR LIGHT frame receipts')
     output = OUT / 'FUSE_C220_printing.mp4'
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-framerate', str(FPS),
                     '-i', str(FRAMES / '%05d.png'), '-frames:v', str(FRAME_COUNT),
                     '-c:v', 'libx264', '-preset', 'slow', '-crf', '16',
                     '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(output)], check=True)
-    report = {'renderer': 'Mitsuba 3 path + albedo/normal-guided Intel OIDN',
-              'render_profile': 'v9', 'frames': FRAME_COUNT, 'fps': FPS,
+    report = {'renderer': 'CYBR LIGHT 0.2',
+              'render_profile': 'light', 'frames': FRAME_COUNT, 'fps': FPS,
               'duration_s': FRAME_COUNT / FPS, 'resolution': FRAME_SIZE,
-              'spp': V9.video_spp, 'bounce_limit': V9.video_depth,
+              'spp': LIGHT.video_spp, 'bounce_limit': LIGHT.video_depth,
               'fingerprint': identity, 'sha256': digest(output),
               'frame_interpolation': False, 'generated_imagery': False,
               'burned_in_explanatory_labels': True,

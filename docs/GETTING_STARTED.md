@@ -6,18 +6,18 @@ Start from [custom_flange.py](../examples/custom_flange.py). Its `build()` retur
 
 Use `--view exploded`, `--size 960x720` and `--spp 64` to inspect a different composition. A local Python recipe is trusted executable code. A mesh recipe supports GLB and rendering; `--step` requires analytic CAD for every part. `lab build --step` retains its existing mixed-assembly coverage behavior.
 
-`lab preview` uses the in-house C++ renderer. It checks image decoding/dimensions and GLB readback, and writes `preview.json` last. This establishes that the outputs are usable, not that the image has converged or that a mechanical design is physically qualified. The geometry validation report is preserved as `validation.json` both in the build cache and published build/preview directory.
+`lab preview` uses the CYBR LIGHT spectral renderer. It checks image decoding/dimensions and GLB readback, and writes `preview.json` last. This establishes that the outputs are usable, not that the image has converged or that a mechanical design is physically qualified. The geometry validation report is preserved as `validation.json` both in the build cache and published build/preview directory.
 
 ## Rendering backends
 
 | Backend | Command | Requirements |
 | --- | --- | --- |
 | Native photographic preview | `lab preview recipe.py` | g++/OpenMP and installed Python dependencies |
-| Native photographic still | `lab render recipe.py --renderer photoreal` | Same; no V9 studio asset download |
-| V9 photographic output | `lab render recipe.py` | Mitsuba, OIDN, external CC0 studio assets; [setup](SHARED_PHOTOGRAPHY.md) |
+| Native photographic still | `lab render recipe.py --renderer photoreal` | g++/OpenMP; previous in-house RGB backend |
+| CYBR LIGHT spectral output | `lab render recipe.py` | Bundled native engine, indexed meshlets, no runtime downloads; [setup](SHARED_PHOTOGRAPHY.md) |
 | Raster inspection | `lab render recipe.py --renderer pbr` | VTK, EGL/OpenGL/Mesa |
 
-Use `lab doctor` for the complete toolkit dependency inventory. It reports video and V9 prerequisites too; those are broader than the offline preview's requirements. FFmpeg is needed for MP4/GIF encoding.
+Use `lab doctor` for the complete toolkit dependency inventory. It reports video and raster prerequisites too; those are broader than the offline preview's requirements. FFmpeg is needed for MP4/GIF encoding.
 
 ## Asset-backed models
 

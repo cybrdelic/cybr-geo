@@ -55,26 +55,26 @@ def test_independent_cached_edge_checks(assembly, tmp_path, monkeypatch):
     assert result['all_passed'] and len(result['checks']) == 9
 
 
-def test_stills_call_current_v9_dispatch(monkeypatch, tmp_path):
+def test_stills_call_current_light(monkeypatch, tmp_path):
     calls = []
     monkeypatch.setattr(render, 'OUT', tmp_path)
     monkeypatch.setattr(render, 'WORK', tmp_path)
     monkeypatch.setattr(render, 'posed', lambda a, state, geometry: a)
-    monkeypatch.setattr(render, 'render_v9', lambda a, p, **kwargs: calls.append(kwargs))
+    monkeypatch.setattr(render, 'render_light', lambda a, p, **kwargs: calls.append(kwargs))
     tp = SimpleNamespace(deposition_end=100, state=lambda t: (None, 0, 0), geometry=lambda t: [])
     render.stills(object(), tp, preview=False)
     assert len(calls) == 3
-    assert all(c['depth'] == render.V9.still_depth and c['spp'] == render.V9.still_spp for c in calls)
+    assert all(c['depth'] == render.LIGHT.still_depth and c['spp'] == render.LIGHT.still_spp for c in calls)
     assert [c['view_name'] for c in calls] == ['hero', 'printing', 'drive']
     assert not hasattr(render, '_invoke')
     assert not hasattr(render, 'render_photoreal')
 
 
-def test_preview_is_an_explicit_lower_sample_v9_request(monkeypatch, tmp_path):
+def test_preview_is_an_explicit_lower_sample_light_request(monkeypatch, tmp_path):
     calls = []
     monkeypatch.setattr(render, 'WORK', tmp_path)
     monkeypatch.setattr(render, 'posed', lambda a, state, geometry: a)
-    monkeypatch.setattr(render, 'render_v9', lambda a, p, **kwargs: calls.append(kwargs))
+    monkeypatch.setattr(render, 'render_light', lambda a, p, **kwargs: calls.append(kwargs))
     tp = SimpleNamespace(deposition_end=100, state=lambda t: (None, 0, 0), geometry=lambda t: [])
     render.stills(object(), tp, preview=True)
     assert len(calls) == 2

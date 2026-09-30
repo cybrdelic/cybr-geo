@@ -46,22 +46,3 @@ def test_texture_landmark_mapping(portrait):
     centre=p.vertices[lip].mean(axis=0)
     assert -55<centre[2]<5
     assert centre[1]<-50
-
-
-def test_obj_adapter_preserves_uv_in_actual_renderer(tmp_path):
-    import mitsuba as mi
-    from mechanism_lab.core import Part
-    mi.set_variant('llvm_ad_rgb')
-    spec=importlib.util.spec_from_file_location('portrait_renderer_test',ROOT/'tools/render_reference_scan_face.py')
-    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-    vertices=np.array([[0.,0.,0.],[1.,0.,0.],[0.,1.,0.]])
-    p=Part('uv_probe',vertices,np.array([[0,1,2]]),np.array([[0.,0.,1.]]*3))
-    p.portrait_uv=np.array([[.11,.23],[.85,.27],[.31,.88]])
-    path=tmp_path/'uv_probe.obj';module.write_obj(path,p)
-    mesh=mi.load_dict({'type':'obj','filename':str(path)})
-    params=mi.traverse(mesh)
-    imported_uv=np.asarray(params['vertex_texcoords']).reshape(-1,2)
-    imported_xyz=np.asarray(params['vertex_positions']).reshape(-1,3)
-    for xyz,uv in zip(imported_xyz,imported_uv):
-        index=np.argmin(np.linalg.norm(vertices-xyz,axis=1))
-        assert np.allclose(uv,p.portrait_uv[index],atol=1e-6)

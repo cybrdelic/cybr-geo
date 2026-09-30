@@ -1,4 +1,4 @@
-"""A complete, offline first-run path using the in-house photographic renderer."""
+"""A complete, offline first-run path using the CYBR LIGHT spectral renderer."""
 from __future__ import annotations
 
 import hashlib
@@ -29,13 +29,13 @@ def preview(args):
     # Remove an earlier success marker before attempting a replacement build.
     receipt=output/'preview.json';receipt.unlink(missing_ok=True)
     from .exporters import export_glb,export_bom,export_step
-    from .photoreal import render_photoreal
+    from .light import render_light
     glb=export_glb(assembly,output/(assembly.name+'.glb'))
     export_bom(assembly,output)
     if args.step:export_step(assembly,output/(assembly.name+'.step'))
     shutil.copy2(cache_directory(args.recipe)/'validation.json',output/'validation.json')
     image=output/'hero.png'
-    render=render_photoreal(assembly,image,args.view,args.size,args.spp,args.threads,args.depth,
+    render=render_light(assembly,image,args.view,args.size,args.spp,args.threads,args.depth,
                           args.intent,args.allow_estimates)
     with Image.open(image) as frame:
         frame.load()
