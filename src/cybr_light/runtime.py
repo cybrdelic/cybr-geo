@@ -1,6 +1,7 @@
 """Shared offline rendering. No network fetches or external rendering runtime."""
 from __future__ import annotations
 import hashlib
+import errno
 import json
 import os
 from pathlib import Path
@@ -68,24 +69,32 @@ class Meshlets:
 
     def __enter__(self):return self
     def __exit__(self,kind,error,tb):
+        completed=False
         try:
             if kind is None:
                 if not self.triangles:raise ValueError('Empty mesh')
                 self.stream.seek(0);self.stream.write(struct.pack('<4sQI',b'CLM1',self.triangles,self.meshlets))
                 self.stream.flush();os.fsync(self.stream.fileno())
-        except BaseException:
-            self.stream.close();self.temporary.unlink(missing_ok=True);raise
-        finally:self.stream.close()
-        if kind is None:
-            fd,name=tempfile.mkstemp(prefix=self.path.name+'.',suffix='.partial',dir=self.path.parent)
-            os.close(fd);destination=Path(name)
+            self.stream.close();completed=kind is None
+        finally:
             try:
-                shutil.copyfile(self.temporary,destination)
+                if not self.stream.closed:self.stream.close()
+            finally:
+                if not completed:self.temporary.unlink(missing_ok=True)
+        if completed:
+            destination=None
+            try:
+                fd,name=tempfile.mkstemp(prefix=self.path.name+'.',suffix='.partial',dir=self.path.parent)
+                os.close(fd);destination=Path(name)
+                try:os.replace(self.temporary,destination)
+                except OSError as exc:
+                    if exc.errno!=errno.EXDEV:raise
+                    shutil.copyfile(self.temporary,destination)
                 with destination.open('rb') as stream:os.fsync(stream.fileno())
                 destination.replace(self.path)
             finally:
-                destination.unlink(missing_ok=True);self.temporary.unlink(missing_ok=True)
-        else:self.temporary.unlink(missing_ok=True)
+                if destination is not None:destination.unlink(missing_ok=True)
+                self.temporary.unlink(missing_ok=True)
 
 
 class Scene:

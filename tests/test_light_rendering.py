@@ -59,6 +59,26 @@ def test_actual_engine_rejects_truncation_bad_indices_and_trailing_data(flange,t
         assert not (tmp_path/'bad.json').exists()
 
 
+def test_failed_pack_publication_removes_spool_and_preserves_old_file(tmp_path,monkeypatch):
+    import cybr_light.runtime as runtime
+    path=tmp_path/'mesh.clm';path.write_bytes(b'previous checked input')
+    a=np.zeros((1,36),'<f4');a[0,:9]=[0,0,0,1,0,0,0,1,0];a[0,26:35]=1
+    writer=Meshlets(path)
+    original_replace=runtime.os.replace
+    def cross_device(source,destination):
+        if Path(source)==writer.temporary:
+            import errno
+            raise OSError(errno.EXDEV,'Simulated cross-device output mount')
+        return original_replace(source,destination)
+    def fail(*args):raise OSError('Simulated full disk')
+    monkeypatch.setattr(runtime.os,'replace',cross_device)
+    monkeypatch.setattr(runtime.shutil,'copyfile',fail)
+    with pytest.raises(OSError,match='full disk'):
+        with writer:writer.add(a)
+    assert path.read_bytes()==b'previous checked input'
+    assert not writer.temporary.exists() and not list(tmp_path.glob('*.partial'))
+
+
 def test_pose_and_mm_conversion_reach_the_actual_meshlet_vertices(flange,tmp_path):
     posed=replace(flange,motion_function=lambda p,t,e:np.array([[1,0,0,100],[0,1,0,0],[0,0,1,0],[0,0,0,1]],float))
     mesh=tmp_path/'posed.clm';write_geometry(posed,mesh);triangles,_=unpack(mesh)
