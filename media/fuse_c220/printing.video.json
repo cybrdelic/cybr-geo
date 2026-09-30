@@ -1,0 +1,1942 @@
+{
+  "renderer": "Mitsuba 3 path + albedo/normal-guided Intel OIDN",
+  "render_profile": "v9",
+  "frames": 96,
+  "fps": 24,
+  "duration_s": 4.0,
+  "resolution": [
+    960,
+    720
+  ],
+  "spp": 128,
+  "bounce_limit": 12,
+  "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+  "sha256": "9231a5b0cf2a653af7051d7f23d7a6ef7349efbc89b588e908b972d3e0a42f26",
+  "frame_interpolation": false,
+  "generated_imagery": false,
+  "burned_in_explanatory_labels": true,
+  "time_lapse_seconds": 2,
+  "modeled_real_time_replay_seconds": 2,
+  "frames_detail": [
+    {
+      "frame": 0,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "300890448bd02aeeaacd52d8f86d03c2ce815fbff45f95f459cad831de1d6bc9",
+      "gcode_time_s": 3.335011977562254,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 32.099999999999994,
+        "y": 0.0,
+        "z": 0.2,
+        "e": 0.0
+      },
+      "layer": 0,
+      "move_index": 2,
+      "move_fraction": 0.0,
+      "render_profile": "v9",
+      "deposition_triangles": 0,
+      "seconds_to_render": 197.177356504,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 1,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d7a1973493394a113f1b1d48a77d1db358dc6817e273c8bb3ac3cceaa9952ccf",
+      "gcode_time_s": 77.09501154217455,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -20.853896445103487,
+        "y": -16.22627842372185,
+        "z": 0.2,
+        "e": 50.5259031
+      },
+      "layer": 0,
+      "move_index": 356,
+      "move_fraction": 0.35749203785615374,
+      "render_profile": "v9",
+      "deposition_triangles": 14080,
+      "seconds_to_render": 189.22498825599996,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 2,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d6f6583cd205a3b7fa4f0d188d55366230a4cd0083d998c6d6345d772577da7c",
+      "gcode_time_s": 150.85501110678683,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -1.5101631420205024,
+        "y": 0.8199999999999932,
+        "z": 0.2,
+        "e": 119.34350831512458
+      },
+      "layer": 0,
+      "move_index": 435,
+      "move_fraction": 0.5246179277077366,
+      "render_profile": "v9",
+      "deposition_triangles": 15840,
+      "seconds_to_render": 184.83085399099997,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 3,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "ee0413aa829851e56a32ac290f1187b852f5d717835a1f8db1995281f0dc4036",
+      "gcode_time_s": 224.61501067139912,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 13.985523916382547,
+        "y": 18.44999999999999,
+        "z": 0.2,
+        "e": 188.008037943741
+      },
+      "layer": 0,
+      "move_index": 517,
+      "move_fraction": 0.8443996076769925,
+      "render_profile": "v9",
+      "deposition_triangles": 17644,
+      "seconds_to_render": 181.99333585500005,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 4,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "52f2ce44a544c5260ad13aacc07d4d8b88e6f1ace89a1b30925e0c694fb81561",
+      "gcode_time_s": 298.3750102360114,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 1.6599882607243757,
+        "y": -25.825051328431897,
+        "z": 0.4,
+        "e": 233.9159704
+      },
+      "layer": 1,
+      "move_index": 881,
+      "move_fraction": 0.03476435248396777,
+      "render_profile": "v9",
+      "deposition_triangles": 31900,
+      "seconds_to_render": 190.355917578,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 5,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a829cd7beb37e68b2724952a1164c3800356f09b9ef043619e87841af901e187",
+      "gcode_time_s": 372.13500980062366,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 20.69849317903308,
+        "y": -5.6299999999999955,
+        "z": 0.4,
+        "e": 301.65052222492403
+      },
+      "layer": 1,
+      "move_index": 974,
+      "move_fraction": 0.8620568108907974,
+      "render_profile": "v9",
+      "deposition_triangles": 33968,
+      "seconds_to_render": 185.63676450399998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 6,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "0ecd77a4b46af80794f95e894b38ac8e52047848f098ef0b66a88dbb55ec49d6",
+      "gcode_time_s": 445.895009365236,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 20.017893685344063,
+        "y": 9.849999999999994,
+        "z": 0.4,
+        "e": 370.8687895705066
+      },
+      "layer": 1,
+      "move_index": 1046,
+      "move_fraction": 0.9061289183659847,
+      "render_profile": "v9",
+      "deposition_triangles": 35552,
+      "seconds_to_render": 183.234929169,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 7,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a62f6ba0b4a1a685c0a2ad62606dffa124c72ade31c29c306b140e490842a348",
+      "gcode_time_s": 519.6550089298481,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 30.76161339682858,
+        "y": 3.845188707259723,
+        "z": 0.6,
+        "e": 429.664429116111
+      },
+      "layer": 2,
+      "move_index": 1238,
+      "move_fraction": 0.7989516972279593,
+      "render_profile": "v9",
+      "deposition_triangles": 41888,
+      "seconds_to_render": 186.46496749099992,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 8,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "bbbae6d073298b4004c048571365e8908bd1720a5df3ecca18b86bf24fccaf37",
+      "gcode_time_s": 593.4150084944605,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -4.253213500058536,
+        "y": -12.939999999999998,
+        "z": 0.6,
+        "e": 484.2855402411885
+      },
+      "layer": 2,
+      "move_index": 1509,
+      "move_fraction": 0.5966944752574089,
+      "render_profile": "v9",
+      "deposition_triangles": 52008,
+      "seconds_to_render": 190.29851075299985,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 9,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "ede48d54b44ffbd71627ce46746ecfbcd985c7f7c54d49568e21239911b7d024",
+      "gcode_time_s": 667.1750080590728,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 30.13244241841275,
+        "y": 2.969999999999999,
+        "z": 0.6,
+        "e": 553.3588760059517
+      },
+      "layer": 2,
+      "move_index": 1583,
+      "move_fraction": 0.9989416631436556,
+      "render_profile": "v9",
+      "deposition_triangles": 53636,
+      "seconds_to_render": 185.131263321,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 10,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d716241a145e01b8db6ce02c887f787afb4f7f4fd7a8f2586527d963de36e81c",
+      "gcode_time_s": 740.935007623685,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 18.995138130437255,
+        "y": 22.229329747099314,
+        "z": 0.6,
+        "e": 621.6615162
+      },
+      "layer": 2,
+      "move_index": 1672,
+      "move_fraction": 0.7891389467426408,
+      "render_profile": "v9",
+      "deposition_triangles": 55572,
+      "seconds_to_render": 181.10554702399986,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 11,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a1d58518479da18791e0e3082f2af194e8373c9e73cc2911e63a2d8914dbd31b",
+      "gcode_time_s": 814.6950071882974,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 3.9235257088844406,
+        "y": -21.97,
+        "z": 0.8,
+        "e": 667.2090690146528
+      },
+      "layer": 3,
+      "move_index": 2036,
+      "move_fraction": 0.5985684453282052,
+      "render_profile": "v9",
+      "deposition_triangles": 69872,
+      "seconds_to_render": 191.32460072500044,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 12,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d859c18fa4d00c5a014dabde9b121ca7d3f0720aa617752721aaf19872c08927",
+      "gcode_time_s": 888.4550067529096,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -1.6845860848354306,
+        "y": -3.049999999999997,
+        "z": 0.8,
+        "e": 735.5596844414556
+      },
+      "layer": 3,
+      "move_index": 2124,
+      "move_fraction": 0.4735126066364975,
+      "render_profile": "v9",
+      "deposition_triangles": 71808,
+      "seconds_to_render": 205.44418240099998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 13,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "bb275eef1b710cec4437bca3065a45d568adfd73aa7db0088c7e931202492081",
+      "gcode_time_s": 962.215006317522,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -21.667697787447963,
+        "y": 12.86,
+        "z": 0.8,
+        "e": 804.6468264299599
+      },
+      "layer": 3,
+      "move_index": 2198,
+      "move_fraction": 0.9891849580539466,
+      "render_profile": "v9",
+      "deposition_triangles": 73436,
+      "seconds_to_render": 192.147165901,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 14,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a05ef0ee0239b26e03888c3b72431d4bb7ba6098ed24c4ec46cfd0fbff6a671a",
+      "gcode_time_s": 1035.9750058821342,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 26.395657244668286,
+        "y": 8.88766236640808,
+        "z": 1.0,
+        "e": 859.2661257239205
+      },
+      "layer": 4,
+      "move_index": 2476,
+      "move_fraction": 0.7609983033464068,
+      "render_profile": "v9",
+      "deposition_triangles": 83820,
+      "seconds_to_render": 191.566509708,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 15,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "ead1ddc26f3ca01143f213a1b3d25848f1ce5fd00689a2f266ab41a7df8f0f6b",
+      "gcode_time_s": 1109.7350054467465,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -26.42148883945839,
+        "y": -8.984297152005851,
+        "z": 1.4,
+        "e": 901.0544610253954
+      },
+      "layer": 6,
+      "move_index": 3106,
+      "move_fraction": 0.7036727000373564,
+      "render_profile": "v9",
+      "deposition_triangles": 111276,
+      "seconds_to_render": 196.15838259099996,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 16,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "691be280f32be66de2440294031cbbf2f2ae53ff90581827ce0580150853fd09",
+      "gcode_time_s": 1183.495005011359,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 28.2954647190312,
+        "y": 8.45005518496859,
+        "z": 2.0,
+        "e": 942.8029637135095
+      },
+      "layer": 9,
+      "move_index": 3736,
+      "move_fraction": 0.9675150198063089,
+      "render_profile": "v9",
+      "deposition_triangles": 138688,
+      "seconds_to_render": 192.2575081829999,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 17,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e3858a1fb5f3e47fb5df588a04bba0025815b0e079ca97feda8139787d393bb2",
+      "gcode_time_s": 1257.2550045759713,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -29.60855243847088,
+        "y": -7.126575622945879,
+        "z": 2.4,
+        "e": 984.6133917704623
+      },
+      "layer": 11,
+      "move_index": 4366,
+      "move_fraction": 0.038683945598422816,
+      "render_profile": "v9",
+      "deposition_triangles": 166144,
+      "seconds_to_render": 195.37635850000015,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 18,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "0534023ff3a8c5c3fd66e6a7087a529585c78198c3902177cb79fd0a3c755961",
+      "gcode_time_s": 1331.0150041405834,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 30.42743546547564,
+        "y": 5.37944588211451,
+        "z": 2.8,
+        "e": 1026.4141463993085
+      },
+      "layer": 13,
+      "move_index": 4995,
+      "move_fraction": 0.9983173002069836,
+      "render_profile": "v9",
+      "deposition_triangles": 193512,
+      "seconds_to_render": 193.136223448,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 19,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "20270e95ff1e289c4c74c72e61ab09c4acf4581c0d404758751f36020672358f",
+      "gcode_time_s": 1404.7750037051958,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -30.708861176304936,
+        "y": -4.869763186128381,
+        "z": 3.2,
+        "e": 1068.2233218127924
+      },
+      "layer": 15,
+      "move_index": 5625,
+      "move_fraction": 0.6278610062711429,
+      "render_profile": "v9",
+      "deposition_triangles": 220968,
+      "seconds_to_render": 194.84543086099984,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 20,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "3594fdea41526ea134dd4581f99febffae5c36a9afb8d4a98df74b79da3ba943",
+      "gcode_time_s": 1478.535003269808,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 30.842970108219106,
+        "y": 3.5172849977677316,
+        "z": 3.6,
+        "e": 1110.0035972254163
+      },
+      "layer": 17,
+      "move_index": 6255,
+      "move_fraction": 0.8525056199970793,
+      "render_profile": "v9",
+      "deposition_triangles": 248380,
+      "seconds_to_render": 193.87030919199992,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 21,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e598f8fd68fd491d4d83bbaa2496ee1b826edcf271a1d40684eb5948598b159a",
+      "gcode_time_s": 1552.2950028344203,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -30.836593839803513,
+        "y": -3.6341252362368976,
+        "z": 4.0,
+        "e": 1151.7927687339652
+      },
+      "layer": 19,
+      "move_index": 6885,
+      "move_fraction": 0.8062776375430383,
+      "render_profile": "v9",
+      "deposition_triangles": 275836,
+      "seconds_to_render": 195.21308644300007,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 22,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "ccc508d50030f15ac8f93121e15b1f8de572b1ae7aa2a6f3505ee392bbc75188",
+      "gcode_time_s": 1626.0550023990327,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 32.01013069016474,
+        "y": 2.3988184306016223,
+        "z": 4.599974865235226,
+        "e": 1193.5305942
+      },
+      "layer": 22,
+      "move_index": 7515,
+      "move_fraction": 0.9998743261761305,
+      "render_profile": "v9",
+      "deposition_triangles": 303248,
+      "seconds_to_render": 197.58704998299982,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 23,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a5f538416edfe9086c9f94468076f55f38e4b88d09239ea6ec47a84281829f0d",
+      "gcode_time_s": 1699.8150019636448,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -31.90890977066124,
+        "y": -0.7573923483300717,
+        "z": 5.0,
+        "e": 1235.3470618668764
+      },
+      "layer": 24,
+      "move_index": 8145,
+      "move_fraction": 0.11526108189414808,
+      "render_profile": "v9",
+      "deposition_triangles": 330704,
+      "seconds_to_render": 201.0071949940002,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 24,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "4af4855c441f9ec9c8bef969c5730b760e12b2aa0162cfc8bd814ed0b60de248",
+      "gcode_time_s": 1921.095000657482,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 30.036348629438947,
+        "y": -2.600170092322216,
+        "z": 6.2,
+        "e": 1360.755199228682
+      },
+      "layer": 30,
+      "move_index": 10034,
+      "move_fraction": 0.11931039681311441,
+      "render_profile": "v9",
+      "deposition_triangles": 412984,
+      "seconds_to_render": 207.37686777599998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 25,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "bbef253a9a1516a0cf779705d972eb6f3e6ec0417f593b1efa23aaacd5977c16",
+      "gcode_time_s": 2142.374999351319,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -28.289544982744573,
+        "y": 5.230077136865106,
+        "z": 7.6,
+        "e": 1486.0826904434314
+      },
+      "layer": 37,
+      "move_index": 11924,
+      "move_fraction": 0.2778727071311444,
+      "render_profile": "v9",
+      "deposition_triangles": 495264,
+      "seconds_to_render": 196.94264785000001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 26,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "eced371e1eef1a3ff24684c12bd9a9eb968764aa1b631a1fa1424441f3823d22",
+      "gcode_time_s": 2363.6549980451555,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 25.49668251790456,
+        "y": -7.993866207014534,
+        "z": 8.8,
+        "e": 1611.495960690451
+      },
+      "layer": 43,
+      "move_index": 13813,
+      "move_fraction": 0.12201420914241595,
+      "render_profile": "v9",
+      "deposition_triangles": 577544,
+      "seconds_to_render": 197.26647226900002,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 27,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "3f84e8859c7be39cf7e1774ee6669b9faabd4898428966254416b1bacaa05c27",
+      "gcode_time_s": 2584.9349967389926,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -24.785487405748484,
+        "y": 10.91179045552353,
+        "z": 10.2,
+        "e": 1736.8313281443354
+      },
+      "layer": 50,
+      "move_index": 15703,
+      "move_fraction": 0.06669445290486765,
+      "render_profile": "v9",
+      "deposition_triangles": 659824,
+      "seconds_to_render": 196.62095786500004,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 28,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "8d0bf12e9cad6cab0d552231cb187d2d1a2f11e68e2a4b3b0cee4e3627fb6d1c",
+      "gcode_time_s": 2806.2149954328293,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 24.221091231901767,
+        "y": -14.177125534410578,
+        "z": 11.4,
+        "e": 1862.2565355402085
+      },
+      "layer": 56,
+      "move_index": 17591,
+      "move_fraction": 0.9998789779582037,
+      "render_profile": "v9",
+      "deposition_triangles": 742060,
+      "seconds_to_render": 201.38999781600012,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 29,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "0188e46902a05471149044eb97ac1ac70614265bf2968fd4cfd7ac94930bb424",
+      "gcode_time_s": 3027.494994126666,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -24.539401549433677,
+        "y": 17.992429838248583,
+        "z": 12.8,
+        "e": 1987.5703549156747
+      },
+      "layer": 63,
+      "move_index": 19482,
+      "move_fraction": 0.06280275982876135,
+      "render_profile": "v9",
+      "deposition_triangles": 824384,
+      "seconds_to_render": 198.30823578599984,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 30,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "0d6ff9913100659b2677acd1c4cd21f1df9ed306e979295f430da720a9f808f4",
+      "gcode_time_s": 3248.774992820503,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 23.099157884232113,
+        "y": -21.343071914071558,
+        "z": 14.0,
+        "e": 2112.9853524515133
+      },
+      "layer": 69,
+      "move_index": 21371,
+      "move_fraction": 0.01934451663863299,
+      "render_profile": "v9",
+      "deposition_triangles": 906664,
+      "seconds_to_render": 205.1471050140001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 31,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "72784392cecf8e12fcbf0b202fc5fdc459ffe54b800493b0a489d6828d876083",
+      "gcode_time_s": 3470.0549915143397,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -21.21254952801108,
+        "y": 23.85710168324448,
+        "z": 15.4,
+        "e": 2238.30508092247
+      },
+      "layer": 76,
+      "move_index": 23261,
+      "move_fraction": 0.15569609410792512,
+      "render_profile": "v9",
+      "deposition_triangles": 988944,
+      "seconds_to_render": 200.18865430699998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 32,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "aba423e2b65da97c9f3320177c3aa55e046f9ef85dea8545e639f664b375d877",
+      "gcode_time_s": 3691.3349902081764,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 17.231372809527244,
+        "y": -24.675227612693504,
+        "z": 16.6,
+        "e": 2363.7199452195914
+      },
+      "layer": 82,
+      "move_index": 25150,
+      "move_fraction": 0.05291161474854403,
+      "render_profile": "v9",
+      "deposition_triangles": 1071224,
+      "seconds_to_render": 207.8241866200001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 33,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "1153e54ff6a39dd8a79cec6affa7c536b6f70b24e40bff6dafae6745769343a1",
+      "gcode_time_s": 3912.614988902014,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -14.36404307863981,
+        "y": 24.99431308578903,
+        "z": 18.0,
+        "e": 2489.0421864790274
+      },
+      "layer": 89,
+      "move_index": 27040,
+      "move_fraction": 0.33844680200920896,
+      "render_profile": "v9",
+      "deposition_triangles": 1153504,
+      "seconds_to_render": 202.0041897640001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 34,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "4a7a9bbd38bef7c7a4d7ba15b570271a82e00298e8c3842c05a993eb2aa0e610",
+      "gcode_time_s": 4133.894987595851,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 10.18952365460207,
+        "y": -24.66141124362548,
+        "z": 19.2,
+        "e": 2614.4610786554235
+      },
+      "layer": 95,
+      "move_index": 28929,
+      "move_fraction": 0.05041740321570753,
+      "render_profile": "v9",
+      "deposition_triangles": 1235784,
+      "seconds_to_render": 209.035225093,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 35,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "29c3221231d91701f190b2f10375bdb49016c99e60fce34389e876ecdf0e9ce3",
+      "gcode_time_s": 4355.174986289688,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -7.687774603683295,
+        "y": 25.95814367400763,
+        "z": 20.6,
+        "e": 2739.788567603735
+      },
+      "layer": 102,
+      "move_index": 30819,
+      "move_fraction": 0.10125529803442238,
+      "render_profile": "v9",
+      "deposition_triangles": 1318064,
+      "seconds_to_render": 203.0403712540001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 36,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e64e1a025a825b959d1946bd72b8624ac30eaa05c64483848cb30e481b52dd3a",
+      "gcode_time_s": 4576.454984983524,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 4.743678216938406,
+        "y": -27.67666540676001,
+        "z": 21.8,
+        "e": 2865.2248971665185
+      },
+      "layer": 108,
+      "move_index": 32707,
+      "move_fraction": 0.9836954997424099,
+      "render_profile": "v9",
+      "deposition_triangles": 1400300,
+      "seconds_to_render": 225.717530196,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 37,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "74d80f33f14c53c541a17e9ed2f007025a3cf19ba113e1fdf52e74ca40f9b6ae",
+      "gcode_time_s": 4797.734983677361,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -2.1150621722787974,
+        "y": 30.323706967416996,
+        "z": 23.2,
+        "e": 2990.527740237239
+      },
+      "layer": 115,
+      "move_index": 34598,
+      "move_fraction": 0.09273229727715487,
+      "render_profile": "v9",
+      "deposition_triangles": 1482624,
+      "seconds_to_render": 210.57280323699996,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 38,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "836b741668e5e9c31f198118a97b0593a8e37cea799e3108e3223df1339b829c",
+      "gcode_time_s": 5019.014982371198,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -1.4692504234846098,
+        "y": -31.42744123472316,
+        "z": 24.4,
+        "e": 3115.9535284329763
+      },
+      "layer": 121,
+      "move_index": 36487,
+      "move_fraction": 0.0005027032710573935,
+      "render_profile": "v9",
+      "deposition_triangles": 1564904,
+      "seconds_to_render": 218.104279216,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 39,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "11cfd10f87a6cb6127430970d020dceaaa513e358cfde2b086d95ff28ef88b4e",
+      "gcode_time_s": 5240.294981065034,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 4.473049930635028,
+        "y": 31.61619087246271,
+        "z": 25.8,
+        "e": 3241.263528513139
+      },
+      "layer": 128,
+      "move_index": 38377,
+      "move_fraction": 0.20230288945366948,
+      "render_profile": "v9",
+      "deposition_triangles": 1647184,
+      "seconds_to_render": 210.9493973619999,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 40,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "c02fd7682952c0191328364bf1a7423bfd2b0984de57a429516a7407b3e21f32",
+      "gcode_time_s": 5461.574979758871,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -7.829787392594028,
+        "y": -29.027772003191572,
+        "z": 27.0,
+        "e": 3366.6865956794027
+      },
+      "layer": 134,
+      "move_index": 40266,
+      "move_fraction": 0.013151330380230706,
+      "render_profile": "v9",
+      "deposition_triangles": 1729464,
+      "seconds_to_render": 217.62761700500016,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 41,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "7ac2d976018c4bb59acf8e93be8c1b9d133d338399c33ae5abf3bdabad42e258",
+      "gcode_time_s": 5682.854978452708,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 9.758092061593175,
+        "y": 27.193214277231277,
+        "z": 28.4,
+        "e": 3492.0019649983965
+      },
+      "layer": 141,
+      "move_index": 42156,
+      "move_fraction": 0.4030131120901732,
+      "render_profile": "v9",
+      "deposition_triangles": 1811744,
+      "seconds_to_render": 213.6493340259999,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 42,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "b0b4a9f83743639027a71402686bb4f3e44aeba9e48d79f8e1a7fcd3eca2c0b6",
+      "gcode_time_s": 5904.134977146545,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -12.342731033964313,
+        "y": -23.63407855227497,
+        "z": 29.6,
+        "e": 3617.428098810015
+      },
+      "layer": 147,
+      "move_index": 44045,
+      "move_fraction": 0.009951886341479622,
+      "render_profile": "v9",
+      "deposition_triangles": 1894024,
+      "seconds_to_render": 217.10516838399985,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 43,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "77ada24e5c46ca60e78a416608543a935934e741fc681f2f9b7c7862d45d575b",
+      "gcode_time_s": 6125.414975840383,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 14.825212496951323,
+        "y": 22.640537464018706,
+        "z": 31.0,
+        "e": 3742.746231343311
+      },
+      "layer": 154,
+      "move_index": 45935,
+      "move_fraction": 0.14304430648596966,
+      "render_profile": "v9",
+      "deposition_triangles": 1976304,
+      "seconds_to_render": 214.83962719099986,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 44,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "6ea3d018a3817b6cc4c8c20a560c24da498b856019685265e21bab37a3b6026e",
+      "gcode_time_s": 6346.694974534218,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -18.19294908380688,
+        "y": -21.443044471005763,
+        "z": 32.2,
+        "e": 3868.1913558947513
+      },
+      "layer": 160,
+      "move_index": 47823,
+      "move_fraction": 0.9402914717700617,
+      "render_profile": "v9",
+      "deposition_triangles": 2058540,
+      "seconds_to_render": 217.29358601199988,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 45,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "c5b4925298de3d8daadcbf1414ace2afc75080cac4d968a20520e405269a8641",
+      "gcode_time_s": 6567.974973228056,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 21.746877571696842,
+        "y": 21.185063457779307,
+        "z": 33.6,
+        "e": 3993.48554622032
+      },
+      "layer": 167,
+      "move_index": 49714,
+      "move_fraction": 0.1284517081494278,
+      "render_profile": "v9",
+      "deposition_triangles": 2140864,
+      "seconds_to_render": 217.20927214899984,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 46,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "f6b6b7e7d5e667cbeea9b88955cf133970b4ccdf1335aa50163366022696979a",
+      "gcode_time_s": 6789.254971921892,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": -24.989157195434387,
+        "y": -19.11752833992577,
+        "z": 34.8,
+        "e": 4118.922364892785
+      },
+      "layer": 173,
+      "move_index": 51602,
+      "move_fraction": 0.9909301659258031,
+      "render_profile": "v9",
+      "deposition_triangles": 2223100,
+      "seconds_to_render": 219.7028562280002,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 47,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "3b32ca250876f3b9202651327fe0b31948595961779c040bb57f44406fad4709",
+      "gcode_time_s": 7010.534970615729,
+      "mode": "180-layer time-lapse / compressed print time",
+      "state": {
+        "x": 25.614419999999996,
+        "y": 17.84908,
+        "z": 36.0,
+        "e": 4244.2741385
+      },
+      "layer": 179,
+      "move_index": 53493,
+      "move_fraction": 0.0,
+      "render_profile": "v9",
+      "deposition_triangles": 2305424,
+      "seconds_to_render": 218.98412629199993,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 48,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "9b86b761d872b4e554dc9fcde1613b77125cdd3ab9d5eec25f2997636982147a",
+      "gcode_time_s": 7007.534970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 12.402048294279197,
+        "y": -23.68659594420275,
+        "z": 36.0,
+        "e": 4242.5738408770185
+      },
+      "layer": 179,
+      "move_index": 53467,
+      "move_fraction": 0.07234987622022171,
+      "render_profile": "v9",
+      "deposition_triangles": 2304324,
+      "seconds_to_render": 233.70142268,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 49,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "25350fa02cfb09f7e4d4508bc5c0f02a6ebe5faad33ad0435044cba400a8da77",
+      "gcode_time_s": 7007.576637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 13.078332652916657,
+        "y": -22.955218872615433,
+        "z": 36.0,
+        "e": 4242.606730527337
+      },
+      "layer": 179,
+      "move_index": 53467,
+      "move_fraction": 0.6186877674327707,
+      "render_profile": "v9",
+      "deposition_triangles": 2304324,
+      "seconds_to_render": 224.64104048899998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 50,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "0d4215b71ff3cf09dc6ee1c09814188e2b41a4e89f7be1f327d8f106a2fddcfe",
+      "gcode_time_s": 7007.6183039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 13.541805017981545,
+        "y": -22.453990274329115,
+        "z": 36.0,
+        "e": 4242.629270519316
+      },
+      "layer": 179,
+      "move_index": 53467,
+      "move_fraction": 0.9931049949360058,
+      "render_profile": "v9",
+      "deposition_triangles": 2304324,
+      "seconds_to_render": 222.56279278599993,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 51,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "8bc3a4ec3bc393039e460422325cf7cf49ba70b6d6a7eb5ecbfed300ff2c2f14",
+      "gcode_time_s": 7007.659970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 13.836652613311927,
+        "y": -22.207929064986587,
+        "z": 36.0,
+        "e": 4242.641953786665
+      },
+      "layer": 179,
+      "move_index": 53468,
+      "move_fraction": 0.21595460349368092,
+      "render_profile": "v9",
+      "deposition_triangles": 2304368,
+      "seconds_to_render": 222.87321981800005,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 52,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "96e292a6a0fd7a19ccd2accf045c8597b74b32e8a3300a9f23c64c00a6f736c5",
+      "gcode_time_s": 7007.701637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 14.6611962539927,
+        "y": -21.525886317645075,
+        "z": 36.0,
+        "e": 4242.677284592321
+      },
+      "layer": 179,
+      "move_index": 53468,
+      "move_fraction": 0.8378761909735216,
+      "render_profile": "v9",
+      "deposition_triangles": 2304368,
+      "seconds_to_render": 223.19164298400005,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 53,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d593a03b9073536cf23c7f631f7957cad7447f7fa2c299c67ecde37247c4ede9",
+      "gcode_time_s": 7007.7433039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 14.90852955973699,
+        "y": -21.329281368228223,
+        "z": 36.0,
+        "e": 4242.687731348547
+      },
+      "layer": 179,
+      "move_index": 53469,
+      "move_fraction": 0.021768493885376744,
+      "render_profile": "v9",
+      "deposition_triangles": 2304412,
+      "seconds_to_render": 224.67484994200004,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 54,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "1e1471aa01d65dcb014b9a919ae1fea080de6b430082b758b255188e134479ce",
+      "gcode_time_s": 7007.784970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 15.598400587933256,
+        "y": -20.928672954754006,
+        "z": 36.0,
+        "e": 4242.714070947197
+      },
+      "layer": 179,
+      "move_index": 53469,
+      "move_fraction": 0.48541954011549615,
+      "render_profile": "v9",
+      "deposition_triangles": 2304412,
+      "seconds_to_render": 225.33567283999992,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 55,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e2e396019ceabd379446b3d0478e96f75b5dd81e0ded745da9e5c2c78ddd15ec",
+      "gcode_time_s": 7007.826637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 16.321238614297286,
+        "y": -20.50892059075396,
+        "z": 36.0,
+        "e": 4242.741669241263
+      },
+      "layer": 179,
+      "move_index": 53469,
+      "move_fraction": 0.9712271671655439,
+      "render_profile": "v9",
+      "deposition_triangles": 2304412,
+      "seconds_to_render": 226.24716416,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 56,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "29ed4fd07c7cdf7106b02c03afafae6e9483e304e12c9b5200aae6d9ed22f3a8",
+      "gcode_time_s": 7007.8683039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 16.594271556628485,
+        "y": -20.388702783663604,
+        "z": 36.0,
+        "e": 4242.751531346143
+      },
+      "layer": 179,
+      "move_index": 53470,
+      "move_fraction": 0.1366697476586553,
+      "render_profile": "v9",
+      "deposition_triangles": 2304456,
+      "seconds_to_render": 223.62496616199974,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 57,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "8ded93e1c55a418adedb7102ea809a6e966153c532346b8bb257716fc7f95302",
+      "gcode_time_s": 7007.909970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 17.598663139334562,
+        "y": -19.972686200155238,
+        "z": 36.0,
+        "e": 4242.787425804566
+      },
+      "layer": 179,
+      "move_index": 53470,
+      "move_fraction": 0.732921228923875,
+      "render_profile": "v9",
+      "deposition_triangles": 2304456,
+      "seconds_to_render": 222.89437629600025,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 58,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "f4885e0f204ae331cb29c4dfc8814370ab0a9d914bcf33e04aa22e94f3a83d4c",
+      "gcode_time_s": 7007.951637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 18.049098646476665,
+        "y": -19.78615554485806,
+        "z": 36.0,
+        "e": 4242.803522798515
+      },
+      "layer": 179,
+      "move_index": 53471,
+      "move_fraction": 0.00028906027381811304,
+      "render_profile": "v9",
+      "deposition_triangles": 2304500,
+      "seconds_to_render": 224.213552015,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 59,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "975c5cc425e4a2dff1382c7a30d3a4e787963d63bdb466a51b0122e114d0a92c",
+      "gcode_time_s": 7007.9933039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 18.574424637090658,
+        "y": -19.606261895944982,
+        "z": 36.0,
+        "e": 4242.821856434271
+      },
+      "layer": 179,
+      "move_index": 53471,
+      "move_fraction": 0.2822010030323716,
+      "render_profile": "v9",
+      "deposition_triangles": 2304500,
+      "seconds_to_render": 239.124543208,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 60,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "fff7b3ce2be7f8e95ef798459c437b8e69dfc3156ded2927c8e803773023d8ac",
+      "gcode_time_s": 7008.034970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 19.64022024857576,
+        "y": -19.241288784065404,
+        "z": 36.0,
+        "e": 4242.859052211522
+      },
+      "layer": 179,
+      "move_index": 53471,
+      "move_fraction": 0.854151595208727,
+      "render_profile": "v9",
+      "deposition_triangles": 2304500,
+      "seconds_to_render": 235.86595947000004,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 61,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "3825e07d5bd9245e0e5c7292859a4e3a885cda0da8aa775a9904276770b933cb",
+      "gcode_time_s": 7008.076637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 19.944487544805725,
+        "y": -19.136645592904955,
+        "z": 36.0,
+        "e": 4242.86967589631
+      },
+      "layer": 179,
+      "move_index": 53472,
+      "move_fraction": 0.016487289671301118,
+      "render_profile": "v9",
+      "deposition_triangles": 2304544,
+      "seconds_to_render": 218.90327631000008,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 62,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "084fba85e546a64f8e1c5c457d9d677d52185b00f767c0e73bf578d68b2f1d03",
+      "gcode_time_s": 7008.1183039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 20.686002266431217,
+        "y": -18.872464556560374,
+        "z": 36.0,
+        "e": 4242.895666166805
+      },
+      "layer": 179,
+      "move_index": 53472,
+      "move_fraction": 0.3928028310299181,
+      "render_profile": "v9",
+      "deposition_triangles": 2304544,
+      "seconds_to_render": 217.83610347400008,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 63,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a6857b18ae57425ccba19535bdced7122b9f2e9cdd53657376bdab489353bfb9",
+      "gcode_time_s": 7008.159970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 21.69622960741154,
+        "y": -18.512548700407493,
+        "z": 36.0,
+        "e": 4242.931074879659
+      },
+      "layer": 179,
+      "move_index": 53472,
+      "move_fraction": 0.905488874380367,
+      "render_profile": "v9",
+      "deposition_triangles": 2304544,
+      "seconds_to_render": 217.875548784,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 64,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "0f109c074ba8bce60158cc25f1a78210cb787a54b084e032bd19a5cacb9d4607",
+      "gcode_time_s": 7008.201637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 21.95248333602359,
+        "y": -18.414752802470872,
+        "z": 36.0,
+        "e": 4242.940136725835
+      },
+      "layer": 179,
+      "move_index": 53473,
+      "move_fraction": 0.035714347804856036,
+      "render_profile": "v9",
+      "deposition_triangles": 2304588,
+      "seconds_to_render": 219.11604627600013,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 65,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "469bd6ac8335c17822b8d3172f87d2db7a1a66a85ea7ab94cc87270bb92dad91",
+      "gcode_time_s": 7008.2433039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 22.77633300921221,
+        "y": -18.04476524006246,
+        "z": 36.0,
+        "e": 4242.969955155151
+      },
+      "layer": 179,
+      "move_index": 53473,
+      "move_fraction": 0.4559064642910311,
+      "render_profile": "v9",
+      "deposition_triangles": 2304588,
+      "seconds_to_render": 216.60608818200012,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 66,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "5aec1964737dfd9ddf06648c88a6fc693fa1244cb3aad3f8723b994559c28915",
+      "gcode_time_s": 7008.284970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 23.706847505252256,
+        "y": -17.626874936309534,
+        "z": 36.0,
+        "e": 4243.00363421291
+      },
+      "layer": 179,
+      "move_index": 53473,
+      "move_fraction": 0.9305013670222911,
+      "render_profile": "v9",
+      "deposition_triangles": 2304588,
+      "seconds_to_render": 215.90556232099993,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 67,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "a88b50a74acb1acbb4581633cd3654a6cfa6c726177957cb0baeefc4c146b1b6",
+      "gcode_time_s": 7008.326637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 23.93810352897441,
+        "y": -17.505673690419286,
+        "z": 36.0,
+        "e": 4243.012275894738
+      },
+      "layer": 179,
+      "move_index": 53474,
+      "move_fraction": 0.05253572892726129,
+      "render_profile": "v9",
+      "deposition_triangles": 2304632,
+      "seconds_to_render": 217.57256272100017,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 68,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "c6ab97b3d48bddb89303c602b9723894ba68b98f688fd28be843695e46f5d98b",
+      "gcode_time_s": 7008.3683039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 24.756685900371366,
+        "y": -16.98858470840453,
+        "z": 36.0,
+        "e": 4243.044244099377
+      },
+      "layer": 179,
+      "move_index": 53474,
+      "move_fraction": 0.5052488982625307,
+      "render_profile": "v9",
+      "deposition_triangles": 2304632,
+      "seconds_to_render": 221.85325641899976,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 69,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d3667c93d3da9caa54e62e79ed2e5061f2364497a1b38dc9014999b3d2db8962",
+      "gcode_time_s": 7008.409970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 25.56349142143219,
+        "y": -16.47893502604299,
+        "z": 36.0,
+        "e": 4243.075752381135
+      },
+      "layer": 179,
+      "move_index": 53474,
+      "move_fraction": 0.9514489353502027,
+      "render_profile": "v9",
+      "deposition_triangles": 2304632,
+      "seconds_to_render": 218.64453177700034,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 70,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "39cb2f37340b529a397fe7f59fc034ee9caadcd1057b7d9e62199e9ac791a01a",
+      "gcode_time_s": 7008.451637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 25.766826841147406,
+        "y": -16.313441099883534,
+        "z": 36.0,
+        "e": 4243.084449068068
+      },
+      "layer": 179,
+      "move_index": 53475,
+      "move_fraction": 0.0763824855212368,
+      "render_profile": "v9",
+      "deposition_triangles": 2304676,
+      "seconds_to_render": 217.26761718199987,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 71,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "49980eed76e48b7f097449b5f3b80f86c46061eddb1303ac24699dce23fecdba",
+      "gcode_time_s": 7008.4933039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 26.514378607060166,
+        "y": -15.601523982251365,
+        "z": 36.0,
+        "e": 4243.118533107565
+      },
+      "layer": 179,
+      "move_index": 53475,
+      "move_fraction": 0.5705531730899936,
+      "render_profile": "v9",
+      "deposition_triangles": 2304676,
+      "seconds_to_render": 240.33426605700004,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 72,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "24541ad2b132c0a0aaadeb79458650addad1f1f63134da46976937409b7bd2cd",
+      "gcode_time_s": 7008.534970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.12595601759918,
+        "y": -15.01909953063057,
+        "z": 36.0,
+        "e": 4243.146417502421
+      },
+      "layer": 179,
+      "move_index": 53475,
+      "move_fraction": 0.9748377233359216,
+      "render_profile": "v9",
+      "deposition_triangles": 2304676,
+      "seconds_to_render": 115.435731684,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 73,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "2f46159edb9ec4d0dc77e176b214ec9a9f6eb898e256fe4a239d419a1ba01d8f",
+      "gcode_time_s": 7008.576637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.294491261808844,
+        "y": -14.778465367020644,
+        "z": 36.0,
+        "e": 4243.156158954588
+      },
+      "layer": 179,
+      "move_index": 53476,
+      "move_fraction": 0.11850789028460898,
+      "render_profile": "v9",
+      "deposition_triangles": 2304720,
+      "seconds_to_render": 109.39099899799999,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 74,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "230b785cefe3c16d4eb78c869ed1b01b45568806b60ddca854b49764028e0ac4",
+      "gcode_time_s": 7008.6183039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.891400034258368,
+        "y": -13.843401363746153,
+        "z": 36.0,
+        "e": 4243.192786365556
+      },
+      "layer": 179,
+      "move_index": 53476,
+      "move_fraction": 0.6606839858834268,
+      "render_profile": "v9",
+      "deposition_triangles": 2304720,
+      "seconds_to_render": 108.22916234299998,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 75,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "56fdf021db5d196c3626856dd36c34725a20814e1ea148f35bd06e5fc1b69a65",
+      "gcode_time_s": 7008.659970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.25827541212965,
+        "y": -13.268687143803618,
+        "z": 36.0,
+        "e": 4243.215298507877
+      },
+      "layer": 179,
+      "move_index": 53476,
+      "move_fraction": 0.9939192625729166,
+      "render_profile": "v9",
+      "deposition_triangles": 2304720,
+      "seconds_to_render": 107.31133840000007,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 76,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "92b2211c9b3b4569a3c3356464574e6aa35045ab7e231791e16e53a87f8da643",
+      "gcode_time_s": 7008.701637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.378198614977123,
+        "y": -12.903560015936094,
+        "z": 36.0,
+        "e": 4243.228000896416
+      },
+      "layer": 179,
+      "move_index": 53477,
+      "move_fraction": 0.18194596827535256,
+      "render_profile": "v9",
+      "deposition_triangles": 2304764,
+      "seconds_to_render": 106.23527659799993,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 77,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "fe79b7804c34acff14c11d680f2d967b288344fe0f953cecd96ae8c9f3d38ca9",
+      "gcode_time_s": 7008.7433039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.73158232151252,
+        "y": -11.796737398000857,
+        "z": 36.0,
+        "e": 4243.266362664789
+      },
+      "layer": 179,
+      "move_index": 53477,
+      "move_fraction": 0.7497948346710824,
+      "render_profile": "v9",
+      "deposition_triangles": 2304764,
+      "seconds_to_render": 108.9921778580001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 78,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "6da33352b3a018f3e3aa7a79b0ecad259a562db928816bd69e217363d4b6a1df",
+      "gcode_time_s": 7008.784970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.88729257741045,
+        "y": -11.309011806497082,
+        "z": 36.0,
+        "e": 4243.283266863915
+      },
+      "layer": 179,
+      "move_index": 53478,
+      "move_fraction": 1.832499432335505e-05,
+      "render_profile": "v9",
+      "deposition_triangles": 2304808,
+      "seconds_to_render": 108.17303597900002,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 79,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "f8a43e78278a275248aa305397cf72b2af037f528be28da4d7a5200a4c4f488b",
+      "gcode_time_s": 7008.826637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.9229614700445,
+        "y": -10.780450298536508,
+        "z": 36.0,
+        "e": 4243.300758239646
+      },
+      "layer": 179,
+      "move_index": 53478,
+      "move_fraction": 0.25361869921433683,
+      "render_profile": "v9",
+      "deposition_triangles": 2304808,
+      "seconds_to_render": 107.90079249999997,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 80,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "75b2bc268b049967cf435d01a90ba22e0774927bf49813737f99a1a24bc1f14e",
+      "gcode_time_s": 7008.8683039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 29.001846741009018,
+        "y": -9.611484437872562,
+        "z": 36.0,
+        "e": 4243.339442140719
+      },
+      "layer": 179,
+      "move_index": 53478,
+      "move_fraction": 0.8144809172343919,
+      "render_profile": "v9",
+      "deposition_triangles": 2304808,
+      "seconds_to_render": 105.14964524699997,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 81,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "fb2fc7aea40f61ba2a79d43c06e10b1d73df86f9a37192606915fd9018e2edb9",
+      "gcode_time_s": 7008.909970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 29.026663385640063,
+        "y": -9.215070995074157,
+        "z": 36.0,
+        "e": 4243.352562434448
+      },
+      "layer": 179,
+      "move_index": 53479,
+      "move_fraction": 0.00459726443138292,
+      "render_profile": "v9",
+      "deposition_triangles": 2304852,
+      "seconds_to_render": 105.51801063000016,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 82,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "5bc4f9f07b32ec2fdbb83808b8d97297935d03103ab3f31f0e8ae5d8a64b6b11",
+      "gcode_time_s": 7008.951637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.940455666500355,
+        "y": -8.556736336696758,
+        "z": 36.0,
+        "e": 4243.374484477823
+      },
+      "layer": 179,
+      "move_index": 53479,
+      "move_fraction": 0.31504315423545165,
+      "render_profile": "v9",
+      "deposition_triangles": 2304852,
+      "seconds_to_render": 104.94654609200006,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 83,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e3510c20afcb2f70cd0af6f9fa8cd790164bed5a80679726bddeea3756f805c5",
+      "gcode_time_s": 7008.9933039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.790717892536662,
+        "y": -7.41324747917524,
+        "z": 36.0,
+        "e": 4243.412561787007
+      },
+      "layer": 179,
+      "move_index": 53479,
+      "move_fraction": 0.8542695360414038,
+      "render_profile": "v9",
+      "deposition_triangles": 2304852,
+      "seconds_to_render": 104.787119652,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 84,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "ea16092da594d56e17f3f81c8b6a0af4c322c2bb397d0f6be36cebea726a36c1",
+      "gcode_time_s": 7009.034970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.743089193552265,
+        "y": -7.078485736482023,
+        "z": 36.0,
+        "e": 4243.423734137178
+      },
+      "layer": 179,
+      "move_index": 53480,
+      "move_fraction": 0.012423759408265187,
+      "render_profile": "v9",
+      "deposition_triangles": 2304896,
+      "seconds_to_render": 230.568998878,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 85,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "1d5d8cfdd2a359b35c6388c534fe671def379281d382e2f3be3c3b747e6edb69",
+      "gcode_time_s": 7009.076637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.5402631721785,
+        "y": -6.349859699707878,
+        "z": 36.0,
+        "e": 4243.448706039769
+      },
+      "layer": 179,
+      "move_index": 53480,
+      "move_fraction": 0.36432011489209354,
+      "render_profile": "v9",
+      "deposition_triangles": 2304896,
+      "seconds_to_render": 219.11629539499995,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 86,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "84415ab252f268fae172db6b9b31ccca1dcb276f017b32b9133993078abc48b5",
+      "gcode_time_s": 7009.1183039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.24094987733085,
+        "y": -5.274615713253354,
+        "z": 36.0,
+        "e": 4243.4855574377925
+      },
+      "layer": 179,
+      "move_index": 53480,
+      "move_fraction": 0.8836186589908308,
+      "render_profile": "v9",
+      "deposition_triangles": 2304896,
+      "seconds_to_render": 217.780836356,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 87,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "e83164d3bd151e80d563674c2c9704b2530320bbbcc85f014a3524bf86d0b361",
+      "gcode_time_s": 7009.159970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 28.15697682070038,
+        "y": -4.987554274901868,
+        "z": 36.0,
+        "e": 4243.495436937178
+      },
+      "layer": 179,
+      "move_index": 53481,
+      "move_fraction": 0.023465356289054055,
+      "render_profile": "v9",
+      "deposition_triangles": 2304940,
+      "seconds_to_render": 218.31910958799995,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 88,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "ad51dc04be422410338e92484684a4f0fb364727cc2c47da84cd3061019c2d3a",
+      "gcode_time_s": 7009.201637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.86971797504563,
+        "y": -4.2038928954743255,
+        "z": 36.0,
+        "e": 4243.522994944875
+      },
+      "layer": 179,
+      "move_index": 53481,
+      "move_fraction": 0.42248031024887095,
+      "render_profile": "v9",
+      "deposition_triangles": 2304940,
+      "seconds_to_render": 218.136038204,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 89,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "554eb98f14fe3934e19e1aab61ad012976de5d66a5f9230913aba6c3ee800251",
+      "gcode_time_s": 7009.2433039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.51146318180784,
+        "y": -3.226549813783194,
+        "z": 36.0,
+        "e": 4243.557363906872
+      },
+      "layer": 179,
+      "move_index": 53481,
+      "move_fraction": 0.9201117043451319,
+      "render_profile": "v9",
+      "deposition_triangles": 2304940,
+      "seconds_to_render": 217.43813332199989,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 90,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "88122fbe136ffca2951ecdb7c88666d4088a0883b6ff1d1b0590bbd4d8488778",
+      "gcode_time_s": 7009.284970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.41912415465498,
+        "y": -2.9781478413665354,
+        "z": 36.0,
+        "e": 4243.566113975893
+      },
+      "layer": 179,
+      "move_index": 53482,
+      "move_fraction": 0.04970647181110131,
+      "render_profile": "v9",
+      "deposition_triangles": 2304984,
+      "seconds_to_render": 217.27349666300006,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 91,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "9ba708abcfc788eec4e45105b79b75eb03a57b44417ed02bb5cbc34546f337c4",
+      "gcode_time_s": 7009.326637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 27.0833170110717,
+        "y": -2.095841088493742,
+        "z": 36.0,
+        "e": 4243.59728398961
+      },
+      "layer": 179,
+      "move_index": 53482,
+      "move_fraction": 0.5289995988300303,
+      "render_profile": "v9",
+      "deposition_triangles": 2304984,
+      "seconds_to_render": 217.677656436,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 92,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "b9f16a4f0d599bcc4a19766619c418686bc2678bfb32dab29859e90c98253e5f",
+      "gcode_time_s": 7009.3683039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 26.775011310584972,
+        "y": -1.2857922057153246,
+        "z": 36.0,
+        "e": 4243.625901287059
+      },
+      "layer": 179,
+      "move_index": 53482,
+      "move_fraction": 0.9690402772005776,
+      "render_profile": "v9",
+      "deposition_triangles": 2304984,
+      "seconds_to_render": 217.96826156600014,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 93,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "d37804a818b76729db5283af528b886a32b19d3602d78664ef93e8ddf467c7d8",
+      "gcode_time_s": 7009.409970615729,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 26.686516807570968,
+        "y": -1.0135444447499395,
+        "z": 36.0,
+        "e": 4243.635356255724
+      },
+      "layer": 179,
+      "move_index": 53483,
+      "move_fraction": 0.12361347179794269,
+      "render_profile": "v9",
+      "deposition_triangles": 2305028,
+      "seconds_to_render": 217.84746409800027,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 94,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "3490f5fcc3088d9c172c38f83b1300a9d5819084b9a31acc782ca93b297150c5",
+      "gcode_time_s": 7009.451637282396,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 26.36752294132836,
+        "y": 0.014328614944716378,
+        "z": 36.0,
+        "e": 4243.670890644805
+      },
+      "layer": 179,
+      "move_index": 53483,
+      "move_fraction": 0.7138837546197897,
+      "render_profile": "v9",
+      "deposition_triangles": 2305028,
+      "seconds_to_render": 217.6141069360001,
+      "burned_in_explanatory_labels": true
+    },
+    {
+      "frame": 95,
+      "fingerprint": "0fecca9c98a633d9af37bba6ffaa314955460eb5d08e625f685e474dce350d39",
+      "sha256": "381b1264fbb58f2c4d7368ac8c1769e97e4844f03b7e635836190141e22c0950",
+      "gcode_time_s": 7009.4933039490625,
+      "mode": "1x modeled motion / replay of final extrusion",
+      "state": {
+        "x": 26.21290010023708,
+        "y": 0.5125596770125895,
+        "z": 36.0,
+        "e": 4243.688114888834
+      },
+      "layer": 179,
+      "move_index": 53483,
+      "move_fraction": 0.999999814520032,
+      "render_profile": "v9",
+      "deposition_triangles": 2305028,
+      "seconds_to_render": 217.5333731249998,
+      "burned_in_explanatory_labels": true
+    }
+  ]
+}

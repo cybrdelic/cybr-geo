@@ -358,18 +358,35 @@ def build():
  b.add('toolhead_backplate',plate,1,'head','head')
  for x in (-18,18):
   for z in (BED+60,BED+78):b.bolt(f'head_carriage_bolt_{x}_{z}',(x,3,z),(0,-1,0),length=18,motion='head',group='head')
- # Nozzle: real bore and hex with conical melt outlet; outlet z=BED.
+ # Continuous feed path: inlet -> guide -> heatsink -> heatbreak -> nozzle.
+ # Analytic thread interfaces are clearance envelopes, not manufactured threads.
  nozzle=cq.Solid.makeCone(.35,3.3,4.5,cq.Vector(0,0,BED))
  nozzle=nozzle.fuse(cq.Workplane('XY').polygon(6,7.).extrude(3).val().translate((0,0,BED+4.5)))
- nozzle=nozzle.cut(cylinder(.2,12,(0,0,BED-1)))
- b.add('nozzle_040',nozzle,5,'hotend','head',role='0.40 mm outlet; tip coincides with commanded XYZ datum',tol=.018)
- block=box_shape((18,14,9),.4).translate((0,0,BED+11))
- block=block.cut(cylinder(3.05,20,(-10,1,BED+11),(1,0,0)))
- b.add('heater_block',block,4,'hotend','head')
- b.cyl('heater_cartridge',3.,18,(-9,1,BED+11),(1,0,0),mat=15,group='hotend',motion='head')
- b.cyl('heatbreak',2.5,24,(0,0,BED+12),mat=2,bore=1,group='hotend',motion='head')
- b.cyl('heatsink_core',4,24,(0,0,BED+25),mat=4,bore=1,group='hotend',motion='head')
- for j in range(10):b.cyl(f'heatsink_fin_{j}',10.5,1.25,(0,0,BED+25+j*2.3),mat=4,bore=1,group='hotend',motion='head')
+ nozzle=nozzle.fuse(cylinder(3.,4.5,(0,0,BED+7.5)))
+ outlet=cylinder(.2,1.3,(0,0,BED-.1))
+ transition=cq.Solid.makeCone(.2,1.,1.,cq.Vector(0,0,BED+1.1))
+ melt_bore=cylinder(1.,10.1,(0,0,BED+2.1))
+ nozzle=nozzle.cut(outlet.fuse(transition).fuse(melt_bore))
+ b.add('nozzle_040',nozzle,5,'hotend','head',role='0.40 mm outlet, tapered transition and 2 mm feed bore; nominal spigot thread envelope',tol=.018)
+ # The heater cartridge sits to one side of the feed passage, with a 0.90 mm
+ # nominal ligament between the two clearance bores.
+ block=box_shape((18,15.5,10),.4).translate((0,3.25,BED+12.5))
+ block=block.cut(cylinder(3.05,12,(0,0,BED+6.5)))
+ block=block.cut(cylinder(3.05,20,(-10,7,BED+12.5),(1,0,0)))
+ block=block.cut(cylinder(1.5,7,(7,-2,BED+11)))
+ b.add('heater_block',block,4,'hotend','head',role='Offset cartridge bore and continuous central hotend bore; thread and retention details still nominal')
+ b.cyl('heater_cartridge',3.,18,(-9,7,BED+12.5),(1,0,0),mat=15,group='hotend',motion='head')
+ b.cyl('temperature_sensor_envelope',1.45,6,(7,-2,BED+11.5),mat=15,group='hotend',motion='head',role='Separate nominal 3 mm sensor cartridge envelope, no assumed calibration or wiring')
+ lower=cylinder(3.,5.5,(0,0,BED+12))
+ neck=cylinder(1.4,7.5,(0,0,BED+17.5))
+ upper=cylinder(2.5,11,(0,0,BED+25))
+ heatbreak=lower.fuse(neck).fuse(upper).cut(cylinder(1.,26,(0,0,BED+11)))
+ b.add('heatbreak',heatbreak,2,'hotend','head',role='Bored heatbreak seats against nozzle at Z+12; thin neck and nominal upper interface')
+ sink=cylinder(4.,24,(0,0,BED+25),bore=1.)
+ sink=sink.cut(cylinder(2.5,11.1,(0,0,BED+24.9)))
+ b.add('heatsink_core',sink,4,'hotend','head')
+ for j in range(10):
+  b.cyl(f'heatsink_fin_{j}',10.5,1.25,(0,0,BED+25+j*2.3),mat=4,bore=4.,group='hotend',motion='head')
  # Direct drive hob reaches filament centerline; spring idler opposite.
  stepper(b,'extruder_motor',(-6,14.5,BED+104),(0,-1,0),'head',20)
  for dx,dz in [(-15.5,-15.5),(-15.5,15.5),(15.5,-15.5),(15.5,15.5)]:
@@ -398,14 +415,23 @@ def build():
  for x in (-11.5,11.5):
   for z in (11.5,):b.bolt(f'fan_screw_{x}_{z}',(x,-25,BED+38+z),(0,-1,0),length=16,motion='head',group='cooling')
  for x in (-11.5,11.5):b.cyl(f'fan_mount_spacer_{x}',3,3,(x,-14,BED+49.5),(0,1,0),mat=4,bore=1.6,group='cooling',motion='head')
- # Part-cooling duct: open annular loft from blower to nozzle ring.
- duct=cq.Workplane('XY').workplane(offset=BED+8).circle(8).circle(5.5).extrude(3).val()
- b.add('part_cooling_ring',duct,0,'cooling','head')
+ # Two open cooling ducts outside the heater envelope. The former annular
+ # ring intersected the heater block; each new outlet stops above the nozzle.
+ # These are geometric flow passages, not a validated blower/airflow design.
  for sx in (-1,1):
-  s=cq.Workplane('XY').workplane(offset=BED+11).center(sx*8,3).rect(4,5).workplane(offset=33).center(sx*9,8).rect(9,9).loft().val()
-  inner=cq.Workplane('XY').workplane(offset=BED+10.5).center(sx*8,3).rect(2,3).workplane(offset=34).center(sx*9,8).rect(7,7).loft().val()
-  b.add(f'cooling_duct_{sx}',s.cut(inner),0,'cooling','head',role='Hollow lofted duct with open inlet and outlet')
-  b.box(f'part_blower_{sx}',(20,10,20),(sx*24,15,BED+46),0,motion='head',group='cooling')
+  bottom=(sx*11.5,-1.)
+  top=(sx*24.,15.)
+  s=cq.Workplane('XY',origin=(bottom[0],bottom[1],BED+4)).rect(4,5).workplane(offset=32).center(top[0]-bottom[0],top[1]-bottom[1]).rect(8,8).loft().val()
+  # Extend the inner loft beyond both end faces to guarantee open outlets.
+  slope=np.array([top[0]-bottom[0],top[1]-bottom[1]])/32.
+  lower=np.array(bottom)-slope*.5
+  upper=np.array(top)+slope*.5
+  inner=cq.Workplane('XY',origin=(lower[0],lower[1],BED+3.5)).rect(2,3).workplane(offset=33).center(upper[0]-lower[0],upper[1]-lower[1]).rect(6,6).loft().val()
+  b.add(f'cooling_duct_{sx}',s.cut(inner),0,'cooling','head',role='Open hollow cooling duct routed clear of heater and filament path')
+  blower=box_shape((20,10,20),.6).translate((sx*24,15,BED+46))
+  blower=blower.cut(cylinder(7.5,9,(sx*24,9.5,BED+46),(0,1,0)))
+  blower=blower.cut(box_shape((6,6,12),0).translate((sx*24,15,BED+40)))
+  b.add(f'part_blower_{sx}',blower,0,'cooling','head',role='Nominal open blower shell with connected outlet; impeller performance unvalidated')
  b.cyl('bed_probe_body',4,26,(25,0,BED+17),mat=2,group='head',motion='head')
  b.cyl('bed_probe_retracted_tip',1,6,(25,0,BED+11),mat=15,group='head',motion='head')
  # Limit switches and physical triggers.
