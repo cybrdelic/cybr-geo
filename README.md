@@ -17,9 +17,20 @@ One parametric recipe produces named parts, analytic solids, inspection views, m
 | **Nitinol actuator** | Twelve SMA fibers, guided carriage and explicit electrical routing | [Actuator recipe](src/mechanism_lab/models/nitinol_actuator.py) |
 | **Motor / belt drive** | Procedural motor construction, pulley/belt geometry and mechanical integration | [Motor](src/mechanism_lab/models/motor.py) · [Drivetrain](src/mechanism_lab/models/drivetrain.py) |
 | **Differential** | Internal inspection, exploded views and prescribed differential kinematics | [Study](examples/differential/README.md) |
+| **CYBR TERRAIN** | Layered soils, conservative sediment transport and textured geometry | [Terrain](examples/terrain/README.md) |
 | **CYBR YARD** | A 1,404-part parametric skatepark, timber framing and outdoor rendering | [Recipe](examples/diy_skatepark/recipe.py) |
 
 ![Exploded differential assembly](media/differential_exploded.jpg)
+
+## CYBR TERRAIN
+
+[CYBR TERRAIN](docs/terrain.md) adds layered terrain, three-grain sediment transport, wet soil materials, and native CYBR LIGHT rendering to CYBR GEO. Its seeded process model checks water and solid inventories automatically; the initial geology and small-scale surface detail are procedurally authored and uncalibrated.
+
+| Badlands | Watershed | Soil horizons |
+| --- | --- | --- |
+| ![Layered badlands](media/light/terrain-badlands.png) | ![Eroded watershed](media/light/terrain-watershed.png) | ![Soil close view](media/light/terrain-soil-profile.png) |
+
+These are native development renders. Mesh faceting and coarse material transitions still limit photographic realism. [Run the examples and inspect the render settings](docs/terrain.md#run-the-examples) from `examples/terrain`.
 
 ## Run it
 

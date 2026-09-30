@@ -8,12 +8,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 import numpy as np
-from scipy.ndimage import zoom, gaussian_filter, map_coordinates
+from scipy.ndimage import zoom, gaussian_filter, map_coordinates, binary_dilation
 import trimesh
 from mechanism_lab.core import Assembly, Part, Material, View, validate
 from mechanism_lab.exporters import scene as geo_scene
 from .model import State, LAYERS, LOOSE_POROSITY
-from .materials import Atlas, make_atlas, srgb
+from .materials import Atlas, make_atlas, make_boundary_atlas, exposure_weights, srgb
 
 
 @dataclass
@@ -44,6 +44,7 @@ class Geometry:
 
     def export_glb(self,path):
         s=geo_scene(self.assembly)
+        clamped_materials=set()
         for part in self.assembly.parts:
             mesh=s.geometry[part.name];a=self.attributes[part.name]
             if part.material in self.atlases:
@@ -57,6 +58,7 @@ class Geometry:
                 material=trimesh.visual.material.PBRMaterial(name=self.assembly.materials[part.material].name,
                     baseColorFactor=[255,255,255,255],baseColorTexture=color,normalTexture=normal,
                     metallicFactor=0,roughnessFactor=1,metallicRoughnessTexture=orm,doubleSided=False)
+                if not atlas.repeat:clamped_materials.add(material.name)
                 mesh.visual=trimesh.visual.TextureVisuals(uv=a.uv,material=material)
                 mesh.visual.vertex_attributes['color']=np.c_[np.round(np.clip(a.tint/gain,0,1)*255).astype('uint8'),np.full(len(a.tint),255,'uint8')]
             else:
@@ -64,7 +66,17 @@ class Geometry:
                 m=trimesh.visual.material.PBRMaterial(name='Water raster preview',baseColorFactor=[35,65,70,100],
                     metallicFactor=0,roughnessFactor=.08,alphaMode='BLEND',doubleSided=True)
                 mesh.visual=trimesh.visual.TextureVisuals(uv=a.uv,material=m)
-        path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);s.export(path)
+        def contact_samplers(tree):
+            if not clamped_materials:return
+            sampler=len(tree.setdefault('samplers',[]))
+            tree['samplers'].append({'wrapS':33071,'wrapT':33071,'magFilter':9729,'minFilter':9729})
+            for material in tree['materials']:
+                if material.get('name') not in clamped_materials:continue
+                pbr=material.get('pbrMetallicRoughness',{})
+                textures=[pbr.get('baseColorTexture'),pbr.get('metallicRoughnessTexture'),material.get('normalTexture')]
+                for texture in textures:
+                    if texture is not None:tree['textures'][texture['index']]['sampler']=sampler
+        path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);s.export(path,tree_postprocessor=contact_samplers)
         restored=trimesh.load(path,force='scene')
         if len(restored.geometry)!=len(s.geometry):raise RuntimeError("GLB component count mismatch")
         return path
@@ -86,8 +98,9 @@ def grid_faces(n):
     return np.vstack((np.stack((ll,lr,ur),axis=1),np.stack((ll,ur,ul),axis=1)))
 
 
-def build_geometry(state:State,directory,subdivision=2,stones=500):
+def build_geometry(state:State,directory,subdivision=2,stones=500,contact_resolution=2048):
     if subdivision not in (1,2,3,4) or not 0<=stones<=5000:raise ValueError("Invalid geometry detail setting")
+    if not isinstance(contact_resolution,int) or not 16<=contact_resolution<=2048:raise ValueError('Invalid contact texture resolution')
     state.validate();c=state.config;directory=Path(directory);n=(c.grid-1)*subdivision+1
     if n>1025:raise ValueError("Display geometry is limited to 1025 vertices per side")
     def expand(a):
@@ -129,8 +142,16 @@ def build_geometry(state:State,directory,subdivision=2,stones=500):
     display_z=z+meso*amplitude*(1-wet*.38)
     vertices=np.stack((x,y,display_z),axis=-1).reshape(-1,3)
     normals=normal_field(display_z,dx).reshape(-1,3);uv=np.stack((x/1.25,y/1.25),axis=-1).reshape(-1,2)
-    faces=grid_faces(n);top_material=layer*4+wet_bin
+    faces=grid_faces(n);top_material=np.maximum(layer,0)*4+wet_bin
     face_material=np.sort(top_material.ravel()[faces],axis=1)[:,1]
+    # One shader owns every crossing triangle and a bounded two-cell halo.
+    # Independent repeating textures cannot cancel their high-frequency
+    # differences using vertex colour, even when the average pigment agrees.
+    crossing=np.any(top_material.ravel()[faces]!=top_material.ravel()[faces[:,0,None]],axis=1)
+    contact_vertices=np.zeros((n,n),bool)
+    contact_vertices.ravel()[faces[crossing].ravel()]=True
+    contact_vertices=binary_dilation(contact_vertices,iterations=2)
+    contact_faces=np.any(contact_vertices.ravel()[faces],axis=1)
     parts=[];attrs={};materials=[];atlases={};material_map={}
     for i,l in enumerate(all_layers):
         for w in range(4):
@@ -155,23 +176,34 @@ def build_geometry(state:State,directory,subdivision=2,stones=500):
     # Weathered boundaries are a blend across a small subgrid fringe; actual
     # interface heights remain authoritative. This removes the former polygon
     # staircase pigment edges without changing any simulated strata.
-    blended=np.zeros((n,n,3));weight_sum=np.zeros((n,n))
-    for k,l in enumerate(all_layers):
-        weight=gaussian_filter((bed_layer==k).astype(float),.85)
-        blended+=weight[:,:,None]*np.asarray(l.color);weight_sum+=weight
-    blended/=np.maximum(weight_sum[:,:,None],1e-12)
+    weights=exposure_weights(bed_layer,wet_bin,len(state.layers))
+    blended=np.zeros((n,n,3))
+    for key,weight in weights.items():blended+=weight[:,:,None]*np.asarray(all_layers[key//4].color)
     # Actual gravel/sand/fines composition colours the graded coating; pigment
     # changes continuously even where the substrate switches to a full mantle.
     fractions=loose_grains/np.maximum(loose[None,:,:],1e-20)
     deposit_color=sum(fractions[i,:,:,None]*np.asarray(color) for i,color in enumerate(((.24,.23,.20),(.49,.35,.20),(.23,.13,.06))))
     blended=blended*(1-deposit_coverage[:,:,None])+deposit_color*deposit_coverage[:,:,None]
     for key in np.unique(face_material):
-        selected=faces[face_material==key]
+        selected=faces[(face_material==key)&~contact_faces]
         primary=all_layers[max(0,min(len(all_layers)-1,int(key)//4))]
         local_tint=tint*np.clip(blended.reshape(-1,3)/np.maximum(primary.color,.001),.30,3.5)
         bin_wet=(int(key)%4)/3
         local_tint*=((1-.48*wet.ravel())/(1-.48*bin_wet))[:,None]
         part('surface_'+str(key),vertices,selected,normals,material_map.get(int(key),0),uv,local_tint,'surface')
+    contact_material=None
+    if contact_faces.any():
+        contact_material=len(materials)
+        atlas_weights=exposure_weights(layer,wet_bin,len(all_layers))
+        contact=make_boundary_atlas(atlases,atlas_weights,wet,blended,c.extent,contact_resolution)
+        contact.save(directory/'textures','surface_contact_world')
+        atlases[contact_material]=contact
+        materials.append(Material('surface_contact_world',(.5,.5,.5),rough=float(np.median(contact.roughness)),
+                                  material_source='Blended actual bed exposure and graded deposited coating; clamped world-UV PBR'))
+        world_uv=np.stack(((x+c.extent/2)/c.extent,(y+c.extent/2)/c.extent),axis=-1).reshape(-1,2)
+        # Pigment and moisture responses are already baked; retain only the
+        # same weathering tint used by the unmodified interior materials.
+        part('surface_contact',vertices,faces[contact_faces],normals,contact_material,world_uv,tint,'surface')
     # The four vertical cut faces use every surviving geological interface.
     foundation=expand(state.foundation);levels=[foundation]
     for t in beds:levels.append(levels[-1]+t)
@@ -327,5 +359,10 @@ def build_geometry(state:State,directory,subdivision=2,stones=500):
                   'scatter_detail_distribution':'substrate/slope/moisture weighted, with additional detail in lower-y central close-view region',
                   'chunk_lithology':'authored 30% admixture of available parent-bed materials; fine aggregates follow exposed material',
                   'material_atlas_period_m':1.25,'material_atlas_resolution':512,
+                  'surface_contact_material':contact_material,'surface_contact_faces':int(contact_faces.sum()),
+                  'surface_contact_halo_display_cells':2,'surface_contact_weight_support_display_cells':2,
+                  'surface_contact_atlas_resolution':contact_resolution if contact_material is not None else None,
+                  'surface_contact_texel_size_m':c.extent/contact_resolution if contact_material is not None else None,
+                  'surface_contact_mapping':'one clamped normalized world-UV material for crossing triangles and halo; existing periodic atlases retained in interiors',
                   'surface_detail':'centimetric multiscale weathering plus periodic aggregate/mineral/pore normal maps'})
     result=Geometry(assembly,attrs,atlases,water_material,state);result.validate();return result

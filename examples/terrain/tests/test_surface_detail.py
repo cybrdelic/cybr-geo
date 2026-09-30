@@ -37,7 +37,7 @@ def detailed_geometry(tmp_path_factory):
     # material everywhere while contributing some optical pigment coverage.
     state.loose[1]=.00058
     height=state.height.copy();solids=state.solid_volumes().copy()
-    geometry=build_geometry(state,directory,subdivision=2,stones=7)
+    geometry=build_geometry(state,directory,subdivision=2,stones=7,contact_resolution=128)
     assert np.array_equal(state.height,height)
     assert np.array_equal(state.solid_volumes(),solids)
     return geometry,directory
@@ -52,7 +52,8 @@ def test_thin_sediment_dusting_retains_underlying_lithology(detailed_geometry):
     deposited_material_start=len(geometry.state.layers)*4
     surface=[p for p in geometry.assembly.parts if p.group=='surface']
     assert surface
-    assert all(p.material<deposited_material_start for p in surface)
+    contact_material=meta['surface_contact_material']
+    assert all(p.material<deposited_material_start or p.material==contact_material for p in surface)
 
 
 def test_fracture_planes_and_centimetre_aggregate_budget(detailed_geometry):

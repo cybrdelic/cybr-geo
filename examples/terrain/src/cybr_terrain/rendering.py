@@ -80,7 +80,7 @@ def pack_geometry(geometry:Geometry,path,material_map):
                 records[:,:9]=v[faces].reshape(-1,9);records[:,9:18]=normal[faces].reshape(-1,9)
                 records[:,18]=material_map[p.material]
                 # One closed dielectric region shares an object identifier.
-                records[:,19]=900000 if p.group=='water' else component+1
+                records[:,19]=900000 if p.group=='water' else 800000 if p.group=='surface' else component+1
                 records[:,20:26]=a.uv[faces].reshape(-1,6);records[:,26:35]=a.tint[faces].reshape(-1,9)
                 writer.add(records)
     return {"triangles":writer.triangles,"meshlets":writer.meshlets,"indexed_vertices":writer.vertices,
@@ -111,9 +111,12 @@ def render_terrain(geometry:Geometry,output,quality='preview',threads=4,width=No
         else:
             atlas=geometry.atlases[index]
             base=s.material('plastic',(1,1,1),float(np.median(atlas.roughness)),ior=1.50,texture=atlas.color_pfm)
+            repeat=int(atlas.repeat)
+            if not repeat:s.emit('texture',base,json.dumps(str(atlas.color_pfm.resolve())),1,1,0)
             if getattr(atlas,'roughness_pfm',None):
-                s.emit('roughness_texture',base,json.dumps(str(atlas.roughness_pfm.resolve())),1,1,1)
+                s.emit('roughness_texture',base,json.dumps(str(atlas.roughness_pfm.resolve())),1,1,repeat)
             wrapper=s.material('normalmap',texture=atlas.normal_pfm);s.emit('nested',wrapper,base,-1,.5)
+            if not repeat:s.emit('texture',wrapper,json.dumps(str(atlas.normal_pfm.resolve())),1,1,0)
             material_map[index]=wrapper
     bounds=geometry.assembly.bounds*.001;extent=geometry.state.config.extent
     target=np.array([0,0,(bounds[0,2]+bounds[1,2])*.48])

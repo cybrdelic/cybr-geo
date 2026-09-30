@@ -2,7 +2,11 @@
 
 Layered earth that can erode, move, settle, and be inspected. CYBR TERRAIN turns a reproducible terrain state into textured **CYBR GEO** geometry and renders it with the native **CYBR LIGHT** spectral path tracer.
 
-![Badlands terrain rendered with CYBR LIGHT](media/badlands.png)
+| Badlands | Watershed | Soil horizons |
+| --- | --- | --- |
+| ![Badlands](media/badlands.png) | ![Watershed](media/watershed.png) | ![Soil horizons](media/soil-profile.png) |
+
+Actual native development renders. Remaining mesh faceting and surface detail limit photographic realism. [Gallery, sampling and unfiltered comparisons](docs/GALLERY.md).
 
 The badlands, watershed, and soil-profile examples share one process model: surface runoff transports gravel, sand, and fines; erosion exposes the actual sediment stack; deposition retains the transported grain mixture; infiltration fills a shallow soil bucket. Water and each grain class are checked automatically before a successful result is written.
 
