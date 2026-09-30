@@ -57,11 +57,12 @@ int main(int argc,char**argv){
   if(!checkpoint.empty())save_checkpoint(checkpoint,signature,cfg.spp,cfg.width,cfg.height,accumulator);
   std::vector<Vec3> film(count),normal(count),albedo(count),depth(count),position(count),ids(count),stderr_image(count);
   std::array<std::vector<Vec3>,3> gradients;for(auto&g:gradients)if(cfg.ad)g.resize(count);std::array<std::vector<Vec3>,4> stokes;for(auto&g:stokes)if(cfg.polarized)g.resize(count);
+#pragma omp parallel for schedule(static)
   for(int y=0;y<cfg.height;y++)for(int x=0;x<cfg.width;x++){
    size_t id=size_t(y)*cfg.width+x;auto&p=accumulator[id];film[id]=xyz_to_rgb(p.xyz/double(cfg.spp));double variance=cfg.spp>1?std::max(0.,(p.sy2-p.sy*p.sy/cfg.spp)/(cfg.spp-1)):0;stderr_image[id]=Vec3(std::sqrt(variance/cfg.spp));
    for(int c=0;c<3;c++)if(cfg.ad)gradients[c][id]=xyz_to_rgb(p.gradient[c]/double(cfg.spp));for(int c=0;c<4;c++)if(cfg.polarized)stokes[c][id]=xyz_to_rgb(p.stokes[c]/double(cfg.spp));
    RNG ar(cfg.seed+id);Camera camera=scene.camera;camera.aperture=0;camera.shutter_open=camera.shutter_close=(camera.shutter_open+camera.shutter_close)*.5;
-   Hit hit;if(scene.bvh.hit(camera.generate(x+.5,y+.5,cfg.width,cfg.height,ar),hit)){normal[id]=hit.n*.5+Vec3(.5);depth[id]=Vec3(hit.t);position[id]=hit.p;ids[id]=Vec3(hit.object);albedo[id]=scene.materials[hit.material].color.controls;}
+   Hit hit;if(scene.bvh.hit(camera.generate(x+.5,y+.5,cfg.width,cfg.height,ar),hit)){auto guide=surface_guide(scene.materials[hit.material],hit);normal[id]=guide.normal*.5+Vec3(.5);depth[id]=Vec3(hit.t);position[id]=hit.p;ids[id]=Vec3(hit.object);albedo[id]=guide.albedo;}
   }
   double seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
   write_pfm(prefix+".pfm",film,cfg.width,cfg.height);if(cfg.film_format=="openexr")write_rgb_exr(prefix+".exr",film,cfg.width,cfg.height);write_ppm(prefix+".ppm",film,cfg.width,cfg.height,cfg.exposure);
@@ -72,4 +73,3 @@ int main(int argc,char**argv){
   if(!report)throw std::runtime_error("Cannot write render report");std::cerr<<"Completed: "<<seconds<<" s; mean luminance="<<mean_y<<"; photons="<<photonmap.stored_count()<<"\n";return 0;
  }catch(const std::exception&e){std::cerr<<"ERROR: "<<e.what()<<"\n";return 1;}
 }
-

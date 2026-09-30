@@ -27,6 +27,7 @@ inline void read_scene(const std::string&path,Scene&s){
    else if(cmd=="bump_scale"){int i;q>>i;q>>s.materials.at(i).bump_scale;}
    else if(cmd=="emission_temperature"){int i;std::string name;q>>i>>std::quoted(name);auto t=std::make_shared<ImageTexture>();s.dependencies.push_back((std::filesystem::path(path).parent_path()/name).string());t->load(s.dependencies.back());t->repeat=false;s.materials.at(i).temperature_texture=t;}
    else if(cmd=="texture"){int i;std::string name;q>>i>>std::quoted(name);auto t=std::make_shared<ImageTexture>();s.dependencies.push_back((std::filesystem::path(path).parent_path()/name).string());t->load(s.dependencies.back());q>>t->scale_u>>t->scale_v>>t->repeat;s.materials.at(i).texture=t;}
+   else if(cmd=="roughness_texture"){int i;std::string name;q>>i>>std::quoted(name);auto t=std::make_shared<ImageTexture>();s.dependencies.push_back((std::filesystem::path(path).parent_path()/name).string());t->load(s.dependencies.back());q>>t->scale_u>>t->scale_v>>t->repeat;for(auto pixel:t->pixels)if(pixel.x<0||pixel.x>1)throw std::runtime_error("Roughness texture red channel must be in [0,1]");s.materials.at(i).roughness_texture=t;}
    else if(cmd=="uv_checker"){int i;q>>i;s.materials.at(i).uv_checker=true;}
    else if(cmd=="surface_uv"){int i;q>>i;auto&p=s.primitives.at(i);p.edit().ta=read_vec(q);p.edit().tb=read_vec(q);p.edit().tc=read_vec(q);p.edit().has_uv=true;}
    else if(cmd=="camera_spherical"){s.camera.spherical=true;}
@@ -83,4 +84,3 @@ inline void write_pfm(const std::string&path,const std::vector<Vec3>&pixels,int 
 inline double display_transfer(double x){x=std::max(0.,x);double f=clamp(x*(2.51*x+.03)/(x*(2.43*x+.59)+.14));return f<=.0031308?12.92*f:1.055*std::pow(f,1/2.4)-.055;}
 inline void write_ppm(const std::string&path,const std::vector<Vec3>&pixels,int width,int height,double exposure){std::ofstream f(path,std::ios::binary);f<<"P6\n"<<width<<" "<<height<<"\n255\n";for(auto v:pixels){unsigned char a[3];for(int c=0;c<3;c++)a[c]=(unsigned char)std::lround(255*display_transfer(v[c]*exposure));f.write(reinterpret_cast<char*>(a),3);}if(!f)throw std::runtime_error("Display image write failed");}
 }
-

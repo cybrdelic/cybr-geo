@@ -7,7 +7,7 @@
 #include <atomic>
 #include <cstring>
 namespace cybr {
-struct Hit { double t=inf;Vec3 p,n,gn,tangent,tint{1};double u=0,v=0;int primitive=-1,material=-1,object=-1;bool front=true; };
+struct Hit { double t=inf;Vec3 p,n,gn,tangent,tint{1};double u=0,v=0,tangent_sign=1;int primitive=-1,material=-1,object=-1;bool front=true; };
 enum class Shape {Sphere, Triangle, Quad, Disk, Cylinder};
 struct MeshletVertex {float value[11];};
 struct Meshlet {std::vector<MeshletVertex> vertices;};
@@ -44,8 +44,8 @@ struct Primitive {
  double area()const{const auto g=geometry();const auto &a=g.a,&b=g.b,&c=g.c,&na=g.na,&nb=g.nb,&nc=g.nc,&velocity=g.velocity,&ta=g.ta,&tb=g.tb,&tc=g.tc,&ca=g.ca,&cb=g.cb,&cc=g.cc;bool has_uv=g.has_uv,smooth=g.smooth;if(shape==Shape::Cylinder)return 2*pi*radius*norm(b-a);if(shape==Shape::Disk)return pi*radius*radius;return shape==Shape::Sphere?4*pi*radius*radius:shape==Shape::Triangle?.5*norm(cross(b-a,c-a)):norm(cross(b,c));}
  bool hit(const Ray&r,double min_t,Hit& h)const{
   const auto g=geometry();const auto &a=g.a,&b=g.b,&c=g.c,&na=g.na,&nb=g.nb,&nc=g.nc,&velocity=g.velocity,&ta=g.ta,&tb=g.tb,&tc=g.tc,&ca=g.ca,&cb=g.cb,&cc=g.cc;bool has_uv=g.has_uv,smooth=g.smooth;
-  Vec3 origin=r.o-velocity*r.time;double t=inf,u=0,v=0;Vec3 n,gn,tangent,tint{1};
-  if(shape==Shape::Sphere){Vec3 oc=origin-a;double bq=dot(oc,r.d),cq=dot(oc,oc)-radius*radius,disc=bq*bq-cq;if(disc<0)return false;double sq=std::sqrt(disc);t=-bq-sq;if(t<=min_t)t=-bq+sq;if(t<=min_t||t>=h.t)return false;gn=n=(origin+r.d*t-a)/radius;u=.5+std::atan2(n.z,n.x)/(2*pi);v=std::acos(clamp(n.y,-1,1))/pi;}
+  Vec3 origin=r.o-velocity*r.time;double t=inf,u=0,v=0,tangent_sign=1;Vec3 n,gn,tangent,tint{1};
+  if(shape==Shape::Sphere){Vec3 oc=origin-a;double bq=dot(oc,r.d),cq=dot(oc,oc)-radius*radius,disc=bq*bq-cq;if(disc<0)return false;double sq=std::sqrt(disc);t=-bq-sq;if(t<=min_t)t=-bq+sq;if(t<=min_t||t>=h.t)return false;gn=n=(origin+r.d*t-a)/radius;u=.5+std::atan2(n.z,n.x)/(2*pi);v=std::acos(clamp(n.y,-1,1))/pi;tangent=normalize(Vec3(-n.z,0,n.x));}
   else if(shape==Shape::Disk){
    gn=n=normalize(b);double den=dot(r.d,n);if(std::abs(den)<1e-14)return false;t=dot(a-origin,n)/den;if(t<=min_t||t>=h.t)return false;
    Vec3 q=origin+r.d*t-a;if(norm2(q)>radius*radius)return false;Frame f(n);u=.5+dot(q,f.x)/(2*radius);v=.5+dot(q,f.y)/(2*radius);tangent=f.x;
@@ -60,9 +60,9 @@ struct Primitive {
    Vec3 e1=shape==Shape::Triangle?b-a:b,e2=shape==Shape::Triangle?c-a:c;
    Vec3 p=cross(r.d,e2);double det=dot(e1,p);if(std::abs(det)<1e-14)return false;double inv=1/det;Vec3 q=origin-a;u=dot(q,p)*inv;if(u<0||u>1)return false;Vec3 k=cross(q,e1);v=dot(r.d,k)*inv;if(v<0||v>(shape==Shape::Triangle?1-u:1))return false;t=dot(e2,k)*inv;if(t<=min_t||t>=h.t)return false;gn=normalize(cross(e1,e2));n=shape==Shape::Triangle&&smooth?normalize(na*(1-u-v)+nb*u+nc*v):gn;if(dot(n,gn)<0)n=-n;tangent=normalize(e1);
    if(shape==Shape::Triangle)tint=ca*(1-u-v)+cb*u+cc*v;
-   if(shape==Shape::Triangle&&has_uv){Vec3 uv=ta*(1-u-v)+tb*u+tc*v;Vec3 d1=tb-ta,d2=tc-ta;double detuv=d1.x*d2.y-d1.y*d2.x;if(std::abs(detuv)>1e-14)tangent=normalize((e1*d2.y-e2*d1.y)/detuv);u=uv.x;v=uv.y;}
+   if(shape==Shape::Triangle&&has_uv){Vec3 uv=ta*(1-u-v)+tb*u+tc*v;Vec3 d1=tb-ta,d2=tc-ta;double detuv=d1.x*d2.y-d1.y*d2.x;if(std::abs(detuv)>1e-14){tangent=normalize((e1*d2.y-e2*d1.y)/detuv);Vec3 bitangent=(e2*d1.x-e1*d2.x)/detuv;tangent_sign=dot(cross(gn,tangent),bitangent)<0?-1:1;}u=uv.x;v=uv.y;}
   }
-  h.t=t;h.p=r.at(t);h.tint=tint;h.tangent=norm2(tangent)>0?tangent:Frame(n).x;h.front=dot(r.d,gn)<0;h.gn=h.front?gn:-gn;h.n=h.front?n:-n;if(dot(h.n,r.d)>0)h.n=h.gn;h.material=material;h.object=object;h.u=u;h.v=v;return true;
+  h.t=t;h.p=r.at(t);h.tint=tint;h.tangent=norm2(tangent)>0?tangent:Frame(n).x;h.front=dot(r.d,gn)<0;h.tangent_sign=h.front?tangent_sign:-tangent_sign;h.gn=h.front?gn:-gn;h.n=h.front?n:-n;if(dot(h.n,r.d)>0)h.n=h.gn;h.material=material;h.object=object;h.u=u;h.v=v;return true;
  }
  void sample(RNG&r,double time,Vec3&p,Vec3&n)const{
   const auto g=geometry();const auto &a=g.a,&b=g.b,&c=g.c,&na=g.na,&nb=g.nb,&nc=g.nc,&velocity=g.velocity,&ta=g.ta,&tb=g.tb,&tc=g.tc,&ca=g.ca,&cb=g.cb,&cc=g.cc;bool has_uv=g.has_uv,smooth=g.smooth;
@@ -149,4 +149,3 @@ struct Camera {
  }
 };
 }
-

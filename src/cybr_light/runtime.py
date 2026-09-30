@@ -167,7 +167,7 @@ def render(scene,stem,runner=None,metadata=None):
         for source in sorted(Path(directory).glob('film*')):
             if source.suffix!='.json':publish(source,stem.with_name(stem.name+source.name[4:]))
         finish(stem,film)
-    report.update(denoising_used=True,denoiser='three camera-footprint, geometry/object/variance guided atrous display passes',engine_source_sha256=digest,mesh_input='CLM1 indexed meshlets: 64 vertices / 124 triangles maximum',raw_film_preserved=True)
+    report.update(denoising_used=True,denoiser='three camera-footprint, textured-albedo/shading-normal/object/variance guided atrous display passes',engine_source_sha256=digest,mesh_input='CLM1 indexed meshlets: 64 vertices / 124 triangles maximum',raw_film_preserved=True)
     if metadata:report.update(metadata)
     temporary=None
     try:

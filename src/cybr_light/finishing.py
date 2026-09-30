@@ -46,7 +46,15 @@ def atrous(im,guide,variance,step,iteration,floor_id=8):
                     # Broader early filtering estimates smooth reflected light;
                     # later passes use propagated variance and preserve edges.
                     cw=np.exp(-(lum-qlum)**2/(sigma*9.+.00003))
-                    w=kernel[ky+2]*kernel[kx+2]*nw*dw*cw
+                    # Spectral albedo is a noise-free first-hit feature. It
+                    # protects grains, mineral flecks and painted markings
+                    # even when path variance permits broad radiance filtering.
+                    ad=0.
+                    for c in range(3):
+                        a=guide[y,x,3+c];b=guide[yy,xx,3+c]
+                        ad+=((a-b)/max(.025,.5*(a+b)))**2
+                    aw=np.exp(-8.*ad)
+                    w=kernel[ky+2]*kernel[kx+2]*nw*dw*cw*aw
                     total+=w
                     for c in range(3):value[c]+=im[yy,xx,c]*w
                     vv+=variance[yy,xx]*w*w

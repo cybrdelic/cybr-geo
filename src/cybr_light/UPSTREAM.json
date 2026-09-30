@@ -30,6 +30,10 @@
     "Constant-time emitter PDF lookup for meshes with many emissive triangles.",
     "Indexed meshlet triangles share float32 vertex blocks during native tracing; double-precision intersection math and SAH BVH are retained. Analytic primitive data uses copy-on-write value semantics.",
     "Exact thread-local ray-intersection reuse across spectral wavelengths, keyed by every ray coordinate/time/clipping interval and unique BVH generation; no quantization.",
-    "Additional native regression checks for compact storage, copy-on-write geometry and exact ray-cache clipping/time/rebuild semantics."
+    "Additional native regression checks for compact storage, copy-on-write geometry and exact ray-cache clipping/time/rebuild semantics.",
+    "First-hit guides evaluate UV texture, vertex tint and nested normal maps; display filtering retains albedo edges.",
+    "Per-texel absolute perceptual roughness textures drive isotropic GGX evaluation and sampling.",
+    "UV-derived surface tangent frames preserve mirrored UV and backface handedness.",
+    "Mapped-normal BSDF evaluation and sampling consistently reject reflection/transmission on the wrong geometric surface side."
   ]
 }

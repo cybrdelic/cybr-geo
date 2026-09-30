@@ -15,7 +15,10 @@ struct Material {
  double alpha_u=0,alpha_v=0,weight=.5,opacity=1,bump_scale=1;bool uv_checker=false;
  int source_index=-1;bool two_sided=true;Vec3 axis{1,0,0};bool differentiable=false;Spectrum second{Vec3(.1)};
  std::shared_ptr<ShaderLibrary> shader;std::array<double,3> shader_parameters{{0,0,0}};
- std::shared_ptr<ImageTexture> texture,temperature_texture;std::shared_ptr<Material> child1,child2;
+ std::shared_ptr<ImageTexture> texture,temperature_texture,roughness_texture;std::shared_ptr<Material> child1,child2;
+ // Texture stores absolute perceptual roughness in its red channel. Both
+ // sampling and evaluation use the same texel so their PDFs stay consistent.
+ double roughness_at(const Hit&h)const{return roughness_texture?clamp(roughness_texture->lookup(h.u,h.v).x):roughness;}
  bool wrapper()const{return type==MaterialType::Mask||type==MaterialType::TwoSided||type==MaterialType::NormalMap||type==MaterialType::BumpMap;}
  double ior(double nm)const{return wrapper()&&child1?child1->ior(nm):cauchy_ior(nm,ior_a,ior_b);}
  Dual albedo(double nm,const Hit&h,bool ad)const{
@@ -49,7 +52,7 @@ inline Vec3 sample_visible_ggx_aniso(Vec3 view,double ax,double ay,RNG&r){
 }
 inline Vec3 sample_visible_ggx(Vec3 v,double a,RNG&r){return sample_visible_ggx_aniso(v,a,a,r);}
 inline Hit modified_normal(const Material&m,Hit h){
- if(!m.texture)return h;Frame f(h.n,h.tangent);Vec3 n;
+ if(!m.texture)return h;Frame f(h.n,h.tangent,h.tangent_sign);Vec3 n;
  if(m.type==MaterialType::NormalMap)n=normalize(m.texture->lookup(h.u,h.v)*2-Vec3(1));
  else{
   double du=1./m.texture->width,dv=1./m.texture->height;
@@ -58,6 +61,31 @@ inline Hit modified_normal(const Material&m,Hit h){
   n=normalize(Vec3(-m.bump_scale*a,-m.bump_scale*b,1));
  }
  Vec3 world=normalize(f.world(n));if(dot(world,h.gn)>1e-5)h.n=world;return h;
+}
+struct SurfaceGuide {Vec3 normal,albedo;};
+// Evaluate the very same nested normal modifications and textured spectral
+// reflectance as the BSDF. The RGB guide is reflectance under a flat spectrum,
+// normalized against white; spectral controls themselves are not sRGB values.
+inline SurfaceGuide surface_guide(const Material&m,Hit h){
+ if(m.wrapper()){
+  if(!m.child1)throw std::runtime_error("Missing nested BSDF guide");
+  if(m.type==MaterialType::NormalMap||m.type==MaterialType::BumpMap)h=modified_normal(m,h);
+  return surface_guide(*m.child1,h);
+ }
+ if(m.type==MaterialType::Blend){
+  if(!m.child1||!m.child2)throw std::runtime_error("Missing blend BSDF guides");
+  auto a=surface_guide(*m.child1,h),b=surface_guide(*m.child2,h);
+  return {normalize(a.normal*(1-m.weight)+b.normal*m.weight),a.albedo*(1-m.weight)+b.albedo*m.weight};
+ }
+ Vec3 xyz,white;
+ constexpr int bands=24;
+ for(int i=0;i<bands;i++){
+  double nm=360+(i+.5)*470/bands;Vec3 matching=Observer::analytic(nm);
+  xyz+=matching*m.albedo(nm,h,false).v;white+=matching;
+ }
+ Vec3 rgb=xyz_to_rgb(xyz),neutral=xyz_to_rgb(white);
+ for(int c=0;c<3;c++)rgb[c]=std::max(0.,rgb[c]/std::max(1e-12,neutral[c]));
+ return {h.n,rgb};
 }
 struct NullEval {Dual numerator;double pdf=0;Mueller pol;};
 inline NullEval null_component(const Material&m,const Hit&hit,Vec3 wo,double nm,bool ad){
@@ -96,12 +124,17 @@ inline BSDFEval evaluate_bsdf(const Material&m,const Hit&hit,Vec3 wo,Vec3 wi,dou
   return {a.f*Dual(1-m.weight)+b.f*Dual(m.weight),a.pdf*(1-m.weight)+b.pdf*m.weight,a.pol*(1-m.weight)+b.pol*m.weight};
  }
  double co=dot(hit.n,wo),ci=dot(hit.n,wi);if(co<=0||std::abs(ci)<1e-12||m.delta())return result;
+ // Normal maps alter the shading frame, never the physical surface side.
+ // Match the sampler's geometric-hemisphere rejection: otherwise NEE can
+ // illuminate a crease through its own surface when its mapped normal tilts.
+ bool transmission=m.type==MaterialType::DiffuseTransmission||(m.type==MaterialType::RoughGlass&&ci<0);
+ if(dot(wo,hit.gn)<=0||(transmission?dot(wi,hit.gn)>=0:dot(wi,hit.gn)<=0))return result;
  if(m.type==MaterialType::Diffuse||m.type==MaterialType::DiffuseTransmission){
   bool transmission=m.type==MaterialType::DiffuseTransmission;if(transmission?ci>=0:ci<=0)return result;
   result.f=m.albedo(nm,hit,ad)/Dual(pi);result.pdf=std::abs(ci)/pi;result.pol=Mueller::depolarizer(result.f.v);return result;
  }
- double ax=m.alpha_u>0?m.alpha_u:std::max(.002,m.roughness*m.roughness),ay=m.alpha_v>0?m.alpha_v:ax;
- Frame frame(hit.n,hit.tangent);Vec3 vo=frame.local(wo),vi=frame.local(wi);
+ double roughness=m.roughness_at(hit),ax=m.alpha_u>0?m.alpha_u:std::max(.002,roughness*roughness),ay=m.alpha_v>0?m.alpha_v:ax;
+ Frame frame(hit.n,hit.tangent,hit.tangent_sign);Vec3 vo=frame.local(wo),vi=frame.local(wi);
  if(m.type==MaterialType::Metal||m.type==MaterialType::Plastic){
   if(ci<=0)return result;Vec3 half=normalize(wo+wi);double ch=dot(hit.n,half),vh=dot(wo,half);if(ch<=0||vh<=0)return result;
   double D=ggx_D_aniso(frame.local(half),ax,ay),G1=1/(1+ggx_lambda_aniso(vo,ax,ay));
@@ -151,7 +184,7 @@ inline BSDFSample sample_bsdf(const Material&m,const Hit&hit,Vec3 wo,double nm,d
   }
   auto e=evaluate_bsdf(m,hit,wo,s.wi,nm,ni,nt,ad);s.pdf=e.pdf;if(s.pdf>0){double factor=std::abs(dot(hit.n,s.wi))/s.pdf;s.weight=e.f*Dual(factor);s.pol=e.pol*factor;}return s;
  }
- Frame frame(hit.n,hit.tangent);
+ Frame frame(hit.n,hit.tangent,hit.tangent_sign);
  if(m.type==MaterialType::Null){s.wi=-wo;s.weight=m.albedo(nm,hit,ad);s.pdf=1;s.delta=true;s.transmission=true;s.pol=Mueller::identity()*s.weight.v;return s;}
  if(m.type==MaterialType::Polarizer||m.type==MaterialType::Retarder){
   s.wi=-wo;s.delta=true;s.transmission=true;s.pdf=1;double a=axis_angle(wo,m.axis)+m.angle;
@@ -173,7 +206,7 @@ inline BSDFSample sample_bsdf(const Material&m,const Hit&hit,Vec3 wo,double nm,d
   }else s.pol=Mueller::depolarizer(s.weight.v);return s;
  }
  if(m.type==MaterialType::Emitter)return s;
- double ax=m.alpha_u>0?m.alpha_u:std::max(.002,m.roughness*m.roughness),ay=m.alpha_v>0?m.alpha_v:ax;
+ double roughness=m.roughness_at(hit),ax=m.alpha_u>0?m.alpha_u:std::max(.002,roughness*roughness),ay=m.alpha_v>0?m.alpha_v:ax;
  if(m.type==MaterialType::Diffuse||m.type==MaterialType::DiffuseTransmission||(m.type==MaterialType::Plastic&&r.uniform()<.5)){
   s.wi=frame.world(cosine_hemisphere(r));if(m.type==MaterialType::DiffuseTransmission){s.wi=-s.wi;s.transmission=true;}
  }else{
@@ -187,4 +220,3 @@ inline BSDFSample sample_bsdf(const Material&m,const Hit&hit,Vec3 wo,double nm,d
  double factor=std::abs(dot(hit.n,s.wi))/s.pdf;s.weight=e.f*Dual(factor);s.pol=polarized?e.pol*factor:Mueller::depolarizer(s.weight.v);return s;
 }
 }
-

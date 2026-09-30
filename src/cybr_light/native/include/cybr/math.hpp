@@ -43,7 +43,7 @@ inline bool refract(Vec3 incident,Vec3 n,double eta,Vec3& out){
 struct Frame {
  Vec3 x,y,z;
  explicit Frame(Vec3 n):z(n){x=normalize(cross(std::abs(n.z)<.999?Vec3(0,0,1):Vec3(0,1,0),n));y=cross(z,x);}
- Frame(Vec3 n,Vec3 tangent):z(n){x=tangent-z*dot(tangent,z);if(norm2(x)<1e-18)x=Frame(n).x;else x=normalize(x);y=cross(z,x);}
+ Frame(Vec3 n,Vec3 tangent,double handedness=1):z(n){x=tangent-z*dot(tangent,z);if(norm2(x)<1e-18)x=Frame(n).x;else x=normalize(x);y=cross(z,x)*handedness;}
  Vec3 world(Vec3 v)const{return x*v.x+y*v.y+z*v.z;}
  Vec3 local(Vec3 v)const{return {dot(v,x),dot(v,y),dot(v,z)};}
 };
@@ -95,4 +95,3 @@ inline Dual operator*(Dual a,Dual b){Dual r(a.v*b.v);for(int i=0;i<3;i++)r.d[i]=
 inline Dual operator/(Dual a,Dual b){Dual r(a.v/b.v);for(int i=0;i<3;i++)r.d[i]=(a.d[i]*b.v-a.v*b.d[i])/(b.v*b.v);return r;}
 inline Dual exp(Dual a){Dual r(std::exp(a.v));for(int i=0;i<3;i++)r.d[i]=r.v*a.d[i];return r;}
 }
-

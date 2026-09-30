@@ -1,0 +1,45 @@
+name: CYBR TERRAIN
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: terrain-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  terrain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: examples/terrain/pyproject.toml
+      - name: Install terrain runtime and current source
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y g++
+          python -m pip install 'setuptools>=75,<81' 'numpy>=2.3.5,<2.6' 'scipy>=1.16,<2' 'Pillow==12.3.0' 'trimesh>=4.11.1,<6' 'numba==0.65.1' 'pytest>=8,<10'
+          python -m pip install --no-deps --no-build-isolation -e . -e examples/terrain
+      - name: Check process invariants and material export
+        run: python -m pytest -q examples/terrain/tests
+      - name: Compile and render every preset
+        run: terrain demo all --quality smoke --grid 33 --duration 2 --width 32 --spp 2 --stones 0 --threads 2 --output outputs/terrain-ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terrain-python-${{ matrix.python }}
+          path: outputs/terrain-ci/
+          if-no-files-found: warn
