@@ -80,10 +80,8 @@ def render_light(assembly,output,view_name='hero',size=(1100,825),spp=96,threads
     mesh=output.with_suffix('.clm')
     geometry=write_geometry(subset,mesh,time_seconds,view.explode if explode is None else explode)
     scene=scene_for(subset,view,mesh,size,spp,threads,depth,bands,f_stop,focus_distance,seed)
-    report=render(scene,output.with_suffix(''))
-    report.update(model=assembly.name,view=view_name,resolution=list(size),spp=spp,geometry=geometry,
-                  render_profile='light',truth=truth,material_mapping='GEO RGB authoring controls, metal/plastic/glass; metalness threshold 0.5; coat uses plastic Fresnel')
-    output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n')
+    report=render(scene,output.with_suffix(''),metadata=dict(model=assembly.name,view=view_name,resolution=list(size),spp=spp,geometry=geometry,
+                  render_profile='light',truth=truth,material_mapping='GEO RGB authoring controls, metal/plastic/glass; metalness threshold 0.5; coat uses plastic Fresnel'))
     write_truth_report(truth,output.with_suffix('.truth.json'));return report
 
 

@@ -93,6 +93,8 @@ def test_real_still_and_film_use_cybr_light(flange,tmp_path):
     assert report['image_generation_used'] is False and report['raw_film_preserved']
     assert report['meshlets']>0 and report['indexed_vertices']>0
     assert report['primitive_storage_bytes']<=64*report['primitives']
+    assert json.loads(image.with_suffix('.json').read_text())==report
+    assert report['geometry'] and report['engine_source_sha256']
     film=read_pfm(image.with_suffix('.pfm'));assert film.shape==(64,64,3) and np.isfinite(film).all()
     assert image.with_name('still_unfiltered.png').exists() and image.with_suffix('.exr').exists()
     video=tmp_path/'film.mp4'

@@ -32,6 +32,23 @@ def compile_renderer():
     return exe,digest
 
 
+def publish(source,destination):
+    """Publish one closed, verified file atomically across output mounts."""
+    source=Path(source);destination=Path(destination);temporary=None
+    try:
+        fd,name=tempfile.mkstemp(prefix=destination.name+'.',suffix='.partial',dir=destination.parent)
+        os.close(fd);temporary=Path(name)
+        try:os.replace(source,temporary)
+        except OSError as exc:
+            if exc.errno!=errno.EXDEV:raise
+            shutil.copyfile(source,temporary)
+        with temporary.open('rb') as stream:os.fsync(stream.fileno())
+        temporary.replace(destination)
+    finally:
+        if temporary is not None:temporary.unlink(missing_ok=True)
+        source.unlink(missing_ok=True)
+
+
 class Meshlets:
     """CLM1: <=64 full-attribute vertices / <=124 triangles per meshlet.
 
@@ -82,19 +99,7 @@ class Meshlets:
             finally:
                 if not completed:self.temporary.unlink(missing_ok=True)
         if completed:
-            destination=None
-            try:
-                fd,name=tempfile.mkstemp(prefix=self.path.name+'.',suffix='.partial',dir=self.path.parent)
-                os.close(fd);destination=Path(name)
-                try:os.replace(self.temporary,destination)
-                except OSError as exc:
-                    if exc.errno!=errno.EXDEV:raise
-                    shutil.copyfile(self.temporary,destination)
-                with destination.open('rb') as stream:os.fsync(stream.fileno())
-                destination.replace(self.path)
-            finally:
-                if destination is not None:destination.unlink(missing_ok=True)
-                self.temporary.unlink(missing_ok=True)
+            publish(self.temporary,self.path)
 
 
 class Scene:
@@ -143,32 +148,41 @@ def read_pfm(path):
     return np.flipud(data.reshape(h,w,3)).copy()*abs(scale)
 
 
-def render(scene,stem,runner=None):
+def render(scene,stem,runner=None,metadata=None):
     stem=Path(stem);stem.parent.mkdir(parents=True,exist_ok=True)
     # A previous success report cannot survive a failed replacement.
     stem.with_suffix('.json').unlink(missing_ok=True)
     executable,digest=compile_renderer();path=scene.save(stem.with_suffix('.cys'))
-    command=[str(executable),'--scene',str(path),'--out',str(stem)]
-    if runner:runner(command)
-    else:
-        with stem.with_suffix('.log').open('w') as log:
-            result=subprocess.run(command,stdout=log,stderr=log)
-        if result.returncode:raise RuntimeError(f'CYBR LIGHT render failed; see {stem.with_suffix(".log")}')
-    try:
-        report=json.loads(stem.with_suffix('.json').read_text());film=read_pfm(stem.with_suffix('.pfm'))
+    # Native outputs are staged separately. The public report is written once
+    # after finishing, so a synchronized earlier native report cannot replace it.
+    with tempfile.TemporaryDirectory(prefix='cybr-light-film-') as directory:
+        native=Path(directory)/'film';command=[str(executable),'--scene',str(path),'--out',str(native)]
+        if runner:runner(command)
+        else:
+            with stem.with_suffix('.log').open('w') as log:
+                result=subprocess.run(command,stdout=log,stderr=log)
+            if result.returncode:raise RuntimeError(f'CYBR LIGHT render failed; see {stem.with_suffix(".log")}')
+        report=json.loads(native.with_suffix('.json').read_text());film=read_pfm(native.with_suffix('.pfm'))
         if film.shape!=(report['height'],report['width'],3) or not np.isfinite(film).all() or report['invalid_path_samples']:raise RuntimeError('Invalid CYBR LIGHT film')
+        for source in sorted(Path(directory).glob('film*')):
+            if source.suffix!='.json':publish(source,stem.with_name(stem.name+source.name[4:]))
         finish(stem,film)
-    except BaseException:
-        stem.with_suffix('.json').unlink(missing_ok=True);raise
     report.update(denoising_used=True,denoiser='three camera-footprint, geometry/object/variance guided atrous display passes',engine_source_sha256=digest,mesh_input='CLM1 indexed meshlets: 64 vertices / 124 triangles maximum',raw_film_preserved=True)
-    stem.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n');return report
+    if metadata:report.update(metadata)
+    temporary=None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w',prefix='cybr-light-report-',suffix='.json',delete=False) as stream:
+            temporary=Path(stream.name);json.dump(report,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
+        publish(temporary,stem.with_suffix('.json'))
+    finally:
+        if temporary is not None:temporary.unlink(missing_ok=True)
+    return report
 
 
 def finish(stem,film=None,exposure=None):
     """Filter display output only; preserve all original radiance and guides."""
     from .finishing import atrous,tonemap,save_png
     stem=Path(stem)
-    report=json.loads(stem.with_suffix('.json').read_text())
     if film is None:film=read_pfm(stem.with_suffix('.pfm'))
     if exposure is None:
         settings=next(l.split() for l in stem.with_suffix('.cys').read_text().splitlines() if l.startswith('settings '))
@@ -179,6 +193,7 @@ def finish(stem,film=None,exposure=None):
     guide[:,:,6]=read_pfm(stem.with_name(stem.name+'_depth.pfm'))[:,:,0]
     guide[:,:,7]=read_pfm(stem.with_name(stem.name+'_stderr.pfm'))[:,:,0]**2
     guide[:,:,8]=read_pfm(stem.with_name(stem.name+'_object.pfm'))[:,:,0]
+    if not np.isfinite(guide).all():raise RuntimeError('Invalid CYBR LIGHT diagnostic passes')
     guide[guide[:,:,6]==0,8]=-1
     save_png(Image.fromarray(tonemap(film,exposure,'aces')),stem.with_name(stem.name+'_unfiltered.png'))
     filtered=film.copy();variance=guide[:,:,7].copy()
