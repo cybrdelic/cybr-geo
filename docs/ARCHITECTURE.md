@@ -10,9 +10,9 @@ Internal coordinates are **millimetres / shaft X / up Z**. Standard GLB exports 
 
 `exporters.py` consumes the same objects to produce GLB, animated GLB, analytic STEP with an explicit coverage manifest, per-part STL, component lists and the native tracer's triangle/material interchange. STEP never substitutes faceted triangle shells for missing analytic CAD. STL contains the initial assembled world pose and an adjacent unit notice.
 
-`render.py` provides the explicit VTK/EGL raster backend. `photoreal.py` compiles the in-house C++ thin-lens BVH/GGX/MIS tracer using material sidecars and geometry-guided finishing. `v9_dispatch.py` provides the default photographic still/video backend through Mitsuba, OIDN and CC0 studio assets. These are separate implementations; [shared photographic setup](SHARED_PHOTOGRAPHY.md) documents their dependencies.
+`render.py` provides the explicit VTK/EGL raster backend. `photoreal.py` retains the previous native RGB tracer. `light.py` supplies the default CYBR LIGHT still/video adapter; `src/cybr_light/` contains pinned engine source, CLM1 meshlets, compiler caching and display finishing. Meshlet triangles share float32 vertices through the CPU SAH BVH; double-precision intersection math is retained. [Rendering setup](SHARED_PHOTOGRAPHY.md) documents outputs and the current material mapping.
 
-`preview.py` combines recipe loading, retained geometry validation, GLB/component export, optional analytic STEP and the in-house native still into one command. It decodes the emitted image and reads the GLB back before writing its success receipt. This offline iteration path avoids V9 asset downloads without changing `lab render`/`video`/`film` defaults.
+`preview.py` combines recipe loading, retained geometry validation, GLB/component export, optional analytic STEP and the CYBR LIGHT still in one command. It decodes the emitted image and reads the GLB back before writing its success receipt.
 
 Geometry validation reports are retained with each new cache. The source fingerprint is written last, so interrupted builds cannot be reused. `lab build` publishes the report beside the exports. Structural geometry validation rejects empty assemblies, invalid analytic solids and nonfinite camera parameters before rendering.
 

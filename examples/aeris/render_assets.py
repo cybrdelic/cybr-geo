@@ -1,9 +1,4 @@
-"""Render AERIS through CYBR GEO's actual V9 photographic backend.
-
-V9 is Mitsuba 3 path tracing under the captured CC0 small-workshop HDRI, with a
-finite bench using a scanned CC0 roughness map and albedo/normal-guided Intel
-OIDN. No image generation, pasted photography, fake geometry, or sharpening.
-"""
+"""Render AERIS geometry through the bundled CYBR LIGHT spectral adapter."""
 from pathlib import Path
 import sys, os, argparse, json, hashlib
 from dataclasses import replace
@@ -13,8 +8,8 @@ os.environ.setdefault('MECHANISM_LAB_ROOT',str(ROOT))
 from recipe import coupled_pose
 from mechanism_lab import View
 from mechanism_lab.core import load_cache
-from mechanism_lab.render_profiles import V9
-from mechanism_lab.v9_dispatch import render_v9
+from mechanism_lab.render_profiles import LIGHT
+from mechanism_lab.light import render_light
 from mechanism_lab.photoreal import render_photoreal
 from mechanism_lab.render import render_still
 
@@ -54,8 +49,8 @@ def select_shot(a,name):
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--out',type=Path,default=ROOT/'build/aeris')
     ap.add_argument('--views',nargs='+',default=['hero_shell','rotor_detail','topology_detail','hero','cutaway','exploded'])
-    ap.add_argument('--size',default=f'{V9.still_size[0]}x{V9.still_size[1]}');ap.add_argument('--spp',type=int,default=V9.still_spp)
-    ap.add_argument('--threads',type=int,default=4);ap.add_argument('--depth',type=int,default=V9.still_depth)
+    ap.add_argument('--size',default=f'{LIGHT.still_size[0]}x{LIGHT.still_size[1]}');ap.add_argument('--spp',type=int,default=LIGHT.still_spp)
+    ap.add_argument('--threads',type=int,default=4);ap.add_argument('--depth',type=int,default=LIGHT.still_depth)
     ap.add_argument('--preview',action='store_true');ap.add_argument('--pbr',action='store_true');ap.add_argument('--native',action='store_true')
     args=ap.parse_args();size=tuple(map(int,args.size.split('x')))
     folder=args.out/('previews' if args.preview else 'renders');folder.mkdir(parents=True,exist_ok=True)
@@ -69,8 +64,8 @@ def main():
             report=render_photoreal(a,p,view_name=view,size=size,spp=args.spp,threads=args.threads,depth=args.depth,intent='concept',captions=False)
             report['backend']='legacy-native-photoreal'
         else:
-            report=render_v9(a,p,view_name=view,size=size,spp=args.spp,depth=args.depth,intent='concept')
-            report['backend']='v9-mitsuba-hdri-oidn'
+            report=render_light(a,p,view_name=view,size=size,spp=args.spp,threads=args.threads,depth=args.depth,intent='concept')
+            report['backend']='cybr-light-native-spectral'
         if not args.pbr:
             report['sha256']=hashlib.sha256(p.read_bytes()).hexdigest()
             p.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n')

@@ -1,0 +1,21 @@
+name: CYBR LIGHT numerical checks
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and execute the bundled numerical suites
+        run: |
+          set -euo pipefail
+          for suite in numerical engine_numerical; do
+            g++ -std=c++17 -O2 -fopenmp -Isrc/cybr_light/native/include src/cybr_light/native/tests/$suite.cpp -ldl -o /tmp/$suite
+            /tmp/$suite
+          done

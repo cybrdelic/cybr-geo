@@ -37,7 +37,7 @@ def test_empty_and_nonfinite_camera_rejected_during_build(flange):
 
 
 def test_actual_preview_and_failed_replacement_do_not_share_success(tmp_path,monkeypatch):
-    import mechanism_lab.photoreal as photo
+    import mechanism_lab.light as photo
     from PIL import Image
     monkeypatch.setenv('MECHANISM_LAB_ROOT',str(tmp_path))
     output=tmp_path/'result'
@@ -48,7 +48,7 @@ def test_actual_preview_and_failed_replacement_do_not_share_success(tmp_path,mon
     assert (output/'example_flange.step').read_text().startswith('ISO-10303-21')
     with Image.open(output/'hero.png') as image:assert image.size==(64,64)
     def failure(*args,**kwargs):raise RuntimeError('intentional render failure')
-    monkeypatch.setattr(photo,'render_photoreal',failure)
+    monkeypatch.setattr(photo,'render_light',failure)
     assert main(argv)==2
     assert not (output/'preview.json').exists()
 

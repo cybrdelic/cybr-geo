@@ -1,13 +1,9 @@
-"""Lossless adapter from the original cybrgeo API to shared photographic backends.
-
-`render` and `film` are V9 by default. The previous in-house BVH/GGX renderer
-remains available as `render_native` / `film_native` for compatibility.
-"""
+"""Adapters from the original API to CYBR LIGHT and the legacy native tracer."""
 from dataclasses import asdict
 import numpy as np
 from mechanism_lab.core import Assembly,Part,Material,View
-from mechanism_lab.render_profiles import V9
-from mechanism_lab.v9_dispatch import render_v9,render_v9_video
+from mechanism_lab.render_profiles import LIGHT
+from mechanism_lab.light import render_light,render_light_video
 from mechanism_lab.photoreal import render_photoreal,render_photoreal_video
 
 
@@ -31,18 +27,18 @@ def adapt(scene,view=None,poses=None):
     return Assembly(scene.name,parts,[Material(**asdict(m)) for m in scene.materials],{'hero':view},meta,pose)
 
 
-def render(scene,path,width=V9.still_size[0],height=V9.still_size[1],samples=V9.still_spp,depth=V9.still_depth,
+def render(scene,path,width=LIGHT.still_size[0],height=LIGHT.still_size[1],samples=LIGHT.still_spp,depth=LIGHT.still_depth,
            camera=None,threads=4,poses=None,view=None):
     if camera is not None:
         az,el,scale,target=camera
         view=View(az,el,scale,tuple(target),focal_length_mm=72.,f_stop=16.)
-    return render_v9(adapt(scene,view,poses),path,size=(width,height),spp=samples,depth=depth,intent='inspection')
+    return render_light(adapt(scene,view,poses),path,size=(width,height),spp=samples,threads=threads,depth=depth,intent='inspection')
 
 
-def film(scene,path,seconds=6.,fps=24,mode='orbit',size=V9.video_size,samples=V9.video_spp,threads=4,depth=V9.video_depth):
+def film(scene,path,seconds=6.,fps=24,mode='orbit',size=LIGHT.video_size,samples=LIGHT.video_spp,threads=4,depth=LIGHT.video_depth):
     from mechanism_lab.media import Shot
     if mode not in ('orbit','explode'):raise ValueError('Expected orbit or explode')
-    return render_v9_video(adapt(scene),path,[Shot('hero',seconds,mode)],size,fps,samples,depth,intent='inspection')
+    return render_light_video(adapt(scene),path,[Shot('hero',seconds,mode)],size,fps,samples,threads,depth,intent='inspection')
 
 
 def render_native(scene,path,width=1920,height=1440,samples=512,depth=14,

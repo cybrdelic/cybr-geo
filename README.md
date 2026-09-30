@@ -2,7 +2,7 @@
 
 **Procedural CAD, mechanical assemblies and geometry-driven rendering.**
 
-One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with an in-house C++ photographic path tracer and a separate Mitsuba/OIDN rendering backend.
+One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with the CYBR LIGHT C++ spectral renderer bundled in the toolkit.
 
 ![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
 
@@ -39,7 +39,7 @@ lab preview --step
 
 `lab preview` builds an independent flange recipe, checks its geometry, exports a GLB and component list, renders a native 640 × 480 image, reads the exported GLB back and checks the image dimensions. `--step` also exports analytic CAD. Results are in **`outputs/example_flange/preview/`**; `preview.json` is written only after successful completion.
 
-This first run uses the in-house renderer and included geometry. It needs no downloaded reference archive, HDRI or denoiser. Sample count is deliberately modest for iteration.
+This first run uses CYBR LIGHT and included geometry. The engine compiles once on demand. It writes indexed meshlets, linear PFM/EXR films, diagnostic passes and filtered/unfiltered PNGs. No renderer or lighting assets are downloaded.
 
 ```bash
 lab preview nitinol_fiber_actuator --spp 64
@@ -49,7 +49,14 @@ lab animate nitinol_fiber_actuator --seconds 6
 lab blueprint nitinol_fiber_actuator
 ```
 
-For the full photographic workflow, `lab render`, `lab video` and `lab film` use V9 by default. That backend uses Mitsuba, OIDN and downloaded CC0 studio assets; see [rendering setup](docs/SHARED_PHOTOGRAPHY.md). Select `--renderer photoreal` for the in-house native tracer or `--renderer pbr` for the raster preview. [More commands and reference preparation](docs/GETTING_STARTED.md).
+`lab render`, `lab video` and `lab film` also default to **CYBR LIGHT**. Smooth normals, real assembly poses, thin-lens optics, anisotropic metals and spectral glass reach the native engine. Three fixed softboxes give mechanical parts readable highlights. Select `--renderer pbr` for raster inspection, or `--renderer photoreal` for the older native renderer.
+
+```bash
+lab render examples/orbit_inspection_wrist.py --size 1600x1200 --spp 256
+lab film examples/orbit_inspection_wrist.py --action orbit --seconds 4 --spp 128
+```
+
+[Rendering and meshlet format](docs/SHARED_PHOTOGRAPHY.md) · [More commands and reference preparation](docs/GETTING_STARTED.md).
 
 ## How it works
 
@@ -58,7 +65,7 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |
-| Native photography | [Thin-lens BVH/GGX/MIS tracer](src/mechanism_lab/native/photoreal.cpp), [Python adapter](src/mechanism_lab/photoreal.py) |
+| Spectral rendering | [CYBR LIGHT engine](src/cybr_light/native), [assembly adapter](src/mechanism_lab/light.py), [indexed meshlets](src/cybr_light/runtime.py) |
 | CAD and interchange | [STEP, STL, GLB and animated glTF](src/mechanism_lab/exporters.py); explicit mm/Z-up → m/Y-up conversion |
 | Drawings | [OpenCascade hidden-line projection and vector drawing export](src/mechanism_lab/whiteprint.py) |
 | Assembly motion | [Service process and clearance checks](src/mechanism_lab/assembly_process.py) |

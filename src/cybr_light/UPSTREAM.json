@@ -1,0 +1,35 @@
+{
+  "repository": "https://github.com/cybrdelic/cybr-light",
+  "commit": "38f29ee2f6559311513c1f570be7a36224194ce8",
+  "license": "GPL-2.0-only; retained original MIT notice",
+  "upstream_sha256": {
+    "native/LICENSE": "640d90f6ee401241ff62834d0d1b33f83049e99b8bfdfa04ed1b0a1635dde3e7",
+    "native/LICENSES/CYBR_LIGHT_ORIGINAL_MIT.txt": "68eb366e0200eed1e1cf9294151097970b3c05c0b9e2722b1ecd9cb844c2d2b3",
+    "native/include/cybr/exr.hpp": "20451211e80c33946b0c27ad799f3a0da7003b3e92da0e01842eead4591fbe23",
+    "native/include/cybr/film.hpp": "d3535421c1f15c89e7d43dd3b939fe483b1aa5d646afce1ee1b59d6dc579eb79",
+    "native/include/cybr/geometry.hpp": "ab5d5c4ec82fb56e6d21923d63a6a54021b19856c9aad34d257e7130c8853e31",
+    "native/include/cybr/integrator.hpp": "a7022e71b1804f96467e7a9f17bc484dc4da4003f428d71caa704fbfa544084b",
+    "native/include/cybr/io.hpp": "a417594fd7f3b4ed5dc4f6c3105211a31b65fd38cae889eac042bdec914bb79f",
+    "native/include/cybr/material.hpp": "c79ad380ba55fa4ae1d0e840b387bd27057c513a79deec822b7e9c20a1a96965",
+    "native/include/cybr/math.hpp": "c90dc290b38a3ce170e5a525f5258b6916b0fa8125c5c5e1d1a5aad7ee2cf9e2",
+    "native/include/cybr/photonmap.hpp": "8099d37a3b722ab7e646712a24913c22215bb0dc6e2ba6a403149653d55724b7",
+    "native/include/cybr/polarization.hpp": "52a79333e847aaf9dc2d0ccc0a31e95d6c9f7a373732a40b3b659f9ea08c6bd0",
+    "native/include/cybr/scene.hpp": "fcb490f61e051039486de4db8018a1dab33d92f77c141fe0341d7ff822e84170",
+    "native/include/cybr/shader.hpp": "4b0d0f9e7fdc1f068564e808428bd532498c6a83709b5670bbc2d24030f3cc2e",
+    "native/include/cybr/spectrum.hpp": "32df7fe6638696cfb33a25d595c78864a490bc263be06c0420c01d589d1993b7",
+    "native/include/cybr/texture.hpp": "2b20a33f2c3468c1df263b6ca00a0b534eee36f754c2ad35cf6680b646848b57",
+    "native/include/cybr/volume.hpp": "c2a64d175204e0a2c087be8ca5a8b95bc3afa3ba771fa2abaab8be4c640c5ec1",
+    "native/src/main.cpp": "2db768f81fbac5d17dceed5fb37dee6e41030c6d13d3953c7254b26d732f1bb1",
+    "native/tests/engine_numerical.cpp": "ef66fabf4e66c1dc10dcc4dc401d2325f9d193a6ff3f4a64854a4497f7c7c8f8",
+    "native/tests/numerical.cpp": "bd8277d04bac173b4104836774991467f9a08c097b1ee09003ebdbd9e9ef8395"
+  },
+  "local_changes": [
+    "Checked CLM1 meshlets with <=64 vertices and <=124 triangles, full normals/UVs/tint and per-triangle material/component IDs.",
+    "Interpolated vertex tint multiplies spectral material albedo.",
+    "UV-sampled Planck emission from a temperature texture, using retained thermal fields.",
+    "Constant-time emitter PDF lookup for meshes with many emissive triangles.",
+    "Indexed meshlet triangles share float32 vertex blocks during native tracing; double-precision intersection math and SAH BVH are retained. Analytic primitive data uses copy-on-write value semantics.",
+    "Exact thread-local ray-intersection reuse across spectral wavelengths, keyed by every ray coordinate/time/clipping interval and unique BVH generation; no quantization.",
+    "Additional native regression checks for compact storage, copy-on-write geometry and exact ray-cache clipping/time/rebuild semantics."
+  ]
+}

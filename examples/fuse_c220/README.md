@@ -2,11 +2,11 @@
 
 An original Cartesian FFF printer designed with CYBR GEO and exercised with a
 deterministic extrusion toolpath. The recovered recipe now uses the repository's
-current Mitsuba/OIDN V9 renderer for new renders.
+CYBR LIGHT spectral renderer for new renders.
 
 **Recovery note (2026-09-14):** the original source is preserved in Git history.
 Original delivered images and video used the older native photographic renderer;
-they are not evidence of a fresh Mitsuba V9 run. This publication restores source
+they are not evidence of a fresh CYBR LIGHT run. This publication restores source
 and numerical evidence, not the entire historical binary delivery. See
 [the recovery receipt](../../docs/publication_receipts/fuse-c220-chat-recovery-2026-09-14.json).
 
@@ -96,16 +96,10 @@ All axis values are millimetres. `State` rejects coordinates outside the
 specified travel region. The resulting assembly can use the same CYBR GEO
 render and export functions as the supplied poses.
 
-New stills call `mechanism_lab.v9_dispatch.render_v9`, with the current
-`V9.still_spp` and `V9.still_depth`; preview uses an explicit 32-spp budget.
-The main still resolutions remain 1920 x 1440 and 1920 x 1280. The renderer
-fetches its recorded workshop lighting/bench assets and OIDN runtime as described
-in [the shared V9 documentation](../../docs/RENDER_V9.md). No model is downloaded.
+New stills call `mechanism_lab.light.render_light`, with shared sample/depth defaults; preview uses an explicit 32-packet budget. The bundled engine compiles on demand and uses indexed meshlets. [Rendering workflow](../../docs/SHARED_PHOTOGRAPHY.md).
 
-The operation film traces each frame through the same V9 entrypoint, at 960 x 720,
-24 fps, `V9.video_spp`, and `V9.video_depth`. Frames are serialized because the
-shared generic dispatch temporarily changes renderer module globals. They are
-not submitted concurrently through that non-thread-safe dispatch. Renderer JSON,
+The operation film traces each frame through the same CYBR LIGHT entrypoint, at 960 x 720,
+24 fps, the shared spectral video sample/depth budget. Frames are serialized to bound memory. Each frame owns its native scene and meshlet input. Renderer JSON,
 truth receipts and unfiltered PNGs accompany the frames. Explanatory text labels
 are burned into the final frames and disclosed in the video receipt.
 
@@ -113,7 +107,7 @@ The first two seconds are a variable-speed 180-layer time-lapse. The next two
 seconds replay final extrusion at modeled real time. This is not a claim that a
 physical printer produces the vessel in two seconds. There is no frame interpolation.
 
-Current-V9 checkpoints live in `work/film_v9_frames`, separate from historical
+CYBR LIGHT checkpoints live in `work/film_v9_frames`, separate from historical
 native frames. Source, cache and toolpath hashes invalidate changed checkpoints;
 encoding refuses missing or modified frames. `render_delivery.py frames 41`
 renders one selected frame; `render_delivery.py encode` requires all 96 valid
