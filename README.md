@@ -4,9 +4,9 @@
 
 One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with the CYBR LIGHT C++ spectral renderer bundled in the toolkit.
 
-![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
+![ORBIT inspection wrist — rendered from the procedural assembly](media/light/orbit_hero.png)
 
-*ORBIT: 148 components, geared wrist, opposed-screw gripper, hollow palm and removable housing.* [Recipe](examples/orbit_inspection_wrist.py) · [Service sequence](docs/ORBIT_SERVICE.md) · [Geometry coverage](docs/ORBIT_SHOWCASE.md)
+*Fresh CYBR LIGHT render: 1000 × 750, 192 spectral packets × 8 wavelengths. ORBIT has 148 components, a geared wrist and an opposed-screw gripper.* [Raw preview and reproduction record](media/light/README.md) [Recipe](examples/orbit_inspection_wrist.py) · [Service sequence](docs/ORBIT_SERVICE.md) · [Geometry coverage](docs/ORBIT_SHOWCASE.md)
 
 ## Selected work
 
