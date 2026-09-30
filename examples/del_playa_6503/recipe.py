@@ -55,27 +55,27 @@ class HouseConfig:
 
 
 MATERIALS = [
-    Material("Aged warm stucco", (0.52, 0.43, 0.31), 0.0, 0.86, microfinish="concrete", material_source="reference-authored"),
-    Material("Aged stucco lighter patches", (0.62, 0.53, 0.39), 0.0, 0.90, microfinish="concrete", material_source="reference-authored"),
-    Material("Dark lower cladding", (0.105, 0.078, 0.058), 0.0, 0.83, microfinish="wood", material_source="reference-authored"),
-    Material("Weathered deck redwood", (0.245, 0.145, 0.082), 0.0, 0.82, microfinish="wood", material_source="reference-authored"),
-    Material("Sun-bleached deck redwood", (0.335, 0.215, 0.125), 0.0, 0.88, microfinish="wood", material_source="reference-authored"),
-    Material("Darkened exterior timber", (0.155, 0.088, 0.050), 0.0, 0.90, microfinish="wood", material_source="reference-authored"),
+    Material("Aged warm stucco", (0.34, 0.285, 0.205), 0.0, 0.86, microfinish="concrete", material_source="reference-authored"),
+    Material("Aged stucco lighter patches", (0.405, 0.345, 0.255), 0.0, 0.90, microfinish="concrete", material_source="reference-authored"),
+    Material("Dark lower cladding", (0.070, 0.048, 0.034), 0.0, 0.83, microfinish="wood", material_source="reference-authored"),
+    Material("Weathered deck redwood", (0.175, 0.100, 0.055), 0.0, 0.82, microfinish="wood", material_source="reference-authored"),
+    Material("Sun-bleached deck redwood", (0.235, 0.145, 0.082), 0.0, 0.88, microfinish="wood", material_source="reference-authored"),
+    Material("Darkened exterior timber", (0.105, 0.058, 0.032), 0.0, 0.90, microfinish="wood", material_source="reference-authored"),
     Material("Window glass", (0.56, 0.69, 0.74), 0.0, 0.05, ior=1.52, opacity=0.27, material_source="reference-authored"),
     Material("Dark aluminum window frame", (0.055, 0.063, 0.066), 0.78, 0.32, microfinish="anodized", material_source="reference-authored"),
-    Material("Aged concrete patio", (0.42, 0.40, 0.35), 0.0, 0.94, microfinish="concrete", material_source="reference-authored"),
-    Material("Roof membrane", (0.30, 0.30, 0.29), 0.0, 0.95, microfinish="concrete", material_source="reference-authored"),
+    Material("Aged concrete patio", (0.265, 0.255, 0.225), 0.0, 0.94, microfinish="concrete", material_source="reference-authored"),
+    Material("Roof membrane", (0.185, 0.188, 0.185), 0.0, 0.95, microfinish="concrete", material_source="reference-authored"),
     Material("Galvanized fence", (0.42, 0.44, 0.43), 0.76, 0.42, microfinish="brushed", material_source="reference-authored"),
-    Material("Dry bluff soil", (0.32, 0.21, 0.12), 0.0, 0.98, microfinish="concrete", material_source="procedural-site"),
-    Material("Beach sand", (0.58, 0.49, 0.35), 0.0, 0.97, microfinish="concrete", material_source="procedural-site"),
+    Material("Dry bluff soil", (0.145, 0.092, 0.050), 0.0, 0.98, microfinish="concrete", material_source="procedural-site"),
+    Material("Beach sand", (0.385, 0.315, 0.215), 0.0, 0.97, microfinish="concrete", material_source="procedural-site"),
     Material("Pacific water", (0.035, 0.115, 0.19), 0.0, 0.08, ior=1.333, material_source="procedural-site"),
-    Material("Coastal shrub dark", (0.055, 0.115, 0.036), 0.0, 0.92, material_source="procedural-site"),
-    Material("Coastal shrub light", (0.10, 0.18, 0.060), 0.0, 0.88, material_source="procedural-site"),
+    Material("Coastal shrub dark", (0.033, 0.082, 0.024), 0.0, 0.92, material_source="procedural-site"),
+    Material("Coastal shrub light", (0.068, 0.135, 0.043), 0.0, 0.88, material_source="procedural-site"),
     Material("Dry coastal grass", (0.29, 0.25, 0.115), 0.0, 0.94, material_source="procedural-site"),
-    Material("Palm trunk", (0.205, 0.145, 0.075), 0.0, 0.92, microfinish="wood", material_source="procedural-site"),
-    Material("Palm / yucca leaf", (0.075, 0.16, 0.050), 0.0, 0.82, material_source="procedural-site"),
-    Material("Neighbor off-white stucco", (0.68, 0.66, 0.58), 0.0, 0.89, microfinish="concrete", material_source="reference-context"),
-    Material("White painted railing", (0.72, 0.73, 0.69), 0.0, 0.68, material_source="reference-context"),
+    Material("Palm trunk", (0.135, 0.088, 0.045), 0.0, 0.92, microfinish="wood", material_source="procedural-site"),
+    Material("Palm / yucca leaf", (0.044, 0.115, 0.033), 0.0, 0.82, material_source="procedural-site"),
+    Material("Neighbor off-white stucco", (0.455, 0.435, 0.365), 0.0, 0.89, microfinish="concrete", material_source="reference-context"),
+    Material("White painted railing", (0.54, 0.545, 0.505), 0.0, 0.68, material_source="reference-context"),
     Material("Exterior door muted red", (0.29, 0.075, 0.046), 0.0, 0.72, material_source="reference-context"),
     Material("Ping-pong top", (0.08, 0.11, 0.12), 0.05, 0.62, material_source="reference-context"),
 ]
@@ -239,6 +239,45 @@ class Builder:
         nn = _smooth_normals(vv, ff)
         return self.add(_part(name, vv, ff, material, group, role, nn, "procedural-site"))
 
+    def leaf_cluster(self, name: str, center: Iterable[float], radii: Iterable[float], material: int,
+                     group: str, role: str, count: int = 48, leaf_length: tuple[float, float] = (140.0, 300.0),
+                     leaf_width: tuple[float, float] = (55.0, 120.0)) -> Part:
+        """Dense explicit two-sided leaf geometry; no alpha cards or image texture."""
+        center = np.asarray(center, dtype=float)
+        radii = np.asarray(radii, dtype=float)
+        vertices: list[np.ndarray] = []
+        faces: list[list[int]] = []
+        normals: list[np.ndarray] = []
+        for i in range(count):
+            d = self.rng.normal(size=3)
+            d /= max(np.linalg.norm(d), 1e-9)
+            p = center + d * radii * (self.rng.random() ** (1.0 / 3.0))
+            n = self.rng.normal(size=3)
+            n /= max(np.linalg.norm(n), 1e-9)
+            ref = np.array((0.0, 0.0, 1.0)) if abs(n[2]) < 0.88 else np.array((1.0, 0.0, 0.0))
+            u = np.cross(n, ref); u /= max(np.linalg.norm(u), 1e-9)
+            v = np.cross(n, u)
+            length = self.rng.uniform(*leaf_length)
+            width = self.rng.uniform(*leaf_width)
+            mid = p + v * self.rng.uniform(-0.08, 0.08) * length
+            base = len(vertices)
+            vertices.extend([
+                p - v * length * 0.50,
+                mid - u * width * 0.50,
+                p + v * length * 0.50,
+                mid + u * width * 0.50,
+                mid + n * self.rng.uniform(8.0, 24.0),
+            ])
+            faces.extend([
+                [base + 0, base + 1, base + 4],
+                [base + 1, base + 2, base + 4],
+                [base + 2, base + 3, base + 4],
+                [base + 3, base + 0, base + 4],
+            ])
+            normals.extend([n, n, n, n, n])
+        return self.add(_part(name, np.asarray(vertices), np.asarray(faces, dtype=np.int64),
+                              material, group, role, np.asarray(normals), "procedural-site"))
+
     def window(self, name: str, x: float, width: float, z0: float, z1: float, y: float,
                panes: int = 2, frame: float = 55.0, group: str = "fenestration") -> None:
         self.box(name + "_glass", (width, 28.0, z1 - z0), (x, y, (z0 + z1) * 0.5), GLASS, group,
@@ -300,18 +339,18 @@ class Builder:
 
 def _site(builder: Builder) -> None:
     cfg = builder.cfg
-    xs = np.linspace(-23_000, 25_000, 55)
-    ys = np.linspace(-24_000, 15_000, 48)
+    xs = np.linspace(-23_000, 25_000, 76)
+    ys = np.linspace(-24_000, 15_000, 64)
     verts: list[list[float]] = []
     for y in ys:
         for x in xs:
             edge = cfg.bluff_edge_y + 420 * math.sin(x / 4200) + 160 * math.sin(x / 1350)
-            top_noise = 45 * math.sin(x / 1550) * math.sin(y / 1800) + 25 * math.sin((x + y) / 720)
+            top_noise = (52 * math.sin(x / 1550) * math.sin(y / 1800) + 31 * math.sin((x + y) / 720) + 18 * math.sin(x / 330 + y / 510) + 11 * math.sin(x / 145 - y / 235))
             if y >= edge:
                 z = -70 + top_noise * 0.18
             else:
                 t = min(1.0, max(0.0, (edge - y) / 10_700.0))
-                rill = 290 * math.sin(x / 910 + t * 2.0) * (t ** 1.35)
+                rill = (320 * math.sin(x / 910 + t * 2.0) + 115 * math.sin(x / 360 - t * 5.0) + 55 * math.sin(x / 155 + t * 8.0)) * (t ** 1.35)
                 z = -70 - 8_150 * (t ** 0.62) + rill + top_noise * (0.15 + 0.85 * t)
             verts.append([x, y, z])
     faces: list[list[int]] = []
@@ -427,55 +466,88 @@ def _fence_and_patio_objects(builder: Builder) -> None:
 
 def _vegetation(builder: Builder) -> None:
     rng = builder.rng
-    for i in range(31):
+    for i in range(34):
         x = rng.uniform(-20_000, 20_000)
-        y = rng.uniform(-9_000, -4_000)
+        y = rng.uniform(-8_200, -4_250)
         edge = builder.cfg.bluff_edge_y + 420 * math.sin(x / 4200) + 160 * math.sin(x / 1350)
         t = max(0.0, min(1.0, (edge - y) / 10_700.0))
         z = -70 - 8_150 * (t ** 0.62)
-        if z < -2_300:
+        if z < -2_050:
             continue
-        builder.ellipsoid(f"coastal_shrub_{i:02}", (x, y, z + 280),
-                          (rng.uniform(450, 980), rng.uniform(420, 920), rng.uniform(240, 520)),
-                          GREEN_LIGHT if i % 4 == 0 else GREEN_DARK, "vegetation", "Procedural coastal shrub")
-    for i, y in enumerate(np.linspace(-400, 8_700, 9)):
-        builder.ellipsoid(f"east_hedge_{i:02}", (15_050 + rng.uniform(-150, 180), y, 580 + rng.uniform(-40, 100)),
-                          (760 + rng.uniform(-80, 180), 900, 720), GREEN_DARK, "vegetation", "East property hedge")
-    for i, x in enumerate(np.linspace(-18_400, -10_900, 8)):
-        builder.ellipsoid(f"west_shrub_{i:02}", (x, -2_950 + rng.uniform(-420, 380), 520),
-                          (720, 620, 650), GREEN_DARK, "vegetation", "West coastal shrub")
+        builder.leaf_cluster(
+            f"coastal_shrub_{i:02}", (x, y, z + 330),
+            (rng.uniform(420, 900), rng.uniform(380, 820), rng.uniform(260, 500)),
+            GREEN_LIGHT if i % 5 == 0 else GREEN_DARK, "vegetation",
+            "Explicit coastal scrub foliage", count=34,
+            leaf_length=(120, 250), leaf_width=(42, 90),
+        )
+
+    for i, y in enumerate(np.linspace(-250, 8_500, 10)):
+        builder.leaf_cluster(
+            f"east_hedge_{i:02}", (15_050 + rng.uniform(-120, 150), y, 690 + rng.uniform(-30, 100)),
+            (650, 820, 690), GREEN_DARK, "vegetation",
+            "Dense east property hedge", count=54, leaf_length=(120, 235), leaf_width=(38, 82),
+        )
+
+    for i, x in enumerate(np.linspace(-18_250, -10_900, 9)):
+        builder.leaf_cluster(
+            f"west_shrub_{i:02}", (x, -2_900 + rng.uniform(-350, 340), 610),
+            (650, 560, 600), GREEN_DARK if i % 3 else GREEN_LIGHT, "vegetation",
+            "West coastal hedge foliage", count=42, leaf_length=(125, 240), leaf_width=(42, 88),
+        )
 
     base = np.array((10_450.0, -40.0, 0.0))
     tip = np.array((10_820.0, 150.0, 5_850.0))
-    segments = 9
+    segments = 11
     for i in range(segments):
         a = base + (tip - base) * (i / segments)
         b = base + (tip - base) * ((i + 1) / segments)
-        r = 205 - i * 10
-        builder.cylinder(f"yucca_trunk_{i:02}", a, b, r, TRUNK, "vegetation", "Segmented weathered yucca/palm trunk", sides=12, provenance="procedural-site")
+        builder.cylinder(f"yucca_trunk_{i:02}", a, b, 215 - i * 10.5, TRUNK, "vegetation",
+                         "Segmented weathered yucca/palm trunk", sides=14, provenance="procedural-site")
     crown = tip + np.array((0, 0, 90))
-    for i in range(19):
-        ang = TAU * i / 19 + (i % 3) * 0.08
-        length = 1_250 + 320 * math.sin(i * 1.9) ** 2
-        end = crown + np.array((math.cos(ang) * length, math.sin(ang) * length, 160 + 360 * math.sin(i * 2.3)))
-        mid = crown * 0.48 + end * 0.52 + np.array((0, 0, 260))
-        width = 125.0
+    for i in range(31):
+        ang = TAU * i / 31 + (i % 4) * 0.06
+        length = 1_180 + 470 * (0.25 + math.sin(i * 1.73) ** 2)
+        end = crown + np.array((math.cos(ang) * length, math.sin(ang) * length, -90 + 620 * math.sin(i * 2.13)))
+        mid = crown * 0.44 + end * 0.56 + np.array((0, 0, 330))
+        width = 105 + 40 * math.sin(i * 1.31) ** 2
         tangent = end - crown; tangent /= np.linalg.norm(tangent)
         side = np.cross(tangent, np.array((0, 0, 1.0)))
         if np.linalg.norm(side) < 1e-6:
             side = np.array((1.0, 0, 0))
         side /= np.linalg.norm(side)
-        verts = np.array([crown - side * width, crown + side * width, mid + side * width * 0.55, end, mid - side * width * 0.55])
+        verts = np.array([crown - side * width * 0.45, crown + side * width * 0.45,
+                          mid + side * width * 0.60, end, mid - side * width * 0.60])
         faces = np.array([[0, 1, 2], [0, 2, 4], [4, 2, 3]], dtype=np.int64)
-        normals = _smooth_normals(verts, faces)
-        builder.add(_part(f"yucca_leaf_{i:02}", verts, faces, LEAF, "vegetation", "Procedural lance leaf", normals, "procedural-site"))
+        builder.add(_part(f"yucca_leaf_{i:02}", verts, faces, LEAF, "vegetation",
+                          "Procedural lance leaf", _smooth_normals(verts, faces), "procedural-site"))
 
-    for t, (x, y, h) in enumerate(((-1_900, 8_700, 7_500), (700, 9_250, 8_000), (3_200, 8_800, 7_600))):
-        builder.cylinder(f"canopy_trunk_{t}", (x, y, 0), (x + 250, y - 120, h * 0.65), 190, TRUNK, "vegetation", "Context tree trunk", sides=12, provenance="procedural-site")
-        for j in range(5):
-            builder.ellipsoid(f"canopy_{t}_{j}", (x + rng.uniform(-1_650, 1_650), y + rng.uniform(-1_050, 1_050), h + rng.uniform(-420, 520)),
-                              (1_650 + rng.uniform(-250, 360), 1_450 + rng.uniform(-220, 300), 1_050 + rng.uniform(-160, 260)),
-                              GREEN_DARK if j % 2 else GREEN_LIGHT, "vegetation", "Context tree crown")
+    trunk0 = np.array((2_700.0, 8_650.0, 0.0))
+    fork = np.array((2_850.0, 8_530.0, 4_850.0))
+    top = np.array((2_950.0, 8_500.0, 7_450.0))
+    builder.cylinder("mature_tree_trunk_0", trunk0, fork, 280, TRUNK, "vegetation",
+                     "Mature context tree trunk", sides=16, provenance="procedural-site")
+    builder.cylinder("mature_tree_trunk_1", fork, top, 205, TRUNK, "vegetation",
+                     "Mature context tree upper trunk", sides=14, provenance="procedural-site")
+    branch_tips = [
+        (-1_150, 8_420, 7_300), (150, 7_780, 8_100), (1_450, 7_850, 8_350),
+        (4_250, 7_850, 8_350), (5_550, 8_560, 7_900), (4_700, 9_600, 7_600),
+        (2_850, 10_150, 8_100), (950, 9_760, 7_800),
+    ]
+    for i, bt in enumerate(branch_tips):
+        root = fork + np.array((rng.uniform(-180, 180), rng.uniform(-150, 150), rng.uniform(250, 900)))
+        builder.cylinder(f"mature_tree_branch_{i:02}", root, np.asarray(bt, dtype=float), 115 if i < 4 else 90,
+                         TRUNK, "vegetation", "Mature context tree branch", sides=10, provenance="procedural-site")
+    builder.leaf_cluster(
+        "mature_tree_canopy", (2_450, 8_720, 8_020), (4_250, 2_350, 1_650),
+        GREEN_DARK, "vegetation", "Explicit mature coastal tree canopy",
+        count=430, leaf_length=(170, 390), leaf_width=(60, 145),
+    )
+    builder.leaf_cluster(
+        "mature_tree_canopy_highlights", (2_150, 8_520, 8_180), (3_950, 2_100, 1_400),
+        GREEN_LIGHT, "vegetation", "Sunward foliage variation",
+        count=170, leaf_length=(150, 340), leaf_width=(52, 120),
+    )
 
 
 def build(config: HouseConfig | None = None) -> Assembly:
