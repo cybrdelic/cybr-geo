@@ -282,6 +282,9 @@ class Builder:
                panes: int = 2, frame: float = 55.0, group: str = "fenestration") -> None:
         self.box(name + "_glass", (width, 28.0, z1 - z0), (x, y, (z0 + z1) * 0.5), GLASS, group,
                  "Reference-estimated glazing plane")
+        self.box(name + "_interior_shadow", (max(80.0, width - 120.0), 18.0, max(120.0, z1 - z0 - 120.0)),
+                 (x, y + 30.0, (z0 + z1) * 0.5), LOWER_DARK, group,
+                 "Dark recessed plane behind exterior glazing; authored geometry, not an image")
         self.beam_x(name + "_frame_top", x - width / 2, x + width / 2, y - 18.0, z1, 70.0, frame, FRAME, group,
                     "Window frame")
         self.beam_x(name + "_frame_bottom", x - width / 2, x + width / 2, y - 18.0, z0, 70.0, frame, FRAME, group,
@@ -299,6 +302,9 @@ class Builder:
     def side_window(self, name: str, y: float, width: float, z0: float, z1: float, x: float, panes: int = 2) -> None:
         self.box(name + "_glass", (28.0, width, z1 - z0), (x, y, (z0 + z1) / 2), GLASS, "fenestration",
                  "Reference-estimated side glazing")
+        self.box(name + "_interior_shadow", (18.0, max(80.0, width - 120.0), max(120.0, z1 - z0 - 120.0)),
+                 (x - 30.0, y, (z0 + z1) / 2), LOWER_DARK, "fenestration",
+                 "Dark recessed plane behind side glazing; authored geometry, not an image")
         self.beam_y(name + "_top", y - width / 2, y + width / 2, x + 18, z1, 70, 55, FRAME, "fenestration", "Window frame")
         self.beam_y(name + "_bottom", y - width / 2, y + width / 2, x + 18, z0, 70, 55, FRAME, "fenestration", "Window frame")
         self.box(name + "_a", (70, 55, z1 - z0), (x + 18, y - width / 2, (z0 + z1) / 2), FRAME, "fenestration", "Window frame")
