@@ -11,6 +11,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 from typing import Iterable
+from pathlib import Path
+import json
 
 import numpy as np
 
@@ -22,19 +24,19 @@ TAU = math.tau
 @dataclass(frozen=True)
 class HouseConfig:
     # Reference-estimated architectural dimensions, millimetres.
-    main_width: float = 18_800.0
-    main_depth: float = 7_650.0
+    main_width: float = 10_702.038834557388
+    main_depth: float = 32_784.19833
     lower_height: float = 2_620.0
     upper_height: float = 2_720.0
     slab_z: float = 2_620.0
     roof_z: float = 5_340.0
-    front_wall_y: float = -620.0
-    rear_wall_y: float = 7_030.0
-    deck_front_y: float = -2_500.0
-    deck_side_x: float = 10_050.0
+    front_wall_y: float = 0.0
+    rear_wall_y: float = 32_000.0
+    deck_front_y: float = -1_950.0
+    deck_side_x: float = 7_200.0
     deck_thickness: float = 145.0
-    rail_height: float = 1_040.0
-    bluff_edge_y: float = -5_500.0
+    rail_height: float = 990.0
+    bluff_edge_y: float = -5_900.0
     seed: int = 6503
 
     def check(self) -> None:
@@ -55,19 +57,19 @@ class HouseConfig:
 
 
 MATERIALS = [
-    Material("Aged warm stucco", (0.34, 0.285, 0.205), 0.0, 0.86, microfinish="concrete", material_source="reference-authored"),
-    Material("Aged stucco lighter patches", (0.405, 0.345, 0.255), 0.0, 0.90, microfinish="concrete", material_source="reference-authored"),
+    Material("Aged warm stucco", (0.45, 0.385, 0.285), 0.0, 0.86, microfinish="concrete", material_source="reference-authored"),
+    Material("Aged stucco lighter patches", (0.51, 0.445, 0.34), 0.0, 0.90, microfinish="concrete", material_source="reference-authored"),
     Material("Dark lower cladding", (0.070, 0.048, 0.034), 0.0, 0.83, microfinish="wood", material_source="reference-authored"),
-    Material("Weathered deck redwood", (0.175, 0.100, 0.055), 0.0, 0.82, microfinish="wood", material_source="reference-authored"),
-    Material("Sun-bleached deck redwood", (0.235, 0.145, 0.082), 0.0, 0.88, microfinish="wood", material_source="reference-authored"),
-    Material("Darkened exterior timber", (0.105, 0.058, 0.032), 0.0, 0.90, microfinish="wood", material_source="reference-authored"),
+    Material("Weathered deck redwood", (0.12, 0.061, 0.045), 0.0, 0.82, microfinish="wood", material_source="reference-authored"),
+    Material("Sun-bleached deck redwood", (0.18, 0.115, 0.090), 0.0, 0.88, microfinish="wood", material_source="reference-authored"),
+    Material("Darkened exterior timber", (0.072, 0.040, 0.030), 0.0, 0.90, microfinish="wood", material_source="reference-authored"),
     Material("Window glass", (0.56, 0.69, 0.74), 0.0, 0.05, ior=1.52, opacity=0.27, material_source="reference-authored"),
     Material("Dark aluminum window frame", (0.055, 0.063, 0.066), 0.78, 0.32, microfinish="anodized", material_source="reference-authored"),
-    Material("Aged concrete patio", (0.265, 0.255, 0.225), 0.0, 0.94, microfinish="concrete", material_source="reference-authored"),
+    Material("Aged concrete patio", (0.39, 0.365, 0.31), 0.0, 0.94, microfinish="concrete", material_source="reference-authored"),
     Material("Roof membrane", (0.185, 0.188, 0.185), 0.0, 0.95, microfinish="concrete", material_source="reference-authored"),
     Material("Galvanized fence", (0.42, 0.44, 0.43), 0.76, 0.42, microfinish="brushed", material_source="reference-authored"),
-    Material("Dry bluff soil", (0.145, 0.092, 0.050), 0.0, 0.98, microfinish="concrete", material_source="procedural-site"),
-    Material("Beach sand", (0.385, 0.315, 0.215), 0.0, 0.97, microfinish="concrete", material_source="procedural-site"),
+    Material("Dry bluff soil", (0.31, 0.22, 0.125), 0.0, 0.98, microfinish="concrete", material_source="procedural-site"),
+    Material("Beach sand", (0.57, 0.49, 0.355), 0.0, 0.97, microfinish="concrete", material_source="procedural-site"),
     Material("Pacific water", (0.035, 0.115, 0.19), 0.0, 0.08, ior=1.333, material_source="procedural-site"),
     Material("Coastal shrub dark", (0.033, 0.082, 0.024), 0.0, 0.92, material_source="procedural-site"),
     Material("Coastal shrub light", (0.068, 0.135, 0.043), 0.0, 0.88, material_source="procedural-site"),
@@ -81,14 +83,26 @@ MATERIALS = [
 ]
 
 
+MATERIALS.append(Material("Weathered terracotta brick", (0.26, 0.105, 0.060), 0.0, 0.9, microfinish="concrete", material_source="reference-authored"))
+BRICK = len(MATERIALS)-1
+MATERIALS.append(Material("Wet shoreline sand", (0.285,0.245,0.17), 0.0,0.46,material_source="procedural-site"))
+WET_SAND=len(MATERIALS)-1
+MATERIALS.append(Material("Park gravel", (0.41,0.395,0.345), 0.0,0.95,material_source="reference-context"))
+PARK_GRAVEL=len(MATERIALS)-1
+MATERIALS.append(Material("Coastal yellow flowers", (0.32,0.23,0.022), 0.0,0.82,material_source="reference-context"))
+FLOWER=len(MATERIALS)-1
+
 # Material indices retained as constants so the CYBR LIGHT bridge can preserve intent.
-STUCCO, STUCCO_LIGHT, LOWER_DARK, WOOD, WOOD_LIGHT, WOOD_DARK, GLASS, FRAME, CONCRETE, ROOF, METAL, SOIL, SAND, WATER, GREEN_DARK, GREEN_LIGHT, DRY_GRASS, TRUNK, LEAF, NEIGHBOR, WHITE, RED_DOOR, TABLE = range(len(MATERIALS))
+STUCCO, STUCCO_LIGHT, LOWER_DARK, WOOD, WOOD_LIGHT, WOOD_DARK, GLASS, FRAME, CONCRETE, ROOF, METAL, SOIL, SAND, WATER, GREEN_DARK, GREEN_LIGHT, DRY_GRASS, TRUNK, LEAF, NEIGHBOR, WHITE, RED_DOOR, TABLE = range(23)
 
 
 def _part(name: str, vertices: np.ndarray, faces: np.ndarray, material: int, group: str, role: str,
           normals: np.ndarray | None = None, provenance: str = "reference-authored") -> Part:
     vertices = np.asarray(vertices, dtype=float)
     faces = np.asarray(faces, dtype=np.int64)
+    triangles = vertices[faces]
+    areas = np.linalg.norm(np.cross(triangles[:,1]-triangles[:,0], triangles[:,2]-triangles[:,0]),axis=1)
+    faces = faces[areas > 1e-7]
     if normals is None:
         normals = np.zeros_like(vertices)
     return Part(
@@ -146,6 +160,38 @@ def _box_geometry(size: Iterable[float], center: Iterable[float], matrix: np.nda
     return _flat_mesh(corners, faces)
 
 
+
+_CHAMFER_FACES = None
+
+def _chamfer_box(size, center, bevel=3.0, matrix=None):
+    from scipy.spatial import ConvexHull
+    global _CHAMFER_FACES
+    h = np.asarray(size, dtype=float) * .5
+    b = min(bevel, float(h.min()) * .28)
+    points = []
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            for sz in (-1, 1):
+                signs = np.array((sx, sy, sz))
+                for axis in range(3):
+                    q = h - b
+                    q[axis] = h[axis]
+                    points.append(q * signs)
+    points = np.asarray(points)
+    if _CHAMFER_FACES is None:
+        template = np.array([[sx*(1 if ax == 0 else .9), sy*(1 if ax == 1 else .9), sz*(1 if ax == 2 else .9)]
+                             for sx in (-1,1) for sy in (-1,1) for sz in (-1,1) for ax in range(3)])
+        faces = ConvexHull(template).simplices.copy()
+        for face in faces:
+            tri = template[face]
+            if np.dot(np.cross(tri[1]-tri[0], tri[2]-tri[0]), tri.mean(axis=0)) < 0:
+                face[1], face[2] = face[2], face[1]
+        _CHAMFER_FACES = faces
+    if matrix is not None:
+        points = points @ np.asarray(matrix).T
+    points += np.asarray(center)
+    return _flat_mesh(points, _CHAMFER_FACES)
+
 def _smooth_normals(vertices: np.ndarray, faces: np.ndarray) -> np.ndarray:
     normals = np.zeros_like(vertices, dtype=float)
     for f in faces:
@@ -173,7 +219,8 @@ class Builder:
     def box(self, name: str, size: Iterable[float], center: Iterable[float], material: int,
             group: str, role: str, matrix: np.ndarray | None = None,
             provenance: str = "reference-authored") -> Part:
-        v, f, n = _box_geometry(size, center, matrix)
+        v, f, n = (_chamfer_box(size, center, 2.5, matrix) if material in (WOOD, WOOD_LIGHT, WOOD_DARK, LOWER_DARK, FRAME, WHITE, BRICK)
+                   else _box_geometry(size, center, matrix))
         return self.add(_part(name, v, f, material, group, role, n, provenance))
 
     def beam_x(self, name: str, x0: float, x1: float, y: float, z: float, width_y: float, height: float,
@@ -343,283 +390,355 @@ class Builder:
                      (x, y, deck_z + (self.cfg.rail_height + 180.0) / 2 - 30), WOOD, "balcony", "Primary balcony post")
 
 
-def _site(builder: Builder) -> None:
-    cfg = builder.cfg
-    xs = np.linspace(-23_000, 25_000, 76)
-    ys = np.linspace(-24_000, 15_000, 64)
-    verts: list[list[float]] = []
-    for y in ys:
-        for x in xs:
-            edge = cfg.bluff_edge_y + 420 * math.sin(x / 4200) + 160 * math.sin(x / 1350)
-            top_noise = (52 * math.sin(x / 1550) * math.sin(y / 1800) + 31 * math.sin((x + y) / 720) + 18 * math.sin(x / 330 + y / 510) + 11 * math.sin(x / 145 - y / 235))
-            if y >= edge:
-                z = -70 + top_noise * 0.18
-            else:
-                t = min(1.0, max(0.0, (edge - y) / 10_700.0))
-                rill = (320 * math.sin(x / 910 + t * 2.0) + 115 * math.sin(x / 360 - t * 5.0) + 55 * math.sin(x / 155 + t * 8.0)) * (t ** 1.35)
-                z = -70 - 8_150 * (t ** 0.62) + rill + top_noise * (0.15 + 0.85 * t)
-            verts.append([x, y, z])
-    faces: list[list[int]] = []
-    w = len(xs)
-    for j in range(len(ys) - 1):
-        for i in range(len(xs) - 1):
-            a = j * w + i; b = a + 1; d = (j + 1) * w + i; c = d + 1
-            faces.extend([[a, b, c], [a, c, d]])
-    vv = np.asarray(verts, dtype=float); ff = np.asarray(faces, dtype=np.int64)
-    builder.add(_part("bluff_terrain", vv, ff, SOIL, "site", "Procedural eroded bluff tied to reference silhouette",
-                      _smooth_normals(vv, ff), "procedural-site"))
-
-    builder.box("beach_sand", (56_000, 22_000, 150), (0, -25_000, -8_250), SAND, "site", "Beach plane below the bluff", provenance="procedural-site")
-    builder.box("ocean_volume", (90_000, 55_000, 500), (0, -54_000, -8_080), WATER, "site", "Pacific ocean context volume", provenance="procedural-site")
-    builder.box("main_patioslab", (23_600, 9_200, 125), (1_800, 1_900, -5), CONCRETE, "site", "Reference-estimated concrete patio / yard")
-    builder.box("east_patioslab", (5_700, 11_000, 120), (12_250, 1_150, -10), CONCRETE, "site", "East-side patio visible in listing reference")
+CONSTRAINTS_PATH = Path(__file__).with_name('site_constraints.json')
 
 
-def _architecture(builder: Builder) -> None:
-    cfg = builder.cfg
-    wall_y_center = (cfg.front_wall_y + cfg.rear_wall_y) / 2
-    wall_depth = cfg.rear_wall_y - cfg.front_wall_y
-    builder.box("lower_main_shell", (cfg.main_width, wall_depth, cfg.lower_height), (0, wall_y_center, cfg.lower_height / 2), STUCCO, "architecture", "Lower reference-estimated main volume")
-    builder.box("lower_dark_bay", (4_150, 1_300, 2_360), (-5_650, -80, 1_180), LOWER_DARK, "architecture", "Dark lower ocean-facing bay visible in reference")
-    builder.box("upper_main_shell", (cfg.main_width + 520, wall_depth + 180, cfg.upper_height), (80, wall_y_center + 40, cfg.slab_z + cfg.upper_height / 2), STUCCO, "architecture", "Upper reference-estimated main volume")
-
-    builder.box("upper_patch_left", (2_600, 34, 1_260), (-7_180, cfg.front_wall_y - 20, 4_080), STUCCO_LIGHT, "weathering", "Subtle stucco tonal repair patch")
-    builder.box("upper_patch_mid", (1_900, 34, 820), (3_250, cfg.front_wall_y - 22, 4_360), STUCCO_LIGHT, "weathering", "Subtle stucco tonal repair patch")
-
-    builder.box("roof_slab", (cfg.main_width + 1_030, wall_depth + 840, 165), (50, wall_y_center + 130, cfg.roof_z + 82.5), ROOF, "roof", "Flat weathered roof slab / membrane")
-    for i, x in enumerate((-5_600, -1_200, 2_950, 6_700)):
-        builder.cylinder(f"roof_vent_{i}", (x, 2_000 + (i % 2) * 2_000, cfg.roof_z + 160), (x, 2_000 + (i % 2) * 2_000, cfg.roof_z + 520), 105, METAL, "roof", "Low roof vent", sides=16)
-        builder.cylinder(f"roof_vent_cap_{i}", (x, 2_000 + (i % 2) * 2_000, cfg.roof_z + 515), (x, 2_000 + (i % 2) * 2_000, cfg.roof_z + 560), 160, METAL, "roof", "Roof vent cap", sides=18)
-
-    builder.window("lower_dark_window", -5_800, 1_950, 620, 2_190, cfg.front_wall_y - 48, panes=3)
-    builder.window("lower_center_slider", 450, 2_550, 180, 2_360, cfg.front_wall_y - 52, panes=2)
-    builder.window("lower_right_slider", 5_460, 2_780, 160, 2_380, cfg.front_wall_y - 52, panes=2)
-    builder.window("upper_left_slider", -5_900, 2_100, cfg.slab_z + 390, cfg.roof_z - 310, cfg.front_wall_y - 52, panes=2)
-    builder.window("upper_center_narrow", -2_850, 1_080, cfg.slab_z + 520, cfg.roof_z - 420, cfg.front_wall_y - 52, panes=1)
-    builder.window("upper_center_slider", 1_080, 2_350, cfg.slab_z + 330, cfg.roof_z - 300, cfg.front_wall_y - 52, panes=2)
-    builder.window("upper_right_slider", 6_100, 2_700, cfg.slab_z + 270, cfg.roof_z - 300, cfg.front_wall_y - 52, panes=2)
-    builder.side_window("upper_east_glazing", 3_180, 2_220, cfg.slab_z + 310, cfg.roof_z - 320, cfg.main_width / 2 + 285, panes=2)
-    builder.side_window("lower_east_glazing", 850, 2_100, 240, 2_320, cfg.main_width / 2 + 22, panes=2)
-    builder.box("upper_entry_door", (820, 55, 2_010), (-250, cfg.front_wall_y - 54, cfg.slab_z + 1_230), LOWER_DARK, "fenestration", "Upper exterior door")
+def site_constraints() -> dict:
+    return json.loads(CONSTRAINTS_PATH.read_text())
 
 
-def _decks_and_rails(builder: Builder) -> None:
-    cfg = builder.cfg
-    x0, x1 = -9_750.0, 9_980.0
-    deck_y0, deck_y1 = cfg.deck_front_y, cfg.front_wall_y + 240.0
-    deck_z = cfg.slab_z + 10.0
-    board_w = 142.0
-    gap = 8.0
-    ys = np.arange(deck_y0 + board_w / 2, deck_y1 - board_w / 2 + 1, board_w + gap)
-    for i, y in enumerate(ys):
-        jitter = ((i * 17) % 7 - 3) * 0.8
-        mat = WOOD_LIGHT if i % 4 == 0 else WOOD
-        builder.box(f"front_deck_board_{i:02}", (x1 - x0, board_w, 38.0), ((x0 + x1) / 2, y, deck_z + jitter), mat, "balcony", "Individual weathered deck board")
-    side_x0 = cfg.main_width / 2 - 80
-    side_x1 = cfg.deck_side_x
-    for i, x in enumerate(np.arange(side_x0 + board_w / 2, side_x1 - board_w / 2 + 1, board_w + gap)):
-        builder.box(f"side_deck_board_{i:02}", (board_w, cfg.rear_wall_y - deck_y0 + 380, 38.0),
-                    (x, (deck_y0 + cfg.rear_wall_y + 380) / 2, deck_z + ((i % 3) - 1) * 1.0),
-                    WOOD_LIGHT if i % 5 == 0 else WOOD, "balcony", "Wrap-around side deck board")
-
-    builder.beam_x("front_deck_fascia", x0, x1, deck_y0 + 20, deck_z - 95, 155, 225, WOOD_DARK, "balcony", "Weathered deck fascia")
-    builder.beam_y("east_deck_fascia", deck_y0, cfg.rear_wall_y + 380, side_x1 - 20, deck_z - 95, 155, 225, WOOD_DARK, "balcony", "East wrap deck fascia")
-    for i, x in enumerate(np.linspace(x0 + 450, x1 - 450, 9)):
-        builder.box(f"front_deck_support_{i:02}", (95, 95, deck_z - 90), (x, deck_y0 + 330, (deck_z - 90) / 2), WOOD_DARK, "structure", "Reference-visible deck support post")
-    for i, y in enumerate(np.linspace(deck_y0 + 430, cfg.rear_wall_y + 120, 5)):
-        builder.box(f"east_deck_support_{i:02}", (95, 95, deck_z - 90), (side_x1 - 310, y, (deck_z - 90) / 2), WOOD_DARK, "structure", "Reference-visible wrap-deck support")
-
-    builder.front_railing(x0, x1, deck_y0 - 24, deck_z + 30, "front_rail")
-    builder.side_railing(deck_y0 - 20, cfg.rear_wall_y + 360, side_x1 + 10, deck_z + 30, "east_rail")
-
-    nx0, nx1 = -15_900.0, -10_200.0
-    nfront = -2_080.0
-    for i, y in enumerate(np.arange(nfront + board_w / 2, -550, board_w + gap)):
-        builder.box(f"neighbor_deck_board_{i:02}", (nx1 - nx0, board_w, 38), ((nx0 + nx1) / 2, y, deck_z), WHITE, "neighbor", "Neighbor deck context", provenance="reference-context")
-    builder.front_railing(nx0, nx1, nfront, deck_z, "neighbor_front_rail", white=True)
+def footprint_mm() -> np.ndarray:
+    return np.asarray(site_constraints()['footprint']['local_m'], dtype=float) * 1000
 
 
-def _neighbor(builder: Builder) -> None:
-    builder.box("neighbor_lower_mass", (6_100, 7_250, 2_570), (-13_050, 2_950, 1_285), NEIGHBOR, "neighbor", "Visible west neighbor lower mass", provenance="reference-context")
-    builder.box("neighbor_upper_mass", (6_100, 7_250, 2_650), (-13_050, 2_950, 3_895), NEIGHBOR, "neighbor", "Visible west neighbor upper mass", provenance="reference-context")
-    builder.box("neighbor_roof", (6_450, 7_650, 145), (-13_050, 2_950, 5_295), ROOF, "neighbor", "Neighbor flat roof", provenance="reference-context")
-    builder.box("neighbor_red_door", (820, 60, 1_980), (-14_360, -700, 3_850), RED_DOOR, "neighbor", "Muted red neighbor door", provenance="reference-context")
-    builder.window("neighbor_slider", -11_740, 1_920, 3_050, 5_040, -700, panes=2, group="neighbor")
+def _polygon_triangles(points: np.ndarray) -> np.ndarray:
+    """Ear clipping for the source outline; no learned or photo-derived mesh."""
+    xy = np.asarray(points, float)
+    area = np.sum(xy[:,0] * np.roll(xy[:,1], -1) - xy[:,1] * np.roll(xy[:,0], -1))
+    indices = list(range(len(xy)))
+    if area < 0:
+        indices.reverse()
+    faces = []
+    def cross(a, b): return a[0]*b[1] - a[1]*b[0]
+    while len(indices) > 3:
+        found = False
+        for i in range(len(indices)):
+            a, b, c = indices[i-1], indices[i], indices[(i+1)%len(indices)]
+            if cross(xy[b]-xy[a], xy[c]-xy[b]) <= 1e-6:
+                continue
+            inside = False
+            for q in indices:
+                if q in (a,b,c): continue
+                if min(cross(xy[b]-xy[a],xy[q]-xy[a]), cross(xy[c]-xy[b],xy[q]-xy[b]), cross(xy[a]-xy[c],xy[q]-xy[c])) >= -1e-6:
+                    inside = True; break
+            if not inside:
+                faces.append((a,b,c));indices.pop(i);found=True;break
+        if not found:
+            raise ValueError('Footprint is not a triangulable simple polygon')
+    faces.append(tuple(indices))
+    return np.asarray(faces, dtype=np.int64)
 
 
-def _fence_and_patio_objects(builder: Builder) -> None:
-    cfg = builder.cfg
-    y = cfg.bluff_edge_y + 540
-    x0, x1 = -11_900.0, 14_700.0
-    for i, x in enumerate(np.linspace(x0, x1, 16)):
-        builder.cylinder(f"bluff_fence_post_{i:02}", (x, y, 0), (x, y, 1_300), 24, METAL, "fence", "Property-edge fence post", sides=10)
-    builder.cylinder("bluff_fence_top", (x0, y, 1_230), (x1, y, 1_230), 18, METAL, "fence", "Fence top wire", sides=8)
-    builder.cylinder("bluff_fence_mid", (x0, y, 660), (x1, y, 660), 10, METAL, "fence", "Fence mid wire", sides=8)
-    for j, z in enumerate((230, 420, 610, 800, 990, 1180)):
-        builder.cylinder(f"fence_wire_h_{j}", (x0, y - 8, z), (x1, y - 8, z), 4.2, METAL, "fence", "Chain-link approximation horizontal wire", sides=6)
-    span = 1_750.0
-    for i, xa in enumerate(np.arange(x0, x1 - span, span)):
-        builder.cylinder(f"fence_diag_a_{i}", (xa, y - 10, 170), (xa + span, y - 10, 1_180), 3.5, METAL, "fence", "Chain-link diagonal wire", sides=6)
-        builder.cylinder(f"fence_diag_b_{i}", (xa, y + 10, 1_180), (xa + span, y + 10, 170), 3.5, METAL, "fence", "Chain-link diagonal wire", sides=6)
-
-    builder.box("pingpong_top", (2_500, 1_370, 55), (12_280, -480, 760), TABLE, "patio_objects", "Reference-visible outdoor table")
-    for i, (x, yy) in enumerate(((11_280, -930), (13_280, -930), (11_280, -30), (13_280, -30))):
-        builder.box(f"pingpong_leg_{i}", (62, 62, 720), (x, yy, 380), FRAME, "patio_objects", "Outdoor table leg")
-    builder.box("patio_bench_seat", (1_800, 360, 95), (14_250, 3_350, 500), WOOD, "patio_objects", "Simple weathered patio bench")
-    for i, x in enumerate((13_620, 14_880)):
-        builder.box(f"patio_bench_leg_{i}", (90, 300, 460), (x, 3_350, 240), WOOD_DARK, "patio_objects", "Bench leg")
+def _slab(b: Builder, name: str, outline: np.ndarray, z: float, thickness: float, material: int, group='architecture'):
+    n = len(outline)
+    vv = np.vstack((np.c_[outline,np.full(n,z)], np.c_[outline,np.full(n,z+thickness)]))
+    top = _polygon_triangles(outline)
+    faces = [*top[:,::-1].tolist(), *(top+n).tolist()]
+    area = np.sum(outline[:,0]*np.roll(outline[:,1],-1)-outline[:,1]*np.roll(outline[:,0],-1))
+    order = list(range(n)) if area>0 else list(reversed(range(n)))
+    for a,c in zip(order,order[1:]+order[:1]):
+        faces.extend([(a,c,c+n),(a,c+n,a+n)])
+    v,f,normals = _flat_mesh(vv,np.asarray(faces))
+    return b.add(_part(name,v,f,material,group,'Map-constrained polygon slab',normals))
 
 
-def _vegetation(builder: Builder) -> None:
-    rng = builder.rng
-    for i in range(34):
-        x = rng.uniform(-20_000, 20_000)
-        y = rng.uniform(-8_200, -4_250)
-        edge = builder.cfg.bluff_edge_y + 420 * math.sin(x / 4200) + 160 * math.sin(x / 1350)
-        t = max(0.0, min(1.0, (edge - y) / 10_700.0))
-        z = -70 - 8_150 * (t ** 0.62)
-        if z < -2_050:
-            continue
-        builder.leaf_cluster(
-            f"coastal_shrub_{i:02}", (x, y, z + 330),
-            (rng.uniform(420, 900), rng.uniform(380, 820), rng.uniform(260, 500)),
-            GREEN_LIGHT if i % 5 == 0 else GREEN_DARK, "vegetation",
-            "Explicit coastal scrub foliage", count=34,
-            leaf_length=(120, 250), leaf_width=(42, 90),
-        )
-
-    for i, y in enumerate(np.linspace(-250, 8_500, 10)):
-        builder.leaf_cluster(
-            f"east_hedge_{i:02}", (15_050 + rng.uniform(-120, 150), y, 690 + rng.uniform(-30, 100)),
-            (650, 820, 690), GREEN_DARK, "vegetation",
-            "Dense east property hedge", count=54, leaf_length=(120, 235), leaf_width=(38, 82),
-        )
-
-    for i, x in enumerate(np.linspace(-18_250, -10_900, 9)):
-        builder.leaf_cluster(
-            f"west_shrub_{i:02}", (x, -2_900 + rng.uniform(-350, 340), 610),
-            (650, 560, 600), GREEN_DARK if i % 3 else GREEN_LIGHT, "vegetation",
-            "West coastal hedge foliage", count=42, leaf_length=(125, 240), leaf_width=(42, 88),
-        )
-
-    base = np.array((10_450.0, -40.0, 0.0))
-    tip = np.array((10_820.0, 150.0, 5_850.0))
-    segments = 11
-    for i in range(segments):
-        a = base + (tip - base) * (i / segments)
-        b = base + (tip - base) * ((i + 1) / segments)
-        builder.cylinder(f"yucca_trunk_{i:02}", a, b, 215 - i * 10.5, TRUNK, "vegetation",
-                         "Segmented weathered yucca/palm trunk", sides=14, provenance="procedural-site")
-    crown = tip + np.array((0, 0, 90))
-    for i in range(31):
-        ang = TAU * i / 31 + (i % 4) * 0.06
-        length = 1_180 + 470 * (0.25 + math.sin(i * 1.73) ** 2)
-        end = crown + np.array((math.cos(ang) * length, math.sin(ang) * length, -90 + 620 * math.sin(i * 2.13)))
-        mid = crown * 0.44 + end * 0.56 + np.array((0, 0, 330))
-        width = 105 + 40 * math.sin(i * 1.31) ** 2
-        tangent = end - crown; tangent /= np.linalg.norm(tangent)
-        side = np.cross(tangent, np.array((0, 0, 1.0)))
-        if np.linalg.norm(side) < 1e-6:
-            side = np.array((1.0, 0, 0))
-        side /= np.linalg.norm(side)
-        verts = np.array([crown - side * width * 0.45, crown + side * width * 0.45,
-                          mid + side * width * 0.60, end, mid - side * width * 0.60])
-        faces = np.array([[0, 1, 2], [0, 2, 4], [4, 2, 3]], dtype=np.int64)
-        builder.add(_part(f"yucca_leaf_{i:02}", verts, faces, LEAF, "vegetation",
-                          "Procedural lance leaf", _smooth_normals(verts, faces), "procedural-site"))
-
-    trunk0 = np.array((2_700.0, 8_650.0, 0.0))
-    fork = np.array((2_850.0, 8_530.0, 4_850.0))
-    top = np.array((2_950.0, 8_500.0, 7_450.0))
-    builder.cylinder("mature_tree_trunk_0", trunk0, fork, 280, TRUNK, "vegetation",
-                     "Mature context tree trunk", sides=16, provenance="procedural-site")
-    builder.cylinder("mature_tree_trunk_1", fork, top, 205, TRUNK, "vegetation",
-                     "Mature context tree upper trunk", sides=14, provenance="procedural-site")
-    branch_tips = [
-        (-1_150, 8_420, 7_300), (150, 7_780, 8_100), (1_450, 7_850, 8_350),
-        (4_250, 7_850, 8_350), (5_550, 8_560, 7_900), (4_700, 9_600, 7_600),
-        (2_850, 10_150, 8_100), (950, 9_760, 7_800),
-    ]
-    for i, bt in enumerate(branch_tips):
-        root = fork + np.array((rng.uniform(-180, 180), rng.uniform(-150, 150), rng.uniform(250, 900)))
-        builder.cylinder(f"mature_tree_branch_{i:02}", root, np.asarray(bt, dtype=float), 115 if i < 4 else 90,
-                         TRUNK, "vegetation", "Mature context tree branch", sides=10, provenance="procedural-site")
-    builder.leaf_cluster(
-        "mature_tree_canopy", (2_450, 8_720, 8_020), (4_250, 2_350, 1_650),
-        GREEN_DARK, "vegetation", "Explicit mature coastal tree canopy",
-        count=430, leaf_length=(170, 390), leaf_width=(60, 145),
-    )
-    builder.leaf_cluster(
-        "mature_tree_canopy_highlights", (2_150, 8_520, 8_180), (3_950, 2_100, 1_400),
-        GREEN_LIGHT, "vegetation", "Sunward foliage variation",
-        count=170, leaf_length=(150, 340), leaf_width=(52, 120),
-    )
+def _wall(b: Builder, prefix: str, a, c, z0: float, z1: float, openings, material=STUCCO, thickness=190):
+    """Build actual wall piers, sills and lintels around holes, in wall coordinates."""
+    a,c = np.asarray(a,float),np.asarray(c,float)
+    length = float(np.linalg.norm(c-a));u=(c-a)/length;out=np.array([u[1],-u[0]])
+    matrix=np.array([[u[0],-u[1],0],[u[1],u[0],0],[0,0,1]])
+    cuts=sorted(set([0.,length]+[max(0,min(length,x)) for o in openings for x in o[:2]]))
+    def panel(name, l, r, low, high):
+        if r-l<1 or high-low<1:return
+        center=a+u*((l+r)/2)
+        b.box(name,(r-l,thickness,high-low),(*center,(low+high)/2),material,'architecture','Wall panel around authored opening',matrix)
+    for i,(l,r) in enumerate(zip(cuts,cuts[1:])):
+        holes=[o for o in openings if o[0]<(l+r)/2<o[1]]
+        spans=sorted((max(z0,o[2]),min(z1,o[3])) for o in holes)
+        bottom=z0
+        for j,(low,high) in enumerate(spans):
+            panel(f'{prefix}_panel_{i}_{j}',l,r,bottom,low);bottom=max(bottom,high)
+        panel(f'{prefix}_panel_{i}_top',l,r,bottom,z1)
+    for j,(l,r,low,high,kind) in enumerate(openings):
+        origin=a+u*((l+r)/2)+out*9
+        # Single optical sheet, no two-surface sheet box with doubled reflectance.
+        corners=np.array([np.r_[a+u*l+out*12,low],np.r_[a+u*r+out*12,low],np.r_[a+u*r+out*12,high],np.r_[a+u*l+out*12,high]])
+        faces=np.array([[0,1,2],[0,2,3]])
+        vv,ff,nn=_flat_mesh(corners,faces)
+        name=f'{prefix}_opening_{j}'
+        if kind=='door':
+            b.box(name+'_door',(r-l,55,high-low),(*origin,(low+high)/2),LOWER_DARK,'fenestration','Observed opaque entry door',matrix)
+        else:
+            b.add(_part(name+'_glass',vv,ff,GLASS,'fenestration','Single authored glazing sheet in real wall opening',nn))
+            panes=3 if kind=='grid' else 2
+            for k in range(panes+1):
+                xy=a+u*(l+(r-l)*k/panes)+out*26
+                b.box(name+f'_mullion_{k}',(35 if k not in (0,panes) else 48,62,high-low),(*xy,(low+high)/2),FRAME,'fenestration','Slim aluminium mullion',matrix)
+            if kind=='grid':
+                for k in (1,2):
+                    b.box(name+f'_crossbar_{k}',(r-l,64,28),(*origin,low+(high-low)*k/3),FRAME,'fenestration','Reference-visible divided window',matrix)
+        for suffix,z in [('sill',low),('head',high)]:
+            b.box(name+'_'+suffix,(r-l+82,95,55),(*origin,z),FRAME,'fenestration','Recessed sill or head',matrix)
+        # Modest neutral recess returns; arrangement behind glass is explicitly unobserved.
+        recess=a+u*((l+r)/2)-out*950
+        b.box(name+'_room_back',(r-l+160,90,high-low+180),(*recess,(low+high)/2),STUCCO_LIGHT,'interior_proxy','Unobserved neutral depth proxy 0.95 m behind glazing',matrix,provenance='unobserved-presentation-proxy')
+        bottomxy=a+u*((l+r)/2)-out*460
+        b.box(name+'_room_sill',(r-l,980,75),(*bottomxy,low-35),CONCRETE,'interior_proxy','Unobserved recessed floor proxy',matrix,provenance='unobserved-presentation-proxy')
 
 
-def build(config: HouseConfig | None = None) -> Assembly:
-    cfg = config or HouseConfig()
-    cfg.check()
-    b = Builder(cfg)
-    _site(b)
-    _neighbor(b)
-    _architecture(b)
-    _decks_and_rails(b)
-    _fence_and_patio_objects(b)
-    _vegetation(b)
-
-    shared = dict(
-        projection="perspective",
-        floor=False,
-        tone_mapping="neutral",
-        environment_strength=1.0,
-        background_strength=1.0,
-        background_color=(0.48, 0.64, 0.82),
-        studio_style="outdoor",
-        f_stop=11.0,
-        exposure=1.05,
-    )
-    views = {
-        "hero": View(az=318, el=24, scale=17_000, target=(1_100, -300, 2_700), focal_length_mm=43, title="6503 DEL PLAYA / OCEAN-BLUFF HERO", **shared),
-        "deck": View(az=326, el=16, scale=10_500, target=(1_400, -800, 3_000), focal_length_mm=50, title="WRAP-AROUND WOOD DECK", **shared),
-        "east": View(az=306, el=18, scale=12_000, target=(5_600, 1_000, 2_900), focal_length_mm=46, title="EAST PATIO / DECK SUPPORTS", **shared),
-        "context": View(az=300, el=32, scale=26_000, target=(-500, -2_800, 1_700), focal_length_mm=45, title="EAST-END DEL PLAYA CONTEXT", **shared),
-    }
-    metadata = {
-        "title": "6503 Del Playa / eastern Del Playa reference reconstruction",
-        "source_repository": "cybrdelic/cybr-geo",
-        "geometry_method": "CYBR GEO named procedural Part/Assembly geometry, millimetres, Z-up",
-        "subject": "6503 Del Playa Drive, Isla Vista, California / Depressions Beach edge",
-        "reference_urls": [
-            "https://www.zillow.com/homedetails/6503-Del-Playa-Dr-2-Goleta-CA-93117/2079669030_zpid/",
-            "https://www.californiabeaches.com/beach/depressions-beach/",
-        ],
-        "reference_observations": [
-            "Two-level beige stucco oceanfront block with dark lower bay.",
-            "Long weathered wood wrap-around upper deck with dense vertical balusters.",
-            "East-side exposed deck supports, patio, leaning yucca/palm, table and bluff-edge fence.",
-            "West neighboring light stucco building with white balcony rail is included only as visible context.",
-        ],
-        "no_image_generation": True,
-        "no_photogrammetry": True,
-        "no_scan_geometry": True,
-        "no_scan_textures": True,
-        "authorship": "All visible geometry and material parameters are explicit procedural/authored data.",
-        "units": "mm",
-        "axis": "Z-up; X approximately along shoreline; negative Y toward ocean",
-        "uncertainty": {
-            "survey_status": "No parcel survey, architectural drawings, or calibrated camera solution was available.",
-            "dimensions": "Reference-estimated from public exterior photographs and site context; not claimed centimeter-exact.",
-            "hidden_surfaces": "Hidden/interior details are intentionally omitted instead of invented.",
-            "terrain": "Reference-matched procedural bluff context, not a DEM survey.",
-        },
-        "config": cfg.__dict__,
-    }
-    return Assembly("del_playa_6503_reference_reconstruction", b.parts, MATERIALS, views, metadata)
+def _architecture(b: Builder):
+    cfg=b.cfg;poly=footprint_mm()
+    _slab(b,'lower_floor',poly,-90,125,CONCRETE)
+    _slab(b,'upper_main_shell',poly,cfg.slab_z-135,135,STUCCO)
+    upper_poly=np.vstack((poly[0],[-4600.,500.],poly[6:]))
+    _slab(b,'roof_slab',upper_poly,cfg.roof_z,135,ROOF,'roof')
+    # Source envelope is held fixed, facade heights/openings are manual reference estimates.
+    area=np.sum(poly[:,0]*np.roll(poly[:,1],-1)-poly[:,1]*np.roll(poly[:,0],-1))
+    if area<0:poly=poly[::-1]
+    for i,(a,c) in enumerate(zip(poly,np.roll(poly,-1,axis=0))):
+        length=float(np.linalg.norm(c-a));mid=(a+c)/2
+        openings=[];upper=[]
+        if mid[1]<600 and length>4000:
+            # Main ocean facade, distances proportional to this measured map segment.
+            openings=[(.075*length,.315*length,510,2220,'grid'),(.54*length,.85*length,160,2320,'slider')]
+            upper=[(.045*length,.23*length,cfg.slab_z+250,cfg.roof_z-285,'slider'),(.29*length,.365*length,cfg.slab_z+600,cfg.roof_z-460,'slider'),(.425*length,.49*length,cfg.slab_z+110,cfg.roof_z-330,'door'),(.525*length,.765*length,cfg.slab_z+170,cfg.roof_z-310,'slider'),(.855*length,.985*length,cfg.slab_z+200,cfg.roof_z-295,'slider')]
+        elif length>4500 and mid[0]>-5000:
+            openings=[(.21*length,.66*length,190,2320,'slider')]
+            upper=[(.12*length,.27*length,cfg.slab_z+130,cfg.roof_z-330,'door'),(.38*length,.80*length,cfg.slab_z+290,cfg.roof_z-335,'slider')]
+        elif length>20000:
+            # West wall largely occluded; no invented opening survey.
+            upper=[]
+        if not (mid[1]<600 and mid[0]<-3000):
+            _wall(b,f'lower_wall_{i:02}',a,c,0,cfg.slab_z-130,openings)
+    for i,(a,c) in enumerate(zip(upper_poly,np.roll(upper_poly,-1,axis=0))):
+        length=float(np.linalg.norm(c-a));mid=(a+c)/2;openings=[]
+        if mid[1]<2000 and length>6000:
+            openings=[(.045*length,.23*length,cfg.slab_z+250,cfg.roof_z-285,'slider'),(.29*length,.365*length,cfg.slab_z+600,cfg.roof_z-460,'slider'),(.425*length,.49*length,cfg.slab_z+110,cfg.roof_z-330,'door'),(.525*length,.765*length,cfg.slab_z+170,cfg.roof_z-310,'slider'),(.855*length,.985*length,cfg.slab_z+200,cfg.roof_z-295,'slider')]
+        elif length>4500 and mid[0]>-5000:
+            openings=[(.12*length,.27*length,cfg.slab_z+130,cfg.roof_z-330,'door'),(.38*length,.80*length,cfg.slab_z+290,cfg.roof_z-335,'slider')]
+        _wall(b,f'upper_wall_{i:02}',a,c,cfg.slab_z,cfg.roof_z,openings)
+        u=(c-a)/length;matrix=np.array([[u[0],-u[1],0],[u[1],u[0],0],[0,0,1]])
+        b.box(f'roof_fascia_{i}',(length+35,145,130),(*mid,cfg.roof_z+70),WOOD_DARK,'roof','Weathered roof edge fascia',matrix)
+    # Lower projecting wood-clad bay and its small divided window, seen in ocean reference.
+    _wall(b,'lower_dark_bay',(-5900,-520),(-3000,-520),0,2390,[(500,2300,560,2200,'grid')],LOWER_DARK,180)
+    for i,x in enumerate(np.arange(-5850,-3000,115)):
+        if -5400<x<-3600:
+            for j,(z,h) in enumerate([(250,480),(2300,160)]):
+                b.box(f'bay_cladding_{i}_{j}',(108,27,h),(x,-624,z),LOWER_DARK,'cladding','Individual vertical tongue-and-groove cladding')
+        else:b.box(f'bay_cladding_{i}',(108,27,2360),(x,-624,1180),LOWER_DARK,'cladding','Individual vertical tongue-and-groove cladding')
+    # Ocean-side low brick plinth/retaining lip seen below the ground-floor glazing.
+    for row in range(4):
+        for j,x in enumerate(np.arange(-2980-(row%2)*115,5850,240)):
+            if x < -3030:continue
+            b.box(f'front_plinth_brick_{row}_{j}',(230,108,64),(x,-1150,37+row*72),BRICK,'masonry','Individual staggered brick at visible patio plinth')
+    for row in range(4):
+        for j,y in enumerate(np.arange(-1080,4350,240)):
+            b.box(f'east_plinth_brick_{row}_{j}',(108,230,64),(5900,y,37+row*72),BRICK,'masonry','Low east return of reference-visible brick lip')
+    for i,(x,y) in enumerate([(-1000,4000),(-3300,11800),(-6800,22000),(-11600,28800)]):
+        b.cylinder(f'roof_vent_{i}',(x,y,cfg.roof_z+125),(x,y,cfg.roof_z+465),75,METAL,'roof','Reference-compatible vent location, estimated',sides=18)
+        b.cylinder(f'roof_vent_cap_{i}',(x,y,cfg.roof_z+460),(x,y,cfg.roof_z+505),115,METAL,'roof','Vent rain cap',sides=20)
 
 
-if __name__ == "__main__":
-    assembly = build()
-    print(assembly.name)
-    print("parts", len(assembly.parts))
-    print("triangles", sum(len(p.faces) for p in assembly.parts))
-    print("bounds_mm", assembly.bounds.tolist())
+def _deck_strip(b:Builder,prefix,a,c,width=1250,railing=True):
+    a,c=np.asarray(a,float),np.asarray(c,float);length=np.linalg.norm(c-a);u=(c-a)/length;out=np.array([u[1],-u[0]])
+    matrix=np.array([[u[0],-u[1],0],[u[1],u[0],0],[0,0,1]])
+    z=b.cfg.slab_z+15
+    # Standard-sized boards, staggered butt joints rather than 20-m-long planks.
+    boards=int(length/146)
+    for i in range(boards):
+        along=(i+.5)*length/boards
+        for j in range(max(1,int(math.ceil(width/2400)))):
+            lo=j*2400;hi=min(width,(j+1)*2400)
+            if hi-lo<15:continue
+            xy=a+u*along+out*((lo+hi)/2)
+            b.box(f'{prefix}_board_{i:03}_{j}',(length/boards-6,hi-lo-5,34),(*xy,z+b.rng.uniform(-.7,.7)),WOOD_LIGHT if b.rng.random()<.28 else WOOD,'balcony','Individual cross-deck weathered board',matrix)
+    for i,t in enumerate(np.linspace(0,length,max(2,int(length/410)+1))):
+        xy=a+u*t+out*(width/2)
+        b.box(f'{prefix}_joist_{i}',(45,width,185),(*xy,z-114),WOOD_DARK,'structure','Exposed deck joist',matrix)
+    edgea=a+out*width;edgec=c+out*width
+    b.box(prefix+'_fascia',(length+80,90,220),(*(edgea+edgec)/2,z-94),WOOD_DARK,'balcony','Chamfered deck fascia',matrix)
+    if not railing:return
+    top=z+b.cfg.rail_height
+    b.box(prefix+'_toprail',(length+80,85,65),(*(edgea+edgec)/2,top),WOOD,'balcony','Continuous cap rail',matrix)
+    b.box(prefix+'_bottomrail',(length,48,57),(*(edgea+edgec)/2,z+140),WOOD_DARK,'balcony','Bottom rail',matrix)
+    for i,t in enumerate(np.linspace(32,length-32,max(2,int(length/125)))):
+        xy=edgea+u*t
+        b.box(prefix+f'_baluster_{i:03}',(31,38,b.cfg.rail_height-158),(*xy,z+(b.cfg.rail_height+140)/2),WOOD_DARK,'balcony','Reference-dense vertical baluster',matrix)
+    for i,t in enumerate(np.linspace(0,length,max(2,int(length/1850)+1))):
+        xy=edgea+u*t
+        b.box(prefix+f'_post_{i:02}',(88,88,b.cfg.rail_height+55),(*xy,z+(b.cfg.rail_height+55)/2),WOOD,'balcony','Deck guard post',matrix)
+        under=xy-out*105
+        b.box(prefix+f'_support_{i:02}',(90,90,z-100),(*under,(z-100)/2),WOOD_DARK,'structure','Exposed vertical support',matrix)
+        # Fastener disks/bolt ends are modeled, not painted onto a map.
+        for k,zz in enumerate((z+175,z+840)):
+            q=np.r_[xy+out*46,zz];b.cylinder(prefix+f'_bolt_{i}_{k}',q,q+np.r_[out*5,0],8,METAL,'fasteners','Galvanized bolt head',sides=10)
+
+
+def _decks_and_rails(b:Builder):
+    _deck_strip(b,'front_deck',(-6350,-70),(5750,-70),width=1880)
+    # Preserve conventional names used by downstream inspection/tests.
+    next(p for p in b.parts if p.name=='front_deck_toprail').name='front_rail_toprail'
+    for p in b.parts:
+        if p.name.startswith('front_deck_baluster_'):p.name=p.name.replace('front_deck_baluster_','front_rail_baluster_')
+    poly=footprint_mm()
+    for i in range(6,17):
+        if np.linalg.norm(poly[i+1]-poly[i])>1200:
+            _deck_strip(b,f'east_deck_{i}',poly[i],poly[i+1],width=1160)
+    # Light west neighbor rail, visually secondary.
+    b.front_railing(-14450,-6700,-1350,b.cfg.slab_z+20,'neighbor_front_rail',white=True)
+
+
+def terrain_z(x,y,cfg):
+    edge=cfg.bluff_edge_y+260*math.sin(x/4300)+120*math.sin(x/1700)
+    if y>=edge:return -120+8*math.sin(x/1700+y/3200)
+    t=min(1,max(0,(edge-y)/5900))
+    # Steeper irregular face with horizontal sediment breaks and deterministic rills.
+    height=-140-7200*(t**.76)
+    rills=(145*math.sin(x/690+2*t)+55*math.sin(x/260-4*t))*(math.sin(math.pi*t)**2)
+    strata=46*math.sin(height/245+.12*math.sin(x/850))
+    return height+rills+strata
+
+
+def _height_mesh(b,name,xs,ys,fn,mat,role):
+    xx,yy=np.meshgrid(xs,ys);zz=np.vectorize(fn)(xx,yy);v=np.c_[xx.ravel(),yy.ravel(),zz.ravel()]
+    w=len(xs);a=(np.arange(len(ys)-1)[:,None]*w+np.arange(w-1)[None,:]).ravel()
+    f=np.vstack([np.c_[a,a+1,a+w+1],np.c_[a,a+w+1,a+w]])
+    b.add(_part(name,v,f,mat,'site',role,_smooth_normals(v,f),'procedural-site'))
+
+
+def _site(b:Builder):
+    cfg=b.cfg
+    ys=np.unique(np.r_[np.linspace(-16000,-10500,32),np.linspace(-10500,-4500,88),np.linspace(-4500,38000,36),np.linspace(38000,110000,15)])
+    xs=np.unique(np.r_[np.linspace(-500000,-38000,35),np.linspace(-38000,22000,190),np.linspace(22000,500000,45)])
+    _height_mesh(b,'bluff_terrain',xs,ys,lambda x,y:terrain_z(x,y,cfg),SOIL,'Authored bluff; finer nonuniform mesh, not a DEM')
+    _height_mesh(b,'beach_sand',np.linspace(-500000,500000,300),np.linspace(-38000,-11300,80),lambda x,y:-7480+(y+38000)*.006+20*math.sin(x/2400+y/3200),SAND,'Procedural beach below estimated bluff')
+    _height_mesh(b,'ocean_surface',np.linspace(-600000,600000,350),np.linspace(-700000,-32500,190),lambda x,y:-7370+70*math.sin(x/1800+y/1450)+32*math.sin(x/420-y/710)+10*math.sin(x/165+y/195),WATER,'Explicit multi-scale coastal water surface')
+    _height_mesh(b,'wet_shoreline',np.linspace(-500000,500000,300),np.linspace(-34300,-30600,18),lambda x,y:-7360+5*math.sin(x/4500),WET_SAND,'Authored damp shoreline band; no tide measurement')
+    # Park ground and paths are reference/context estimates except the mapped path centerline.
+    _height_mesh(b,'park_gravel_ground',np.linspace(10000,140000,50),np.linspace(-4200,100000,45),lambda x,y:-103+9*math.sin(x/2800+y/4700),PARK_GRAVEL,'Campus-side gravel context; extent/elevation estimated')
+    points=np.array(site_constraints()['context']['paths'][0]['local_m'])*1000
+    for i,(a,c) in enumerate(zip(points,points[1:])):
+        u=(c-a)/np.linalg.norm(c-a);mat=np.array([[u[0],-u[1],0],[u[1],u[0],0],[0,0,1]])
+        b.box(f'mapped_park_path_{i}',(np.linalg.norm(c-a)+200,1900,25),(*(a+c)/2,-78),CONCRETE,'site','OSM path centerline; width/elevation estimated',mat,provenance='mapped-centerline-estimated-section')
+    # Open foreground plaza, benches and lamps correspond to visible park types, not surveyed positions.
+    b.box('park_foreground_plaza',(17500,11800,90),(36000,4800,-74),PARK_GRAVEL,'site','Reference-visible gravel plaza; location and dimensions approximate',provenance='reference-context')
+    for i,(a,c) in enumerate([((27000,-800),(27000,5500)),((27000,10700),(44500,10700))]):
+        a=np.array(a);c=np.array(c);u=(c-a)/np.linalg.norm(c-a);mat=np.array([[u[0],-u[1],0],[u[1],u[0],0],[0,0,1]])
+        b.box(f'park_seat_wall_{i}',(np.linalg.norm(c-a),420,410),(*(a+c)/2,150),CONCRETE,'site','Reference-visible low concrete seating wall; approximate position',mat,provenance='reference-context')
+    for i,(x,y) in enumerate([(31500,1500),(37500,6500)]):
+        b.box(f'park_bench_{i}_seat',(1700,470,55),(x,y,435),WHITE,'site','Reference-visible park bench type; approximate position',provenance='reference-context')
+        for j,xx in enumerate((x-620,x+620)):
+            b.box(f'park_bench_{i}_leg_{j}',(70,390,455),(xx,y,185),FRAME,'site','Bench support',provenance='reference-context')
+    for i,(x,y) in enumerate([(24000,6800),(44000,22000),(16000,36500)]):
+        b.cylinder(f'park_lamp_{i}',(x,y,-90),(x,y,3850),48,METAL,'site','Reference-visible unlit park lamp type; approximate position',sides=16,provenance='reference-context')
+        b.cylinder(f'park_lamp_cap_{i}',(x,y,3860),(x,y,3910),290,METAL,'site','Broad shade of park path lamp',sides=24,provenance='reference-context')
+    # Beach context is presentation-only outside the available footprint.
+    b.box('main_patioslab',(12900,4800,90),(550,-2450,-55),CONCRETE,'site','Observed ocean-side patio; extent estimated')
+    b.box('east_patioslab',(3900,7300,90),(6900,550,-65),CONCRETE,'site','Observed side patio; extent estimated')
+    for i in range(5):
+        b.box(f'patio_joint_{i}',(11,4680,8),(-4950+i*2460,-2460,-4),SOIL,'site','Construction joint in concrete')
+    # Neutral seam-free far landform silhouettes, no photographic sky/terrain backdrop.
+    _height_mesh(b,'inland_landform',np.linspace(-500000,500000,170),np.linspace(110000,480000,30),lambda x,y:-150+17000*(.25+.75*math.sin(x/58000)**2)*((y-110000)/370000)**1.4,SOIL,'Unsurveyed procedural distant landform context')
+
+
+def _neighbor(b:Builder):
+    b.box('neighbor_lower_mass',(7700,19500,2580),(-10400,8500,1290),NEIGHBOR,'neighbor','West neighbor context volume; photo estimate',provenance='reference-context')
+    b.box('neighbor_upper_mass',(7700,19500,2670),(-10400,8500,3915),NEIGHBOR,'neighbor','West neighbor upper volume; photo estimate',provenance='reference-context')
+    b.box('neighbor_roof',(8050,19850,145),(-10400,8500,5325),ROOF,'neighbor','Secondary flat roof',provenance='reference-context')
+    for i,x in enumerate((-12600,-9200)):
+        b.window(f'neighbor_window_{i}',x,1850,3060,5050,-1270,group='neighbor')
+    b.box('neighbor_red_door',(760,60,1990),(-13600,-1285,3650),RED_DOOR,'neighbor','Observed muted red door',provenance='reference-context')
+
+
+def _fence_and_patio_objects(b:Builder):
+    y=b.cfg.bluff_edge_y+920;x0,x1=-15200,10200
+    for i,x in enumerate(np.arange(x0,x1+1,1830)):
+        b.cylinder(f'bluff_fence_post_{i}',(x,y,0),(x,y,1220),22,METAL,'fence','Fence post',sides=12)
+    b.cylinder('bluff_fence_top',(x0,y,1160),(x1,y,1160),15,METAL,'fence','Galvanized top tube',sides=12)
+    # Explicit 90-mm diamonds instead of enormous diagonal proxy wires.
+    for direction in (-1,1):
+        for i,offset in enumerate(np.arange(x0-1250,x1+1250,100)):
+            ax=max(x0,offset);cx=min(x1,offset+direction*1120) if direction>0 else max(x0,offset-1120)
+            if direction<0:ax=min(x1,offset)
+            if abs(cx-ax)<10:continue
+            za=80+abs(ax-offset);zc=80+abs(cx-offset)
+            if max(za,zc)>1220:continue
+            b.cylinder(f'chainlink_{direction}_{i}',(ax,y,za),(cx,y,zc),1.8,METAL,'fence','Actual fine chain-link diagonal',sides=5)
+    # Reference table dimensions inferred from standard table, not used as a survey datum.
+    b.box('pingpong_top',(2500,1390,36),(8070,-1550,755),TABLE,'patio_objects','Reference-visible outdoor table')
+    for i,(x,yy) in enumerate(((7070,-2000),(9070,-2000),(7070,-1100),(9070,-1100))):
+        b.box(f'pingpong_leg_{i}',(44,44,700),(x,yy,368),FRAME,'patio_objects','Table leg')
+    b.box('patio_bench_seat',(1750,380,70),(8800,2650,440),WOOD,'patio_objects','Reference bench')
+    for i,x in enumerate((8180,9410)):b.box(f'patio_bench_leg_{i}',(75,310,430),(x,2650,216),WOOD_DARK,'patio_objects','Bench leg')
+    # Campus-facing boundary fence/hedge is visible in both references.
+    for i,y in enumerate(np.arange(-2600,34000,1850)):
+        x=9400-.38*max(0,y)
+        b.box(f'east_boundary_post_{i}',(80,80,1740),(x,y,870),WHITE,'fence','Observed light side-boundary fence; alignment estimate')
+        b.box(f'east_boundary_panel_{i}',(40,1780,1470),(x,y+925,825),WHITE,'fence','Side-boundary infill; photo-estimated extent')
+
+
+def _vegetation(b:Builder):
+    rng=b.rng
+    for i in range(100):
+        x=rng.uniform(-32000,16000);y=rng.uniform(-8700,-4700);z=terrain_z(x,y,b.cfg)
+        if z < -4200:continue
+        b.leaf_cluster(f'coastal_shrub_{i}',(x,y,z+330),(rng.uniform(400,850),rng.uniform(420,760),rng.uniform(320,630)),GREEN_LIGHT if i%5==0 else GREEN_DARK,'vegetation','Explicit coastal scrub leaves',count=450,leaf_length=(90,210),leaf_width=(35,85))
+    for i in range(420):
+        x=-29000+(i%42)*1030+rng.uniform(-380,380);y=-10900+(i//42)*610+rng.uniform(-190,190);z=terrain_z(x,y,b.cfg)
+        b.leaf_cluster(f'bluff_groundcover_{i}',(x,y,z+90),(740,670,160),GREEN_LIGHT if i%6==0 else GREEN_DARK,'vegetation','Continuous irregular iceplant-like coastal groundcover',count=190,leaf_length=(110,230),leaf_width=(40,85))
+    for i,y in enumerate(np.arange(-200,34000,1100)):
+        x=9200-.38*max(y,0)
+        b.leaf_cluster(f'east_hedge_{i}',(x,y,900),(780,850,920),GREEN_DARK,'vegetation','Explicit side hedge',count=850,leaf_length=(100,220),leaf_width=(40,85))
+    for i,x in enumerate(np.arange(-24000,-6200,1100)):
+        b.leaf_cluster(f'west_hedge_{i}',(x,-3400,780),(800,880,950),GREEN_LIGHT if i%4==0 else GREEN_DARK,'vegetation','West coastal hedge',count=700,leaf_length=(100,220),leaf_width=(35,80))
+    # Dense coastal park beds break the gravel context into reference-visible planting patches.
+    for i in range(120):
+        x=rng.uniform(14000,71000);y=rng.uniform(-3500,40500)
+        if 26500<x<45500 and -1500<y<11200:continue
+        radius=rng.uniform(800,1900)
+        b.leaf_cluster(f'park_coastal_bed_{i}',(x,y,90),(radius,radius*.7,240),GREEN_DARK,'vegetation','Reference-context low coastal planting',count=500,leaf_length=(160,290),leaf_width=(50,105))
+        if i%3==0:
+            b.leaf_cluster(f'park_flower_bed_{i}',(x,y,270),(radius*.75,radius*.58,120),FLOWER,'vegetation','Explicit yellow flower petals; estimated park planting',count=160,leaf_length=(25,50),leaf_width=(18,32))
+    # A bent trunk is a continuous tapered ring mesh with bark ribs.
+    base=np.array([7350.,-130.,0]);tip=np.array([8200.,100.,5900.]);vv=[];rings=34;sides=22
+    for i in range(rings):
+        t=i/(rings-1);p=base*(1-t)+tip*t+np.array([180*math.sin(t*math.pi),0,0]);radius=225*(1-.43*t)
+        for j in range(sides):
+            a=TAU*j/sides;r=radius*(1+.06*math.sin(7*a+27*t));vv.append(p+[r*math.cos(a),r*math.sin(a),0])
+    ff=[]
+    for i in range(rings-1):
+        for j in range(sides):
+            a=i*sides+j;c=i*sides+(j+1)%sides;d=a+sides;e=c+sides;ff.extend([(a,c,e),(a,e,d)])
+    vv=np.asarray(vv);ff=np.asarray(ff);b.add(_part('yucca_trunk',vv,ff,TRUNK,'vegetation','Continuous bent/tapered trunk',_smooth_normals(vv,ff),'procedural-site'))
+    for i in range(64):
+        a=TAU*i/64;length=rng.uniform(1100,1900);down=rng.uniform(-1050,500);width=rng.uniform(52,105);verts=[]
+        for j in range(11):
+            t=j/10;centre=tip+np.array([math.cos(a)*length*t,math.sin(a)*length*t,480*math.sin(math.pi*t)+down*t]);side=np.array([-math.sin(a),math.cos(a),0])*width*math.sin(math.pi*t)*.5
+            verts.extend([centre-side,centre+side])
+        faces=[]
+        for j in range(10):faces.extend([(2*j,2*j+1,2*j+3),(2*j,2*j+3,2*j+2)])
+        v=np.asarray(verts);f=np.asarray(faces);b.add(_part(f'yucca_leaf_{i}',v,f,LEAF,'vegetation','Curved non-card yucca leaf',_smooth_normals(v,f),'procedural-site'))
+    tree=np.array([5100.,12000.,0]);fork=tree+[0,0,4700]
+    b.cylinder('mature_tree_trunk',tree,fork,230,TRUNK,'vegetation','Reference-visible context tree trunk',sides=20,provenance='procedural-site')
+    for i in range(22):
+        a=TAU*i/22;end=fork+np.array([math.cos(a)*rng.uniform(1100,3600),math.sin(a)*rng.uniform(1100,3400),rng.uniform(1700,3400)])
+        b.cylinder(f'context_branch_{i}',fork,end,65 if i%3 else 105,TRUNK,'vegetation','Authored tree branch',sides=10,provenance='procedural-site')
+        b.leaf_cluster(f'context_canopy_{i}',end,(1500,1250,850),GREEN_LIGHT if i%5==0 else GREEN_DARK,'vegetation','Dense curved leaves in irregular crown',count=1600,leaf_length=(100,240),leaf_width=(30,75))
+    # Thin grass blades clustered rather than shrub ellipsoids.
+    v=[];f=[]
+    for i in range(2200):
+        x=rng.uniform(-33000,18000);y=rng.uniform(-6400,-4500);z=terrain_z(x,y,b.cfg);height=rng.uniform(110,480);a=rng.uniform(0,TAU);w=rng.uniform(4,10);side=np.array([math.cos(a)*w,math.sin(a)*w,0]);root=np.array([x,y,z]);tip=root+[rng.uniform(-85,85),rng.uniform(-85,85),height];k=len(v);v.extend([root-side,root+side,tip]);f.append([k,k+1,k+2])
+    v=np.asarray(v);f=np.asarray(f);b.add(_part('coastal_grass_blades',v,f,DRY_GRASS,'vegetation','Explicit fine coastal grass blades',_smooth_normals(v,f),'procedural-site'))
+
+
+def build(config:HouseConfig|None=None)->Assembly:
+    cfg=config or HouseConfig();cfg.check();b=Builder(cfg)
+    _site(b);_neighbor(b);_architecture(b);_decks_and_rails(b);_fence_and_patio_objects(b);_vegetation(b)
+    views={'hero':View(az=318,el=18,scale=17000,target=(0,-400,2700),floor=False,projection='perspective'), 'deck':View(az=326,el=14,scale=9000,target=(0,-900,3100),floor=False,projection='perspective'), 'context':View(az=40,el=25,scale=33000,target=(-5000,12000,1800),floor=False,projection='perspective')}
+    constraints=site_constraints()
+    metadata={'title':'6503 Del Playa — map-constrained, reference-authored reconstruction','subject':'6503 Del Playa Drive, Isla Vista, California','source_repository':'cybrdelic/cybr-geo','geometry_method':'Named CYBR GEO Part/Assembly; map outline plus authored construction detail','reference_urls':['https://www.zillow.com/homedetails/6503-Del-Playa-Dr-2-Goleta-CA-93117/2079669030_zpid/',constraints['footprint']['source_url'],constraints['parcel']['source_url'],'https://www.californiabeaches.com/beach/depressions-beach/'],'site_constraints':constraints,'no_image_generation':True,'no_photogrammetry':True,'no_scan_geometry':True,'no_scan_textures':True,'no_photo_textures':True,'units':'mm','axis':'Z up; X follows mapped ocean facade, negative Y oceanwards','config':cfg.__dict__,'uncertainty':{'survey_status':'No survey or architectural drawings. County assessment parcel and 2022 community-mapped OSM footprint are constraints, not legal/metrological truth.','dimensions':'Mapped plan envelope fixed; vertical heights, window sizes, deck and fence dimensions manually reference-estimated. Manual sparse camera alignment has no SfM, triangulated point cloud or reconstructed photographic mesh.','footprint':'Mapped polygon may combine exterior walls, recesses and balcony envelopes; not every jog has independent elevation confirmation.','hidden_surfaces':'Only neutral shallow recess geometry behind glass, tagged unobserved-presentation-proxy. No claim to an accurate interior.','terrain':'Finer authored coastal shape; no DEM or elevation survey is incorporated. Bluff profile, water level and beach slope remain estimated.','temporal':'Photo capture dates unknown; target is photographed appearance, not current structural condition.','context':'West neighbor, park plaza/furniture/planting and distant landform are reference/context estimates. Only the named park path centerline is map-constrained; its width and elevation are not. Upper ocean facade left corner is manually estimated separately from the mapped lower-floor envelope.'}}
+    return Assembly('del_playa_6503_reference_reconstruction',b.parts,MATERIALS,views,metadata)
+
+
+if __name__=='__main__':
+    a=build();print(a.name);print('parts',len(a.parts));print('triangles',sum(len(p.faces) for p in a.parts));print('bounds_mm',a.bounds.tolist())
