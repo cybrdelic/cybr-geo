@@ -519,7 +519,6 @@ def build_elements() -> Assembly:
     for i, (x, y, z, r) in enumerate(rock_specs):
         s = _sphere(r, (x, y, z))
         # flatten in Y to form a mountain face visible through front glass
-        s = s.scale(1.0, .56, .78)
         _part(parts, f"EL_Rock_{i+1:02}", s, 8, "terrain",
               role="Fractured basalt core", explode=(0, 0, 45))
 
@@ -708,7 +707,7 @@ def build_forest() -> Assembly:
         (215, -70, 160, 62), (40, 115, 265, 54), (-45, -120, 185, 58),
     ]
     for i, (x, y, z, r) in enumerate(rocks):
-        _part(parts, f"FO_Rock_{i+1:02}", _sphere(r, (x, y, z)).scale(1.0, .8, .65), 8, "biome",
+        _part(parts, f"FO_Rock_{i+1:02}", _sphere(r, (x, y, z)), 8, "biome",
               role="Biome rock", explode=(0, 0, 75))
 
     # Waterfall and stream.
@@ -727,7 +726,7 @@ def build_forest() -> Assembly:
     for i, a in enumerate(np.linspace(0, math.tau, 16, endpoint=False)):
         r = 250 - (i % 3) * 32
         p = (r * math.cos(a), r * math.sin(a), 170 + (i % 4) * 12)
-        _part(parts, f"FO_Moss_{i+1:02}", _sphere(28 + (i % 3) * 6, p).scale(1.0, 1.0, .45), 13, "biome",
+        _part(parts, f"FO_Moss_{i+1:02}", _sphere(28 + (i % 3) * 6, p), 13, "biome",
               role="Moss / ground cover", explode=(0, 0, 70), tolerance=.6, angular=.26)
 
     # Life support.
