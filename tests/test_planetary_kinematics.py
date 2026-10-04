@@ -1,0 +1,97 @@
+import math
+from types import SimpleNamespace
+import numpy as np
+
+from mechanism_lab.gears import PlanetarySpec, planetary_angles, planet_centers, mesh_residuals
+from mechanism_lab.gears.planetary import planet_initial_phases,ring_initial_phase
+from mechanism_lab.models.planetary_actuator import pose
+
+
+def _phase_mod(v):
+    q=v%(2*math.pi)
+    return 0.0 if math.isclose(q,2*math.pi,rel_tol=0,abs_tol=1e-12) else q
+
+
+def test_willis_ratio_and_planet_speed():
+    s=PlanetarySpec(input_speed_rps=.45)
+    assert math.isclose(s.carrier_speed_rps,.09,rel_tol=0,abs_tol=1e-12)
+    assert math.isclose(s.planet_absolute_speed_rps,-.15,rel_tol=0,abs_tol=1e-12)
+    for t in (0,.1,.75,1.4):
+        q=planetary_angles(s,t)
+        assert math.isclose(q['carrier'],q['sun']/5.0,rel_tol=0,abs_tol=1e-12)
+
+
+def test_external_and_internal_mesh_phase_residuals_stay_zero():
+    s=PlanetarySpec()
+    for t in np.linspace(0,3.0,17):
+        residuals=mesh_residuals(s,float(t))
+        assert max(abs(v) for v in residuals['sun_planet']) < 2e-12
+        assert max(abs(v) for v in residuals['ring_planet']) < 2e-12
+
+
+def test_zero_angle_profile_phases_are_actual_tooth_space_complements():
+    s=PlanetarySpec()
+    p0=planet_initial_phases(s)[0]
+    r0=ring_initial_phase(s)
+    # external_profile() authors TOOTH centers at phase 0. With the first planet
+    # on +Y (alpha=0 in the model's YZ polar convention), the sun contact is a
+    # tooth center while the planet's opposite-facing contact must be a SPACE
+    # center (normalized phase pi), not another tooth center.
+    sun_contact=_phase_mod(s.sun_teeth*(0.0-0.0))
+    planet_inward=_phase_mod(s.planet_teeth*(math.pi-p0))
+    assert math.isclose(sun_contact,0.0,abs_tol=1e-12)
+    assert math.isclose(planet_inward,math.pi,abs_tol=1e-12)
+    # internal_space_profile() authors SPACE centers at the ring phase. On the
+    # outward side the same planet presents a tooth center into that ring space.
+    planet_outward=_phase_mod(s.planet_teeth*(0.0-p0))
+    ring_space=_phase_mod(s.ring_teeth*(0.0-r0))
+    assert math.isclose(planet_outward,0.0,abs_tol=1e-12)
+    assert math.isclose(ring_space,0.0,abs_tol=1e-12)
+
+
+def test_even_planet_tooth_count_gets_required_half_pitch_ring_offset():
+    # A separate valid topology exercises the parity branch instead of relying on
+    # the current odd 27T planet count forever.
+    s=PlanetarySpec(sun_teeth=20,planet_teeth=26,ring_teeth=72,planets=4)
+    s.validate()
+    assert math.isclose(ring_initial_phase(s),math.pi/s.ring_teeth,abs_tol=1e-12)
+    residuals=mesh_residuals(s,0)
+    assert max(abs(v) for v in residuals['sun_planet']) < 2e-12
+    assert max(abs(v) for v in residuals['ring_planet']) < 2e-12
+
+
+def test_planet_centers_remain_equal_radius_and_spacing():
+    s=PlanetarySpec()
+    q=planetary_angles(s,1.137)
+    centers=planet_centers(s,q['carrier'])
+    angles=[]
+    for y,z in centers:
+        assert math.isclose(math.hypot(y,z),s.planet_center_radius,rel_tol=0,abs_tol=1e-12)
+        angles.append(math.atan2(z,y)%(2*math.pi))
+    angles=sorted(angles)
+    gaps=[(angles[(i+1)%3]-angles[i])%(2*math.pi) for i in range(3)]
+    assert all(math.isclose(g,2*math.pi/3,abs_tol=1e-12) for g in gaps)
+
+
+def test_model_planet_pose_moves_bind_center_to_exact_orbit():
+    s=PlanetarySpec()
+    y,z=planet_centers(s,0)[1]
+    dummy=SimpleNamespace(motion='planet_1',explode=np.zeros(3))
+    t=.83
+    T=pose(dummy,t,0,s)
+    p=np.array([29.,y,z,1.])
+    moved=T@p
+    q=planetary_angles(s,t)
+    expected=planet_centers(s,q['carrier'])[1]
+    assert np.allclose(moved[1:3],expected,atol=1e-10)
+    assert np.allclose(T[:3,:3].T@T[:3,:3],np.eye(3),atol=1e-12)
+
+
+def test_initial_planet_phases_are_not_arbitrary_visual_tuning():
+    s=PlanetarySpec()
+    phases=planet_initial_phases(s)
+    residuals=mesh_residuals(s,0)
+    assert len(set(round(v,12) for v in phases)) == 3
+    assert math.isclose(phases[0],0.0,abs_tol=1e-12)
+    assert max(abs(v) for v in residuals['sun_planet']) < 1e-12
+    assert max(abs(v) for v in residuals['ring_planet']) < 1e-12
