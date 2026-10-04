@@ -328,7 +328,7 @@ def build_geo() -> Assembly:
         a = math.tau * i / 24
         y = 238 * math.cos(a)
         z = 238 * math.sin(a)
-        bar = _box((520, 22, 24), (0, y, z), 6).rotate((0, 0, 0), (1, 0, 0), math.degrees(a))
+        bar = _box((520, 22, 24), (0, 238, 0), 6).rotate((0, 0, 0), (1, 0, 0), math.degrees(a))
         _part(parts, f"GE_Copper_bar_{i+1:02}", bar, 3, "windings",
               role="Visible concept winding bar", explode=(0, 42 * math.cos(a), 42 * math.sin(a)))
 
