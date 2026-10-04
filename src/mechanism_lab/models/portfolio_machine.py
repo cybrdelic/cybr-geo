@@ -24,6 +24,10 @@ import cadquery as cq
 
 from ..core import Assembly, Material, Part, View, cad_part, mesh_part, axis_pose
 from ..geometry import ring, bolt_circle, tube_mesh
+from .portfolio_detail import (
+    add_scenes_detail, add_geo_detail, add_light_detail,
+    add_elements_detail, add_materials_detail, add_forest_detail,
+)
 
 
 REFERENCE_ID = "portfolio-reference-sheets-2026-10-04"
@@ -302,6 +306,7 @@ def build_scenes() -> Assembly:
 
     _service_lines(parts, "SC", [(520, 240, 125), (520, 180, 112), (520, 120, 100)], 355, z_offset=8)
 
+    add_scenes_detail(parts)
     views = {
         "hero": View(az=42, el=22, scale=760, target=(0, 0, 360), title="CYBR SCENES / HABITAT DOME",
                      note="Contained procedural world inside a mechanical service platform.",
@@ -312,6 +317,8 @@ def build_scenes() -> Assembly:
                      title="CYBR SCENES / SIDE"),
         "top": View(az=0, el=89, scale=690, target=(0, 0, 300), projection="orthographic",
                     title="CYBR SCENES / TOP"),
+        "internal": View(az=42, el=22, scale=720, target=(0, 0, 360), hide=("glass",),
+                         title="CYBR SCENES / INTERNAL WORLD"),
         "exploded": View(az=44, el=24, scale=900, target=(0, 0, 380), explode=1.0,
                          title="CYBR SCENES / EXPLODED REFERENCE"),
     }
@@ -402,6 +409,7 @@ def build_geo() -> Assembly:
 
     _service_lines(parts, "GE", [(285, -285, -90), (245, -305, -120), (200, -320, -145)], 430, material=4, z_offset=-15)
 
+    add_geo_detail(parts)
     views = {
         "hero": View(az=38, el=18, scale=610, target=(0, 0, -20), title="CYBR GEO / ELECTROMECHANICAL CORE",
                      note="1280 mm concept envelope. Exposed copper stator and layered bearing housings.",
@@ -452,12 +460,12 @@ def build_light() -> Assembly:
               role="Optical tower post", explode=(0, y * .18, 80))
     _part(parts, "LI_Tower_crossbar", _box((72, 250, 46), (tower_x, 0, 335), 5), 0, "support",
           role="Optical tower crossbar", explode=(0, 0, 110))
-    prism = cq.Workplane("XY").polyline([(-86, -72), (90, -72), (0, 98)]).close().extrude(118, both=True).val()
+    prism = cq.Workplane("XY").polyline([(-55, -46), (58, -46), (0, 62)]).close().extrude(72, both=True).val()
     prism = prism.rotate((0, 0, 0), (0, 1, 0), 90).translate((tower_x, 0, 155))
     _part(parts, "LI_Prism", prism, 5, "glass", role="Large optical-grade triangular prism", explode=(0, 0, 160))
 
     # Central vertical glass relay tube.
-    _part(parts, "LI_Relay_glass", cq.Solid.makeCylinder(52, 280, cq.Vector(-20, 0, -40), cq.Vector(0, 0, 1)),
+    _part(parts, "LI_Relay_glass", cq.Solid.makeCylinder(38, 250, cq.Vector(-20, 0, -34), cq.Vector(0, 0, 1)),
           5, "glass", role="Vertical relay optic", explode=(0, 0, 90))
     _part(parts, "LI_Relay_base", _cyl_z(94, 32, (-20, 0, -68)), 4, "optics",
           role="Relay optic rotary base", explode=(0, 0, 45))
@@ -493,6 +501,7 @@ def build_light() -> Assembly:
             _part(parts, f"LI_Bench_clamp_{x}_{y}", _box((34, 46, 72), (x, y, -125), 4), 4, "mounts",
                   role="Optical bench clamp", explode=(0, y * .12, -35))
 
+    add_light_detail(parts)
     views = {
         "hero": View(az=26, el=18, scale=500, target=(0, 0, 40), title="CYBR LIGHT / OPTICAL BENCH",
                      note="Emitter, prism, relay optic, steering mirror and output lens connected by one beam path.",
@@ -598,6 +607,7 @@ def build_elements() -> Assembly:
           role="Side circulation/service wheel", explode=(-110, 0, 0))
     _fastener_ring(parts, "EL_Wheel_bolt", 96, 0, 12, screw_r=4.5, screw_h=6)
 
+    add_elements_detail(parts)
     views = {
         "hero": View(az=36, el=14, scale=610, target=(0, 0, -10), title="CYBR ELEMENTS / CONTAINMENT VOLUME",
                      note="820 mm fire-water-matter interaction chamber.", f_stop=11,
@@ -680,6 +690,7 @@ def build_materials() -> Assembly:
 
     _service_lines(parts, "MA", [(390, -230, -170), (340, -245, -190)], 270, material=4, z_offset=-8)
 
+    add_materials_detail(parts)
     views = {
         "hero": View(az=34, el=18, scale=530, target=(0, 0, 60), title="CYBR MATERIALS / SAMPLE MACHINE",
                      note="Stepped wood, stone and ceramic specimens on a precision carriage.",
@@ -790,6 +801,7 @@ def build_forest() -> Assembly:
         _part(parts, f"FO_Arm_joint_{i+1}", _sphere(39, p), 4 if i in (1, 2) else 1, "support",
               role="Inspection-arm joint", explode=(-45, 35, 25 * i))
 
+    add_forest_detail(parts)
     views = {
         "hero": View(az=36, el=17, scale=650, target=(0, 0, 275), title="CYBR FOREST / SEALED BIOME",
                      note="Contained forest, waterfall and life-support hardware in one machine.",
