@@ -60,7 +60,7 @@ MATERIALS = [
              microfinish="organic", material_source="designed-concept"),
     Material("Laser blue", (.16, .46, 1.0), .0, .06, ior=1.01, coat=.08,
              coat_rough=.04, opacity=.78, material_source="designed-concept"),
-    Material("Steam", (.68, .72, .76), .0, .92, ior=1.0, opacity=.18,
+    Material("Steam", (.68, .72, .76), .0, .92, ior=1.0003, opacity=.18,
              material_source="designed-concept"),
     Material("Rubber", (.012, .014, .017), .0, .82,
              microfinish="rubber", material_source="designed-concept"),
