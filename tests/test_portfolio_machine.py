@@ -9,13 +9,23 @@ from mechanism_lab.models.portfolio_machine import (
 )
 
 
+MIN_PARTS = {
+    "portfolio_scenes": 120,
+    "portfolio_geo": 130,
+    "portfolio_light": 85,
+    "portfolio_elements": 105,
+    "portfolio_materials": 95,
+    "portfolio_forest": 125,
+}
+
+
 @pytest.mark.parametrize("name", sorted(BUILDERS))
 def test_portfolio_reference_module_builds_as_real_geometry(name):
     assembly = build(name)
     assert assembly.name == name
     assert assembly.metadata["truth_intent"] == "concept"
     assert assembly.metadata["reference_id"] == REFERENCE_ID
-    assert len(assembly.parts) >= 20
+    assert len(assembly.parts) >= MIN_PARTS[name]
     assert len({part.name for part in assembly.parts}) == len(assembly.parts)
     assert "hero" in assembly.views
     assert "exploded" in assembly.views
