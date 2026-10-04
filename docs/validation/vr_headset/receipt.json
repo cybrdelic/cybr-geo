@@ -1,0 +1,100 @@
+{
+  "source_commit": "f3c2c40c15ed1aef8d0ef71b6182cb77e2606e05",
+  "workflow_run": "34845745376",
+  "generated_imagery": false,
+  "physical_device_tested": false,
+  "files": {
+    "visor_exploded.png": {
+      "bytes": 734508,
+      "sha256": "4776fb8aa6fca0fefbeaa0d4dd7b75483f6d75c6f29ff1bb8a40a7803a631027"
+    },
+    "visor_exploded_noisy.png": {
+      "bytes": 858017,
+      "sha256": "0ce300f08c852cd3dadb6c011cdddd07af4ad2b043e9b11bb8cd05a22a5f36d8"
+    },
+    "visor_eyes.png": {
+      "bytes": 698922,
+      "sha256": "1852f10ee5ab146e88cea0531f6f37a65acf50be08657b3c0f51af21bcf49176"
+    },
+    "visor_eyes_noisy.png": {
+      "bytes": 962680,
+      "sha256": "1f0ba8d0bcadc8a6fb1b183183de3eb5b6622eeb7e19d593883f9b610f252c40"
+    },
+    "visor_hero.png": {
+      "bytes": 696705,
+      "sha256": "3f45d417d2f31092ad7851ab1feb0ad5900a678758d9708f0112373587e20974"
+    },
+    "visor_hero_noisy.png": {
+      "bytes": 977534,
+      "sha256": "3b936f4f92b9605ff9e0caee18eaa126e0450eb2693498a90e8be8294fffd67c"
+    },
+    "visor_ipd_motion.gif": {
+      "bytes": 2243580,
+      "sha256": "7c67f374a908f3b16d9f8e54ba9c62e4e8b461cdffb773e5bb1a23afbcd37056"
+    },
+    "visor_ipd_motion.mp4": {
+      "bytes": 644212,
+      "sha256": "9acabb05b5f8f15b87c02d5c8b8bf7c934499eb1ebfbb7abeb5ac86e85975fad"
+    },
+    "visor_ipd_segment_0.mp4": {
+      "bytes": 170201,
+      "sha256": "ddc5338878a228cadd1320ba98fa137cdf68c41a5832635885b56e6752c762fc"
+    },
+    "visor_ipd_segment_1.mp4": {
+      "bytes": 152952,
+      "sha256": "6fc069301b30e1ba98e439d1dc36c5ed77b837320cefb9e29e3d98891fd55b2e"
+    },
+    "visor_ipd_segment_2.mp4": {
+      "bytes": 170300,
+      "sha256": "11049c73fa057bbd00a600749849017dea6b3043c395904711870b0f53f913f0"
+    },
+    "visor_ipd_segment_3.mp4": {
+      "bytes": 153168,
+      "sha256": "650d2f4fdcc58a7f43ae48c76af6a6d8de7122031d13f6ce70b3343fd88efcca"
+    },
+    "visor_m1.glb": {
+      "bytes": 3168704,
+      "sha256": "7e9e4c783636409143fe60a9034165d8658e31912e780491e89e3686563514b5"
+    },
+    "visor_m1_cad.zip": {
+      "bytes": 1226199,
+      "sha256": "89e09a9a1a3a5f73370f98546ca09c0803982bae70ed4572d756acf171c82af7"
+    },
+    "visor_m1_ipd.glb": {
+      "bytes": 3196956,
+      "sha256": "b8295e1de3560b0ed109f3538c8b5ff423150adf207e941c41510961e500572d"
+    },
+    "visor_motion_frame_000.png": {
+      "bytes": 444113,
+      "sha256": "1e55a6405bb493d7e10b7fb9b40eb1ad1c6df77163ed01f5ed9ae36ed958a513"
+    },
+    "visor_motion_frame_024.png": {
+      "bytes": 451221,
+      "sha256": "181f07854105adfc1908a1cec93a78c77b4cb1546f1c1a90c4b95ce6721cbedf"
+    },
+    "visor_motion_frame_048.png": {
+      "bytes": 444815,
+      "sha256": "f96d005c606785baf70c509eee9eafab8afb5f9f4ed74f5e09841bb6a1dd7256"
+    },
+    "visor_motion_frame_072.png": {
+      "bytes": 451667,
+      "sha256": "22b31941c9f6047aabe6cbcb9cdf1b0e2cdba3f1ae1e874d1401291148f3056a"
+    },
+    "visor_optics.png": {
+      "bytes": 680936,
+      "sha256": "624930aa76fc4221f91dff1f21d57dc9ef7a8b84b4702feb70e9cdde62b95808"
+    },
+    "visor_optics_noisy.png": {
+      "bytes": 999280,
+      "sha256": "8d860aecec5b2829ffab7e410ec3f1c2b1c2bbe9b09256f6217b76981cb74c22"
+    },
+    "visor_stereo_demo.png": {
+      "bytes": 82640,
+      "sha256": "47c02570779d282949e9b9aa407a2a4700564e4ff610f7d3d04ff56df6c3c4b9"
+    },
+    "visor_stereo_turned.png": {
+      "bytes": 87798,
+      "sha256": "495e9f0d863cff7cca6ef2ccdf1d86e3f1d4afb1819a276b042d134e567196a1"
+    }
+  }
+}

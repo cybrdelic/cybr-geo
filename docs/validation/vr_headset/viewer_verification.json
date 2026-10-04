@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "browser": "Chromium software WebGL2",
+  "shader_errors": [],
+  "stats": {
+    "frames": 42,
+    "tracking": false,
+    "width": 1440,
+    "height": 664,
+    "error": 0
+  },
+  "stereo_pixel_difference": 109.80964095744682,
+  "pose_pixel_difference": 14.619559487951808,
+  "python_js_ray_agreement": true,
+  "phone_sensor_tested": false,
+  "physical_lens_calibration_tested": false
+}

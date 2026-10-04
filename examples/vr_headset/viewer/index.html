@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101718">
+<title>CYBR VISOR M1 · Stereo bench</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101718;color:#e8ece8;font:15px system-ui,sans-serif}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#panel{position:absolute;top:18px;left:18px;width:min(360px,calc(100% - 36px));max-height:calc(100% - 36px);overflow:auto;background:#101718ee;padding:24px;border:1px solid #ffffff26;border-radius:16px}
+h1{font-size:24px;letter-spacing:.08em;margin:0 0 6px}p{color:#aebbbb;line-height:1.5}
+small{color:#aebbbb}.row{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:12px}
+input{width:130px;accent-color:#f48a48}button{border:0;border-radius:8px;background:#e98b51;color:#161d20;font:600 14px system-ui;padding:11px;cursor:pointer}
+button.secondary{background:#2c393b;color:#eee}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+#status{font-size:12px;color:#92cbbf;line-height:1.5;margin-top:15px}
+#exit{position:absolute;top:8px;right:8px;opacity:.65;display:none}
+body.immersive #panel{display:none}body.immersive #exit{display:block}
+</style>
+<canvas id="view" aria-label="Stereoscopic room with depth targets"></canvas>
+<section id="panel">
+<small>CYBR GEO / MOBILE OPTICS LAB</small>
+<h1>VISOR M1</h1>
+<p>A stereo depth scene for the printed M1 headset. Rotate your phone to landscape, match the mechanical IPD, then enter VR.</p>
+<div class="row"><label for="ipd">IPD <output id="ipdValue">64</output> mm</label><input id="ipd" type="range" min="58" max="72" value="64" step=".5"></div>
+<div class="row"><label for="focus">Focus spacer <output id="focusValue">0</output> mm</label><input id="focus" type="range" min="-1" max="1" value="0" step="1"></div>
+<div class="row"><label for="relief">Eye relief <output id="reliefValue">15</output> mm</label><input id="relief" type="range" min="12" max="22" value="15" step=".5"></div>
+<div class="row"><label for="grid">Calibration grid</label><input id="grid" type="checkbox"></div>
+<p><small>Uses the specified 34 mm PMMA lens and two-interface Snell ray mapping. A purchased lens needs its own measured prescription. This prototype has orientation tracking; positional tracking is not implemented.</small></p>
+<div class="actions"><button id="start">Enter VR</button><button id="recenter" class="secondary">Recenter</button><button id="inspect" class="secondary">Desktop preview</button></div>
+<div id="status" role="status">Starting graphics…</div>
+</section>
+<button id="exit" class="secondary">Exit</button>
+<script src="app.js"></script>
+</html>

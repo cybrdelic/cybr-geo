@@ -1,0 +1,32 @@
+{
+  "inputs": {
+    "phone_width": 162.8,
+    "phone_height": 77.6,
+    "phone_thickness": 8.2,
+    "phone_mass_g": 218.0,
+    "camera_allowance": 4.0,
+    "screen_width": 159.1,
+    "screen_height": 73.4,
+    "screen_y": 43.5,
+    "center_z": 65.0,
+    "ipd": 64.0,
+    "ipd_min": 58.0,
+    "ipd_max": 72.0,
+    "focus_offset": 0.0,
+    "lens_diameter": 34.0,
+    "lens_thickness": 8.5,
+    "lens_ior": 1.49,
+    "lens_efl": 45.0,
+    "eye_relief": 15.0,
+    "radial_clearance": 0.3,
+    "print_error": 0.15
+  },
+  "lens_radius_mm": 42.65500159194429,
+  "lens_edge_thickness_mm": 1.431907856391362,
+  "principal_plane_from_vertex_mm": 2.948976342970831,
+  "object_distance_from_principal_plane_mm": 42.19897634297083,
+  "paraxial_virtual_image_distance_mm": 677.94998113217,
+  "tracking": "phone orientation / 3DoF; no positional tracking",
+  "optical_status": "specified symmetric PMMA lens; not vendor-qualified",
+  "physical_status": "unbuilt; print, lens and on-device calibration required"
+}

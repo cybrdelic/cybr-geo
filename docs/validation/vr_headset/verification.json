@@ -1,0 +1,1773 @@
+{
+  "model": "cybr_visor_m1",
+  "passed": true,
+  "checks": [
+    {
+      "name": "analytic rigid CAD valid",
+      "passed": true
+    },
+    {
+      "name": "two refractive optics",
+      "passed": true
+    },
+    {
+      "name": "finite positive lens edge",
+      "passed": true,
+      "edge_mm": 1.431907856391362
+    },
+    {
+      "name": "solid lens has nonzero volume",
+      "passed": true,
+      "volume_mm3": 4554.911890178225
+    },
+    {
+      "name": "IPD carriers clear bridge and shell",
+      "passed": true,
+      "samples": [
+        {
+          "ipd_mm": 58.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 58.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 59.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 59.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 60.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 60.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 61.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 61.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 62.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 62.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 63.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 63.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 64.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 64.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 65.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 65.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 66.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 66.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 67.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 67.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 68.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 68.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 69.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 69.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 70.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 70.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 71.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 71.5,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        },
+        {
+          "ipd_mm": 72.0,
+          "max_rigid_interference_mm3": 0.0,
+          "part": null
+        }
+      ]
+    },
+    {
+      "name": "ocular barrels cannot collide",
+      "passed": true,
+      "minimum_envelope_gap_mm": 12.0
+    },
+    {
+      "name": "lens radial running clearance",
+      "passed": true,
+      "nominal_radial_mm": 0.3000000000000007,
+      "worst_case_at_declared_print_bound_mm": 7.216449660063518e-16
+    },
+    {
+      "name": "rigid solids do not invade lenses",
+      "passed": true,
+      "collisions": []
+    },
+    {
+      "name": "phone extraction after cover removal",
+      "passed": true,
+      "samples": [
+        {
+          "travel_y_mm": 0.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 5.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 10.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 15.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 20.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 25.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 30.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 35.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 40.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 45.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 50.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 55.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 60.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 65.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 70.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 75.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 80.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 85.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 90.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 95.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 100.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 105.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        },
+        {
+          "travel_y_mm": 110.0,
+          "overlap_mm3": 0.0,
+          "pair": null
+        }
+      ]
+    },
+    {
+      "name": "phone body planar clearance",
+      "passed": true,
+      "total_width_clearance_mm": 3.0,
+      "total_height_clearance_mm": 3.0
+    },
+    {
+      "name": "camera cover axial clearance",
+      "passed": true,
+      "camera_allowance_mm": 4.0,
+      "gap_mm": 1.2999999999999972
+    },
+    {
+      "name": "chief ray reaches screen center",
+      "passed": true
+    },
+    {
+      "name": "Snell symmetry at 5 degrees",
+      "passed": true
+    },
+    {
+      "name": "Snell symmetry at 10 degrees",
+      "passed": true
+    },
+    {
+      "name": "Snell symmetry at 20 degrees",
+      "passed": true
+    },
+    {
+      "name": "Snell symmetry at 25 degrees",
+      "passed": true
+    },
+    {
+      "name": "virtual image beyond 0.5 m",
+      "passed": true
+    },
+    {
+      "name": "finite sampled animation",
+      "passed": true,
+      "samples": 65
+    }
+  ],
+  "geometry": {
+    "model": "cybr_visor_m1",
+    "parts": 77,
+    "triangles": 112126,
+    "units": "mm",
+    "bounds_mm": [
+      [
+        -97.0,
+        -181.5,
+        15.999999999999998
+      ],
+      [
+        97.0,
+        62.4,
+        147.1269438980724
+      ]
+    ],
+    "checks": [
+      {
+        "name": "01_optical_tunnel",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "02_binocular_septum",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "03_IPD_bridge",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "04_focus_spacer_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "05_bridge_screw_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "04_focus_spacer_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "05_bridge_screw_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "04_focus_spacer_2",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "05_bridge_screw_2",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "04_focus_spacer_3",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "05_bridge_screw_3",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "10_L_sliding_barrel",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "11_L_lens",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "12_L_rim_front",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "13_L_rim_rear",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "14_L_retaining_ring",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "15_L_retainer_sleeve",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "16_L_IPD_thumb_screw_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "17_L_IPD_nut_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "16_L_IPD_thumb_screw_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "17_L_IPD_nut_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "10_R_sliding_barrel",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "11_R_lens",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "12_R_rim_front",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "13_R_rim_rear",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "14_R_retaining_ring",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "15_R_retainer_sleeve",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "16_R_IPD_thumb_screw_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "17_R_IPD_nut_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "16_R_IPD_thumb_screw_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "17_R_IPD_nut_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "20_removable_face_cushion",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-anthropometric-envelope"
+      },
+      {
+        "name": "21_cushion_hook_loop_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "21_cushion_hook_loop_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "30_phone_cradle",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "31_screen_bezel_stop",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "32_side_pad_-1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "33_lower_upper_pad_-1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "32_side_pad_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "33_lower_upper_pad_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "40_ventilated_phone_cover",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "41_phone_retention_pad_-1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-compliant-pad"
+      },
+      {
+        "name": "41_phone_retention_pad_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-compliant-pad"
+      },
+      {
+        "name": "42_cover_M3_screw_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "42_cover_M3_screw_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "42_cover_M3_screw_2",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "42_cover_M3_screw_3",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-fastener"
+      },
+      {
+        "name": "50_S25_Ultra_body_envelope",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "source-guided-concept"
+      },
+      {
+        "name": "51_active_display_envelope",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-display-envelope"
+      },
+      {
+        "name": "52_camera_keepout_0_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-camera-envelope"
+      },
+      {
+        "name": "52_camera_keepout_0_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-camera-envelope"
+      },
+      {
+        "name": "52_camera_keepout_1_0",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-camera-envelope"
+      },
+      {
+        "name": "52_camera_keepout_1_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-camera-envelope"
+      },
+      {
+        "name": "60_side_strap_anchor_-1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "60_side_strap_anchor_1",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "61_top_strap_anchor",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "62_adjustable_head_strap",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": null,
+        "provenance": "assumed-flexible-envelope"
+      },
+      {
+        "name": "63_adjustable_top_strap",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": null,
+        "provenance": "assumed-flexible-envelope"
+      },
+      {
+        "name": "64_rear_strap_adjuster",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "65_occipital_pad",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "assumed-anthropometric-envelope"
+      },
+      {
+        "name": "70_IPD_tick_-1_58",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_60",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_62",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_64",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_66",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_68",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_70",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_-1_72",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_58",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_60",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_62",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_64",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_66",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_68",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_70",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "70_IPD_tick_1_72",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      },
+      {
+        "name": "71_embossed_identifier",
+        "finite": true,
+        "valid_indices": true,
+        "analytic_valid": true,
+        "provenance": "designed-concept"
+      }
+    ],
+    "truth": {
+      "model": "cybr_visor_m1",
+      "requested_intent": "inspection",
+      "resolved_intent": "inspection",
+      "allow_estimates": false,
+      "passed": true,
+      "part_count": 77,
+      "tier_counts": {
+        "designed": 50,
+        "estimated": 27
+      },
+      "blocked": [],
+      "uncertain": [
+        {
+          "name": "05_bridge_screw_0",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_1",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_2",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_3",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "16_L_IPD_thumb_screw_0",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_L_IPD_nut_0",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "16_L_IPD_thumb_screw_1",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_L_IPD_nut_1",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "16_R_IPD_thumb_screw_0",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_R_IPD_nut_0",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "16_R_IPD_thumb_screw_1",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_R_IPD_nut_1",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "20_removable_face_cushion",
+          "group": "cushion",
+          "role": "Cut foam or molded silicone with textile cover; face conformance unmeasured",
+          "provenance": "assumed-anthropometric-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "41_phone_retention_pad_-1",
+          "group": "cover",
+          "role": "Foam rear preload pads; excluded from rigid collision claims",
+          "provenance": "assumed-compliant-pad",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "41_phone_retention_pad_1",
+          "group": "cover",
+          "role": "Foam rear preload pads; excluded from rigid collision claims",
+          "provenance": "assumed-compliant-pad",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_0",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_1",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_2",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_3",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "51_active_display_envelope",
+          "group": "phone",
+          "role": "Derived 6.9-inch rectangular active area; corners/cutout unmeasured",
+          "provenance": "assumed-display-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_0_0",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_0_1",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_1_0",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_1_1",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "62_adjustable_head_strap",
+          "group": "straps",
+          "role": "25 x 1.5 mm woven nylon ribbon; nominal unloaded wearing curve",
+          "provenance": "assumed-flexible-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "63_adjustable_top_strap",
+          "group": "straps",
+          "role": "25 mm crown strap with hook-and-loop adjustment",
+          "provenance": "assumed-flexible-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "65_occipital_pad",
+          "group": "cushion",
+          "role": "Nominal removable foam rear pad; fit not qualified",
+          "provenance": "assumed-anthropometric-envelope",
+          "tier": "estimated",
+          "allowed": true
+        }
+      ],
+      "parts": [
+        {
+          "name": "01_optical_tunnel",
+          "group": "shell",
+          "role": "PA12 or PETG opaque tunnel; 7 mm nominal radial walls",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "02_binocular_septum",
+          "group": "baffle",
+          "role": "Bond along tunnel top/bottom; black optical isolation",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "03_IPD_bridge",
+          "group": "bridge",
+          "role": "Sliding lens slots 58\u201372 mm IPD; loosen all four bridge clamp screws",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "04_focus_spacer_0",
+          "group": "bridge",
+          "role": "Replace the four spacers together for -1/0/+1 mm optical focus shift",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_0",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "04_focus_spacer_1",
+          "group": "bridge",
+          "role": "Replace the four spacers together for -1/0/+1 mm optical focus shift",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_1",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "04_focus_spacer_2",
+          "group": "bridge",
+          "role": "Replace the four spacers together for -1/0/+1 mm optical focus shift",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_2",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "04_focus_spacer_3",
+          "group": "bridge",
+          "role": "Replace the four spacers together for -1/0/+1 mm optical focus shift",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "05_bridge_screw_3",
+          "group": "fasteners",
+          "role": "M3 clamp envelope; thread form omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "10_L_sliding_barrel",
+          "group": "oculars",
+          "role": "Print as a single component; slide, align IPD, clamp",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "11_L_lens",
+          "group": "lenses",
+          "role": "Analytic symmetric biconvex PMMA prescription; source a measured matching optic",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "12_L_rim_front",
+          "group": "oculars",
+          "role": "Compliant optical rim seat; compression unqualified",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "13_L_rim_rear",
+          "group": "oculars",
+          "role": "Compliant optical rim seat; compression unqualified",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "14_L_retaining_ring",
+          "group": "oculars",
+          "role": "Removable friction-fit ring; adhesive-free retention requires a fit coupon",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "15_L_retainer_sleeve",
+          "group": "oculars",
+          "role": "Retainer spacer bears on rim ring; flange is clamped by same bridge screws",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "16_L_IPD_thumb_screw_0",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_L_IPD_nut_0",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "16_L_IPD_thumb_screw_1",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_L_IPD_nut_1",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "10_R_sliding_barrel",
+          "group": "oculars",
+          "role": "Print as a single component; slide, align IPD, clamp",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "11_R_lens",
+          "group": "lenses",
+          "role": "Analytic symmetric biconvex PMMA prescription; source a measured matching optic",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "12_R_rim_front",
+          "group": "oculars",
+          "role": "Compliant optical rim seat; compression unqualified",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "13_R_rim_rear",
+          "group": "oculars",
+          "role": "Compliant optical rim seat; compression unqualified",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "14_R_retaining_ring",
+          "group": "oculars",
+          "role": "Removable friction-fit ring; adhesive-free retention requires a fit coupon",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "15_R_retainer_sleeve",
+          "group": "oculars",
+          "role": "Retainer spacer bears on rim ring; flange is clamped by same bridge screws",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "16_R_IPD_thumb_screw_0",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_R_IPD_nut_0",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "16_R_IPD_thumb_screw_1",
+          "group": "oculars",
+          "role": "M3 thumb screw and recessed captive nut envelope",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "17_R_IPD_nut_1",
+          "group": "oculars",
+          "role": "M3 purchased nut; circular clearance envelope; thread omitted",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "20_removable_face_cushion",
+          "group": "cushion",
+          "role": "Cut foam or molded silicone with textile cover; face conformance unmeasured",
+          "provenance": "assumed-anthropometric-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "21_cushion_hook_loop_0",
+          "group": "cushion",
+          "role": "Hook-and-loop spacer pad",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "21_cushion_hook_loop_1",
+          "group": "cushion",
+          "role": "Hook-and-loop spacer pad",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "30_phone_cradle",
+          "group": "cradle",
+          "role": "Bare-phone cavity 165.8 x 80.6 mm; phone withdraws along +Y",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "31_screen_bezel_stop",
+          "group": "cradle",
+          "role": "Bezel support; no clamp load on active display",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "32_side_pad_-1",
+          "group": "cradle",
+          "role": "0.6 mm silicone body-edge pad; compress to fit",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "33_lower_upper_pad_-1",
+          "group": "cradle",
+          "role": "Silicone body-edge pad",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "32_side_pad_1",
+          "group": "cradle",
+          "role": "0.6 mm silicone body-edge pad; compress to fit",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "33_lower_upper_pad_1",
+          "group": "cradle",
+          "role": "Silicone body-edge pad",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "40_ventilated_phone_cover",
+          "group": "cover",
+          "role": "Four accessible M3 screws; camera allowance 4 mm, rear gap 5.3 mm",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "41_phone_retention_pad_-1",
+          "group": "cover",
+          "role": "Foam rear preload pads; excluded from rigid collision claims",
+          "provenance": "assumed-compliant-pad",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "41_phone_retention_pad_1",
+          "group": "cover",
+          "role": "Foam rear preload pads; excluded from rigid collision claims",
+          "provenance": "assumed-compliant-pad",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_0",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_1",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_2",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "42_cover_M3_screw_3",
+          "group": "fasteners",
+          "role": "M3 x 25 fastener envelope, tapped shell bosses",
+          "provenance": "assumed-fastener",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "50_S25_Ultra_body_envelope",
+          "group": "phone",
+          "role": "Samsung nominal body bounds; 8 mm corner radius is an assumed clearance envelope",
+          "provenance": "source-guided-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "51_active_display_envelope",
+          "group": "phone",
+          "role": "Derived 6.9-inch rectangular active area; corners/cutout unmeasured",
+          "provenance": "assumed-display-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_0_0",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_0_1",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_1_0",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "52_camera_keepout_1_1",
+          "group": "phone",
+          "role": "Conservative camera envelope; measure actual protrusions",
+          "provenance": "assumed-camera-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "60_side_strap_anchor_-1",
+          "group": "harness",
+          "role": "25 mm woven strap slot; integral bond/joint to shell requires load test",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "60_side_strap_anchor_1",
+          "group": "harness",
+          "role": "25 mm woven strap slot; integral bond/joint to shell requires load test",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "61_top_strap_anchor",
+          "group": "harness",
+          "role": "25 mm top strap slot",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "62_adjustable_head_strap",
+          "group": "straps",
+          "role": "25 x 1.5 mm woven nylon ribbon; nominal unloaded wearing curve",
+          "provenance": "assumed-flexible-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "63_adjustable_top_strap",
+          "group": "straps",
+          "role": "25 mm crown strap with hook-and-loop adjustment",
+          "provenance": "assumed-flexible-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "64_rear_strap_adjuster",
+          "group": "harness",
+          "role": "Rear strap overlap guide",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "65_occipital_pad",
+          "group": "cushion",
+          "role": "Nominal removable foam rear pad; fit not qualified",
+          "provenance": "assumed-anthropometric-envelope",
+          "tier": "estimated",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_58",
+          "group": "markings",
+          "role": "IPD setting 58 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_60",
+          "group": "markings",
+          "role": "IPD setting 60 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_62",
+          "group": "markings",
+          "role": "IPD setting 62 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_64",
+          "group": "markings",
+          "role": "IPD setting 64 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_66",
+          "group": "markings",
+          "role": "IPD setting 66 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_68",
+          "group": "markings",
+          "role": "IPD setting 68 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_70",
+          "group": "markings",
+          "role": "IPD setting 70 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_-1_72",
+          "group": "markings",
+          "role": "IPD setting 72 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_58",
+          "group": "markings",
+          "role": "IPD setting 58 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_60",
+          "group": "markings",
+          "role": "IPD setting 60 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_62",
+          "group": "markings",
+          "role": "IPD setting 62 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_64",
+          "group": "markings",
+          "role": "IPD setting 64 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_66",
+          "group": "markings",
+          "role": "IPD setting 66 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_68",
+          "group": "markings",
+          "role": "IPD setting 68 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_70",
+          "group": "markings",
+          "role": "IPD setting 70 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "70_IPD_tick_1_72",
+          "group": "markings",
+          "role": "IPD setting 72 mm; both carriers must match",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        },
+        {
+          "name": "71_embossed_identifier",
+          "group": "cover",
+          "role": "Original product identifier bonded to removable cover",
+          "provenance": "designed-concept",
+          "tier": "designed",
+          "allowed": true
+        }
+      ],
+      "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
+    },
+    "disclaimer": "Geometry/transform/provenance checks only; not load, contact, fit or safety validation."
+  },
+  "physical_headset_tested": false,
+  "phone_app_tested_on_device": false,
+  "manufacturing_status": "prototype drawings, not production release",
+  "explicit_exclusions": [
+    "Compliant foam, straps and optical rim compression are not rigid collision gates.",
+    "Thread helices, nut torque and material strength are not simulated.",
+    "Print-bound radial fit can reach zero clearance: calibrate with included coupon.",
+    "Thermal comfort, drop retention, eye box, MTF, distortion and sensor latency require hardware.",
+    "Nominal anthropometric cushion, camera and display envelopes require measurements."
+  ]
+}

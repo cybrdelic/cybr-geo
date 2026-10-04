@@ -278,6 +278,22 @@ def _reference_material(material):
 
 def principled(material,variation_key):
     material=_reference_material(material)
+    # Explicit authored transmission. No material-name or opacity heuristics.
+    # A smooth dielectric uses Fresnel reflection/refraction and total internal
+    # reflection. Closed lens geometry supplies the actual two optical surfaces.
+    transmission=float(getattr(material,'transmission',0.0))
+    if not 0.0 <= transmission <= 1.0:
+        raise ValueError('Material transmission must be between zero and one')
+    if transmission:
+        glass={'type':'dielectric','int_ior':float(material.ior),'ext_ior':1.0}
+        if material.rough > .02:
+            glass.update(type='roughdielectric',distribution='ggx',
+                         alpha=float(material.rough)**2)
+        if transmission == 1.0:
+            return glass
+        return {'type':'blendbsdf','weight':transmission,
+                'opaque':principled(replace(material,transmission=0.0),variation_key),
+                'transmissive':glass}
     rough_mul,color_mul=_part_variation(variation_key)
     color=[float(np.clip(c*color_mul,0,1)) for c in material.color]
     rough=float(np.clip(material.rough*rough_mul,.055,.96))

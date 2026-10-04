@@ -1,0 +1,8 @@
+{
+  "file": "visor_m1_ipd.glb",
+  "duration": 4,
+  "samples": 97,
+  "animated_channels": 20,
+  "rotation_roundtrip_error": 0.0,
+  "note": "Prescribed rigid-body kinematics. Not electromagnetic or contact-force simulation."
+}
