@@ -177,6 +177,36 @@ def _base_module(parts, prefix, width, depth, height, z=0.0, label_index=None):
               role=f"Module index {label_index:02}", explode=(0, -35, 0))
 
 
+
+def _circular_base_module(parts, prefix, diameter, height, z=0.0, label_index=None):
+    """Layered annular machine plinth used by the habitat/biome modules."""
+    r = diameter / 2.0
+    _part(parts, f"{prefix}_Lower_plinth", _cyl_z(r, height * .42, (0, 0, z + height * .21)),
+          0, "base", role="Circular lower machine plinth", explode=(0, 0, -70))
+    _part(parts, f"{prefix}_Mid_service_ring", ring(r * .98, r * .78, z + height * .40, z + height * .70),
+          1, "base", role="Annular service ring with open center", explode=(0, 0, -45))
+    _part(parts, f"{prefix}_Upper_deck", ring(r * .94, r * .34, z + height * .69, z + height),
+          0, "base", role="Upper annular mechanism deck", explode=(0, 0, -25))
+    _part(parts, f"{prefix}_Brass_index_ring", ring(r * .83, r * .80, z + height * .73, z + height * .80),
+          4, "base", role="Warm-metal index ring", explode=(0, 0, -20))
+    for i, a in enumerate(np.linspace(0, math.tau, 16, endpoint=False)):
+        x, y = r * .86 * math.cos(a), r * .86 * math.sin(a)
+        _part(parts, f"{prefix}_Radial_clamp_{i+1:02}",
+              _box((58, 100, 54), (x, y, z + height * .77), 7).rotate((x, y, z + height * .77), (x, y, z + height * .77 + 1), math.degrees(a)),
+              1, "base", role="Radial dome/deck clamp", explode=(18 * math.cos(a), 18 * math.sin(a), 0))
+        _part(parts, f"{prefix}_Deck_fastener_{i+1:02}",
+              _cyl_z(7, 10, (r * .77 * math.cos(a), r * .77 * math.sin(a), z + height + 4)),
+              4, "fasteners", role="Visible deck fastener")
+    for i, a in enumerate(np.linspace(0, math.tau, 8, endpoint=False)):
+        x, y = r * .72 * math.cos(a), r * .72 * math.sin(a)
+        _part(parts, f"{prefix}_Isolation_foot_{i+1:02}", _cyl_z(22, 34, (x, y, z - 17)),
+              4, "base", role="Circular vibration-isolation foot", explode=(0, 0, -80))
+    if label_index is not None:
+        _part(parts, f"{prefix}_Index_badge_{label_index:02}",
+              _box((120, 18, 68), (0, -r - 14, z + height * .50), 6),
+              1, "markings", role=f"Module index {label_index:02}", explode=(0, -30, 0))
+
+
 def _rail_pair(parts, prefix, length, span, z, x_center=0.0):
     for y in (-span / 2, span / 2):
         _part(parts, f"{prefix}_Rail_{'L' if y < 0 else 'R'}",
@@ -220,7 +250,7 @@ def build_scenes() -> Assembly:
     parts = []
     base_d = 1120.0
     base_h = 190.0
-    _base_module(parts, "SC", base_d, base_d, base_h, label_index=1)
+    _circular_base_module(parts, "SC", base_d, base_h, label_index=1)
 
     _part(parts, "SC_Rotation_ring_outer", ring(505, 438, base_h, base_h + 70), 1, "mechanism",
           role="Large mechanical rotation ring", explode=(0, 0, 90))
@@ -321,8 +351,18 @@ def build_geo() -> Assembly:
         _part(parts, f"GE_End_ring_{x:+.0f}", ring(ro, ri, x - 24, x + 24), mat, "housing",
               role="Layered generator end-bell ring", explode=((x / abs(x)) * 150 if x else 0, 0, 0))
 
-    _part(parts, "GE_Stator_shell", ring(radius, 214, body_x0, body_x1), 0, "housing",
-          role="Open stator shell exposing copper bars", explode=(0, 0, 95))
+    # The reference deliberately exposes the copper core. Use a structural cage,
+    # not a continuous cylinder that buries the windings.
+    for j, x in enumerate((-300, -210, -95, 95, 210, 300)):
+        _part(parts, f"GE_Stator_band_{j+1:02}", ring(radius, 214, x - 18, x + 18),
+              0 if j in (0, 5) else 1, "housing",
+              role="Narrow stator cage band leaving copper windings exposed",
+              explode=(0, 0, 75 + 8 * j))
+    for j, a in enumerate(np.linspace(0, math.tau, 8, endpoint=False)):
+        y, z = 263 * math.cos(a), 263 * math.sin(a)
+        rib = _box((610, 24, 28), (0, 263, 0), 5).rotate((0, 0, 0), (1, 0, 0), math.degrees(a))
+        _part(parts, f"GE_Axial_cage_rib_{j+1:02}", rib, 0, "housing",
+              role="Axial generator cage rib", explode=(0, 26 * math.cos(a), 26 * math.sin(a)))
 
     for i in range(24):
         a = math.tau * i / 24
@@ -683,7 +723,7 @@ def build_forest() -> Assembly:
     parts = []
     base_d = 900.0
     base_h = 170.0
-    _base_module(parts, "FO", base_d, base_d, base_h, z=-170, label_index=6)
+    _circular_base_module(parts, "FO", base_d, base_h, z=-170, label_index=6)
     _part(parts, "FO_Biome_ring", ring(420, 370, 0, 62), 1, "mechanism",
           role="Sealed biome foundation ring", explode=(0, 0, 70))
     _fastener_ring(parts, "FO_Ring_bolt", 392, 66, 18, screw_r=5.0, screw_h=8)
