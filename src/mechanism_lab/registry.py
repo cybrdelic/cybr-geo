@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib,importlib,importlib.util,json
 from .core import Assembly,project_root,save_cache,load_cache,validate
 
-BUILTINS=('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+BUILTINS=('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange','portfolio_scenes','portfolio_geo','portfolio_light','portfolio_elements','portfolio_materials','portfolio_forest','portfolio_machine')
 
 def factory(name):
     if name=='m8325s':
@@ -26,6 +26,9 @@ def factory(name):
     if name=='example_flange':
         from .models.example import build
         return build,None
+    if name.startswith('portfolio_'):
+        from .models.portfolio_machine import build as build_portfolio
+        return lambda:build_portfolio(name),None
     if name.endswith('.json'):
         from .importers import build_descriptor
         return lambda:build_descriptor(name),None
