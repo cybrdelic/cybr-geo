@@ -25,11 +25,11 @@ from mechanism_lab.advanced_geometry import spline_sweep_tube
 
 
 MATERIALS = [
-    Material("Graphite anodized aluminium", (.055,.066,.080), 1.0,.30, coat=.20, coat_rough=.22, anisotropy=.18, microfinish="anodized"),
+    Material("Graphite anodized aluminium", (.072,.082,.098), 1.0,.31, coat=.20, coat_rough=.22, anisotropy=.18, microfinish="anodized"),
     Material("Satin machined aluminium", (.55,.59,.63), 1.0,.24, anisotropy=.58, microfinish="brushed"),
     Material("Hardened steel", (.39,.43,.47), 1.0,.19, anisotropy=.32, microfinish="machined"),
     Material("Warm bronze", (.58,.34,.115), 1.0,.26, anisotropy=.28, microfinish="turned"),
-    Material("Copper enamel", (.72,.245,.052), .94,.19, coat=.16, coat_rough=.13, microfinish="copper-wire"),
+    Material("Copper enamel", (.84,.30,.055), .80,.24, coat=.18, coat_rough=.15, microfinish="copper-wire"),
     Material("Black elastomer", (.012,.014,.017), 0.0,.70, ior=1.46, microfinish="polymer"),
     Material("Optical glass", (.76,.87,.98), 0.0,.035, ior=1.49, coat=.50, coat_rough=.03, opacity=.22),
     Material("Spring / process water", (.075,.42,.58), 0.0,.045, ior=1.333, coat=.22, coat_rough=.025, opacity=.48),
