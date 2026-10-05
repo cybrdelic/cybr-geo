@@ -27,7 +27,7 @@ def factory(name):
         from .models.example import build
         return build,None
     if name.startswith('portfolio_'):
-        from .models.portfolio_machine import build as build_portfolio, _geo_pose
+        from .models.portfolio_final import build as build_portfolio, _geo_pose
         return lambda:build_portfolio(name),_geo_pose if name=='portfolio_geo' else None
     if name.endswith('.json'):
         from .importers import build_descriptor
