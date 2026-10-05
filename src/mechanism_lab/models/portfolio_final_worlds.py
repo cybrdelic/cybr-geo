@@ -379,11 +379,11 @@ def build_elements():
     # Six separate containment panels and structural corner posts.
     panel=10
     for name,shape in [
-        ("front",box((cube, panel, cube),(0,-half,0),0)),
-        ("back",box((cube, panel, cube),(0,half,0),0)),
-        ("left",box((panel,cube,cube),(-half,0,0),0)),
-        ("right",box((panel,cube,cube),(half,0,0),0)),
-        ("top",box((cube,cube,panel),(0,0,half),0)),
+        ("front",box(cube,panel,cube,(0,-half,0),0)),
+        ("back",box(cube,panel,cube,(0,half,0),0)),
+        ("left",box(panel,cube,cube,(-half,0,0),0)),
+        ("right",box(panel,cube,cube,(half,0,0),0)),
+        ("top",box(cube,cube,panel,(0,0,half),0)),
     ]:
         add_cad(parts,f"ELM_Glass_{name}",shape,6,"glass",role=f"Optical containment {name} panel",explode=({"front":(0,-100,0),"back":(0,100,0),"left":(-100,0,0),"right":(100,0,0),"top":(0,0,100)}[name]))
     # corner posts with actual panel slots.
