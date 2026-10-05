@@ -104,7 +104,10 @@ def add_mesh(parts,name,v,f,n,material=0,group="environment",role="",explode=(0,
     # Preserve authored normals when topology was not changed by smoothing.
     if len(p.normals)==len(v):
         p=replace(p,normals=np.asarray(n,float))
-        parts[-1]=p
+    # Mesh parts are first-class assembly members. The earlier implementation
+    # accidentally replaced the previous CAD part, which silently discarded
+    # terrain, rocks, water and vegetation one mesh at a time.
+    parts.append(p)
     return p
 
 
