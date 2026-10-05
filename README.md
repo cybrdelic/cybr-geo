@@ -18,6 +18,7 @@ One parametric recipe produces named parts, analytic solids, inspection views, m
 | **Motor / belt drive** | Procedural motor construction, pulley/belt geometry and mechanical integration | [Motor](src/mechanism_lab/models/motor.py) · [Drivetrain](src/mechanism_lab/models/drivetrain.py) |
 | **Differential** | Internal inspection, exploded views and prescribed differential kinematics | [Study](examples/differential/README.md) |
 | **CYBR YARD** | A 1,404-part parametric skatepark, timber framing and outdoor rendering | [Recipe](examples/diy_skatepark/recipe.py) |
+| **Portfolio machine** | Six portfolio objects re-authored as inspectable CAD: SCENES dome, GEO motor, LIGHT optics, ELEMENTS chamber, MATERIALS sampler, FOREST biome | [Reference modules](docs/PORTFOLIO_MACHINE.md) |
 
 ![Exploded differential assembly](media/differential_exploded.jpg)
 
@@ -43,6 +44,9 @@ This first run uses the in-house renderer and included geometry. It needs no dow
 
 ```bash
 lab preview nitinol_fiber_actuator --spp 64
+lab preview portfolio_geo --spp 64
+lab preview portfolio_light --spp 64
+lab render portfolio_machine --view hero --intent concept --allow-estimates
 lab preview examples/custom_flange.py --step
 lab build nitinol_fiber_actuator --step --stl
 lab animate nitinol_fiber_actuator --seconds 6
