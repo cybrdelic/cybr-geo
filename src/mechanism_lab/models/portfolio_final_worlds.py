@@ -20,6 +20,7 @@ from .portfolio_final_common import (
     socket_screw_x, socket_screw_z, fluted_knob_x, bolt_circle_z, pipe,
     terrain_mesh, water_pool_mesh, rock_field, tree_mesh, shrub_mesh,
     join_mesh, mesh_normals, ribbon_surface, implicit_rock_template, transform_mesh,
+    fractured_block_mesh,
 )
 
 
@@ -181,37 +182,33 @@ def build_scenes():
         tx=(x-x0)/(x1-x0);ty=(y-y0)/(y1-y0)
         return (H[iy-1,ix-1]*(1-tx)+H[iy-1,ix]*tx)*(1-ty)+(H[iy,ix-1]*(1-tx)+H[iy,ix]*tx)*ty
 
-    wv,wf,wn=water_pool_mesh(-5,-18,188,140,dome_z+15,nr=40,nt=192,seed=7)
+    wv,wf,wn=water_pool_mesh(-5,-18,198,150,dome_z+17,nr=44,nt=224,seed=7)
     add_mesh(parts,"SCN_Irregular_spring_water",wv,wf,wn,7,"water",
              "Irregular tessellated spring surface with authored ripple geometry",explode=(0,0,104))
 
-    # Hero outcrop + many grounded rocks use closed non-convex implicit geometry.
+    # The large silhouettes now come from the actual terrain heightfield/mesa
+    # morphology. Implicit rocks are mesogeometry at cliff feet and shorelines,
+    # not giant disconnected boulders that obscure the spring.
     rng=np.random.default_rng(9132026);placements=[]
-    hero=[
-        (-205,85,ground(-205,85)+45,85,68,115,.2,.10),
-        (-165,105,ground(-165,105)+72,62,54,145,-.4,-.08),
-        (180,115,ground(180,115)+60,95,78,160,.7,.12),
-        (225,95,ground(225,95)+95,62,55,120,-.1,-.10),
-        (245,-125,ground(245,-125)+45,62,55,92,.4,.05),
-        (-225,-150,ground(-225,-150)+35,54,45,82,-.5,.08),
-    ]
-    placements.extend(hero)
-    for _ in range(58):
-        a=rng.uniform(0,math.tau);r=rng.uniform(150,360)
+    for _ in range(92):
+        a=rng.uniform(0,math.tau);r=rng.uniform(115,355)
         x=r*math.cos(a);y=r*math.sin(a)
-        if ((x+5)/205)**2+((y+18)/155)**2<1.18:continue
-        s=np.exp(rng.uniform(np.log(12),np.log(44)))
-        placements.append((x,y,ground(x,y)+s*.35,s*rng.uniform(.8,1.35),s*rng.uniform(.65,1.05),s*rng.uniform(.75,1.45),rng.uniform(0,math.tau),rng.uniform(-.25,.25)))
-    rock_field(parts,"SCN_Implicit_weathered_rocks",placements,10,seed=300,templates=10,resolution=52,group="environment",explode=(0,0,100))
+        if ((x+5)/218)**2+((y+18)/168)**2<1.05:continue
+        s=np.exp(rng.uniform(np.log(6.5),np.log(24.0)))
+        placements.append((x,y,ground(x,y)+s*.26,s*rng.uniform(.75,1.40),s*rng.uniform(.62,1.08),s*rng.uniform(.55,1.28),rng.uniform(0,math.tau),rng.uniform(-.30,.30)))
+    # A few medium talus blocks at the mesa shoulders anchor the cliff scale.
+    for x,y,s in [(-255,128,34),(-215,168,28),(-132,150,24),(248,148,38),(285,92,27),(245,-170,25),(-265,-175,23)]:
+        placements.append((x,y,ground(x,y)+s*.23,s*1.15,s*.82,s*.92,rng.uniform(0,math.tau),rng.uniform(-.18,.18)))
+    rock_field(parts,"SCN_Implicit_weathered_rocks",placements,10,seed=300,templates=12,resolution=48,group="environment",explode=(0,0,100))
 
     # Actual gravel microgeometry concentrated on dry shelves.
-    gv,gf,gn=_gravel_field(212,350,ground,count=1500)
+    gv,gf,gn=_gravel_field(212,350,ground,count=2200)
     add_mesh(parts,"SCN_Grounded_gravel_field",gv,gf,gn,10,"environment",
              "Physically tessellated grounded gravel clasts",explode=(0,0,96),tags=("microgeometry","no-texture-substitute"))
 
     # Connected woody shrubs with leaf geometry.
     woods=[];leaves=[]
-    plant_positions=[(-290,160,58),(-275,-40,48),(-205,210,62),(255,180,66),(300,20,52),(210,-220,44),(-120,-250,40),(90,245,48),(315,-120,45)]
+    plant_positions=[(-300,165,50),(-278,-45,42),(-214,220,54),(-150,250,36),(258,185,56),(305,30,44),(222,-225,40),(-125,-255,36),(92,252,42),(318,-125,38),(-325,60,34),(155,-270,32),(285,255,31),(-55,285,30)]
     for i,(x,y,h) in enumerate(plant_positions):
         w,l=shrub_mesh(700+i,(x,y,ground(x,y)),h)
         woods.append(w);leaves.append(l)
@@ -236,7 +233,7 @@ def build_scenes():
         "hero":View(az=40,el=21,scale=690,target=(0,0,410),title="CYBR SCENES / CONTAINED WORLD",
                     note="Dense CYBR-SCENES terrain and vegetation inside a serviceable mechanical habitat.",
                     f_stop=12,environment_strength=.30,light_size=2.0),
-        "internal":View(az=40,el=23,scale=620,target=(0,0,410),hide=("glass",),title="CYBR SCENES / WORLD GEOMETRY"),
+        "internal":View(az=54,el=18,scale=610,target=(0,5,390),hide=("glass",),title="CYBR SCENES / WORLD GEOMETRY"),
         "front":View(az=0,el=6,scale=620,target=(0,0,405),projection="orthographic",title="CYBR SCENES / FRONT"),
         "top":View(az=0,el=89,scale=570,target=(0,0,340),projection="orthographic",title="CYBR SCENES / TOP"),
         "exploded":View(az=43,el=22,scale=880,target=(0,0,405),explode=1,title="CYBR SCENES / EXPLODED"),
@@ -303,7 +300,7 @@ def build_forest():
 
     # Six genuinely branched trees with attached low-poly foliage clusters.
     tree_specs=[
-        (-145,25,300,14,32),(115,65,260,13,28),(15,-135,225,12,26),(220,-45,195,10,23),(-235,-80,180,9,21),(65,190,165,8,20)
+        (-142,18,330,15,22),(118,68,270,13,20),(8,-142,235,12,18),(222,-48,205,10,17),(-238,-82,188,9,16),(70,195,178,8,15)
     ]
     woods=[];fols=[]
     for i,(x,y,h,r,lr) in enumerate(tree_specs):
@@ -315,7 +312,7 @@ def build_forest():
     # Moss and understory as grounded low-poly geometry.
     ico=trimesh.creation.icosphere(subdivisions=1,radius=1.0)
     rng=np.random.default_rng(1001);moss=[]
-    for i in range(430):
+    for i in range(300):
         a=rng.uniform(0,math.tau);r=330*np.sqrt(rng.uniform(.04,.98));x=r*math.cos(a);y=r*math.sin(a)
         rad=rng.uniform(4,13);p=np.array([x,y,ground(x,y)+rad*.15])
         sc=np.array([rad*rng.uniform(.8,1.3),rad*rng.uniform(.8,1.3),rad*rng.uniform(.25,.55)])
@@ -346,7 +343,7 @@ def build_forest():
         "hero":View(az=36,el=17,scale=640,target=(0,0,vessel_z+300),title="CYBR FOREST / SEALED BIOME",
                     note="Dense terrain, connected tree geometry, water and serviceable life support inside a mechanical vessel.",
                     f_stop=12,environment_strength=.30,light_size=2.0),
-        "internal":View(az=36,el=18,scale=590,target=(0,0,vessel_z+290),hide=("glass",),title="CYBR FOREST / BIOME GEOMETRY"),
+        "internal":View(az=45,el=15,scale=585,target=(-5,15,vessel_z+300),hide=("glass",),title="CYBR FOREST / BIOME GEOMETRY"),
         "front":View(az=0,el=3,scale=580,target=(0,0,vessel_z+300),projection="orthographic",title="CYBR FOREST / FRONT"),
         "top":View(az=0,el=89,scale=510,target=(0,0,vessel_z+235),projection="orthographic",title="CYBR FOREST / TOP"),
         "exploded":View(az=38,el=18,scale=850,target=(0,0,vessel_z+300),explode=1,title="CYBR FOREST / EXPLODED"),
@@ -420,33 +417,40 @@ def build_elements():
     add_cad(parts,"ELM_Process_probe",annulus(24,8,(70,0,290),250,"Z"),1,"gantry",role="Vertical process probe / injector")
     add_cad(parts,"ELM_Probe_tip",cylinder(12,45,(70,0,245),"Z"),3,"gantry",role="Process probe tip")
 
-    # Internal fractured process core: many closed non-convex implicit masses.
+    # One coherent fractured earth block, not a cloud of floating stones.
+    core=fractured_block_mesh(444,resolution=(98,74,116))
+    cv,cf,cn=transform_mesh(core,(305,205,350),(-20,20,-10),az=-.08,tilt=.04)
+    add_mesh(parts,"ELM_Fractured_basalt_core",cv,cf,cn,9,"process_core",
+             "Single closed fractured basalt/earth core with actual fault voids and chipped surface",explode=(0,0,35),
+             tags=("implicit-surface","fracture-geometry","connected-core"))
+    # Small detached talus fragments remain physically close to the block.
     rng=np.random.default_rng(822);placements=[]
-    for _ in range(42):
-        x=rng.normal(0,150);y=rng.normal(0,90);z=rng.uniform(-280,250)
-        s=np.exp(rng.uniform(np.log(28),np.log(92)))
-        placements.append((x,y,z,s*rng.uniform(.8,1.35),s*rng.uniform(.55,.95),s*rng.uniform(.7,1.45),rng.uniform(0,math.tau),rng.uniform(-.35,.35)))
-    rock_field(parts,"ELM_Fractured_basalt_core",placements,9,seed=444,templates=11,resolution=54,group="process_core",explode=(0,0,35))
+    for _ in range(16):
+        side=rng.choice((-1,1))
+        x=side*rng.uniform(150,205);y=rng.uniform(-78,90);z=rng.uniform(-250,220)
+        s=rng.uniform(16,38)
+        placements.append((x,y,z,s*rng.uniform(.75,1.25),s*rng.uniform(.65,1.0),s*rng.uniform(.65,1.3),rng.uniform(0,math.tau),rng.uniform(-.28,.28)))
+    rock_field(parts,"ELM_Fracture_talus",placements,9,seed=990,templates=8,resolution=46,group="process_core",explode=(0,0,35))
 
     # Branching fire/lava channels as connected swept geometry.
     fire=[
-        [(-265,-120,305),(-230,-130,220),(-275,-135,120),(-215,-132,15),(-255,-125,-110),(-205,-110,-280)],
-        [(-160,-125,285),(-190,-132,205),(-155,-134,115),(-185,-130,30),(-145,-122,-70)],
-        [(-330,-100,120),(-275,-115,65),(-315,-122,-25),(-270,-116,-115)],
-        [(-90,-118,220),(-125,-128,150),(-90,-130,75),(-130,-124,-20),(-100,-118,-135)],
-        [(-225,-88,-20),(-155,-110,-55),(-95,-115,-125)],
+        [(-188,-120,305),(-176,-132,220),(-196,-138,120),(-172,-136,20),(-192,-128,-105),(-166,-112,-280)],
+        [(-120,-126,275),(-150,-137,195),(-122,-140,110),(-150,-135,25),(-116,-125,-85)],
+        [(-226,-105,135),(-195,-120,70),(-218,-126,-20),(-190,-118,-125)],
+        [(-72,-122,215),(-102,-134,145),(-76,-138,72),(-110,-132,-30),(-82,-120,-145)],
+        [(-165,-95,-15),(-125,-116,-58),(-78,-120,-132)],
     ]
     for i,p in enumerate(fire):
         pipe(parts,f"ELM_Hot_channel_{i}",p,10 if i<2 else 7.5,8,"fire","Branching hot material / lava channel",explode=(-30,0,0),analytic=True)
 
     # Water as real triangulated sheets/ribbons rather than tubes.
     water_lines=[
-        [(245,-145,320),(220,-150,225),(265,-152,115),(220,-148,-10),(252,-135,-280)],
-        [(155,-145,285),(185,-150,200),(150,-152,105),(188,-146,10),(155,-135,-230)],
-        [(325,-125,180),(282,-145,105),(315,-148,20),(285,-135,-120)],
+        [(175,-155,320),(205,-168,230),(188,-172,135),(220,-166,25),(195,-150,-110),(225,-132,-285)],
+        [(105,-150,290),(140,-166,205),(120,-174,112),(155,-168,18),(132,-150,-235)],
+        [(238,-138,205),(260,-154,130),(240,-162,45),(270,-150,-55),(250,-135,-165)],
     ]
     for i,p in enumerate(water_lines):
-        v,f,n=ribbon_surface(p,width=64 if i==0 else 48,segments=135,cross=18,waves=3.0)
+        v,f,n=ribbon_surface(p,width=72 if i==0 else 54,segments=150,cross=20,waves=4.0)
         add_mesh(parts,f"ELM_Water_sheet_{i}",v,f,n,7,"water","Tessellated water sheet interacting with hot core",explode=(32,0,0))
     # spray/droplet field as actual geometry
     rng=np.random.default_rng(93);ico=trimesh.creation.icosphere(subdivisions=1,radius=1.0);drops=[]
@@ -497,7 +501,7 @@ def build_elements():
         "hero":View(az=35,el=14,scale=600,target=(0,-20,0),title="CYBR ELEMENTS / PROCESS CONTAINMENT",
                     note="Fractured implicit core, branching hot channels, tessellated water sheets, gantry and circulation hardware.",
                     f_stop=11,environment_strength=.29,light_size=2.0),
-        "section":View(az=35,el=14,scale=570,target=(0,-15,0),hide=("glass",),title="CYBR ELEMENTS / PROCESS CORE"),
+        "section":View(az=42,el=12,scale=545,target=(0,-35,0),hide=("glass",),title="CYBR ELEMENTS / PROCESS CORE"),
         "front":View(az=0,el=0,scale=500,target=(0,0,0),projection="orthographic",title="CYBR ELEMENTS / FRONT"),
         "side":View(az=90,el=0,scale=500,target=(0,0,0),projection="orthographic",title="CYBR ELEMENTS / SIDE"),
         "exploded":View(az=35,el=15,scale=780,target=(0,0,0),explode=1,title="CYBR ELEMENTS / EXPLODED"),
