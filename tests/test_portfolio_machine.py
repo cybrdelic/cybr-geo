@@ -1,21 +1,17 @@
 import numpy as np
 import pytest
 
-from mechanism_lab.models.portfolio_machine import (
-    BUILDERS,
-    REFERENCE_ID,
-    build,
-    build_geo,
-)
+from mechanism_lab.models.portfolio_final import BUILDERS, build
+from mechanism_lab.models.portfolio_final_machines import build_geo, REFERENCE_ID
 
 
 MIN_PARTS = {
-    "portfolio_scenes": 120,
-    "portfolio_geo": 130,
-    "portfolio_light": 85,
-    "portfolio_elements": 105,
-    "portfolio_materials": 95,
-    "portfolio_forest": 125,
+    "portfolio_scenes": 150,
+    "portfolio_geo": 250,
+    "portfolio_light": 90,
+    "portfolio_elements": 80,
+    "portfolio_materials": 115,
+    "portfolio_forest": 130,
 }
 
 
@@ -35,15 +31,28 @@ def test_portfolio_reference_module_builds_as_real_geometry(name):
     assert all(len(part.vertices) > 0 and len(part.faces) > 0 for part in assembly.parts)
 
 
-def test_portfolio_geo_has_exposed_windings_and_rotor_motion():
+def test_portfolio_geo_is_a_real_exposed_electromechanical_assembly():
     assembly = build_geo()
     windings = [part for part in assembly.parts if part.group == "windings"]
     rotor = [part for part in assembly.parts if part.motion == "rotor"]
-    assert len(windings) == 24
-    assert len(rotor) >= 4
+    bearings = [part for part in assembly.parts if part.group in ("bearings", "bearing_balls")]
+    assert len(windings) >= 100
+    assert len(rotor) >= 34
+    assert len(bearings) >= 24
     before = assembly.pose(rotor[0], 0.0, 0.0)
     after = assembly.pose(rotor[0], 1.0, 0.0)
     assert not np.allclose(before, after)
+
+
+@pytest.mark.parametrize("name,group,min_triangles", [
+    ("portfolio_scenes", "environment", 180_000),
+    ("portfolio_forest", "environment", 180_000),
+    ("portfolio_elements", "process_core", 120_000),
+])
+def test_portfolio_worlds_use_dense_authored_surface_geometry(name, group, min_triangles):
+    assembly = build(name)
+    triangles = sum(len(p.faces) for p in assembly.parts if p.group == group)
+    assert triangles >= min_triangles
 
 
 def test_portfolio_reference_dimensions_are_retained():
