@@ -78,15 +78,66 @@ def build_machine():
         add_cad(parts,f"PM_Coupler_inner_{i}",annulus(35,25,(x-18,-420,-480),36,"X"),3,"spine",
                 role="Warm-metal coupler sleeve")
 
+    # A visible mid-level process spine makes the modules parts of one machine
+    # rather than six exhibits sitting on a rail. Twin shafts carry power/fluid/
+    # data through every project and terminate into local manifolds.
+    for pi,(y,z,ro,ri,mat) in enumerate([
+        (-305.,-250.,22.,13.,0),
+        (-260.,-205.,14.,8.,3),
+        (305.,-250.,18.,10.,1),
+    ]):
+        add_cad(parts,f"PM_Process_spine_{pi}",annulus(ro,ri,(-4000,y,z),7200,"X"),mat,"spine",
+                role="Continuous cross-project process/service spine")
+        for ci,x in enumerate([-3820,-3220,-2850,-1550,-1450,-150, -50,1050,1150,2150,2250,3050]):
+            add_cad(parts,f"PM_Process_spine_{pi}_collar_{ci}",
+                    annulus(ro+9,ro+1,(x-9,y,z),18,"X"),3 if ci%2 else 1,"spine",
+                    role="Process-spine retaining/coupling collar")
+
+    # Each module has a local gearbox/manifold pedestal tied into the common
+    # process spine by paired risers and an articulated service loop.
+    for i,(x,zoff) in enumerate(zip(centers,z_offsets)):
+        pedestal_z=-185+zoff*.10
+        add_cad(parts,f"PM_Module_pedestal_{i+1}",box(150,130,170,(x,-300,pedestal_z),12),0,"spine",
+                role="Local module process/manifold pedestal")
+        add_cad(parts,f"PM_Module_bearing_ring_{i+1}",
+                annulus(55,28,(x-26,-300,pedestal_z+35),52,"X"),1,"spine",
+                role="Local service-shaft bearing/coupler")
+        add_cad(parts,f"PM_Module_coupling_ring_{i+1}",
+                annulus(38,28,(x+30,-300,pedestal_z+35),24,"X"),3,"spine",
+                role="Warm-metal module coupling sleeve")
+        for ry in (-318,-282):
+            add_cad(parts,f"PM_Module_riser_{i+1}_{int(ry)}",
+                    cylinder(7,145,(x,ry,-250),"Z"),3,"spine",
+                    role="Module service riser from common process shaft")
+        pipe(parts,f"PM_Module_loop_{i+1}",
+             [(x,-305,-185),(x+38,-265,-115+zoff*.12),(x+70,-235,-45+zoff*.20),(x+55,-215,30+zoff*.24)],
+             6.5,3,"spine","Visible module service loop into project subsystem",analytic=True)
+
+    # Short inter-module trusses and overhead conduits make the horizontal
+    # composition read as a single engineered mechanism at portfolio scale.
+    for i,(a,b) in enumerate(zip(centers[:-1],centers[1:])):
+        mid=(a+b)/2
+        span=b-a-620
+        if span>80:
+            add_cad(parts,f"PM_Intermodule_bridge_{i}",
+                    box(span,42,46,(mid,0,-125),6),1,"spine",
+                    role="Bolted inter-module bridge beam")
+            add_cad(parts,f"PM_Intermodule_trim_{i}",
+                    box(span-28,10,16,(mid,-25,-102),3),3,"spine",
+                    role="Warm-metal bridge reinforcement")
+        pipe(parts,f"PM_Overhead_conduit_{i}",
+             [(a+360,250,-70),(mid-120,250,-35),(mid+120,250,-35),(b-360,250,-70)],
+             5.5,3,"spine","Inter-module routed data/coolant conduit",analytic=True)
+
     views={
         # Looking perpendicular to the X lineup is essential: previous review looked down
         # the machine and collapsed six modules onto one another.
-        "hero":View(az=90,el=9,scale=2120,target=(-400,0,220),title="CYBR / A PORTFOLIO MACHINE",
+        "hero":View(az=-90,el=9,scale=2120,target=(-400,0,220),title="CYBR / A PORTFOLIO MACHINE",
                     note="Six independently modeled systems on one continuous structural and service backbone.",
                     projection="orthographic",environment_strength=.30,light_size=2.5),
-        "wide":View(az=90,el=3,scale=2080,target=(-400,0,190),projection="orthographic",
+        "wide":View(az=-90,el=3,scale=2080,target=(-400,0,190),projection="orthographic",
                     title="CYBR / PORTFOLIO MACHINE / FRONT"),
-        "three_quarter":View(az=78,el=11,scale=2180,target=(-400,0,200),projection="orthographic",
+        "three_quarter":View(az=-78,el=11,scale=2180,target=(-400,0,200),projection="orthographic",
                              title="CYBR / PORTFOLIO MACHINE / THREE QUARTER"),
     }
     metadata=dict(
