@@ -112,6 +112,31 @@ def build_geo():
                 role="Bolted end-bell trim flange")
         bolt_circle_x(parts,f"GEO_{side}_Outer_socket",x+sgn*54,270,18,diam=8,length=22,phase=math.pi/18,explode=sgn*190)
 
+    # Layered open housing hoops give the machine the reference's heavy
+    # multi-shell silhouette while leaving most copper visible between bands.
+    for bi,x in enumerate((-265,-175,-85,85,175,265)):
+        hoop=annulus(286,256,(x-12,0,0),24,"X")
+        # radial service/vent notches make each hoop a manufactured frame,
+        # not a featureless ring.
+        for a in np.linspace(0,math.tau,12,endpoint=False):
+            notch=box(30,46,68,(x,273,0),7)
+            notch=_rotate_x(notch,math.degrees(a))
+            hoop=hoop.cut(notch)
+        add_cad(parts,f"GEO_Housing_hoop_{bi+1:02}",hoop.clean(),0 if bi in (0,5) else 1,"housing",
+                role="Windowed structural housing hoop around exposed stator",
+                explode=(0,0,48+bi*5),tol=.028,ang=.060)
+        bolt_circle_x(parts,f"GEO_Hoop_socket_{bi+1:02}",x+13,272,12,diam=4.5,length=14,phase=(bi%2)*math.pi/12)
+    # Eight longitudinal cage rails mechanically tie the hoop stack together.
+    for ri,a in enumerate(np.linspace(0,math.tau,8,endpoint=False)):
+        rail=box(550,18,28,(0,276,0),4)
+        rail=_rotate_x(rail,math.degrees(a))
+        add_cad(parts,f"GEO_Longitudinal_housing_rail_{ri:02}",rail,0,"housing",
+                role="Longitudinal stator housing rail")
+        for x in (-250,-165,-80,80,165,250):
+            y,z=276*math.cos(a),276*math.sin(a)
+            add_cad(parts,f"GEO_Rail_clamp_{ri:02}_{x:+}",box(34,34,38,(x,y,z),4).rotate((x,0,0),(x+1,0,0),math.degrees(a)),
+                    3,"housing",role="Rail-to-hoop clamp block")
+
     # Actual laminated stator stack with teeth and exposed slots.
     stator_x0=-245;stator_len=490
     # 17 discrete lamination packs show the stack edge in geometry.
@@ -179,11 +204,16 @@ def build_geo():
     bearing_x(parts,"GEO_Rear_main_bearing",-326,108,68,42,explode=150,motion_inner="rotor")
     bearing_x(parts,"GEO_Front_main_bearing",284,108,68,42,explode=150,motion_inner="rotor")
 
-    # Bearing covers and retainers.
+    # Bearing covers and retainers with real radial relief pockets.
     for side,x,sgn in [("rear",-360,-1),("front",360,1)]:
         cover=flange_x(x,154,70,24,bolt_radius=132,bolt_count=12,bolt_hole=4.2)
-        add_cad(parts,f"GEO_{side}_Bearing_cover",cover,0,"bearings",explode=(sgn*205,0,0),
-                role="Removable bearing cover with bolt pattern")
+        for a in np.linspace(0,math.tau,8,endpoint=False):
+            pocket=sector(126,92,x-13,x+13,a-.13,a+.13)
+            cover=cover.cut(pocket)
+        add_cad(parts,f"GEO_{side}_Bearing_cover",cover.clean(),0,"bearings",explode=(sgn*205,0,0),
+                role="Removable relieved bearing cover with radial inspection pockets",tol=.028,ang=.060)
+        add_cad(parts,f"GEO_{side}_Bearing_trim",annulus(92,70,(x-15,0,0),30,"X"),3,"bearings",
+                explode=(sgn*210,0,0),role="Bronze bearing cover trim ring")
         bolt_circle_x(parts,f"GEO_{side}_Bearing_cover_screw",x+sgn*14,132,12,diam=6,length=24,explode=sgn*215)
 
     # Axial tie rods, clamp blocks, nuts and washers.
@@ -197,6 +227,17 @@ def build_geo():
             nut=cq.Workplane("YZ",origin=(x+( -7 if side=="rear" else 2),y,z)).polygon(6,20).extrude(7).val()
             nut=nut.cut(cylinder(5.2,9,(x+( -8 if side=="rear" else 1),y,z),"X"))
             add_cad(parts,f"GEO_{side}_Tie_nut_{j:02}",nut,2,"fasteners",role="Tie-rod hex nut")
+
+    # Front encoder / resolver housing and inspection pickup.
+    encoder=annulus(82,52,(390,0,0),46,"X")
+    add_cad(parts,"GEO_Front_encoder_housing",encoder,0,"instrumentation",role="Front encoder/resolver housing",explode=(240,0,0))
+    add_cad(parts,"GEO_Front_encoder_cap",flange_x(444,90,48,14,bolt_radius=72,bolt_count=8,bolt_hole=3.2),
+            1,"instrumentation",role="Encoder service cap",explode=(265,0,0))
+    bolt_circle_x(parts,"GEO_Encoder_cap_screw",452,72,8,diam=4,length=14,explode=275)
+    add_cad(parts,"GEO_Speed_pickup_body",box(42,34,88,(332,-248,92),6),0,"instrumentation",
+            role="Rotor speed/position pickup housing")
+    pipe(parts,"GEO_Speed_pickup_cable",[(332,-265,92),(300,-310,76),(220,-338,48),(150,-320,20)],4.2,5,"service",
+         "Position-sensor cable routed to service harness",analytic=True)
 
     # Terminal/junction box with removable lid, ceramic feedthroughs and cable glands.
     terminal=box(260,220,145,(30,-300,260),16)
@@ -233,12 +274,12 @@ def build_geo():
     add_cad(parts,"GEO_Module_index_plate",plate,1,"markings",role="CYBR GEO module identity plate")
 
     views={
-        "hero":View(az=38,el=20,scale=590,target=(0,-45,-15),title="CYBR GEO / ELECTROMECHANICAL CORE",
+        "hero":View(az=54,el=18,scale=575,target=(0,-28,-10),title="CYBR GEO / ELECTROMECHANICAL CORE",
                     note="Exposed 36-slot stator, end turns, windowed rotor, real bearing internals and service hardware.",
                     f_stop=11,environment_strength=.32,light_size=1.9),
         "front":View(az=90,el=0,scale=420,target=(0,0,0),projection="orthographic",title="CYBR GEO / END ELEVATION"),
         "side":View(az=0,el=0,scale=420,target=(0,0,0),projection="orthographic",title="CYBR GEO / SIDE ELEVATION"),
-        "internal":View(az=37,el=18,scale=500,target=(0,0,0),hide=("housing","service","markings"),title="CYBR GEO / ROTOR + STATOR"),
+        "internal":View(az=52,el=16,scale=495,target=(0,0,0),hide=("housing","service","markings"),title="CYBR GEO / ROTOR + STATOR"),
         "exploded":View(az=42,el=21,scale=900,target=(0,0,0),explode=1,title="CYBR GEO / EXPLODED"),
     }
     return Assembly("portfolio_geo",parts,MATERIALS,views,
