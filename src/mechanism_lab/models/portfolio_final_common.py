@@ -284,18 +284,33 @@ def terrain_mesh(kind="desert",radius=365,z0=285,res=321,seed=20261004):
     x,y=np.meshgrid(xs,ys)
     rr=np.sqrt((x/radius)**2+(y/radius)**2)
     if kind=="desert":
-        h=18*fbm2(x/260,y/260,6,seed)+5*fbm2(x/62,y/62,5,seed+3)
-        # broad mesas/ridges with sharp-ish shoulders.
-        for cx,cy,amp,sx,sy in [(-185,80,125,90,75),(180,105,165,105,85),(220,-125,95,72,62),(-210,-135,78,80,65),(20,210,75,70,55)]:
-            q=((x-cx)/sx)**2+((y-cy)/sy)**2
-            dome=np.clip(1-q,0,1)
-            h+=amp*np.power(dome,.32)
-            h-=18*np.exp(-((np.sqrt(q)-.72)/.09)**2)
-        # spring depression and feeder channel.
-        q=((x+8)/190)**2+((y+25)/142)**2
-        h-=85*np.power(np.clip(1-q,0,1),1.6)
-        channel=x-(110+26*np.sin(y/65))
-        h-=26*np.exp(-(channel/20)**2)*np.exp(-((y+170)/170)**4)
+        # Low-amplitude eroded shelf. Large-scale silhouette comes from explicit
+        # flat-topped mesa fields below, not from smooth spherical hills.
+        h=12*fbm2(x/250,y/250,6,seed)+3.5*fbm2(x/58,y/58,5,seed+3)
+        mesas=[
+            (-205,105,150,100,82), (190,120,178,112,88),
+            (248,-132,102,78,66), (-242,-145,82,82,68), (22,225,74,72,58),
+        ]
+        for mi,(cx,cy,amp,sx,sy) in enumerate(mesas):
+            q=np.sqrt(((x-cx)/sx)**2+((y-cy)/sy)**2)
+            # Broad top, steep shoulder, then eroded talus. This produces the
+            # characteristic table/mesa silhouette visible in the reference.
+            shoulder=np.clip((q-.46)/.28,0,1);shoulder=shoulder*shoulder*(3-2*shoulder)
+            body=amp*(1-shoulder)
+            talus=amp*.14*np.clip((1.06-q)/.32,0,1)
+            cliff_band=np.exp(-((q-.66)/.12)**2)
+            strata=(4.5*np.sin(q*54+mi*.8)+2.0*np.sin(q*109-mi))*cliff_band
+            erosion=6.0*fbm2((x-cx)/34,(y-cy)/34,4,seed+31+mi)*cliff_band
+            h+=np.where(q<1.06,body+talus+strata+erosion,0)
+        # Irregular geothermal spring basin with a narrow overflow channel.
+        q=np.sqrt(((x+5)/192)**2+((y+28)/146)**2)
+        basin=np.power(np.clip(1-q,0,1),1.7)
+        h-=92*basin
+        terrace=6*np.sin(np.minimum(q,1.15)*58+.5*fbm2(x/45,y/45,3,seed+91))
+        terrace*=np.exp(-((q-.89)/.13)**2)
+        h+=terrace
+        channel=x-(108+28*np.sin(y/64)+7*np.sin(y/21))
+        h-=28*np.exp(-(channel/19)**2)*np.exp(-((y+165)/175)**4)
         h+=z0
     elif kind=="forest":
         h=26*fbm2(x/220,y/220,6,seed)+9*fbm2(x/58,y/58,5,seed+11)
@@ -366,6 +381,50 @@ def implicit_rock_template(seed=0,resolution=54):
     return v,f,mesh_normals(v,f)
 
 
+def fractured_block_mesh(seed=0,resolution=(78,58,92)):
+    """Closed irregular rounded-cuboid rock core with real cracks and cavities.
+
+    The field starts from a high-order box SDF, adds multiscale relief, then
+    subtracts several narrow fault sheets and surface cavities before
+    extracting one connected FlyingEdges surface.
+    """
+    nx,ny,nz=map(int,resolution)
+    xs=np.linspace(-1.15,1.15,nx);ys=np.linspace(-.88,.88,ny);zs=np.linspace(-1.28,1.28,nz)
+    x,y,z=np.meshgrid(xs,ys,zs,indexing="ij")
+    # Smooth super-ellipsoid approximates a chipped rectangular earth block.
+    p=8.0
+    d=((np.abs(x)/.90)**p+(np.abs(y)/.62)**p+(np.abs(z)/1.03)**p)**(1/p)-1.0
+    # Deterministic geometric surface relief.
+    d+=.030*np.sin(x*8.3+seed*.17)*np.sin(y*10.7-seed*.11)*np.sin(z*7.1)
+    d+=.014*np.sin(x*23.0-y*17.0+z*19.0+seed)
+    rng=np.random.default_rng(seed)
+    # Open fracture sheets localized to the interior block.
+    for _ in range(7):
+        n=rng.normal(size=3);n/=np.linalg.norm(n)
+        off=rng.uniform(-.38,.38);width=rng.uniform(.022,.050)
+        plane=np.abs(x*n[0]+y*n[1]+z*n[2]-off)
+        local=np.exp(-((x-rng.uniform(-.4,.4))**2+(z-rng.uniform(-.5,.5))**2)/rng.uniform(.45,.95))
+        d=np.maximum(d,(width-plane)*(.65+.55*local))
+    # Surface chips/pits, concentrated toward the front/side faces.
+    for _ in range(18):
+        c0=np.array([rng.uniform(-.82,.82),rng.uniform(-.58,.58),rng.uniform(-.95,.95)])
+        r=rng.uniform(.055,.16)
+        cav=np.sqrt((x-c0[0])**2+(y-c0[1])**2+(z-c0[2])**2)-r
+        d=np.maximum(d,-cav)
+    image=vtk.vtkImageData();image.SetDimensions(nx,ny,nz)
+    image.SetOrigin(float(xs[0]),float(ys[0]),float(zs[0]))
+    image.SetSpacing(float(xs[1]-xs[0]),float(ys[1]-ys[0]),float(zs[1]-zs[0]))
+    image.GetPointData().SetScalars(numpy_to_vtk(d.astype(np.float32).ravel(order="F"),deep=True))
+    contour=vtk.vtkFlyingEdges3D();contour.SetInputData(image);contour.SetValue(0,0.);contour.ComputeNormalsOff();contour.Update()
+    poly=contour.GetOutput()
+    if poly.GetNumberOfPoints()==0:raise ValueError("Empty fractured block")
+    v=vtk_to_numpy(poly.GetPoints().GetData()).copy()
+    f=vtk_to_numpy(poly.GetPolys().GetConnectivityArray()).reshape(-1,3).copy()
+    signed=np.einsum("ij,ij->i",v[f[:,0]],np.cross(v[f[:,1]],v[f[:,2]])).sum()/6
+    if signed<0:f=f[:,[0,2,1]]
+    return v,f,mesh_normals(v,f)
+
+
 def transform_mesh(mesh,scale=(1,1,1),translate=(0,0,0),az=0,tilt=0):
     v,f,n=mesh
     scale=np.asarray(scale,float)
@@ -410,13 +469,33 @@ def tree_mesh(seed,base=(0,0,0),height=260,radius=13,levels=3,leaf=True,leaf_rad
                 end=attach+np.array([math.cos(phi)*spread,math.sin(phi)*spread,rise])*rng.uniform(.72,1.08)
                 branch(attach,end,r*.56,level+1)
         elif leaf:
-            # low-poly clustered foliage attached to actual twig endpoints.
-            ico=trimesh.creation.icosphere(subdivisions=1,radius=1.0)
-            for j in range(3):
-                p=b+rng.normal(0,leaf_radius*.20,3)
-                sc=np.array([leaf_radius*rng.uniform(.7,1.15),leaf_radius*rng.uniform(.65,1.05),leaf_radius*rng.uniform(.50,.90)])
-                vv=np.asarray(ico.vertices)*sc+p
-                ff=np.asarray(ico.faces)
+            # Hundreds of actual pointed leaves per tree rather than sphere
+            # clumps. Each leaf is a shallow ridged 3D blade with its own
+            # orientation, attached around a terminal twig.
+            for j in range(13):
+                outward=rng.normal(size=3);outward[2]=abs(outward[2])*.62+.18
+                outward/=max(np.linalg.norm(outward),1e-9)
+                center=b+rng.normal(0,leaf_radius*.38,3)+outward*leaf_radius*rng.uniform(.05,.48)
+                L=leaf_radius*rng.uniform(.42,.72)
+                W=L*rng.uniform(.24,.38)
+                ref=np.array([0.,0.,1.]) if abs(outward[2])<.86 else np.array([0.,1.,0.])
+                sidev=np.cross(outward,ref);sidev/=max(np.linalg.norm(sidev),1e-9)
+                ridge=np.cross(sidev,outward);ridge/=max(np.linalg.norm(ridge),1e-9)
+                basep=center-outward*L*.46
+                tipp=center+outward*L*.54
+                mid=center+ridge*rng.uniform(-.08,.08)*L
+                vv=np.array([
+                    basep,
+                    mid+sidev*W*.50,
+                    tipp,
+                    mid-sidev*W*.50,
+                    mid+ridge*W*.14,
+                    mid-ridge*W*.10,
+                ])
+                ff=np.array([
+                    [0,1,4],[1,2,4],[2,3,4],[3,0,4],
+                    [1,0,5],[2,1,5],[3,2,5],[0,3,5],
+                ],dtype=np.int64)
                 fol.append((vv,ff,mesh_normals(vv,ff)))
     top=base+np.array([rng.uniform(-.04,.04)*height,rng.uniform(-.04,.04)*height,height])
     branch(base,top,radius,0)
