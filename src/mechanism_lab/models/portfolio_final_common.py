@@ -32,20 +32,20 @@ MATERIALS = [
     Material("Copper enamel", (.72,.245,.052), .94,.19, coat=.16, coat_rough=.13, microfinish="copper-wire"),
     Material("Black elastomer", (.012,.014,.017), 0.0,.70, ior=1.46, microfinish="polymer"),
     Material("Optical glass", (.76,.87,.98), 0.0,.035, ior=1.49, coat=.50, coat_rough=.03, opacity=.22),
-    Material("Spring / process water", (.045,.25,.36), 0.0,.045, ior=1.333, coat=.22, coat_rough=.025, opacity=.48),
+    Material("Spring / process water", (.075,.42,.58), 0.0,.045, ior=1.333, coat=.22, coat_rough=.025, opacity=.48),
     Material("Hot ceramic / lava", (.98,.16,.018), .10,.22),
-    Material("Basalt", (.055,.058,.060), .06,.78, microfinish="concrete"),
-    Material("Weathered carbonate", (.47,.39,.28), .02,.82, microfinish="concrete"),
-    Material("Sand / mineral sediment", (.40,.30,.20), .0,.88, microfinish="concrete"),
+    Material("Basalt", (.15,.16,.17), .06,.78, microfinish="concrete"),
+    Material("Weathered carbonate", (.62,.51,.34), .02,.82, microfinish="concrete"),
+    Material("Sand / mineral sediment", (.56,.42,.26), .0,.88, microfinish="concrete"),
     Material("Oak", (.42,.23,.09), .0,.40, anisotropy=.38, microfinish="wood"),
     Material("Maple", (.70,.54,.32), .0,.36, anisotropy=.32, microfinish="wood"),
     Material("Dark stone", (.22,.23,.24), .05,.46, microfinish="concrete"),
     Material("Light stone", (.58,.56,.51), .02,.43, microfinish="concrete"),
-    Material("Forest bark", (.15,.085,.035), .0,.82, microfinish="wood"),
-    Material("Forest foliage", (.032,.16,.050), .0,.72),
-    Material("Moss", (.055,.19,.050), .0,.88),
-    Material("Dry branch", (.18,.105,.045), .0,.87, microfinish="wood"),
-    Material("Dry foliage", (.24,.23,.11), .0,.82),
+    Material("Forest bark", (.27,.14,.055), .0,.82, microfinish="wood"),
+    Material("Forest foliage", (.075,.30,.085), .0,.72),
+    Material("Moss", (.10,.34,.075), .0,.88),
+    Material("Dry branch", (.30,.16,.065), .0,.87, microfinish="wood"),
+    Material("Dry foliage", (.38,.36,.16), .0,.82),
     Material("Laser beam", (.16,.46,1.0), .0,.08, ior=1.01, opacity=.82),
     Material("Ceramic white", (.76,.77,.74), .0,.30, coat=.08, coat_rough=.14),
 ]
@@ -176,10 +176,23 @@ def bearing_x(parts,prefix,x,r_outer,r_inner,width,explode=0,motion_inner="fixed
         balls.append(sphere(ball_r*1.02,c))
         add_cad(parts,f"{prefix}_Ball_{i:02}",s,2,"bearing_balls",motion=motion_inner,
                 explode=(explode*.5,0,0),role="Rolling element",tol=.06,ang=.12)
-    cage=annulus(pitch+ball_r*.55,pitch-ball_r*.55,(center-width*.12,0,0),width*.24,"X")
-    cage=cage.cut(cq.Compound.makeCompound(balls))
-    add_cad(parts,prefix+"_Pocketed_cage",cage,3,"bearings",motion=motion_inner,
-            explode=(explode*.7,0,0),role="Pocketed bearing cage",tol=.05,ang=.09)
+    # A boolean-subtracted one-piece cage becomes topologically fragile for
+    # small bearings. ORBIT-grade construction uses separate retained cage
+    # rings and bridges, which is also closer to a serviceable bearing cage.
+    cage_x0=x+width*.30
+    cage_x1=x+width*.64
+    for ci,cx in enumerate((cage_x0,cage_x1)):
+        cage_ring=annulus(pitch+ball_r*.46,pitch-ball_r*.46,(cx,0,0),width*.065,"X")
+        add_cad(parts,f"{prefix}_Cage_ring_{ci}",cage_ring,3,"bearings",motion=motion_inner,
+                explode=(explode*.7,0,0),role="Separate bearing cage retainer ring",tol=.05,ang=.09)
+    for i,a in enumerate(np.linspace(0,math.tau,count,endpoint=False)):
+        aa=a+math.pi/count
+        y=pitch*math.cos(aa);z=pitch*math.sin(aa)
+        bridge=cylinder( max(1.0,ball_r*.16), cage_x1-cage_x0+width*.065,
+                         (cage_x0,y,z),"X")
+        add_cad(parts,f"{prefix}_Cage_bridge_{i:02}",bridge,3,"bearings",motion=motion_inner,
+                explode=(explode*.7,0,0),role="Bearing cage bridge between rolling elements",
+                tol=.07,ang=.12)
 
 
 def bolt_circle_x(parts,prefix,x,radius,count,diam=5,length=12,phase=0,explode=0):
