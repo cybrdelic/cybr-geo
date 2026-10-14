@@ -1,0 +1,323 @@
+{
+  "method": "Manual sparse pinhole camera fit to authored metric landmarks; no reconstructed photographic geometry",
+  "limitations": [
+    "No lens metadata, calibrated camera, survey, or capture dates. East sea/sky horizon at pixel (55,53), sigma 5 px, constrains orientation independently of estimated building heights.",
+    "Pixel labels have 5\u201316 px uncertainty; several east-view roof/grade labels are partly occluded.",
+    "Vertical heights and upper facade corner (-4.6, 0.5 m) are manual reference estimates. A weak ocean camera-height prior (7 m, sigma 2 m) preserves visible roof foreshortening. Fit does not establish dimensional accuracy.",
+    "Both images can be accessed from one listing. These are two views, not two independent surveys.",
+    "Ocean fit reaches its 6 m camera-height bound; east fit reaches the 20-degree field-of-view bound; focal length, distance and pose are ambiguous. Camera is a virtual alignment solution, not recovered survey metadata."
+  ],
+  "views": {
+    "ocean": {
+      "reference_id": "ocean",
+      "image_size": [
+        960,
+        720
+      ],
+      "camera": {
+        "origin": [
+          3.748288925529502,
+          -20.342734068023358,
+          6.000000000000001
+        ],
+        "target": [
+          0.9475326259296568,
+          -0.6272578788987424,
+          4.1410317952390585
+        ],
+        "up": [
+          -0.03683126469765501,
+          0.08862235975912675,
+          0.9953841144460238
+        ],
+        "fov": 51.0004582361181
+      },
+      "solver_success": true,
+      "horizon_constraint": null,
+      "active_parameter_bounds": [
+        "height"
+      ],
+      "reprojection_rmse_px": 12.82047473220865,
+      "median_error_px": 10.155179432095105,
+      "max_error_px": 24.053260930383093,
+      "landmarks": [
+        {
+          "name": "front_left_roof",
+          "model_m": [
+            -4.6,
+            0.5,
+            5.475
+          ],
+          "observed_px": [
+            301,
+            327
+          ],
+          "sigma_px": 7,
+          "projected_px": [
+            296.3353074739184,
+            303.4033899675777
+          ],
+          "error_px": 24.053260930383093
+        },
+        {
+          "name": "front_right_roof",
+          "model_m": [
+            5.351,
+            0,
+            5.475
+          ],
+          "observed_px": [
+            651,
+            315
+          ],
+          "sigma_px": 5,
+          "projected_px": [
+            650.0475195289264,
+            313.63097736838677
+          ],
+          "error_px": 1.6677655751471299
+        },
+        {
+          "name": "front_left_floor",
+          "model_m": [
+            -4.6,
+            0.5,
+            2.62
+          ],
+          "observed_px": [
+            303,
+            409
+          ],
+          "sigma_px": 10,
+          "projected_px": [
+            296.2102792668725,
+            401.4483537116609
+          ],
+          "error_px": 10.155179432095105
+        },
+        {
+          "name": "front_right_floor",
+          "model_m": [
+            5.351,
+            0,
+            2.62
+          ],
+          "observed_px": [
+            647,
+            419
+          ],
+          "sigma_px": 8,
+          "projected_px": [
+            645.2509243355548,
+            420.7231396369432
+          ],
+          "error_px": 2.4552954788291816
+        },
+        {
+          "name": "front_right_grade",
+          "model_m": [
+            5.351,
+            0,
+            0
+          ],
+          "observed_px": [
+            644,
+            510
+          ],
+          "sigma_px": 7,
+          "projected_px": [
+            640.9590229845497,
+            516.5471517523758
+          ],
+          "error_px": 7.218915242412452
+        },
+        {
+          "name": "bay_left_grade",
+          "model_m": [
+            -5.9,
+            -0.624,
+            0
+          ],
+          "observed_px": [
+            221,
+            491
+          ],
+          "sigma_px": 8,
+          "projected_px": [
+            236.9670952605201,
+            496.80783974961565
+          ],
+          "error_px": 16.99056013248942
+        },
+        {
+          "name": "bay_right_grade",
+          "model_m": [
+            -3.0,
+            -0.624,
+            0
+          ],
+          "observed_px": [
+            325,
+            501
+          ],
+          "sigma_px": 6,
+          "projected_px": [
+            335.67352976910894,
+            503.31061665023185
+          ],
+          "error_px": 10.920768610147519
+        }
+      ]
+    },
+    "east": {
+      "reference_id": "east",
+      "image_size": [
+        576,
+        432
+      ],
+      "camera": {
+        "origin": [
+          101.52844603391151,
+          -7.9182385017072106,
+          11.415426133797366
+        ],
+        "target": [
+          82.1070407957564,
+          -4.0378156600057356,
+          8.631303804415452
+        ],
+        "up": [
+          -0.12870911429461726,
+          0.06575991109830351,
+          0.9894996705354875
+        ],
+        "fov": 20.000000000001936
+      },
+      "solver_success": true,
+      "horizon_constraint": {
+        "observed_px": [
+          55,
+          53
+        ],
+        "sigma_px": 5,
+        "meaning": "Visible sea/sky horizon in left of east reference; orientation constraint only."
+      },
+      "active_parameter_bounds": [
+        "vertical_fov"
+      ],
+      "reprojection_rmse_px": 10.109981169500037,
+      "median_error_px": 9.556577812070671,
+      "max_error_px": 14.49845992247587,
+      "landmarks": [
+        {
+          "name": "front_east_roof",
+          "model_m": [
+            5.351,
+            0,
+            5.475
+          ],
+          "observed_px": [
+            147,
+            140
+          ],
+          "sigma_px": 12,
+          "projected_px": [
+            142.62948273150934,
+            126.17596589524375
+          ],
+          "error_px": 14.49845992247587
+        },
+        {
+          "name": "rear_east_roof",
+          "model_m": [
+            -4.18,
+            31.9,
+            5.475
+          ],
+          "observed_px": [
+            487,
+            105
+          ],
+          "sigma_px": 12,
+          "projected_px": [
+            485.654904258201,
+            102.02936192454331
+          ],
+          "error_px": 3.2609773274217764
+        },
+        {
+          "name": "rear_west_roof",
+          "model_m": [
+            -15.69,
+            32.78,
+            5.475
+          ],
+          "observed_px": [
+            456,
+            92
+          ],
+          "sigma_px": 14,
+          "projected_px": [
+            452.8211637539587,
+            97.19593379836826
+          ],
+          "error_px": 6.091200859943114
+        },
+        {
+          "name": "front_west_roof",
+          "model_m": [
+            -4.6,
+            0.5,
+            5.475
+          ],
+          "observed_px": [
+            131,
+            121
+          ],
+          "sigma_px": 14,
+          "projected_px": [
+            138.52102249267992,
+            119.23366821205269
+          ],
+          "error_px": 7.725652549818066
+        },
+        {
+          "name": "front_east_grade",
+          "model_m": [
+            5.351,
+            0,
+            0
+          ],
+          "observed_px": [
+            144,
+            183
+          ],
+          "sigma_px": 16,
+          "projected_px": [
+            146.47936271073195,
+            195.64199751924124
+          ],
+          "error_px": 12.882831238818191
+        },
+        {
+          "name": "rear_east_grade",
+          "model_m": [
+            -4.18,
+            31.9,
+            0
+          ],
+          "observed_px": [
+            484,
+            151
+          ],
+          "sigma_px": 16,
+          "projected_px": [
+            486.63873100457977,
+            162.07755952153684
+          ],
+          "error_px": 11.387503074323277
+        }
+      ]
+    }
+  }
+}

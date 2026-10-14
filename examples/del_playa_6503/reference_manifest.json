@@ -1,0 +1,28 @@
+{
+  "references": [
+    {
+      "id": "ocean",
+      "url": "https://photos.zillowstatic.com/fp/859cf75c72a184db7255be2e5b8e6043-cc_ft_960.jpg",
+      "page_url": "https://www.zillow.com/homedetails/6503-Del-Playa-Dr-2-Goleta-CA-93117/2079669030_zpid/",
+      "sha256": "54d3c47560671850b0915c54cab102db00095263d004cdd2d0c8c5c545435684",
+      "width": 960,
+      "height": 720,
+      "capture_date": "unknown",
+      "usage": "Manual structural observation and sparse camera/proportion alignment only; never a render texture; photographs are not redistributed."
+    },
+    {
+      "id": "east",
+      "url": "https://photos.zillowstatic.com/fp/b09c6a0734cc2f73f6cf5d1893c47593-cc_ft_576.jpg",
+      "page_url": "https://www.zillow.com/homedetails/6503-Del-Playa-Dr-2-Goleta-CA-93117/2079669030_zpid/",
+      "sha256": "0ab02a4fa916f0038df006b19f30d3ee7e3dc10b4fb6dec3fae98c2e1f7fba7d",
+      "width": 576,
+      "height": 432,
+      "capture_date": "unknown",
+      "usage": "Manual structural observation and sparse camera/proportion alignment only; never a render texture; photographs are not redistributed."
+    }
+  ],
+  "retrieved_utc": "2026-10-03",
+  "image_generation_used": false,
+  "photo_textures_used": false,
+  "photogrammetry_used": false
+}

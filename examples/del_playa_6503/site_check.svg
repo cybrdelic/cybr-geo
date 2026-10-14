@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="780" viewBox="0 0 900 780">
+<rect width="900" height="780" fill="#11191d"/>
+<g font-family="sans-serif" fill="#e9e7de">
+<text x="32" y="38" font-size="24">6503 DEL PLAYA · INDEPENDENT PLAN CONSTRAINTS</text>
+<polygon points="350.19,103.09 551.82,515.33 441.24,545.89 239.61,133.64" fill="#efb36d" fill-opacity=".12" stroke="#efb36d" stroke-width="2"/>
+<polygon points="283.11,246.16 357.89,400.00 368.02,400.78 367.87,402.85 383.11,404.04 383.61,397.03 422.11,400.00 425.02,362.52 414.33,361.73 416.69,331.28 399.99,330.00 402.25,300.72 384.52,299.35 386.73,270.47 370.98,269.24 373.25,239.36 362.61,238.54 364.90,208.58 295.83,203.29 286.65,207.85" fill="#75cbb7" fill-opacity=".25" stroke="#75cbb7" stroke-width="2"/>
+<polyline points="560.20,245.04 508.60,224.53 476.95,214.50 452.64,199.24 431.38,175.06 423.66,157.87 419.06,140.05 424.84,118.49 441.67,100.09 472.34,78.63" fill="none" stroke="#889bad" stroke-width="3"/>
+<circle cx="355.23" cy="305.93" r="5" fill="#f6f2e7"/>
+<text x="650" y="150" font-size="15">Local +Y (inland)</text>
+<line x1="680" y1="230" x2="680" y2="165" stroke="#d8d8ce" stroke-width="2"/>
+<line x1="80" y1="555" x2="200" y2="555" stroke="#d8d8ce" stroke-width="3"/>
+<text x="80" y="582" font-size="15">20 m · approximate tangent scale</text>
+<text x="32" y="625" font-size="16" fill="#75cbb7">Green: OSM way 42753197 v7 · mapped building envelope, 438.5 m²</text>
+<text x="32" y="653" font-size="16" fill="#efb36d">Amber: County assessment parcel APN 075-223-019 · not a legal survey</text>
+<text x="32" y="681" font-size="16">White point: County address locator · Gray line: OSM dirt path centerline</text>
+<text x="32" y="715" font-size="16">Overlap: 87.7%. Disagreement retained; elevations remain estimated.</text>
+<text x="32" y="750" font-size="13">OpenStreetMap contributors, ODbL 1.0. County public GIS. Local XY is rotated to the ocean facade.</text>
+</g></svg>

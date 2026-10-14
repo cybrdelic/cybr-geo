@@ -1,0 +1,8 @@
+{
+  "footprint_area_m2": 438.4910269729519,
+  "assessment_parcel_area_m2": 1437.3643575492388,
+  "overlap_area_m2": 384.694902881666,
+  "footprint_fraction_inside_assessment_parcel": 0.8773153365015055,
+  "decision": "Retain both independent source outlines. About 12% of the mapped envelope lies outside the assessment polygon; do not treat either as a survey or silently rescale the building.",
+  "elevation": "No vertical constraint was found that establishes building height, grade, bluff crest or tide level."
+}

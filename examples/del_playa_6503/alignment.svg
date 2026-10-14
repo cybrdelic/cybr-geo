@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="800" viewBox="0 0 1120 800">
+<rect width="1120" height="800" fill="#11191d"/>
+<text x="34" y="38" fill="#f4f0df" font-size="23" font-family="sans-serif">6503 DEL PLAYA · MANUAL REFERENCE ALIGNMENT</text>
+<text x="34" y="78" fill="#e7dfcc" font-size="17" font-family="sans-serif">OCEAN · RMSE 12.8 px</text>
+<line x1="193.90625" y1="278.71875" x2="191.42813209551917" y2="266.18305092027566" stroke="#e6b26e"/>
+<circle cx="193.90625" cy="278.71875" r="4" fill="#72d1c3"/>
+<circle cx="191.42813209551917" cy="266.18305092027566" r="6" fill="none" stroke="#e6b26e"/>
+<text x="201.90625" y="273.71875" fill="#eceddf" font-size="12" font-family="sans-serif">1</text>
+<line x1="379.84375" y1="272.34375" x2="379.3377447497421" y2="271.61645672695545" stroke="#e6b26e"/>
+<circle cx="379.84375" cy="272.34375" r="4" fill="#72d1c3"/>
+<circle cx="379.3377447497421" cy="271.61645672695545" r="6" fill="none" stroke="#e6b26e"/>
+<text x="387.84375" y="267.34375" fill="#eceddf" font-size="12" font-family="sans-serif">2</text>
+<line x1="194.96875" y1="322.28125" x2="191.361710860526" y2="318.2694379093199" stroke="#e6b26e"/>
+<circle cx="194.96875" cy="322.28125" r="4" fill="#72d1c3"/>
+<circle cx="191.361710860526" cy="318.2694379093199" r="6" fill="none" stroke="#e6b26e"/>
+<text x="202.96875" y="317.28125" fill="#eceddf" font-size="12" font-family="sans-serif">3</text>
+<line x1="377.71875" y1="327.59375" x2="376.7895535532635" y2="328.50916793212605" stroke="#e6b26e"/>
+<circle cx="377.71875" cy="327.59375" r="4" fill="#72d1c3"/>
+<circle cx="376.7895535532635" cy="328.50916793212605" r="6" fill="none" stroke="#e6b26e"/>
+<text x="385.71875" y="322.59375" fill="#eceddf" font-size="12" font-family="sans-serif">4</text>
+<line x1="376.125" y1="375.9375" x2="374.509480960542" y2="379.4156743684497" stroke="#e6b26e"/>
+<circle cx="376.125" cy="375.9375" r="4" fill="#72d1c3"/>
+<circle cx="374.509480960542" cy="379.4156743684497" r="6" fill="none" stroke="#e6b26e"/>
+<text x="384.125" y="370.9375" fill="#eceddf" font-size="12" font-family="sans-serif">5</text>
+<line x1="151.40625" y1="365.84375" x2="159.88876935715132" y2="368.92916486698334" stroke="#e6b26e"/>
+<circle cx="151.40625" cy="365.84375" r="4" fill="#72d1c3"/>
+<circle cx="159.88876935715132" cy="368.92916486698334" r="6" fill="none" stroke="#e6b26e"/>
+<text x="159.40625" y="360.84375" fill="#eceddf" font-size="12" font-family="sans-serif">6</text>
+<line x1="206.65625" y1="371.15625" x2="212.32656268983914" y2="372.38376509543565" stroke="#e6b26e"/>
+<circle cx="206.65625" cy="371.15625" r="4" fill="#72d1c3"/>
+<circle cx="212.32656268983914" cy="372.38376509543565" r="6" fill="none" stroke="#e6b26e"/>
+<text x="214.65625" y="366.15625" fill="#eceddf" font-size="12" font-family="sans-serif">7</text>
+<text x="34" y="540" fill="#a9b7ba" font-size="13" font-family="sans-serif">1. front_left_roof: 24.1 px (sigma 7)</text>
+<text x="34" y="562" fill="#a9b7ba" font-size="13" font-family="sans-serif">2. front_right_roof: 1.7 px (sigma 5)</text>
+<text x="34" y="584" fill="#a9b7ba" font-size="13" font-family="sans-serif">3. front_left_floor: 10.2 px (sigma 10)</text>
+<text x="34" y="606" fill="#a9b7ba" font-size="13" font-family="sans-serif">4. front_right_floor: 2.5 px (sigma 8)</text>
+<text x="34" y="628" fill="#a9b7ba" font-size="13" font-family="sans-serif">5. front_right_grade: 7.2 px (sigma 7)</text>
+<text x="34" y="650" fill="#a9b7ba" font-size="13" font-family="sans-serif">6. bay_left_grade: 17.0 px (sigma 8)</text>
+<text x="34" y="672" fill="#a9b7ba" font-size="13" font-family="sans-serif">7. bay_right_grade: 10.9 px (sigma 6)</text>
+<text x="584" y="78" fill="#e7dfcc" font-size="17" font-family="sans-serif">EAST · RMSE 10.1 px</text>
+<line x1="714.15625" y1="228.95833333333331" x2="710.2865211685239" y2="216.71830313641374" stroke="#e6b26e"/>
+<circle cx="714.15625" cy="228.95833333333331" r="4" fill="#72d1c3"/>
+<circle cx="710.2865211685239" cy="216.71830313641374" r="6" fill="none" stroke="#e6b26e"/>
+<text x="722.15625" y="223.95833333333331" fill="#eceddf" font-size="12" font-family="sans-serif">1</text>
+<line x1="1015.1979166666666" y1="197.96875" x2="1014.0069464786154" y2="195.33849753735603" stroke="#e6b26e"/>
+<circle cx="1015.1979166666666" cy="197.96875" r="4" fill="#72d1c3"/>
+<circle cx="1014.0069464786154" cy="195.33849753735603" r="6" fill="none" stroke="#e6b26e"/>
+<text x="1023.1979166666666" y="192.96875" fill="#eceddf" font-size="12" font-family="sans-serif">2</text>
+<line x1="987.75" y1="186.45833333333331" x2="984.9354054071509" y2="191.05889971730522" stroke="#e6b26e"/>
+<circle cx="987.75" cy="186.45833333333331" r="4" fill="#72d1c3"/>
+<circle cx="984.9354054071509" cy="191.05889971730522" r="6" fill="none" stroke="#e6b26e"/>
+<text x="995.75" y="181.45833333333331" fill="#eceddf" font-size="12" font-family="sans-serif">3</text>
+<line x1="699.9895833333334" y1="212.13541666666666" x2="706.648821998727" y2="210.57147706275498" stroke="#e6b26e"/>
+<circle cx="699.9895833333334" cy="212.13541666666666" r="4" fill="#72d1c3"/>
+<circle cx="706.648821998727" cy="210.57147706275498" r="6" fill="none" stroke="#e6b26e"/>
+<text x="707.9895833333334" y="207.13541666666666" fill="#eceddf" font-size="12" font-family="sans-serif">4</text>
+<line x1="711.5" y1="267.03125" x2="713.6952690667939" y2="278.2246853034949" stroke="#e6b26e"/>
+<circle cx="711.5" cy="267.03125" r="4" fill="#72d1c3"/>
+<circle cx="713.6952690667939" cy="278.2246853034949" r="6" fill="none" stroke="#e6b26e"/>
+<text x="719.5" y="262.03125" fill="#eceddf" font-size="12" font-family="sans-serif">5</text>
+<line x1="1012.5416666666666" y1="238.69791666666666" x2="1014.8780430769716" y2="248.5061724930274" stroke="#e6b26e"/>
+<circle cx="1012.5416666666666" cy="238.69791666666666" r="4" fill="#72d1c3"/>
+<circle cx="1014.8780430769716" cy="248.5061724930274" r="6" fill="none" stroke="#e6b26e"/>
+<text x="1020.5416666666666" y="233.69791666666666" fill="#eceddf" font-size="12" font-family="sans-serif">6</text>
+<text x="584" y="540" fill="#a9b7ba" font-size="13" font-family="sans-serif">1. front_east_roof: 14.5 px (sigma 12)</text>
+<text x="584" y="562" fill="#a9b7ba" font-size="13" font-family="sans-serif">2. rear_east_roof: 3.3 px (sigma 12)</text>
+<text x="584" y="584" fill="#a9b7ba" font-size="13" font-family="sans-serif">3. rear_west_roof: 6.1 px (sigma 14)</text>
+<text x="584" y="606" fill="#a9b7ba" font-size="13" font-family="sans-serif">4. front_west_roof: 7.7 px (sigma 14)</text>
+<text x="584" y="628" fill="#a9b7ba" font-size="13" font-family="sans-serif">5. front_east_grade: 12.9 px (sigma 16)</text>
+<text x="584" y="650" fill="#a9b7ba" font-size="13" font-family="sans-serif">6. rear_east_grade: 11.4 px (sigma 16)</text>
+<text x="34" y="750" fill="#72d1c3" font-size="14" font-family="sans-serif">Filled dots: manual image labels · Rings: pinhole projection · Links: residuals</text>
+<text x="34" y="776" fill="#b9b3a5" font-size="13" font-family="sans-serif">Mapped plan + estimated elevations. Alignment is not a survey or proof of hidden geometry. Source photographs are not redistributed.</text>
+</svg>
