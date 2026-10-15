@@ -1,0 +1,53 @@
+name: CYBR NOCTURNE geometry
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'examples/cybr_nocturne_outfit.py'
+      - 'tools/render_cybr_nocturne_cybrlight.py'
+      - 'tests/test_cybr_nocturne.py'
+      - '.github/workflows/cybr-nocturne.yml'
+
+jobs:
+  procedural-geometry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install focused dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy trimesh scipy pillow pytest
+          python -m pip install --no-deps -e .
+
+      - name: Compile and test procedural outfit
+        run: |
+          python -m compileall -q examples/cybr_nocturne_outfit.py tools/render_cybr_nocturne_cybrlight.py
+          python -m pytest -q tests/test_cybr_nocturne.py
+
+      - name: Build CYBR GEO scene package
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          p=Path('examples/cybr_nocturne_outfit.py')
+          s=importlib.util.spec_from_file_location('nocturne',p)
+          m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          a=m.build()
+          a.save('artifacts/nocturne-geo')
+          a.export_glb('artifacts/nocturne-geo/CYBR_NOCTURNE.glb')
+          print(a.validate())
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cybr-nocturne-geo
+          path: artifacts/nocturne-geo/
+          if-no-files-found: error
+
+# NOCTURNE v5 proportion verification
