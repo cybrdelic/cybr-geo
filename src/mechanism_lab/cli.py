@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 import sys
 
-from .render_profiles import V9
+from .render_profiles import LIGHT
 
 
 def resolution(text):
@@ -56,21 +56,22 @@ def parser():
     q.add_argument('--rebuild',action='store_true');_truth_args(q)
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
     q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
-    q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
-    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
-    q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=positive_int,default=V9.still_spp);q.add_argument('--depth',type=positive_int,default=V9.still_depth);q.add_argument('--threads',type=positive_int,default=4)
+    q=sub.add_parser('render',help='Render a named view from actual geometry; CYBR LIGHT is the default spectral backend')
+    q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['light','photoreal','pathtrace','pbr'],default='light')
+    q.add_argument('--size',type=resolution,default=LIGHT.still_size);q.add_argument('--spp',type=positive_int,default=LIGHT.still_spp);q.add_argument('--depth',type=positive_int,default=LIGHT.still_depth);q.add_argument('--threads',type=positive_int,default=4)
+    q.add_argument('--bands',type=positive_int,default=LIGHT.bands)
     q.add_argument('--supersample',type=int,choices=[1,2,3],default=2,help='PBR raster supersampling factor')
     q.add_argument('--f-stop',type=float,help='Thin-lens aperture; lower values give shallower depth of field')
     q.add_argument('--focus-distance',type=float,help='Focus distance in scene millimetres; defaults to camera distance')
     q.add_argument('--time',type=float,default=0.);q.add_argument('--out',type=Path);_truth_args(q)
-    q=sub.add_parser('video',help='V9 path-traced/OIDN video by default; use --renderer pbr for fast engineering preview')
-    q.add_argument('--renderer',choices=['v9','photoreal','pbr'],default='v9');q.add_argument('--spp',type=positive_int,default=V9.video_spp);q.add_argument('--depth',type=positive_int,default=V9.video_depth);q.add_argument('--threads',type=positive_int,default=4)
+    q=sub.add_parser('video',help='CYBR LIGHT spectral video by default; use --renderer pbr for fast engineering preview')
+    q.add_argument('--renderer',choices=['light','photoreal','pbr'],default='light');q.add_argument('--spp',type=positive_int,default=LIGHT.video_spp);q.add_argument('--depth',type=positive_int,default=LIGHT.video_depth);q.add_argument('--threads',type=positive_int,default=4)
     q.add_argument('recipe');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=positive_float,default=8.)
-    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=V9.video_size);q.add_argument('--fps',type=positive_int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
-    q=sub.add_parser('film',help='Final-quality film; V9 path traces and guided-denoises every encoded frame')
-    q.add_argument('recipe');q.add_argument('--renderer',choices=['v9','photoreal'],default='v9');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=positive_float,default=4.)
-    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=V9.film_size);q.add_argument('--fps',type=positive_int,default=24)
-    q.add_argument('--spp',type=positive_int,default=V9.film_spp);q.add_argument('--depth',type=positive_int,default=V9.film_depth);q.add_argument('--threads',type=positive_int,default=4)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='motion');q.add_argument('--size',type=resolution,default=LIGHT.video_size);q.add_argument('--fps',type=positive_int,default=24);q.add_argument('--out',type=Path);_truth_args(q)
+    q=sub.add_parser('film',help='Final-quality film; CYBR LIGHT traces every encoded frame')
+    q.add_argument('recipe');q.add_argument('--renderer',choices=['light','photoreal'],default='light');q.add_argument('--shots',type=Path,help='JSON array of Shot objects');q.add_argument('--view',default='hero');q.add_argument('--seconds',type=positive_float,default=4.)
+    q.add_argument('--action',choices=['motion','orbit','explode','still'],default='orbit');q.add_argument('--size',type=resolution,default=LIGHT.film_size);q.add_argument('--fps',type=positive_int,default=24)
+    q.add_argument('--spp',type=positive_int,default=LIGHT.film_spp);q.add_argument('--depth',type=positive_int,default=LIGHT.film_depth);q.add_argument('--threads',type=positive_int,default=4)
     q.add_argument('--shutter-angle',type=float,default=180.);q.add_argument('--shutter-samples',type=int,default=3);q.add_argument('--out',type=Path);_truth_args(q)
     q=sub.add_parser('gif',help='Make a palette-optimized looping GIF from a video')
     q.add_argument('video',type=Path);q.add_argument('--out',type=Path,required=True);q.add_argument('--start',type=float,default=0.);q.add_argument('--seconds',type=positive_float,default=6.);q.add_argument('--width',type=positive_int,default=640);q.add_argument('--fps',type=positive_int,default=10)
@@ -90,16 +91,16 @@ def parser():
 
 
 def doctor():
-    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG','mitsuba'];dependencies={}
+    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG'];dependencies={}
     for name in libraries:
         try:dependencies[name]=importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:dependencies[name]=None
-    programs={name:shutil.which(name) for name in ['ffmpeg','ffprobe','cmake','g++','git','oidnDenoise']}
+    programs={name:shutil.which(name) for name in ['ffmpeg','ffprobe','cmake','g++','git']}
     from .core import project_root
     root=project_root()
     report={'python':sys.version,'project_root':str(root),'dependencies':dependencies,'programs':programs,
             'preserved_inputs_present':(root/'assets/differential_v3/geometry/reference_parts.npz').exists(),
-            'notes':'V9 uses Mitsuba 3 plus Intel OIDN, a CC0 Poly Haven workshop HDRI, and a CC0 scanned bench roughness map. On Linux x86_64/WSL OIDN is downloaded with a pinned checksum when oidnDenoise is absent. VTK/Mesa remains required for preview/section utilities; FFmpeg is required for video.'}
+            'notes':'CYBR LIGHT is bundled and compiled on demand with g++/OpenMP. No renderer downloads. VTK remains for raster/section utilities; FFmpeg is required for video.'}
     print(json.dumps(report,indent=2));return 0 if all(dependencies.values()) and programs['ffmpeg'] and programs['ffprobe'] else 2
 
 
@@ -134,6 +135,8 @@ def run(args):
                     target=destination/uri;target.parent.mkdir(parents=True,exist_ok=True)
                     if (source.parent/uri).resolve()!=target.resolve():shutil.copy2(source.parent/uri,target)
         recipe=destination/(safe_name(args.name)+'.json');recipe.write_text(json.dumps({'schema':1,'kind':'geometry-import','source':source.name,'name':assembly.name,'units':assembly.metadata['source_units'],'up_axis':assembly.metadata['source_up_axis']},indent=2)+'\n');print(recipe);return 0
+    if getattr(args,'renderer',None)=='light' and args.size[0]*args.size[1]>8000000:raise ValueError('CYBR LIGHT supports at most 8 million pixels')
+    if getattr(args,'bands',8)>128:raise ValueError('CYBR LIGHT supports at most 128 wavelengths per packet')
     analytic=args.command in ('blueprint','whiteprint') or (args.command=='build' and args.step)
     assembly=load(args.recipe,rebuild=getattr(args,'rebuild',False),analytic=analytic);out=root/'outputs'/assembly.name;out.mkdir(parents=True,exist_ok=True)
     if args.command=='build':
@@ -146,9 +149,9 @@ def run(args):
         print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out)},indent=2))
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
-        if args.renderer=='v9':
-            from .v9_dispatch import render_v9
-            render_v9(assembly,output,args.view,args.size,args.spp,args.depth,args.intent,args.allow_estimates,args.time,f_stop=args.f_stop,focus_distance=args.focus_distance)
+        if args.renderer=='light':
+            from .light import render_light
+            render_light(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,args.intent,args.allow_estimates,args.time,f_stop=args.f_stop,focus_distance=args.focus_distance,bands=args.bands)
         elif args.renderer in ('photoreal','pathtrace'):
             from .photoreal import render_photoreal
             render_photoreal(assembly,output,args.view,args.size,args.spp,args.threads,args.depth,args.intent,args.allow_estimates,args.time,args.f_stop,args.focus_distance,False)
@@ -162,9 +165,9 @@ def run(args):
         from .media import Shot,render_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
         output=args.out or out/'videos'/(assembly.name+'_'+args.renderer+'.mp4')
-        if args.renderer=='v9':
-            from .v9_dispatch import render_v9_video
-            report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
+        if args.renderer=='light':
+            from .light import render_light_video
+            report=render_light_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,intent=args.intent,allow_estimates=args.allow_estimates)
         elif args.renderer=='photoreal':
             from .photoreal import render_photoreal_video
             report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,intent=args.intent,allow_estimates=args.allow_estimates)
@@ -175,9 +178,9 @@ def run(args):
         from .media import Shot
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
         output=args.out or out/'films'/(assembly.name+'_'+args.renderer+'.mp4')
-        if args.renderer=='v9':
-            from .v9_dispatch import render_v9_video
-            report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
+        if args.renderer=='light':
+            from .light import render_light_video
+            report=render_light_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,intent=args.intent,allow_estimates=args.allow_estimates)
         else:
             from .photoreal import render_photoreal_video
             report=render_photoreal_video(assembly,output,shots,args.size,args.fps,args.spp,args.threads,args.depth,args.shutter_angle,args.shutter_samples,args.intent,args.allow_estimates)

@@ -1,0 +1,53 @@
+{
+  "renderer": "CYBR LIGHT 0.2",
+  "images": [
+    {
+      "file": "badlands.png",
+      "bytes": 368479,
+      "sha256": "e33358f422f395fe8162f845fa55c3870719c5b216003bff742357bea98f4cee",
+      "image_source": "actual native CYBR LIGHT render",
+      "width": 800,
+      "height": 600,
+      "packets_per_pixel": 96,
+      "wavelengths_per_packet": 8,
+      "linear_film_retained": false
+    },
+    {
+      "file": "soil-profile-before.png",
+      "bytes": 436361,
+      "sha256": "21712717697f7c80f81471ec8d6b1ff1e0b8e8185040f9dfa38ec065c154e4aa",
+      "image_source": "actual native CYBR LIGHT render"
+    },
+    {
+      "file": "soil-profile-before_unfiltered.png",
+      "bytes": 827668,
+      "sha256": "31abf4506c93be18f367b58a4128b503df3fde93f16a86c8e5675498096c4cb3",
+      "image_source": "actual native CYBR LIGHT render"
+    },
+    {
+      "file": "soil-profile.png",
+      "bytes": 384196,
+      "sha256": "12d0356b895f38d8a2974d75107b3899b9ae27a19b8fa30b40c1c278dbfadc74",
+      "image_source": "actual native CYBR LIGHT render"
+    },
+    {
+      "file": "soil-profile_unfiltered.png",
+      "bytes": 817793,
+      "sha256": "604c78e21d5e402b6eabd31be663156ccc523e1051d7e4cbf09892f9082b0ec2",
+      "image_source": "actual native CYBR LIGHT render"
+    },
+    {
+      "file": "watershed.png",
+      "bytes": 380395,
+      "sha256": "e392a646321e15c2d94f8a76b1b6a6ad5a0b6e9dcb52ff6c4f9269cde772436e",
+      "image_source": "actual native CYBR LIGHT render"
+    },
+    {
+      "file": "watershed_unfiltered.png",
+      "bytes": 681599,
+      "sha256": "266a0d94808e083f76a64302f85f1243d05863d3bd3f4489296609a7703e4718",
+      "image_source": "actual native CYBR LIGHT render"
+    }
+  ],
+  "scope": "Procedural uncalibrated geology; development renders with remaining photographic realism limitations."
+}

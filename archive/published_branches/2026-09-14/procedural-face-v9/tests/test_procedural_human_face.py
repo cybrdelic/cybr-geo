@@ -55,27 +55,3 @@ def test_lids_share_exact_skin_boundary_positions_and_normals(closed):
         shared=[(i,lookup[tuple(v)]) for i,v in enumerate(lid.vertices) if tuple(v) in lookup]
         assert len(shared)>30
         assert all(np.array_equal(lid.normals[i],normal) for i,normal in shared)
-
-
-def test_blink_changes_actual_occlusion_and_nostrils_have_depth(closed):
-    import mitsuba as mi
-    mi.set_variant('llvm_ad_rgb')
-    from render_procedural_face import mesh_shape
-    material=mi.load_dict({'type':'diffuse'})
-    for closure,assembly in [(1.,closed),(0.,build(FaceParameters(eyelid_closure=0),quality='preview',hair=False))]:
-        entries={'type':'scene'}
-        for p in assembly.parts:entries[p.name]=mesh_shape(p,material)
-        scene=mi.load_dict(entries)
-        anatomy=Anatomy(FaceParameters(eyelid_closure=closure))
-        for side in (-1,1):
-            c=anatomy.eye(side)
-            ray=mi.Ray3f(mi.Point3f(float(c[0]),-150.,float(c[2])),mi.Vector3f(0,1,0))
-            hit=scene.ray_intersect(ray)
-            assert bool(np.asarray(hit.is_valid())[0])
-            name=hit.shape[0].id()
-            assert ('eyelids' in name) if closure else ('ocular_tear_surface' in name),name
-        nx=9.7+.35;nz=-16.
-        hit=scene.ray_intersect(mi.Ray3f(mi.Point3f(nx,-150,nz),mi.Vector3f(0,1,0)))
-        assert 'nasal_vestibule' in hit.shape[0].id()
-        y=-150+float(np.asarray(hit.t)[0])
-        assert y>float(anatomy.front(nx,nz))+2.

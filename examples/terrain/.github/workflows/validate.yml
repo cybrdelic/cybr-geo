@@ -1,0 +1,22 @@
+name: Validate terrain
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y g++ libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install --no-deps --no-build-isolation -e .
+      - run: python -m pytest -q
+      - run: terrain doctor
+      - run: terrain demo all --quality smoke --grid 33 --duration 2 --width 32 --spp 2 --stones 0 --threads 2

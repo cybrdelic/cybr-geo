@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cybr-geo"
 version = "0.6.0"
-description = "Reusable CAD, mesh, mechanical inspection, animation, whiteprints, and V9 photographic rendering"
+description = "Reusable CAD, mesh, mechanical inspection, animation, whiteprints, and CYBR LIGHT spectral rendering"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 license = "GPL-2.0-only"
-dependencies = ["numpy>=2.3.5,<2.6", "cadquery>=2.7,<2.9", "vtk>=9.3.1,<9.7", "trimesh>=4.11.1,<6", "shapely==2.1.2", "scipy>=1.16,<2", "Pillow==12.3.0", "numba==0.65.1", "ezdxf>=1.4,<2", "CairoSVG>=2.8,<3", "mitsuba>=3.6,<3.8"]
+dependencies = ["numpy>=2.3.5,<2.6", "cadquery>=2.7,<2.9", "vtk>=9.3.1,<9.7", "trimesh>=4.11.1,<6", "shapely==2.1.2", "scipy>=1.16,<2", "Pillow==12.3.0", "numba==0.65.1", "ezdxf>=1.4,<2", "CairoSVG>=2.8,<3"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]
@@ -23,6 +23,7 @@ cybrgeo = "cybrgeo.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
+cybr_light = ["UPSTREAM.json", "native/LICENSE", "native/LICENSES/*.txt", "native/src/*.cpp", "native/include/cybr/*.hpp", "native/tests/*.cpp"]
 cybrgeo = ["native/*.cpp"]
 mechanism_lab = ["native/*.cpp", "native/*.h"]
 

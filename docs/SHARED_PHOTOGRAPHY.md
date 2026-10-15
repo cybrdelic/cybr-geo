@@ -1,74 +1,36 @@
-# Shared photographic rendering / version 0.6
+# Rendering with CYBR LIGHT
 
-CYBR GEO has two photographic backends with deliberately different roles.
-**V9 is the public default.** `photoreal` is the earlier native product-studio
-renderer retained for compatibility and controlled engineering photography.
-They are not aliases and should not be described as the same image-quality tier.
+All photographic entry points use the bundled CYBR LIGHT native CPU engine. Install the documented Python dependencies and g++/OpenMP once; the first render builds a source-hashed executable. There is no network step during rendering. The pinned upstream revision and local kernel changes are recorded in [UPSTREAM.json](../src/cybr_light/UPSTREAM.json).
 
-| Entry point | Default | Explicit alternates |
-|---|---|---|
-| `lab render` | V9: Mitsuba/HDRI/OIDN, 1100×825, 256 spp, depth 14 | `--renderer photoreal`, `--renderer pbr` |
-| `lab video` | V9, 1280×720, 128 spp/frame | `--renderer photoreal`, `--renderer pbr` |
-| `lab film` | V9, 1920×1080, 144 spp/frame | `--renderer photoreal` |
-| `cybrgeo render` | V9, 1100×825, 256 spp | `--backend photoreal`, `--backend pbr` |
-| `cybrgeo video` | V9, 1280×720, 128 spp/frame | `--backend photoreal`, `--backend pbr` |
+| Command | Default resolution | Spectral packets per pixel | Depth |
+| --- | --- | --- | --- |
+| `lab preview` | 640 × 480 | 32 | 8 |
+| `lab render` | 1100 × 825 | 96 | 14 |
+| `lab video` | 1280 × 720 | 64 per frame | 12 |
+| `lab film` | 1920 × 1080 | 128 per frame | 14 |
 
-See [the exact V9 contract](RENDER_V9.md) for the approved ORBIT reference,
-asset provenance and reproduction details.
+The default is eight wavelengths per packet. `lab render --bands 12` increases spectral work. Packet count is different from RGB sample count. Increase `--spp` for final images; the preset alone does not establish convergence. The native maximum is eight million pixels and 128 wavelengths per packet.
 
-## V9
+## Geometry and optics
 
-The default V9 backend is the same renderer family as the approved ORBIT V9
-artifact:
+The adapter converts millimetres to metres, applies each part's actual rigid pose, preserves its vertex normals and material/component IDs, and honors hidden groups, capped sections, perspective/orthographic framing and thin-lens settings. Lights and floor remain fixed in assembly coordinates during a camera orbit. Every film frame is freshly traced; shutter subframes average linear radiance from actual geometry poses.
 
-- Mitsuba 3 path tracing with a physical thin lens.
-- Captured CC0 `small_workshop` HDRI illumination/background.
-- Finite rendered bench with a scanned CC0 `blue_metal_plate` roughness map.
-- Principled PBR material translation with deterministic subtle per-part
-  variation; the ORBIT reference material names preserve their exact V9 tuning.
-- Linear-HDR beauty, albedo and shading-normal AOVs.
-- Intel Open Image Denoise 2.5.1 high-quality guided denoising.
-- ACES fitted tone mapping followed by sRGB.
-- No generated imagery, composited background plate, sharpening or optical-flow
-  frame synthesis.
+CLM1 meshlets contain at most **64 full-attribute vertices and 124 indexed triangles**. Deduplication includes normals, UVs and tint so hard edges and texture seams survive. Native triangles retain indices into shared float32 vertex blocks during BVH construction and intersection; intersection math remains double precision. Material and component IDs stay per triangle. Header/count/index/length checks reject malformed input before tracing.
 
-The two Poly Haven assets are downloaded through their API and cached with
-provider MD5 checks. OIDN is used from `PATH` or `CYBR_GEO_OIDN`; Linux x86_64
-and WSL can use the built-in pinned/checksummed OIDN 2.5.1 acquisition path.
-`CYBR_GEO_V9_CACHE` relocates the V9 cache.
+The CPU renderer uses a SAH BVH. Meshlets reduce input and vertex storage; they do not imply a GPU mesh-shader or hardware ray-tracing backend. Both analytic native primitives and indexed meshlet triangles are supported.
 
-Every encoded V9 movie frame is rendered from the actual current geometry pose
-and guided-denoised independently. This is expensive by design; choose the PBR
-preview path when the task is interactive inspection rather than final imagery.
+## Outputs
 
-## Legacy native `photoreal` backend
+Each still writes `.png`, `_unfiltered.png`, `.pfm`, `.exr`, `.cys`, `.clm`, `.json`, `.truth.json` and diagnostic PFM files for normal, albedo, depth, position, component ID and standard error. Scene asset paths are relative so the scene and its meshlet file can move together. Raw films remain untouched. The PNG uses three non-neural camera-footprint/geometry/object/variance guided filtering passes followed by an ACES display transform; render metadata identifies that processing.
 
-The existing native C++ path tracer remains supported and tested. Its behavior
-includes analytic CAD surface normals, authored IOR/clearcoat/anisotropy,
-explicit part-local microfinish, GGX/MIS transport, model-space product
-softboxes, thin-lens DOF, neutral color transfer and guide-aware spatial
-filtering. Its fixed-camera film mode can conservatively reuse previous-frame
-radiance after geometric reprojection.
+The source/executable cache is under the system temporary directory; `CYBR_LIGHT_CACHE` relocates it. Compile/render failures point to retained logs. Preview success receipts are written only after image decoding and GLB readback succeed. FFmpeg is needed for MP4/GIF encoding.
 
-This backend remains useful for deterministic product-studio imagery, section
-views and environments where Mitsuba/OIDN cannot be installed. It is now
-selected explicitly with `--renderer photoreal` / `--backend photoreal` rather
-than being labeled V9.
+## Material mapping and alternatives
 
-The optional `CYBR_GEO_EMBREE_ROOT` adapter applies only to this legacy native
-backend. It changes triangle intersection acceleration, not CAD geometry,
-materials or light transport.
+GEO materials use RGB authoring controls, not measured spectral reflectance. The current adapter maps opaque surfaces to plastic or metal, derives conductor controls from authored reflectance, and maps transparent concepts to absorbing glass. Anisotropy is retained; microfinish and coat layers do not yet have an exact spectral layered-BSDF mapping. Review raw/filtered output for thin wires, shallow depth of field and specular features.
 
-## Truth and geometry
+`--renderer photoreal` keeps the previous in-house RGB product renderer available. `--renderer pbr` uses VTK/EGL for raster inspection. Neither is an external rendering dependency. Historical gallery image provenance remains in its original records; those images are not relabeled as new CYBR LIGHT output.
 
-Both backends consume actual recipe geometry. Truth/provenance checks remain
-upstream of polished rendering; a realistic result cannot turn designed,
-estimated or inspection-only geometry into measured reference data. Analytic
-sections remain actual clipped/capped geometry rather than image-space masks.
+## Verification
 
-## Evidence
-
-`tests/test_v9_render_profile.py` gates the public V9 defaults and the captured-
-workshop contract. `tests/test_shared_photo_pipeline.py` covers the common scene
-adapter plus legacy-native behavior. Native BSDF and Embree regression programs
-continue to test the compatibility renderer separately.
+`tests/test_light_rendering.py` checks real still/video execution, meshlet attribute/ID preservation, malformed input rejection and pose/unit conversion. The bundled native numerical suites test intersection, BVH/brute-force agreement, optics, sampling, media, checkpointing and filters. `make test-core` includes these integration checks alongside the CAD and export contracts.

@@ -2,11 +2,11 @@
 
 **Procedural CAD, mechanical assemblies and geometry-driven rendering.**
 
-One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with an in-house C++ photographic path tracer and a separate Mitsuba/OIDN rendering backend.
+One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with the CYBR LIGHT C++ spectral renderer bundled in the toolkit.
 
-![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
+![ORBIT inspection wrist — rendered from the procedural assembly](media/light/orbit_hero.png)
 
-*ORBIT: 148 components, geared wrist, opposed-screw gripper, hollow palm and removable housing.* [Recipe](examples/orbit_inspection_wrist.py) · [Service sequence](docs/ORBIT_SERVICE.md) · [Geometry coverage](docs/ORBIT_SHOWCASE.md)
+*Fresh CYBR LIGHT render: 1000 × 750, 192 spectral packets × 8 wavelengths. ORBIT has 148 components, a geared wrist and an opposed-screw gripper.* [Raw preview and reproduction record](media/light/README.md) [Recipe](examples/orbit_inspection_wrist.py) · [Service sequence](docs/ORBIT_SERVICE.md) · [Geometry coverage](docs/ORBIT_SHOWCASE.md)
 
 ## Selected work
 
@@ -17,9 +17,20 @@ One parametric recipe produces named parts, analytic solids, inspection views, m
 | **Nitinol actuator** | Twelve SMA fibers, guided carriage and explicit electrical routing | [Actuator recipe](src/mechanism_lab/models/nitinol_actuator.py) |
 | **Motor / belt drive** | Procedural motor construction, pulley/belt geometry and mechanical integration | [Motor](src/mechanism_lab/models/motor.py) · [Drivetrain](src/mechanism_lab/models/drivetrain.py) |
 | **Differential** | Internal inspection, exploded views and prescribed differential kinematics | [Study](examples/differential/README.md) |
+| **CYBR TERRAIN** | Layered soils, conservative sediment transport and textured geometry | [Terrain](examples/terrain/README.md) |
 | **CYBR YARD** | A 1,404-part parametric skatepark, timber framing and outdoor rendering | [Recipe](examples/diy_skatepark/recipe.py) |
 
 ![Exploded differential assembly](media/differential_exploded.jpg)
+
+## CYBR TERRAIN
+
+[CYBR TERRAIN](docs/terrain.md) adds layered terrain, three-grain sediment transport, wet soil materials, and native CYBR LIGHT rendering to CYBR GEO. Its seeded process model checks water and solid inventories automatically; the initial geology and small-scale surface detail are procedurally authored and uncalibrated.
+
+| Badlands | Watershed | Soil horizons |
+| --- | --- | --- |
+| ![Layered badlands](media/light/terrain-badlands.png) | ![Eroded watershed](media/light/terrain-watershed.png) | ![Soil close view](media/light/terrain-soil-profile.png) |
+
+These are native development renders. Mesh faceting and coarse material transitions still limit photographic realism. [Run the examples and inspect the render settings](docs/terrain.md#run-the-examples) from `examples/terrain`.
 
 ## Run it
 
@@ -39,7 +50,7 @@ lab preview --step
 
 `lab preview` builds an independent flange recipe, checks its geometry, exports a GLB and component list, renders a native 640 × 480 image, reads the exported GLB back and checks the image dimensions. `--step` also exports analytic CAD. Results are in **`outputs/example_flange/preview/`**; `preview.json` is written only after successful completion.
 
-This first run uses the in-house renderer and included geometry. It needs no downloaded reference archive, HDRI or denoiser. Sample count is deliberately modest for iteration.
+This first run uses CYBR LIGHT and included geometry. The engine compiles once on demand. It writes indexed meshlets, linear PFM/EXR films, diagnostic passes and filtered/unfiltered PNGs. No renderer or lighting assets are downloaded.
 
 ```bash
 lab preview nitinol_fiber_actuator --spp 64
@@ -49,7 +60,14 @@ lab animate nitinol_fiber_actuator --seconds 6
 lab blueprint nitinol_fiber_actuator
 ```
 
-For the full photographic workflow, `lab render`, `lab video` and `lab film` use V9 by default. That backend uses Mitsuba, OIDN and downloaded CC0 studio assets; see [rendering setup](docs/SHARED_PHOTOGRAPHY.md). Select `--renderer photoreal` for the in-house native tracer or `--renderer pbr` for the raster preview. [More commands and reference preparation](docs/GETTING_STARTED.md).
+`lab render`, `lab video` and `lab film` also default to **CYBR LIGHT**. Smooth normals, real assembly poses, thin-lens optics, anisotropic metals and spectral glass reach the native engine. Three fixed softboxes give mechanical parts readable highlights. Select `--renderer pbr` for raster inspection, or `--renderer photoreal` for the older native renderer.
+
+```bash
+lab render examples/orbit_inspection_wrist.py --size 1600x1200 --spp 256
+lab film examples/orbit_inspection_wrist.py --action orbit --seconds 4 --spp 128
+```
+
+[Rendering and meshlet format](docs/SHARED_PHOTOGRAPHY.md) · [More commands and reference preparation](docs/GETTING_STARTED.md).
 
 ## How it works
 
@@ -58,7 +76,7 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |
-| Native photography | [Thin-lens BVH/GGX/MIS tracer](src/mechanism_lab/native/photoreal.cpp), [Python adapter](src/mechanism_lab/photoreal.py) |
+| Spectral rendering | [CYBR LIGHT engine](src/cybr_light/native), [assembly adapter](src/mechanism_lab/light.py), [indexed meshlets](src/cybr_light/runtime.py) |
 | CAD and interchange | [STEP, STL, GLB and animated glTF](src/mechanism_lab/exporters.py); explicit mm/Z-up → m/Y-up conversion |
 | Drawings | [OpenCascade hidden-line projection and vector drawing export](src/mechanism_lab/whiteprint.py) |
 | Assembly motion | [Service process and clearance checks](src/mechanism_lab/assembly_process.py) |

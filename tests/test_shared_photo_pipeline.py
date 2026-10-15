@@ -5,7 +5,7 @@ from mechanism_lab.core import View
 from mechanism_lab.cli import parser
 from mechanism_lab.photoreal import resolve_studio
 from mechanism_lab.finish_render import tonemap,save_png
-from mechanism_lab.render_profiles import V9
+from mechanism_lab.render_profiles import LIGHT
 from cybrgeo.core import Assembly,Material,from_shape
 from cybrgeo.photoreal import adapt
 from PIL import Image
@@ -25,7 +25,7 @@ def test_public_adapter_preserves_optics_and_explicit_materials():
 
 def test_legacy_native_studio_does_not_follow_camera_or_removing_parts():
     # The in-house native renderer remains a supported explicit backend even
-    # though V9 is now the public default.
+    # though CYBR LIGHT is now the public default.
     a=adapt(Assembly('one',[from_shape('body',cq.Workplane('XY').box(10,20,30).val())]))
     fixed=resolve_studio(a,View())
     changed=resolve_studio(a,replace(fixed,az=120,target=(1000,2000,3000)))
@@ -35,11 +35,11 @@ def test_legacy_native_studio_does_not_follow_camera_or_removing_parts():
     assert fixed.studio_scale==.15
 
 
-def test_new_render_video_and_film_defaults_use_v9():
-    assert parser().parse_args(['render','model.py']).renderer=='v9'
-    assert parser().parse_args(['video','model.py']).renderer=='v9'
-    assert parser().parse_args(['film','model.py']).renderer=='v9'
-    assert parser().parse_args(['render','model.py']).size==V9.still_size
+def test_new_render_video_and_film_defaults_use_light():
+    assert parser().parse_args(['render','model.py']).renderer=='light'
+    assert parser().parse_args(['video','model.py']).renderer=='light'
+    assert parser().parse_args(['film','model.py']).renderer=='light'
+    assert parser().parse_args(['render','model.py']).size==LIGHT.still_size
     # Native studio defaults remain unchanged for users explicitly selecting it.
     assert View().studio_style=='product' and View().floor_gap_mm==0
 

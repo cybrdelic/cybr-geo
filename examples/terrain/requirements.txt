@@ -1,0 +1,4 @@
+# From examples/terrain, install the current CYBR GEO checkout.
+-e ../..
+setuptools>=75,<81
+pytest>=8,<10
