@@ -34,6 +34,7 @@ jobs:
       PYTHONPATH: src
       PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
       PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONFAULTHANDLER: '1'
       OPENBLAS_NUM_THREADS: '1'
       OMP_NUM_THREADS: '2'
       LP_NUM_THREADS: '2'
@@ -133,10 +134,10 @@ jobs:
           from PIL import Image, ImageStat
           output = pathlib.Path('outputs/portable-smoke/preview')
           output.mkdir(parents=True, exist_ok=True)
-          # Report live native stacks on a stall, while preserving the actual CLI
-          # entry point and arguments. Progress receipts distinguish construction,
+          # Preserve fatal native stacks without the unsynchronized periodic
+          # watchdog in CPython issue140815. Progress receipts distinguish
           # rendering and image publication from interpreter teardown.
-          diagnostic_entry = "import faulthandler,runpy; faulthandler.dump_traceback_later(60,repeat=True); runpy.run_module('mechanism_lab',run_name='__main__')"
+          diagnostic_entry = "import faulthandler,runpy; faulthandler.enable(); runpy.run_module('mechanism_lab',run_name='__main__')"
           # This is a setup smoke with a declared raster budget, retaining real
           # PBR/IBL and 2x supersampling. Production defaults are unchanged.
           command = [sys.executable, '-c', diagnostic_entry, 'preview', 'example_flange',

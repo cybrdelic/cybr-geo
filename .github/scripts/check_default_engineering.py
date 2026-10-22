@@ -112,8 +112,7 @@ def run(output, timeout):
     started = time.perf_counter()
     deadline = started + timeout
     diagnostic_entry = (
-        "import faulthandler,runpy; "
-        "faulthandler.dump_traceback_later(60,repeat=True); "
+        "import faulthandler,runpy; faulthandler.enable(); "
         "runpy.run_module('mechanism_lab',run_name='__main__')"
     )
     public_command = [sys.executable, "-m", "mechanism_lab", "mechanism", "--step", "--out", str(output)]
@@ -156,14 +155,15 @@ def run(output, timeout):
 
 
 if __name__ == "__main__":
+    # Capture actual SIGSEGV/access-violation stacks. Avoid unsynchronized
+    # periodic watchdog walks: https://github.com/python/cpython/issues/140815.
+    faulthandler.enable()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("outputs/portable-default"))
     parser.add_argument("--timeout", type=float, default=1200)
     parser.add_argument("--verify", action="store_true")
     args = parser.parse_args()
     if args.verify:
-        faulthandler.dump_traceback_later(60, repeat=True)
         verify(args.output)
-        faulthandler.cancel_dump_traceback_later()
     else:
         run(args.output, args.timeout)

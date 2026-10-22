@@ -48,8 +48,9 @@ CI requires the passing engineering report, all 118 native parts and 375
 placements, current project/shared-source and runtime binding, matching native
 artifact hashes, and valid positive-volume solids reopened from aggregate STEP.
 It also reopens the GLB and matches its 385 scene components against the STEP
-coverage, including all native placements and the jaw/puck/nest additions. Periodic native Python
-stacks, stage durations and completion markers survive a timeout. This checks
+coverage, including all native placements and the jaw/puck/nest additions.
+Fatal-signal diagnostics, stage durations and completion markers are
+retained on failure. This checks
 the nominal software construction and task; it does not qualify production
 tolerances, unrestricted motion, fatigue or hardware safety.
 
@@ -98,8 +99,12 @@ not download or install these libraries.
 
 PBR writes `hero.render-progress.json` before initialization and updates it at
 rendering, image saving and completion. Its completed receipt includes stage
-durations. CI also captures periodic native Python stacks during slow CLI
-renders, so a timeout preserves evidence about the unfinished stage. The public
+durations. CI captures fatal native Python stacks and retains stage receipts on
+a timeout. It avoids periodic `dump_traceback_later` watchdogs because of the
+upstream [CPython stack-walker race](https://github.com/python/cpython/issues/140815).
+One Ubuntu run crashed during a truncated periodic dump after native construction
+and simulation; the watchdog is a plausible instrumentation cause, not a proven
+attribution. The full default must still pass with fatal-only diagnostics. The public
 CLI setup smoke requests 128×96 pixels with the normal PBR lighting and 2×
 supersampling; this CI budget does not change production rendering defaults.
 
