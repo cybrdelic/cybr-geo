@@ -47,14 +47,14 @@ The native replay contract can be checked programmatically against a fresh run:
 
 ```sh
 python studio/web-auth/make-native-fixture.py \
-  --trace outputs/engineering-arx-default/simulation/trace.json.gz \
-  --native outputs/engineering-arx-native-final \
-  --report outputs/engineering-arx-default/engineering.json \
-  --out outputs/engineering-arx-browser
+  --trace outputs/engineering-arx-sourcebound/simulation/trace.json.gz \
+  --native outputs/engineering-arx-sourcebound/native \
+  --report outputs/engineering-arx-sourcebound/engineering.json \
+  --out outputs/engineering-arx-sourcebound-browser
 node studio/web-auth/probe-native-replay.mjs \
-  outputs/engineering-arx-browser/native-three-fixture.json \
-  outputs/engineering-arx-default/assembly.glb \
-  outputs/engineering-arx-browser/three-replay-check.json
+  outputs/engineering-arx-sourcebound-browser/native-three-fixture.json \
+  outputs/engineering-arx-sourcebound/assembly.glb \
+  outputs/engineering-arx-sourcebound-browser/three-replay-check.json
 ```
 
 This uses the actual GLTFLoader, native mesh vertices and independent source SI

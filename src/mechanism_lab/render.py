@@ -12,6 +12,7 @@ os.environ.setdefault('OMP_NUM_THREADS','4')
 os.environ.setdefault('OPENBLAS_NUM_THREADS','1')
 import math
 import json
+import time
 import sys
 from pathlib import Path
 import numpy as np
@@ -168,6 +169,9 @@ class Studio:
         self.ren.UseFXAAOn();self.ren.GetFXAAOptions().SetRelativeContrastThreshold(.05);self.ren.GetFXAAOptions().SetHardContrastThreshold(.18)
         self.cam=self.ren.GetActiveCamera();self.cam.SetViewUp(0,0,1)
         self.capture=vtk.vtkWindowToImageFilter();self.capture.SetInput(self.win);self.capture.SetInputBufferTypeToRGB();self.capture.ReadFrontBufferOff()
+        # render() already draws the frame. Capture the existing back buffer
+        # instead of asking VTK to draw the same geometry a second time.
+        self.capture.ShouldRerenderOff()
         self.set_camera()
 
     def set_camera(self,az=235.,el=22.,scale=88.,target=(0,0,0),distance=None,projection='perspective',focal_length_mm=58.,sensor_width_mm=36.):
@@ -227,21 +231,43 @@ def render_still(assembly,output,view_name='hero',size=(1600,1100),time_seconds=
     from .truth import assert_renderable,write_truth_report
     report=assert_renderable(assembly,intent,allow_estimates)
     view=assembly.views[view_name]
-    studio=Studio(assembly,size=size,section=view.section,floor=view.floor,supersample=supersample,exposure=view.exposure)
+    output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
+    progress_path=output.with_suffix('.render-progress.json')
+    started=time.perf_counter();timings={};studio=None
+    def checkpoint(stage, **extra):
+        progress_path.write_text(json.dumps(dict(stage=stage,elapsed_s=time.perf_counter()-started,
+                                                timings_s=timings,resolution=list(size),supersample=supersample,
+                                                **extra),indent=2)+'\n',encoding='utf-8')
+    checkpoint('initializing')
     try:
+        stage_started=time.perf_counter()
+        studio=Studio(assembly,size=size,section=view.section,floor=view.floor,supersample=supersample,exposure=view.exposure)
+        timings['initialization']=time.perf_counter()-stage_started
+        checkpoint('rendering',render_window=studio.win.GetClassName())
+        stage_started=time.perf_counter()
         studio.visible(lambda p:p.group not in view.hide);studio.pose(time_seconds,view.explode);studio.set_view(view);im=studio.render()
+        timings['render_and_capture']=time.perf_counter()-stage_started
+        checkpoint('saving',render_window=studio.win.GetClassName())
+        stage_started=time.perf_counter()
         if captions:
             counts=report['tier_counts'];truth=f"{report['resolved_intent'].upper()} / " + ', '.join(f"{k}:{v}" for k,v in counts.items())
             im=labelled(im,view.title or assembly.name.upper(),view.note,
                         f'Actual 3D geometry / {view.projection} PBR / {truth}',
                         tag='CYBR MECHANISM LAB / TRUTH-GATED RENDER')
-        output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);im.save(output)
+        im.save(output)
+        timings['image_save']=time.perf_counter()-stage_started
         metadata = dict(backend='vtk-pbr', renderer='VTK PBR rasterizer',
                         render_window=studio.win.GetClassName(), vtk_version=vtk.vtkVersion.GetVTKVersion(),
                         graphics_capabilities=studio.win.ReportCapabilities(),
                         model=assembly.name, view=view_name, resolution=list(size),
-                        supersample=studio.supersample, spp=None, generated_imagery=False,
+                        supersample=studio.supersample, spp=None, generated_imagery=False,timings_s=timings,
                         scope='Actual geometry with PBR materials and rasterized studio lighting; not path tracing or dynamics evidence.')
         output.with_suffix('.render.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf-8')
-        write_truth_report(report,output.with_suffix('.truth.json'));return output
-    finally:studio.close()
+        write_truth_report(report,output.with_suffix('.truth.json'))
+        checkpoint('complete',render_window=studio.win.GetClassName())
+        return output
+    except Exception as error:
+        checkpoint('failed',error=f'{type(error).__name__}: {error}')
+        raise
+    finally:
+        if studio is not None:studio.close()

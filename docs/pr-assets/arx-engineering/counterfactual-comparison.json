@@ -2,8 +2,8 @@
   "schema": "cybrgeo-causal-counterfactual/1",
   "body": "puck",
   "baseline": {
-    "path": "outputs\\engineering-arx-default\\simulation\\trace.json.gz",
-    "sha256": "3a623f9b11c8512b6f11b759389f6f7a337af901371515bd4997b56e6e645013",
+    "path": "outputs\\engineering-arx-sourcebound\\simulation\\trace.json.gz",
+    "sha256": "83ab3efb974484d96ebfd440d4a4b617abde0e6f208869672f44eba9c73d1e5c",
     "requirements": {
       "passed": true,
       "checks": [
@@ -47,8 +47,8 @@
     }
   },
   "intervention": {
-    "path": "outputs\\engineering-arx-default-frictionloss\\trace.json.gz",
-    "sha256": "cdb63a078435d086932e77684c537a51fb94eb30551545e052ee50d395045ac2",
+    "path": "outputs\\engineering-arx-sourcebound-frictionloss\\trace.json.gz",
+    "sha256": "603ae0b9a58eb7ce2e19903c79678e09753e3fd6f87645cc1c63883c058531a5",
     "requirements": {
       "passed": false,
       "checks": [
@@ -91,17 +91,17 @@
       ]
     }
   },
-  "model_sha256": "50450830f75b947a555b16dd012ffdb9667eb7f0a0c956ef354de00e094d3732",
+  "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
   "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
-  "reference_sha256": "dca42e65614e259b6e8651e16349952d9863fa1166c71402779036022be07de8",
+  "reference_sha256": "3ac5f913fdaad1293e494fb3df5a26ff7f6483c4d99ad83ff37c08b6af4e9516",
   "options_difference": {
-    "frictionChangeTime": {
-      "baseline": null,
-      "intervention": 2.0
-    },
     "frictionAfterScale": {
       "baseline": null,
       "intervention": 0.01
+    },
+    "frictionChangeTime": {
+      "baseline": null,
+      "intervention": 2.0
     }
   },
   "change_time_s": 2.0,

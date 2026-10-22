@@ -1,0 +1,169 @@
+"""Run the public default and independently read its artifacts on each CI OS.
+
+The CLI and the fresh readback process share one deadline. This is software
+construction/dynamics evidence, not manufacturing or hardware qualification.
+"""
+from __future__ import annotations
+
+import argparse
+import faulthandler
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+
+def write_json(path, value):
+    path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+
+
+def sha256(path):
+    with path.open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def verify(output):
+    """Reopen persisted evidence and STEP, without reconstructing the assembly."""
+    import cadquery as cq
+    import trimesh
+    from mechanism_lab.engineering_source import (
+        NATIVE_SOURCE_BINDING, load_project, verify_native_build,
+    )
+    from mechanism_lab.physical_model import digest
+
+    report = json.loads((output / "engineering.json").read_text(encoding="utf-8"))
+    assert report["schema"] == "cybrgeo-engineering-result/2"
+    assert report["name"] == "arx_belt", "The omitted model did not select the authored default"
+    assert report["passed"] and report["requirements"]["passed"], "Default engineering acceptance failed"
+    assert all(check["passed"] for check in report["requirements"]["checks"])
+    project, identity = load_project("arx_belt")
+    native = output / "native"
+    receipt = verify_native_build(native, project.specification, source_files=identity)
+    binding = json.loads((native / NATIVE_SOURCE_BINDING).read_text(encoding="utf-8"))
+    assert report["source_files"] == identity
+    assert report["native_build_sha256"] == digest(receipt)
+    assert report["native_source_binding_sha256"] == digest(binding)
+    assert (receipt["parts"], receipt["placements"]) == (118, 375), "Incomplete native default"
+    for key in ("parts", "placements"):
+        assert report["native"][key] == receipt[key]
+    assert report["native"]["verified_artifacts"] == len(receipt["files_sha256"])
+    interfaces = json.loads((native / "native-interface-requirements.json").read_text())
+    assert interfaces["passed"] and len(interfaces["checks"]) == 52
+    assert all(check["pass"] for check in interfaces["checks"])
+    simulation = report["simulation"]
+    assert simulation["schema"] == "cybrgeo-causal-simulation/1"
+    assert simulation["duration_s"] >= 10 - 1e-9 and simulation["steps"] >= 24000
+    assert simulation["model_sha256"] == report["model_sha256"]
+    physical_source = json.loads((output / "physical-source.json").read_text())
+    assert report["model_sha256"] == digest(physical_source)
+    provenance = physical_source["provenance"]
+    assert provenance["native_build_sha256"] == digest(receipt)
+    assert provenance["native_source_binding_sha256"] == digest(binding)
+    assert provenance["design_source_files"] == identity
+    assert simulation["control_sha256"] == report["control_sha256"]
+    assert report["control_sha256"] == digest(json.loads((output / "control-source.json").read_text()))
+
+    step = output / "arx_belt.step"
+    coverage = json.loads(step.with_suffix(".coverage.json").read_text())
+    names = coverage["analytic_components"]
+    # 375 native placements plus the opposed jaw, puck and four nest components.
+    assert len(names) == len(set(names)) == 385, "Incomplete aggregate CAD coverage"
+    assert not coverage["mesh_only_components_not_in_STEP"], "Default STEP omitted scene components"
+    placements = json.loads((native / "placed-native-parts.json").read_text())["records"]
+    native_names = {row["body"] + "__" + row["name"] for row in placements}
+    assert len(placements) == len(native_names) == receipt["placements"]
+    assert native_names <= set(names), "Aggregate coverage omitted native placements"
+    print("Reopening aggregate STEP with OpenCascade", flush=True)
+    solids = cq.importers.importStep(str(step)).solids().vals()
+    assert len(solids) >= len(names), "Aggregate STEP omitted analytic components"
+    volumes = [solid.Volume() for solid in solids]
+    assert all(solid.isValid() for solid in solids), "Invalid reopened STEP solid"
+    assert all(math.isfinite(volume) and volume > 0 for volume in volumes), "Nonpositive STEP solid"
+    glb = output / "assembly.glb"
+    scene = trimesh.load(glb, force="scene")
+    assert set(scene.graph.nodes_geometry) == set(names), "GLB and analytic coverage differ"
+    evidence = dict(
+        passed=True, default_name=report["name"], native_parts=receipt["parts"],
+        native_placements=receipt["placements"], verified_artifacts=len(receipt["files_sha256"]),
+        nominal_interface_checks=len(interfaces["checks"]),
+        aggregate_analytic_components=len(names),
+        project_source_files=len(identity), construction_dependencies=binding["construction_dependencies"],
+        native_source_binding_sha256=digest(binding), native_build_sha256=digest(receipt),
+        model_sha256=report["model_sha256"], control_sha256=report["control_sha256"],
+        simulated_seconds=simulation["duration_s"], simulated_steps=simulation["steps"],
+        step=dict(file=step.name, sha256=sha256(step), bytes=step.stat().st_size,
+                  valid_solids=len(solids), minimum_volume_mm3=min(volumes),
+                  sum_solid_volumes_mm3=math.fsum(volumes)),
+        glb=dict(file=glb.name, sha256=sha256(glb), bytes=glb.stat().st_size,
+                 geometry_nodes=len(scene.graph.nodes_geometry)),
+        scope="Fresh native construction, source binding, nominal contact dynamics and independent CAD readback; no hardware qualification",
+    )
+    write_json(output / "ci-readback.json", evidence)
+    print(json.dumps(evidence, indent=2), flush=True)
+
+
+def run(output, timeout):
+    output.mkdir(parents=True, exist_ok=True)
+    # Refuse stale output: this job must actually construct the default.
+    assert not (output / "engineering.json").exists(), "Expected a fresh default output directory"
+    started = time.perf_counter()
+    deadline = started + timeout
+    diagnostic_entry = (
+        "import faulthandler,runpy; "
+        "faulthandler.dump_traceback_later(60,repeat=True); "
+        "runpy.run_module('mechanism_lab',run_name='__main__')"
+    )
+    public_command = [sys.executable, "-m", "mechanism_lab", "mechanism", "--step", "--out", str(output)]
+    stages = [
+        ("default-command", [sys.executable, "-u", "-c", diagnostic_entry, *public_command[3:]]),
+        ("independent-readback", [sys.executable, "-u", str(Path(__file__).resolve()), "--verify", "--output", str(output)]),
+    ]
+    status = dict(public_command=public_command, timeout_s=timeout, passed=False, stages=[])
+    try:
+        for name, command in stages:
+            stage = dict(name=name, elapsed_s=0, passed=False)
+            status["stages"].append(stage)
+            stage_started = time.perf_counter()
+            log = output / (name + ".log")
+            print("Starting " + name, flush=True)
+            try:
+                with log.open("w", encoding="utf-8") as stream:
+                    result = subprocess.run(command, stdout=stream, stderr=subprocess.STDOUT,
+                                            timeout=max(0.001, deadline - time.perf_counter()))
+                stage["returncode"] = result.returncode
+                result.check_returncode()
+                stage["passed"] = True
+            finally:
+                stage["elapsed_s"] = time.perf_counter() - stage_started
+                # Preserve full logs as artifacts; keep the Actions console concise.
+                if log.exists():
+                    print(log.read_text(encoding="utf-8", errors="replace")[-12000:], flush=True)
+                print(json.dumps(stage), flush=True)
+        status["passed"] = True
+    finally:
+        status["elapsed_s"] = time.perf_counter() - started
+        status["completed_markers"] = {
+            name: (output / name).is_file() for name in
+            ("native/native-build.json", "native/native-source-binding.json", "engineering.json",
+             "simulation/simulation.json", "arx_belt.step", "assembly.glb", "ci-readback.json")
+        }
+        status["native_files_written"] = sum(path.is_file() for path in (output / "native").rglob("*"))
+        write_json(output / "ci-command.json", status)
+        print(json.dumps(status, indent=2), flush=True)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=Path("outputs/portable-default"))
+    parser.add_argument("--timeout", type=float, default=1200)
+    parser.add_argument("--verify", action="store_true")
+    args = parser.parse_args()
+    if args.verify:
+        faulthandler.dump_traceback_later(60, repeat=True)
+        verify(args.output)
+        faulthandler.cancel_dump_traceback_later()
+    else:
+        run(args.output, args.timeout)

@@ -209,7 +209,85 @@ def load_project(source):
     return project, identity
 
 
-def verify_native_build(directory, specification, *, recipe_sha256=None):
+NATIVE_SOURCE_BINDING = 'native-source-binding.json'
+_CONSTRUCTION_SERVICES = (
+    'native_construction.py', 'shape_dag.py', 'core.py', 'geometry.py',
+    'advanced_geometry.py', 'physical_model.py', 'contact_geometry.py',
+    'engineering_source.py',
+)
+
+
+def construction_dependency_identity():
+    """Explicit conservative native-service boundary, not all Python imports."""
+    from importlib import metadata
+    import platform
+    root = Path(__file__).parent
+    return dict(
+        source_files={name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                      for name in _CONSTRUCTION_SERVICES},
+        packages={name: metadata.version(name) for name in ('cadquery', 'cadquery-ocp', 'numpy')},
+        runtime=dict(python=platform.python_version(), implementation=platform.python_implementation(),
+                     system=platform.system(), machine=platform.machine()),
+        scope='Explicit shared CAD, mass, material/core and contact helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured')
+
+
+def verify_native_source_binding(directory, specification, source_files, *, receipt):
+    """Require the closure recorded by an actual fresh project construction."""
+    from .physical_model import digest
+    root = Path(directory).resolve()
+    try:
+        binding = json.loads((root / NATIVE_SOURCE_BINDING).read_text(encoding='utf-8'))
+    except (OSError, ValueError) as error:
+        raise ValueError('Native source binding is missing or invalid; construct the project freshly before reuse') from error
+    if not isinstance(binding, dict) or binding.get('schema') != 'cybrgeo-native-source-binding/1':
+        raise ValueError('Expected a fresh cybrgeo-native-source-binding/1')
+    if not source_files or binding.get('source_files') != source_files or binding.get('source_sha256') != digest(source_files):
+        raise ValueError('Native source binding differs from the complete project source/data closure')
+    if binding.get('construction_dependencies') != construction_dependency_identity():
+        raise ValueError('Native source binding differs from shared construction dependencies or CAD runtime')
+    if binding.get('specification_sha256') != digest(specification):
+        raise ValueError('Native source binding belongs to a different specification')
+    if (binding.get('native_build_sha256') != digest(receipt)
+            or binding.get('native_build_file_sha256') != hashlib.sha256((root / 'native-build.json').read_bytes()).hexdigest()):
+        raise ValueError('Native source binding belongs to a different native completion receipt')
+    return binding
+
+
+def construct_project_native(project, source, source_files, directory):
+    """Execute construction, then bind its verified outputs to captured sources.
+
+    There is deliberately no public operation to bind a pre-existing build.
+    Both old completion markers are removed before calling the constructor,
+    so a failed or no-op callback cannot confer a new identity on an old build.
+    """
+    from .physical_model import digest
+    root = Path(directory).resolve()
+    root.mkdir(parents=True, exist_ok=True)
+    (root / NATIVE_SOURCE_BINDING).unlink(missing_ok=True)
+    (root / 'native-build.json').unlink(missing_ok=True)
+    try:
+        assert_project_source_identity(source, source_files)
+        dependencies = construction_dependency_identity()
+        project.construct(project.specification, root)
+        assert_project_source_identity(source, source_files)
+        if dependencies != construction_dependency_identity():
+            raise ValueError('Shared construction dependencies changed during native construction')
+        receipt = verify_native_build(root, project.specification)
+        binding = dict(schema='cybrgeo-native-source-binding/1',
+            source_files=dict(source_files), source_sha256=digest(source_files),
+            construction_dependencies=dependencies, specification_sha256=digest(project.specification),
+            native_build_sha256=digest(receipt),
+            native_build_file_sha256=hashlib.sha256((root / 'native-build.json').read_bytes()).hexdigest())
+        (root / NATIVE_SOURCE_BINDING).write_text(json.dumps(binding, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+        verify_native_build(root, project.specification, source_files=source_files)
+        return receipt, binding
+    except Exception:
+        (root / NATIVE_SOURCE_BINDING).unlink(missing_ok=True)
+        (root / 'native-build.json').unlink(missing_ok=True)
+        raise
+
+
+def verify_native_build(directory, specification, *, recipe_sha256=None, source_files=None):
     """Check the actual native outputs before using their inertias or replay."""
     from .physical_model import digest
     root = Path(directory).resolve()
@@ -227,4 +305,6 @@ def verify_native_build(directory, specification, *, recipe_sha256=None):
         path = (root / relative).resolve()
         if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
             raise ValueError(f'Native artifact differs from its completed build: {relative}')
+    if source_files is not None:
+        verify_native_source_binding(root, specification, source_files, receipt=receipt)
     return receipt

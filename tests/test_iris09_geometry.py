@@ -105,3 +105,19 @@ def test_bounded_cut_batches_match_unpruned_native_boolean():
 def test_invalid_scene_unit_assumption_is_rejected(scale):
     with pytest.raises(ValueError, match='scene_unit_mm'):
         leaf_dag(scene_unit_mm=scale)
+
+
+def test_actual_nine_leaf_build_keeps_body_and_part_names_distinct(tmp_path, monkeypatch):
+    # Exercise the genuine NativeConstruction placement/export path without
+    # rebuilding the expensive housing. CadQuery reserves each assembly name
+    # inside that assembly's object registry, so identical part names fail.
+    from examples.engineering.iris09 import design
+    monkeypatch.setattr(design, 'housing_geometry', lambda scale: [])
+    monkeypatch.setattr(design, 'lens_geometry', lambda scale: [])
+    monkeypatch.setattr(design, 'handle_geometry', lambda scale: [])
+    result = design.build(tmp_path)
+    assert len(result.native.parts) == 10
+    assert len(result.native.placed_records) == 9
+    assert all(row['body'] != row['name'] for row in result.native.placed_records)
+    assert len(result.reference.parts) == 9
+    assert (tmp_path / 'native-build.json').is_file()

@@ -19,3 +19,10 @@
 examples/engineering/arx_belt/data/* -text whitespace=cr-at-eol
 examples/engineering/arx_compact/data/* -text whitespace=cr-at-eol
 tests/fixtures/arx_actuation/* -text whitespace=cr-at-eol
+tests/fixtures/arx_compact/build_meshes.py -text whitespace=cr-at-eol
+examples/engineering/iris09/evidence/*.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/replay-check.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/three-replay-check.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/source-bound-native-build.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/source-bound-native-binding.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/step-coverage.json -text whitespace=cr-at-eol

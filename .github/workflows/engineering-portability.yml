@@ -17,11 +17,15 @@ jobs:
   engineering:
     name: Engineering on ${{ matrix.os }} / ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    # Full native default + ten simulated seconds + independent STEP readback,
+    # alongside the existing kernel suite, wheel install and real PBR smoke.
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
         include:
+          - os: ubuntu-24.04
+            arch: x64
           - os: windows-2025
             arch: x64
           - os: macos-15
@@ -46,6 +50,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install Ubuntu CAD and graphics runtime libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
+          sudo apt-get update -qq
+          sudo apt-get install -y g++ cmake ffmpeg libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
       - name: Install the pinned platform wheels and capture dependency evidence
         shell: python
         run: |
@@ -72,6 +82,14 @@ jobs:
                           scope='Installed dependencies; actual CAD, dynamics and graphics are checked next.')
           (output / 'platform.json').write_text(json.dumps(evidence, indent=2), encoding='utf-8')
           print(json.dumps(evidence, indent=2))
+      - name: Qualify process-local software OpenGL on the Windows hosted runner
+        if: runner.os == 'Windows'
+        shell: python
+        run: |
+          import os, pathlib, subprocess, sys
+          subprocess.run([sys.executable, '.github/scripts/setup_windows_software_gl.py',
+                          '--directory', str(pathlib.Path(os.environ['RUNNER_TEMP']) / 'cybr-geo-mesa'),
+                          '--evidence', 'outputs/portable-smoke/graphics'], check=True)
       - name: Exercise native CAD, source controller, contact dynamics and installed examples
         shell: python
         run: |
@@ -88,6 +106,7 @@ jobs:
                          'tests/test_causal_runtime.py', 'tests/test_causal_counterfactual.py',
                          'tests/test_physical_model.py',
                          'tests/test_physical_replay.py', 'tests/test_engineering_distribution.py',
+                         'tests/test_engineering_native_source_binding.py',
                          'tests/test_preview.py']
               command += sorted(str(path) for path in pathlib.Path('studio/tests').glob('test_*.py'))
               with (output / 'tests.log').open('w', encoding='utf-8') as log:
@@ -97,34 +116,72 @@ jobs:
                   suites = ET.parse(output / 'tests.xml').getroot().iter('testsuite')
                   assert sum(int(suite.get('skipped', '0')) for suite in suites) == 0, 'Required platform tests were skipped'
               sys.exit(result.returncode)
+      - name: Construct and independently reopen the full public default
+        # One 1200-second helper deadline includes construction, the nominal
+        # contact simulation, aggregate STEP export and fresh-process readback.
+        # The small outer margin permits timeout evidence and artifact upload.
+        timeout-minutes: 22
+        shell: python
+        run: |
+          import subprocess, sys
+          subprocess.run([sys.executable, '-u', '.github/scripts/check_default_engineering.py',
+                          '--output', 'outputs/portable-default', '--timeout', '1200'], check=True)
       - name: Run and verify the public PBR preview command
         shell: python
         run: |
-          import json, pathlib, subprocess, sys
+          import json, pathlib, subprocess, sys, time
           from PIL import Image, ImageStat
           output = pathlib.Path('outputs/portable-smoke/preview')
           output.mkdir(parents=True, exist_ok=True)
-          command = [sys.executable, '-m', 'mechanism_lab', 'preview', 'example_flange',
-                     '--renderer', 'pbr', '--step', '--size', '320x240', '--out', str(output)]
-          with (output / 'command.log').open('w', encoding='utf-8') as log:
-              result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=180)
-          print((output / 'command.log').read_text(encoding='utf-8'))
+          # Report live native stacks on a stall, while preserving the actual CLI
+          # entry point and arguments. Progress receipts distinguish construction,
+          # rendering and image publication from interpreter teardown.
+          diagnostic_entry = "import faulthandler,runpy; faulthandler.dump_traceback_later(60,repeat=True); runpy.run_module('mechanism_lab',run_name='__main__')"
+          # This is a setup smoke with a declared raster budget, retaining real
+          # PBR/IBL and 2x supersampling. Production defaults are unchanged.
+          command = [sys.executable, '-c', diagnostic_entry, 'preview', 'example_flange',
+                     '--renderer', 'pbr', '--step', '--size', '128x96', '--out', str(output)]
+          started = time.perf_counter()
+          try:
+              with (output / 'command.log').open('w', encoding='utf-8') as log:
+                  result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=180)
+          finally:
+              print((output / 'command.log').read_text(encoding='utf-8'))
+              (output / 'command-timing.json').write_text(json.dumps({'elapsed_s': time.perf_counter()-started}), encoding='utf-8')
+              progress = output / 'hero.render-progress.json'
+              if progress.exists():
+                  print(progress.read_text(encoding='utf-8'))
           if result.returncode:
               sys.exit(result.returncode)
           report = json.loads((output / 'preview.json').read_text())
           render = json.loads((output / 'hero.render.json').read_text())
           assert report['passed'] and report['backend'] == 'vtk-pbr', report
           assert render['render_window'] and render['graphics_capabilities'], render
+          assert render['timings_s']['render_and_capture'] > 0, render
+          if sys.platform == 'win32':
+              assert 'llvmpipe' in render['graphics_capabilities'].lower(), render
           assert (output / 'example_flange.step').read_text().startswith('ISO-10303-21')
           assert (output / 'example_flange.glb').stat().st_size > 100
           with Image.open(output / 'hero.png').convert('RGB') as image:
-              assert image.size == (320, 240)
+              assert image.size == (128, 96)
               assert max(ImageStat.Stat(image).var) > 1, 'Uniform/blank graphics output'
           print(json.dumps(report, indent=2))
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: engineering-${{ matrix.os }}-${{ matrix.arch }}
-          path: outputs/portable-smoke/
+          path: |
+            outputs/portable-smoke/
+            outputs/portable-default/*.json
+            outputs/portable-default/*.log
+            outputs/portable-default/model.xml
+            outputs/portable-default/arx_belt.step
+            outputs/portable-default/assembly.glb
+            outputs/portable-default/simulation/
+            outputs/portable-default/native/native-build.json
+            outputs/portable-default/native/native-source-binding.json
+            outputs/portable-default/native/native-interface-requirements.json
+            outputs/portable-default/native/placed-native-parts.json
+            outputs/portable-default/native/mass_properties.json
           if-no-files-found: error
           retention-days: 30

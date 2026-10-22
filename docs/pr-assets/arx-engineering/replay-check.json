@@ -1,7 +1,7 @@
 {
   "schema": "cybrgeo-native-replay-check/1",
   "passed": true,
-  "model_sha256": "50450830f75b947a555b16dd012ffdb9667eb7f0a0c956ef354de00e094d3732",
+  "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
   "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
   "display_mesh_sha256": "392dab63fe439d09dab9806590524d40432bf29794af601e1da8af227a712cdd",
   "replay_state_sha256": "80839ced90e688a1d60c17a70238e5a08234fde8f4f086d5620dd3d1653c98bc",
@@ -49,5 +49,5 @@
     "Display finishes are source appearance, not a measured material or manufacturing qualification."
   ],
   "scope": "Native/display placement and recorded-state replay; no hardware qualification",
-  "trace_file_sha256": "3a623f9b11c8512b6f11b759389f6f7a337af901371515bd4997b56e6e645013"
+  "trace_file_sha256": "83ab3efb974484d96ebfd440d4a4b617abde0e6f208869672f44eba9c73d1e5c"
 }

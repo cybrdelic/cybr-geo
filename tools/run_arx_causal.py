@@ -10,7 +10,8 @@ import json
 from pathlib import Path
 
 from mechanism_lab.causal_runtime import CausalSimulation
-from mechanism_lab.engineering_source import load_project, verify_native_build
+from mechanism_lab.engineering_source import (load_project, verify_native_build,
+    verify_native_source_binding, assert_project_source_identity)
 from mechanism_lab.physical_model import digest
 
 
@@ -23,11 +24,13 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     project, source_files = load_project(args.project)
-    receipt = verify_native_build(args.native, project.specification, recipe_sha256=source_files.get('design.py')) if args.native else None
+    receipt = verify_native_build(args.native, project.specification, source_files=source_files) if args.native else None
+    binding = verify_native_source_binding(args.native, project.specification, source_files, receipt=receipt) if receipt is not None else None
     physical, control, parameters = project.compile_physics(project.specification, native_directory=args.native)
     physical.provenance['design_source_files'] = source_files
     if receipt is not None:
         physical.provenance['native_build_sha256'] = digest(receipt)
+        physical.provenance['native_source_binding_sha256'] = digest(binding)
     physical.write(args.output)
     (args.output/'control-source.json').write_text(json.dumps(control, indent=2), encoding='utf-8')
     options = dict(frictionChangeTime=2., frictionAfterScale=.01) if args.case == 'friction_loss' else {}
@@ -37,6 +40,12 @@ def main():
     result = simulation.run(args.seconds, output=args.output)
     result['physical_source'], result['task_parameters'] = physical.to_source(), parameters
     result['requirements'] = project.requirements(result, parameters)
+    assert_project_source_identity(args.project, source_files)
+    if receipt is not None:
+        verified = verify_native_build(args.native, project.specification, source_files=source_files)
+        if digest(verified) != digest(receipt) or digest(verify_native_source_binding(
+                args.native, project.specification, source_files, receipt=verified)) != digest(binding):
+            raise ValueError('Native construction identity changed during causal simulation')
     (args.output/'trace.json.gz').write_bytes(gzip.compress(json.dumps(result, separators=(',', ':'), allow_nan=False).encode(), mtime=0))
     summary = {key: value for key, value in result.items() if key not in ('frames', 'physical_source', 'task_parameters')}
     summary['frames'] = len(result['frames'])

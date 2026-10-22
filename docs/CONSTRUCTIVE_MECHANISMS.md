@@ -86,6 +86,17 @@ are separate from semantic JSON identity. Cache changes invalidate motion as
 well as geometry. Recorded replay holds the prior pose between samples. Generic
 animated GLB interpolation is a visualization, not extra solver evidence.
 
+Fresh project construction also writes `native-source-binding.json`, binding
+the native receipt to every project Python file, `project.json` and all `data/`
+inputs. Reuse requires that binding; historical builds without it must be built
+again, and cannot be relabeled from current files. This is conservative: even a
+controller-only edit invalidates native reuse. The binding also records an
+explicit set of shared CAD, mass, core/material and contact helper hashes,
+CadQuery/OpenCascade/NumPy versions and the Python/platform identity. It does
+not discover arbitrary external Python imports; put authored dependencies in
+the project snapshot. Native artifacts and binding are checked again before
+accepted export, including after simulation and optional media rendering.
+
 ## Author another project
 
 To author another design, create a trusted local folder with `project.json`

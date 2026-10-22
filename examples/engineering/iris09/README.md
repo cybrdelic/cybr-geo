@@ -60,4 +60,6 @@ python -m pytest tests/test_shape_dag.py tests/test_iris09_geometry.py
 
 Tests compare actual CAD point membership with the source's circle/plane equations, frame placement with its hinge basis, volume with analytic annular-profile and spherical-cap formulas, and invariant versus clipped leaf volumes. The supplied evidence images are rendered from this implementation's generated geometry.
 
+The [artifact verification receipt](evidence/verification.json) records the completed default reference build: 26 registered native parts including the separate invariant template, 25 placed reference parts, and 30 solids in the reopened reference STEP. It verifies 96 native artifact hashes, the recipe identity, 25 reference GLB nodes and nine invariant-profile nodes. The three 1280 × 960 images were rendered and visually inspected on Windows with VTK 9.6.2; their actual backend receipts are retained beside the images. The [geometry report](evidence/geometry-study.json) preserves the qualification limits and measured clipping volumes.
+
 The pinned source package supplies no upstream license grant. Its use here follows the owner's request to adapt the source into CYBR GEO; no upstream license grant is invented and no original shader or media files are redistributed. The new adaptation follows CYBR GEO's existing GPL-2.0-only licensing.

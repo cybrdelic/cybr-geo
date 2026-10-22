@@ -1,0 +1,568 @@
+{
+  "schema": "cybrgeo-geometry-study/1",
+  "source": {
+    "repository": "https://github.com/cybrdelic/cybr-iris09",
+    "commit": "6aac71594c211cc5934674b2113d9db8c5ec17c6",
+    "file": "IRIS-09.glsl",
+    "normalized_text_sha256": "455e1ba9b0740a6ab925f9c022eea5f217fd3bbfc08ffec3177fb3b1d925843b",
+    "checkout_bytes_sha256": "a0adeb7354f16e84d62c43af09d9c38b3e6542af9bad7730627536d01992145b",
+    "upstream_license": "No license grant supplied; adaptation requested by the source owner for CYBR GEO. No upstream license is inferred."
+  },
+  "parameters": {
+    "scene_unit_mm": 50.0,
+    "time_s": 5.0
+  },
+  "qualification": {
+    "geometry": "reference CAD",
+    "kinematics": "prescribed placement only",
+    "dynamics": "not simulated",
+    "hardware": "unqualified",
+    "engineering_acceptance": false
+  },
+  "coordinate_mapping": "Source (x,y,z), Y up -> CAD (x,-z,y), Z up; multiply lengths by scene_unit_mm",
+  "source_angles": {
+    "hinge_radians": 0.45,
+    "actuator_radians": 0.15999999999999992
+  },
+  "body_frames_to_world": {
+    "housing_reference": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "handle_reference": [
+      [
+        0.9872272833756269,
+        0.1593182066142459,
+        0.0,
+        0.0
+      ],
+      [
+        -0.1593182066142459,
+        0.9872272833756269,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_00": [
+      [
+        0.9004471023526769,
+        0.43496553411123023,
+        0.0,
+        43.0
+      ],
+      [
+        -0.43496553411123023,
+        0.9004471023526769,
+        0.0,
+        -0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_01": [
+      [
+        0.4101920431124672,
+        0.911999170924634,
+        0.0,
+        32.93991105411605
+      ],
+      [
+        -0.911999170924634,
+        0.4101920431124672,
+        0.0,
+        -27.63986721652119
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_02": [
+      [
+        -0.2719964318768252,
+        0.9622982599206317,
+        0.0,
+        7.466871639678008
+      ],
+      [
+        -0.9622982599206317,
+        -0.2719964318768252,
+        0.0,
+        -42.34673337952494
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_03": [
+      [
+        -0.8269147534873306,
+        0.5623272983458897,
+        0.0,
+        -21.49999999999999
+      ],
+      [
+        -0.5623272983458897,
+        -0.8269147534873306,
+        0.0,
+        -37.239092362730865
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_04": [
+      [
+        -0.9949104718073131,
+        -0.1007628556966787,
+        0.0,
+        -40.40678269379406
+      ],
+      [
+        0.1007628556966787,
+        -0.9949104718073131,
+        0.0,
+        -14.706866163003761
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_05": [
+      [
+        -0.697376523170415,
+        -0.71670494970437,
+        0.0,
+        -40.406782693794064
+      ],
+      [
+        0.71670494970437,
+        -0.697376523170415,
+        0.0,
+        14.706866163003752
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_06": [
+      [
+        -0.07353234886534658,
+        -0.9972928324571199,
+        0.0,
+        -21.500000000000018
+      ],
+      [
+        0.9972928324571199,
+        -0.07353234886534658,
+        0.0,
+        37.23909236273086
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_07": [
+      [
+        0.5847184286948457,
+        -0.8112363152279555,
+        0.0,
+        7.466871639677989
+      ],
+      [
+        0.8112363152279555,
+        0.5847184286948457,
+        0.0,
+        42.34673337952495
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "leaf_body_08": [
+      [
+        0.9693729550472403,
+        -0.24559331021626177,
+        0.0,
+        32.939911054116045
+      ],
+      [
+        0.24559331021626177,
+        0.9693729550472403,
+        0.0,
+        27.639867216521203
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "density_assumptions_kg_m3": {
+    "aluminum_assumed": 2700.0,
+    "steel_assumed": 7850.0,
+    "brass_assumed": 8500.0,
+    "glass_assumed": 2500.0
+  },
+  "reference_parts": [
+    {
+      "name": "housing_material_3",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 7200.472952295576,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "housing_material_2",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 2,
+      "volume_mm3": 34776.72573894155,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "housing_material_5",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 5,
+      "volume_mm3": 53159.92641463973,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "housing_material_1",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 214707.7398142377,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "screw_0",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 33.15974732886937,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "screw_1",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 33.159747313251295,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "screw_2",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 33.15974732519452,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "screw_3",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 33.15974730957645,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "screw_4",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 33.15974732151968,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "screw_5",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 33.1597475307888,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "lens_0",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 7301.337603023467,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "lens_1",
+      "body": "housing_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 1121.5549030000882,
+      "note": "Source formula; assumed material/density; visual reference only"
+    },
+    {
+      "name": "handle_arm",
+      "body": "handle_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 76.73077776893716,
+      "note": "Source handle geometry; prescribed pose without a solved drive path"
+    },
+    {
+      "name": "handle_pivot",
+      "body": "handle_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 4.602617415318613,
+      "note": "Source handle geometry; prescribed pose without a solved drive path"
+    },
+    {
+      "name": "knob_mean_radius_approximation",
+      "body": "handle_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 149.14721277989835,
+      "note": "Source handle geometry; prescribed pose without a solved drive path; omitted radial knurl has amplitude 0.125 mm"
+    },
+    {
+      "name": "knob_cap",
+      "body": "handle_reference",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 9.282078716579127,
+      "note": "Source handle geometry; prescribed pose without a solved drive path"
+    },
+    {
+      "name": "visual_leaf_00",
+      "body": "leaf_body_00",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_01",
+      "body": "leaf_body_01",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_02",
+      "body": "leaf_body_02",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_03",
+      "body": "leaf_body_03",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_04",
+      "body": "leaf_body_04",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_05",
+      "body": "leaf_body_05",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_06",
+      "body": "leaf_body_06",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_07",
+      "body": "leaf_body_07",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    },
+    {
+      "name": "visual_leaf_08",
+      "body": "leaf_body_08",
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 55.38873390972919,
+      "note": "Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia"
+    }
+  ],
+  "leaf_vertical_thickness_mm": 0.0325,
+  "leaf_normal_thickness_mm": 0.032498960049917335,
+  "clipping_demonstration": [
+    {
+      "time_s": 0.0,
+      "hinge_radians": 0.9,
+      "actuator_radians": -0.38,
+      "invariant_volume_mm3": 230.2378766690319,
+      "displayed_leaf_volume_mm3": 77.26513504845965
+    },
+    {
+      "time_s": 5.0,
+      "hinge_radians": 0.45,
+      "actuator_radians": 0.15999999999999992,
+      "invariant_volume_mm3": 230.2378766690319,
+      "displayed_leaf_volume_mm3": 55.38873390972919
+    },
+    {
+      "time_s": 10.0,
+      "hinge_radians": 0.0,
+      "actuator_radians": 0.7000000000000001,
+      "invariant_volume_mm3": 230.2378766690319,
+      "displayed_leaf_volume_mm3": 41.62786611449743
+    }
+  ],
+  "retained_features": [
+    "nine circular-intersection/canted-slab leaves",
+    "14 rounded radial housing profiles",
+    "120 grip flutes",
+    "annular seam",
+    "two spanner notches",
+    "curved actuator slot",
+    "three bored mounting ears",
+    "six recessed slotted screw heads",
+    "handle/pivot/cap",
+    "two closed plano-convex optical volumes"
+  ],
+  "limitations": [
+    "No solved pin-slot linkage, hinge pins, drive closure, force/torque path, contact or clearance proof",
+    "World clipping changes displayed leaf material; only the untrimmed template is a rigid shape",
+    "Thumb knob uses source mean radius; omitted 28-lobe radial amplitude is 0.125 mm",
+    "Shader grain, engraving, wear, zero-thickness sensor surface, lighting and refraction are not CAD geometry",
+    "Rendered materials and densities are illustrative assumptions; material partition is for accounting only",
+    "Source sampled-clearance comment is not adopted as evidence"
+  ]
+}

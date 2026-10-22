@@ -15,7 +15,7 @@ import numpy as np
 from mechanism_lab.core import Material, pose_cad
 from mechanism_lab.physical_model import PhysicalModel, digest
 from mechanism_lab.physical_replay import Y_UP_TO_Z_UP, build_assembly as bind_meshes
-from mechanism_lab.engineering_source import verify_native_build
+from mechanism_lab.engineering_source import verify_native_build, verify_native_source_binding
 
 
 def _record(shape, body, name, material):
@@ -52,14 +52,19 @@ def build_assembly(native_directory, simulation_result, *, analytic=True):
     if (not isinstance(reference,dict) or digest(reference) != simulation_result.get('reference_sha256')
             or reference.get('task_parameters') != parameters):
         raise ValueError('Replay task parameters must match the bound simulation reference source')
-    native_receipt = verify_native_build(directory,parameters['integration'],
-        recipe_sha256=reference.get('source_files',{}).get('design.py'))
+    source_files = reference.get('source_files', {})
+    if not source_files:
+        raise ValueError('Native replay requires the complete authored project source identity')
+    native_receipt = verify_native_build(directory, parameters['integration'], source_files=source_files)
+    source_binding = verify_native_source_binding(directory, parameters['integration'], source_files, receipt=native_receipt)
     source = simulation_result['physical_source']
     if digest(source) != simulation_result['model_sha256']:
         raise ValueError('Replay physical source does not match simulation model identity')
     physical = PhysicalModel.from_source(source)
     if physical.provenance.get('native_build_sha256') != digest(native_receipt):
         raise ValueError('Native build receipt is not bound to this simulation physical source')
+    if physical.provenance.get('native_source_binding_sha256') != digest(source_binding):
+        raise ValueError('Native construction source binding is not bound to this simulation physical source')
     physical.require_free_body('puck')
     masses = json.loads((directory/'mass_properties.json').read_text(encoding='utf-8'))
     expected_masses = {body:masses[body] for body in ('turret','upper','fore','roll','bend','tool')}

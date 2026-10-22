@@ -85,8 +85,8 @@ After running the shared engineering project, verify/render its trace:
 
 ```sh
 python -m examples.engineering.arx_belt.verify_geometry \
-  --trace outputs/engineering-arx-default/simulation/trace.json.gz \
-  --native outputs/engineering-arx-default/native \
+  --trace outputs/arx_belt/simulation/trace.json.gz \
+  --native outputs/arx_belt/native \
   --out outputs/engineering-arx-replay/nominal --render
 ```
 

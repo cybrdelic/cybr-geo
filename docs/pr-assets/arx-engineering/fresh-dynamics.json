@@ -43,12 +43,12 @@
       "weak_spring_double_delay_7.2"
     ]
   },
-  "model_sha256": "50450830f75b947a555b16dd012ffdb9667eb7f0a0c956ef354de00e094d3732",
+  "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
   "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
   "source_files": {
     "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
     "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
-    "geometry.py": "97f03871bc79105640ced1c8b7e923eeefb92839fe7250c88eec7e486db341ee",
+    "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
     "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
     "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
     "project.py": "8090c7fcdc506c228e9f9a6c5e99cd595947bf0deffff8c4e6da35ff5b7b6ad0",
@@ -62,16 +62,16 @@
     "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
     "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
   },
-  "native_build_sha256": "26d9caf69d86b92c753ccbf230a06bea9f4e21dfa0e3e95c90fb181bdbb3d1ab",
+  "native_build_sha256": "da72631e57904d6dfcd9ae6a53edf5d60ce7340845823ceb1d2c6307fee3a4ad",
   "native": {
     "parts": 118,
     "placements": 375,
     "verified_artifacts": 628,
-    "directory": "outputs/engineering-arx-native-final"
+    "directory": "outputs/engineering-arx-sourcebound/native"
   },
   "simulation": {
     "schema": "cybrgeo-causal-simulation/1",
-    "model_sha256": "50450830f75b947a555b16dd012ffdb9667eb7f0a0c956ef354de00e094d3732",
+    "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
     "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
     "options": {
       "power": true,
@@ -85,7 +85,7 @@
       "brakeDelayScale": 1.0,
       "frictionScale": 1.0
     },
-    "reference_sha256": "dca42e65614e259b6e8651e16349952d9863fa1166c71402779036022be07de8",
+    "reference_sha256": "3ac5f913fdaad1293e494fb3df5a26ff7f6483c4d99ad83ff37c08b6af4e9516",
     "reference_identity": "explicit source record",
     "final_options": {
       "power": true,
@@ -235,7 +235,8 @@
     "clearance": "declared conservative contact geometry; not a complete continuous B-rep motion envelope",
     "hardware": "not qualified"
   },
-  "original_report_file_sha256": "5870af816c8c519aefaab90a9206b14a5ea4d1318d05e701c1899cfb255283ff",
-  "trace_file_sha256": "3a623f9b11c8512b6f11b759389f6f7a337af901371515bd4997b56e6e645013",
-  "receipt_note": "Condensed report: original report file hash retained; task/reference inputs are reproducible from pinned source files and their hashes. Native directory is repository-relative."
+  "native_source_binding_sha256": "52f6276e636788093d0a9a050ae4b85c6effb699eb12fa143773cd6b98934531",
+  "original_report_file_sha256": "95d175039b45c7895ac833fbc8c6b67f68c4b60c006281477d6501ca75157d0e",
+  "trace_file_sha256": "83ab3efb974484d96ebfd440d4a4b617abde0e6f208869672f44eba9c73d1e5c",
+  "receipt_note": "Compact summary of the genuine fresh public generate_project run with full project and construction dependency binding. Exact native and source-binding receipt bytes are preserved alongside this summary; physical outcomes are compared with the prior fresh run in source-closure-comparison.json. Hardware remains unqualified."
 }

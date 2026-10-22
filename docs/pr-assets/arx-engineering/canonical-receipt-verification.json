@@ -1,8 +1,16 @@
 {
+  "schema": "cybrgeo-canonical-receipt-verification/2",
   "passed": true,
-  "fresh_generation": true,
-  "elapsed_seconds": 666.988523899985,
+  "native_directory": "outputs/engineering-arx-sourcebound/native",
+  "verification_of_fresh_public_generation": true,
+  "generation_entrypoint": "generate_project('arx_belt', 'outputs/engineering-arx-sourcebound')",
+  "engineering_report_file_sha256": "95d175039b45c7895ac833fbc8c6b67f68c4b60c006281477d6501ca75157d0e",
   "strict_native_verifier_passed": true,
+  "strict_source_binding_verifier_passed": true,
+  "native_build_sha256": "38a59ded51b62b14093b6aa9901e9429d6013ee86c27572ec3fe1d3783ad58d9",
+  "native_build_canonical_sha256": "da72631e57904d6dfcd9ae6a53edf5d60ce7340845823ceb1d2c6307fee3a4ad",
+  "native_source_binding_file_sha256": "641de7891062f3129ce9ecb8601dc4e9d66ce6e38c602484b585095e9852158b",
+  "native_source_binding_canonical_sha256": "52f6276e636788093d0a9a050ae4b85c6effb699eb12fa143773cd6b98934531",
   "exact_same_kernel_source_mass_parity": true,
   "original_mass_body_ids": [
     "fixed",
@@ -14,12 +22,31 @@
     "tool",
     "jaw"
   ],
+  "individual_mass_record_matches": {
+    "fixed": true,
+    "turret": true,
+    "upper": true,
+    "fore": true,
+    "roll": true,
+    "bend": true,
+    "tool": true,
+    "jaw": true
+  },
+  "original_mass_artifact": {
+    "path": "outputs/engineering-arx-original-current-kernel/mass_properties.json",
+    "sha256": "585b1676d297b3ab7369e576f7cd51d8546ef26bc1c21fff65bdc48af417e660"
+  },
+  "current_mass_artifact": {
+    "path": "outputs/engineering-arx-sourcebound/native/mass_properties.json",
+    "sha256": "6549f13cb7ccdf3ec6241b2d95422033ae3b5aecab7f258e307744a704e62b18"
+  },
   "additional_native_mass_record": "jaw_opposed",
   "jaw_opposed_mass_kg": 0.02627413114348885,
   "parts": 118,
   "placements": 375,
   "native_interface_checks": 52,
   "native_interface_passed": true,
+  "native_interface_receipt_sha256": "6606858b1cba78600b4e35aa7838354b599db6318d882382341d38e43bc90e2b",
   "artifact_count": 628,
   "provenance": {
     "repository": "https://github.com/cybrdelic/cybr-arx6-belt",
@@ -28,9 +55,10 @@
     "input_spec_sha256": "66217c3e02fee00cd6bdbb27ce2b01f33c84266f15a8b9cd472d705b3e946ffe",
     "canonical_specification_sha256": "66217c3e02fee00cd6bdbb27ce2b01f33c84266f15a8b9cd472d705b3e946ffe",
     "input_spec_hash_encoding": "physical_model.digest: sorted-key compact UTF-8 JSON; no numeric rounding",
-    "input_spec_file_sha256": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed",
     "adapted_recipe_sha256": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
     "adaptation": "Original geometry recipe; shared native placement and mass accounting",
     "native_construction_sha256": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7"
-  }
+  },
+  "hash_encoding": "Fields ending file_sha256 and native_build_sha256 hash actual file bytes; canonical_sha256 fields use physical_model.digest over parsed JSON.",
+  "scope": "Current fresh public-build identity, all receipt-listed artifact hashes, recorded construction requirements and exact same-kernel source mass comparison; hardware remains unqualified."
 }

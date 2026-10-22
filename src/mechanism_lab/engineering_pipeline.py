@@ -24,7 +24,8 @@ def generate_project(source, output=None, *, seconds=10., reuse_native=None, med
     This protocol retains explicit bodies, arbitrary authored CAD, transmissions
     and causal drives instead of forcing imported designs into cartridges.
     """
-    from .engineering_source import load_project, verify_native_build, assert_project_source_identity
+    from .engineering_source import (load_project, verify_native_build, assert_project_source_identity,
+                                     construct_project_native, verify_native_source_binding)
     from .core import project_root
     from .physical_model import digest
     from .causal_runtime import CausalSimulation
@@ -36,10 +37,12 @@ def generate_project(source, output=None, *, seconds=10., reuse_native=None, med
         (root / owned_export).unlink(missing_ok=True)
     native = Path(reuse_native).resolve() if reuse_native else root / 'native'
     if not reuse_native:
-        project.construct(project.specification, native)
-    receipt = verify_native_build(native, project.specification, recipe_sha256=source_files.get('design.py'))
+        construct_project_native(project, source, source_files, native)
+    receipt = verify_native_build(native, project.specification, source_files=source_files)
+    binding = verify_native_source_binding(native, project.specification, source_files, receipt=receipt)
     physical, control, task_parameters = project.compile_physics(project.specification, native_directory=native)
     physical.provenance['native_build_sha256'] = digest(receipt)
+    physical.provenance['native_source_binding_sha256'] = digest(binding)
     physical.provenance['design_source_files'] = source_files
     physical.write(root)
     (root / 'control-source.json').write_text(json.dumps(control, indent=2), encoding='utf-8')
@@ -66,12 +69,16 @@ def generate_project(source, output=None, *, seconds=10., reuse_native=None, med
         from .physical_replay import render_evidence
         render_evidence(assembly, root / 'media', size=size, fps=fps)
     assert_project_source_identity(source, source_files)
+    verified = verify_native_build(native, project.specification, source_files=source_files)
+    if digest(verified) != digest(receipt) or digest(verify_native_source_binding(
+            native, project.specification, source_files, receipt=verified)) != digest(binding):
+        raise ValueError('Native construction identity changed during engineering generation')
     if outcomes['passed']:
         diagnostic_glb.replace(accepted_glb)
     report = dict(schema='cybrgeo-engineering-result/2', name=project.name,
         passed=bool(outcomes['passed']), requirements=outcomes,
         model_sha256=digest(physical.to_source()), control_sha256=digest(control),
-        source_files=source_files, native_build_sha256=digest(receipt),
+        source_files=source_files, native_build_sha256=digest(receipt), native_source_binding_sha256=digest(binding),
         native=dict(parts=receipt['parts'], placements=receipt['placements'],
                     verified_artifacts=len(receipt['files_sha256']), directory=str(native)),
         simulation={key: value for key, value in result.items()

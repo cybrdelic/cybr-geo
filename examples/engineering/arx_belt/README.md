@@ -19,7 +19,11 @@ registers the project and its contact-placement outcome. `geometry.py` binds
 actual native parts to recorded physical bodies for existing exports/renderers.
 
 Every default generation rebuilds geometry and its mass properties. Explicit
-`--reuse-native` requires matching spec/recipe/core and all file hashes. Shipped
+`--reuse-native` requires the source binding issued by a successful fresh
+construction: all project Python/data files, shared construction code, CAD
+dependencies, specification and native artifact hashes must still match.
+Earlier unbound native folders must be rebuilt through `lab mechanism`; they
+cannot be relabeled from the current source. Shipped
 historical mass records are comparison fixtures only, used by the standalone
 counterfactual helper when `--native` is omitted; that output is labeled cached.
 

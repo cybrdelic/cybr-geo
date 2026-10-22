@@ -372,7 +372,7 @@ def build(output, *, scene_unit_mm=50., time_s=5.):
         name = f'visual_leaf_{index:02}'
         world = evaluator.evaluate(name)
         frame = leaf_frame(index, motion['hinge_radians'], s)
-        place(name, visual_local, world, name, 7,
+        place(name, visual_local, world, f'leaf_body_{index:02}', 7,
               'Pose-dependent world-clipped display leaf; its mass is not a physical invariant leaf inertia', frame)
         uncut = evaluator.evaluate(f'invariant_leaf_{index:02}')
         unclipped.add(uncut, name=f'invariant_leaf_{index:02}')
