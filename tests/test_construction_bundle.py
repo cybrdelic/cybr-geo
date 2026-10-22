@@ -94,3 +94,22 @@ def test_consistent_hashes_do_not_hide_wrong_animated_transforms(bundle, verifie
     report = verifier.verify_bundle(directory)
     assert not report['passed']
     assert 'Exported motion differs from construction' in report['errors'][0]
+
+
+def test_actual_integrated_glb_matches_trace_not_prescribed_motion(bundle, verifier):
+    from mechanism_lab.constructed import KinematicGraph
+    from mechanism_lab.dynamics import load_model, simulate, simulated_assembly
+    directory, assembly, plan = bundle
+    result = simulate(assembly, seconds=.3, timestep=.001, controller=False, output=directory / 'physics',
+        settings={'gravity_mm_s2': [0, -9810, 0], 'actuators': [{'joint': 'turn', 'effort_limit_Nmm': 25, 'viscous_damping': 0}]})
+    animation = export_animated_glb(simulated_assembly(assembly, result), directory / 'integrated.glb', duration=.3, fps=20)
+    assert animation['motion_source'] == 'MuJoCo integrated rigid-body dynamics'
+    assert 'Interpolated replay' in animation['note']
+    graph = KinematicGraph([part.name for part in assembly.parts], plan['joints'])
+    static, moving = verifier.read_glb(directory / 'assembly.glb'), verifier.read_glb(directory / 'integrated.glb')
+    report = verifier.verify_simulated_motion(static, moving, graph, result, sample_count=5)
+    assert report['maximum_sampled_vertex_error_mm'] < .00001
+    model, manifest = load_model(directory / 'physics')
+    assert verifier.verify_mujoco_states(model, manifest, result, 5)['maximum_pose_component_error_mm_or_dimensionless'] < 1e-10
+    with pytest.raises(ValueError, match='differs from construction'):
+        verifier.verify_motion(static, moving, graph, sample_count=5)

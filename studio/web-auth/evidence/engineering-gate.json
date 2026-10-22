@@ -1,0 +1,35 @@
+{
+  "schema": "cybrgeo-engineering-gate-evidence/1",
+  "model_sha256": "9c3a583ea7c74fc7796fbb6539a786abd582620449f05bdd836cb3e50cbb21bc",
+  "mechanism_sha256": "d655f957f3837c2f78a4df40ca180fd21f314639e4d79657b17822d4b6fbf3ba",
+  "recipe_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+  "engineering_sha256": "0861c4ed5e8a1738811083222c9b693cf22d14bcbf2e23ab5ab1a7b03d2763f8",
+  "simulation_sha256": "921e5ffd879c59577f8961ac18cb3dfc6397cf3712b930c8ecb9d6ec9512dadc",
+  "recipe_sha256_file": "fd38e9e1d8da5914a7bc2e589dc47a4b7172d751e800cd597647f0ba2fbbba8d",
+  "parts": 109,
+  "samples": 161,
+  "maximum_canonical_command_error": 3.552713678800501e-15,
+  "checks": {
+    "current_record_accepted": true,
+    "all_recorded_body_poses_valid": true,
+    "imported_passed_flags_rejected": true,
+    "failed_run_rejected": true,
+    "denied_motion_authorization_rejected": true,
+    "failed_tracking_rejected": true,
+    "stale_clearance_source_rejected": true
+  },
+  "belt_diagnostic": {
+    "model_sha256": "37a7696d91c8d0b05fcb257782045e420d51263c0141af4adcf90501afde02f8",
+    "simulation_sha256": "82b4bbda9330a2773b42c8512e9c8b28922068707321e68cc1e20f35eb9269a6",
+    "recipe_sha256_file": "a6cc97902093a1058849e1478e57bdd5200e79a1a542df0509ff91aa6a2d9ee9",
+    "parts": 121,
+    "samples": 161,
+    "accepted": false,
+    "diagnostic_replay_available": true,
+    "tracking_passed": true,
+    "operating_limits_passed": false,
+    "missing_evidence": "No continuous-clearance certificate or complete engineering authorization supplied to this diagnostic case"
+  },
+  "passed": true,
+  "scope": "Programmatic execution of the actual browser engineering gate on completed source-bound native pipeline records and the same compiled browser recipe. Includes canonical source commands at every exported simulation time, failed-state and imported-flag rejection. No browser UI execution or solver rerun."
+}

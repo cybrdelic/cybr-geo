@@ -14,9 +14,9 @@ from .core import project_root, validate
 def inspection_media(assembly, directory, size=(960, 720), seconds=8., fps=12):
     """Software mesh views of the generated CAD at its actual prescribed poses.
 
-    This intentionally uses no external images, native compiler, display server,
-    HDRI downloads or image synthesis. It is a technical triangle preview, not a
-    photographic render or a dynamics recording. Photographic CLIs stay intact.
+    No external images, native compiler, display server or image synthesis are
+    involved. The label follows the actual evaluator: prescribed joint poses or
+    replay of integrated MuJoCo states. Photographic CLIs stay intact.
     """
     from PIL import Image, ImageDraw, ImageFont
     directory = Path(directory)
@@ -69,8 +69,9 @@ def inspection_media(assembly, directory, size=(960, 720), seconds=8., fps=12):
         for i in np.argsort(depths):
             drawing.polygon([tuple(p) for p in polygons[i]], fill=tuple(int(c) for c in colors[i]))
         drawing.text((24, 18), 'CYBR GEO / ' + assembly.name.replace('_', ' ').upper(), fill='#e3eff6', font=font)
-        drawing.text((24, 48), 'CONSTRUCTED CAD  /  prescribed rigid-body motion', fill='#65cbbf', font=small)
-        drawing.text((24, height-28), 'Nominal concept geometry. Dynamics and hardware qualification have not been performed.', fill='#a0b3bf', font=small)
+        motion_source = assembly.metadata.get('motion_source', 'prescribed rigid-body motion')
+        drawing.text((24, 48), 'CONSTRUCTED CAD  /  ' + motion_source, fill='#65cbbf', font=small)
+        drawing.text((24, height-28), 'Nominal engineering model. Declared assumptions apply; no hardware qualification.', fill='#a0b3bf', font=small)
         # Hash geometry image before a time label: distinctness must come from motion.
         digests.append(hashlib.sha256(frame.tobytes()).hexdigest())
         frames.append(frame)
@@ -85,7 +86,8 @@ def inspection_media(assembly, directory, size=(960, 720), seconds=8., fps=12):
 
 def generate(architecture='compact_arm', parameters=None, output=None, step=False,
              media=False, size=(960, 720), seconds=8., fps=12):
-    from .constructed import build, KinematicGraph
+    from .constructed import KinematicGraph
+    from .engineering_pipeline import compile_source, evaluate_plan
     from .exporters import export_glb, export_animated_glb, export_bom, export_step
     import trimesh
     if not math.isfinite(seconds) or seconds <= 0 or not 1 <= fps <= 120:
@@ -94,20 +96,25 @@ def generate(architecture='compact_arm', parameters=None, output=None, step=Fals
         raise ValueError('Duration and fps must provide at least one animation interval')
     if seconds * fps > 2400:
         raise ValueError('Inspection bundles are limited to 2400 motion samples')
-    assembly = build(architecture, parameters)
-    plan = assembly.metadata['construction_recipe']
-    graph = KinematicGraph([p.name for p in assembly.parts], plan['joints'])
-    output = Path(output or project_root()/'outputs'/'mechanisms'/architecture).expanduser().resolve()
+    plan, name = compile_source(architecture, parameters)
+    output = Path(output or project_root()/'outputs'/'mechanisms'/name).expanduser().resolve()
     output.mkdir(parents=True, exist_ok=True)
     receipt = output/'bundle.json'; receipt.unlink(missing_ok=True)
+    assembly, engineering = evaluate_plan(plan, output, seconds=seconds)
+    assembly.name = name
+    if not engineering['passed']:
+        messages = '; '.join(item['stage'] + ': ' + item['message'] for item in engineering['errors'])
+        raise RuntimeError('Engineering generation did not authorize this motion: ' + messages)
+    graph = KinematicGraph([p.name for p in assembly.parts], plan['joints'], plan['construction'].get('motion'))
     geometry = validate(assembly, expensive=True)
-    for name, value in [('recipe.json', plan), ('construction.json', plan['construction']),
-                        ('geometry.json', geometry), ('mechanism.json', {
-                            'schema': 'cybrgeo-mechanism/1', 'architecture': architecture,
-                            'parameters': parameters or {}})]:
-        (output/name).write_text(json.dumps(value, indent=2)+'\n', encoding='utf-8')
+    for filename, value in [('recipe.json', plan), ('construction.json', plan['construction']),
+                        ('geometry.json', geometry), ('mechanism.json', plan['construction']['mechanism'])]:
+        (output/filename).write_text(json.dumps(value, indent=2)+'\n', encoding='utf-8')
     export_glb(assembly, output/'assembly.glb'); export_bom(assembly, output)
     animation = export_animated_glb(assembly, output/'motion.glb', seconds, fps, 'motion')
+    from .dynamics import simulated_assembly
+    simulated = simulated_assembly(assembly, engineering['simulation'])
+    simulated_animation = export_animated_glb(simulated, output/'simulation'/'integrated-motion.glb', seconds, fps, 'motion')
     if step:
         export_step(assembly, output/'assembly.step')
     reopened = trimesh.load_scene(output/'assembly.glb', process=False)
@@ -123,23 +130,36 @@ def generate(architecture='compact_arm', parameters=None, output=None, step=Fals
                         'resolved': graph.resolve(values), 'rigid_rotation_error': residual})
     (output/'motion-samples.json').write_text(json.dumps(samples, indent=2)+'\n', encoding='utf-8')
     image_report = inspection_media(assembly, output, size, seconds, fps) if media else None
+    simulated_media = inspection_media(simulated, output/'simulation', size, seconds, fps) if media else None
     if animation['animated_channels'] == 0:
         raise RuntimeError('Constructed mechanism exported no animated channels')
     generated = ['recipe.json', 'construction.json', 'geometry.json', 'mechanism.json',
                  'assembly.glb', 'parts.json', 'parts.csv', 'motion.glb',
                  'motion.animation.json', 'motion-samples.json']
+    generated += ['engineering.json', 'motion-envelope.json', 'simulation-tracking.svg']
+    generated += ['simulation/'+name for name in engineering['simulation']['model']['files_sha256']]
+    generated += ['simulation/model.json','simulation/simulation.json',
+                  'simulation/integrated-motion.glb','simulation/integrated-motion.animation.json']
+    trace_artifact = engineering['simulation'].get('integration_trace_artifact')
+    if trace_artifact:
+        generated.append('simulation/'+trace_artifact['path'])
+    if media:
+        generated += ['simulation/reference.png','simulation/motion.png','simulation/motion.gif']
     if step:
         generated += ['assembly.step', 'assembly.coverage.json']
         generated += ['step_parts/'+p.name+'.step' for p in assembly.parts]
     if media:
         generated += ['reference.png', 'motion.png', 'motion.gif']
-    report = {'architecture': architecture, 'model': assembly.name, 'parts': len(assembly.parts),
+    report = {'architecture': name, 'model': assembly.name, 'parts': len(assembly.parts),
               'construction_recipe_sha256': plan['construction']['recipe_sha256'],
+              'mechanism_sha256': plan['construction']['mechanism_sha256'],
+              'model_sha256': plan['construction']['model_sha256'],
               'independent_controls': list(graph.controls), 'output': str(output),
               'glb_readback_components': len(reopened.geometry), 'animation': animation,
               'media': image_report,
-              'scope': 'Constructed nominal CAD, prescribed kinematic motion, artifact readback. '
-                       'No dynamics simulation, motor sizing, full swept collision proof or hardware qualification.',
+              'simulated_animation': simulated_animation, 'simulated_media': simulated_media,
+              'engineering_passed': engineering['passed'],
+              'scope': engineering['scope'],
               'files_sha256': {name: hashlib.sha256((output/name).read_bytes()).hexdigest()
                                for name in generated}}
     receipt.write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')

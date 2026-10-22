@@ -1,252 +1,167 @@
-# Construction before geometry
+# One mechanical engineering source
 
-CYBR GEO's default mechanical path starts with a bounded architecture and shared
-dimensions. It constructs mating bodies, a joint tree, actuator relationships,
-clearance records and support paths together. Geometry and motion consume that
-same plan. The older independent Python recipes and static CAD planner remain
-available.
+CYBR GEO uses one canonical document and one component compiler. The included
+arm and head documents exercise that compiler; they are not separate mechanical
+implementations, nor reproductions of IRIS-09 or ARX-6. Existing Python recipes
+and the original `cybrgeo` API remain available.
 
 ```mermaid
 flowchart LR
-  Intent[Mechanical intent and bounded parameters] --> Compiler[Construction compiler]
-  Compiler --> Plan[Parts plus interfaces plus joint and actuator graph]
-  Plan --> Native[CadQuery analytic assembly]
-  Plan --> Browser[Replicad analytic assembly]
-  Plan --> Motion[Hierarchical kinematic evaluator]
-  Native --> Artifacts[STEP / GLB / BOM / mesh views]
-  Browser --> Studio[Interactive Studio]
-  Motion --> Artifacts
-  Motion --> Studio
+  Source[Components / materials / tolerances / loads / drives / contacts / motion] --> Compiler[Registered component compiler]
+  Compiler --> Model[One expanded mechanical model]
+  Model --> Native[CadQuery solids and mass properties]
+  Model --> Browser[Replicad CAD and Three.js inspection]
+  Native --> Simulation[MuJoCo dynamics]
+  Model --> Simulation
+  Native --> Envelope[Continuous path and error-tube clearance]
+  Simulation --> Envelope
+  Envelope --> Gate[Engineering result]
+  Gate --> Exports[STEP / GLB / BOM / prescribed and integrated replay]
 ```
 
-## Run the defaults
+## Authoring and construction
 
-Use the normal Python installation from the main README. These recipes need no
-reference archives or external artwork.
+[The source contract](MECHANISM_SOURCE.md) describes editable JSON documents and
+trusted Python component extensions. The registered component expands both sides
+of an interface from the same datum and dimensions. Its parts, joints, drive
+relations, materials, support paths and fit requirements are lowered together.
+CAD backends contain no architecture-name branches.
 
-The preset inventory is:
+The current built-in catalog is deliberately bounded: rotary cartridges and
+parallel grippers in supported serial frames. A new component registers its
+validator and expander; it does not add another arm generator. Nonlinear
+pin-slot closure, arbitrary loop constraints and an iris mechanism are not yet
+implemented. Unsupported requests are rejected before CAD construction.
 
-| Original study | Generated parts | Independent controls |
-| --- | ---: | --- |
-| `compact_arm` (default) | 109 | 6 rotary axes and 2 jaws |
-| `belt_arm` | 121 | 6 rotary axes and 2 jaws; belt follower values are derived |
-| `inspection_head` | 58 | 3 rotary axes and 2 jaws |
+Physical material records are separate from render finishes. Nominal clearance
+and shaft/bore tolerance bounds are combined before geometry. The compiler
+rejects insufficient fit clearance and insufficient declared actuator effort
+using conservative positive-CSG mass and reference-layout load estimates.
+These are construction constraints. They do not establish production fits,
+local keyway stress, bearing life, structural deflection, fatigue or thermal duty.
 
-The jaw controls are independent. No mechanical jaw synchronization is claimed.
-These counts describe the construction, not a completed qualification result.
+The source digest binds the authored mechanical assumptions. The geometry digest
+binds parts and joints. The full model digest also binds component definitions
+and derived physical metadata. Changed loads, materials, actuator limits or
+contact assumptions invalidate the engineering result even when triangles are
+unchanged.
+
+## Run the shared pipeline
 
 ```bash
-lab build --step
-lab mechanism --step --media
-lab mechanism belt_arm --step --media
-lab mechanism inspection_head --step --media
-lab preview                         # compact_arm with the native photo renderer
-lab preview example_flange          # the former default remains available
-lab animate compact_arm --seconds 8
+lab mechanism examples/constructed/compact_arm.json --step --media
+lab build examples/constructed/compact_arm.json --step
+lab animate examples/constructed/compact_arm.json --seconds 8
 ```
 
-`lab mechanism` writes `outputs/mechanisms/<architecture>/`. The bundle includes
-`recipe.json` (expanded parts and joints), `mechanism.json` (editable high-level
-input), `construction.json`, `assembly.glb`, `motion.glb`, BOM and motion samples.
-`--step` adds analytic STEP; `--media` adds actual tessellation PNGs and a GIF.
-The mesh views use a fixed camera through the prescribed motion and do not need
-a display server, renderer download, FFmpeg or image-generation service.
-`bundle.json` is written only when artifact creation and GLB readback complete.
+`lab mechanism` writes an engineering bundle under `outputs/mechanisms/`.
+`mechanism.json` is the canonical input; `recipe.json` is its expanded model.
+The bundle contains actual analytic STEP, static and animated GLB, BOM,
+`engineering.json`, `motion-envelope.json`, MJCF, explicit simulation meshes,
+MuJoCo traces and tracking plots. `--media` renders actual CAD triangles.
+`motion.gif` shows the requested kinematics; `simulation/motion.gif` shows the
+integrated MuJoCo response. Neither is image-generated evidence.
 
-An input descriptor can be loaded through the normal registry and cache:
+`lab build` and `lab animate` run the same engineering pipeline for canonical
+mechanism inputs and compatibility aliases. Failed analysis prevents publishing
+accepted motion. `lab animate` exports the integrated response. Static preview
+and low-level articulation remain inspection tools; displaying a pose does not
+authorize it. Legacy nonmechanical recipes retain their existing behavior.
 
-```json
-{
-  "schema": "cybrgeo-mechanism/1",
-  "architecture": "compact_arm",
-  "parameters": {"scale": 1.2}
-}
+```bash
+python tools/verify_construction_bundle.py outputs/mechanisms/compact_arm \
+  --samples 17 --out outputs/mechanisms/compact_arm/artifact-readback.json
+make test-mechanisms
 ```
 
-Save as `arm.json`, then run `lab build arm.json --step` or
-`lab animate arm.json`. For a bundle, put just the parameter object in a file
-and run `lab mechanism compact_arm --parameters parameters.json --media`.
-Unsupported fields and out-of-range dimensions fail before CAD creation.
-The default jaw travel is `min(14, 10 * scale)` millimetres; an explicit
-`jaw_travel_mm` must also be no greater than `14 * scale` to retain guide
-engagement. Accepted parameter ranges are construction bounds, not tested
-operating envelopes.
+The artifact verifier reopens STEP and GLB, checks source and file hashes, and
+decodes actual animation node transforms. Inspect its result and the media,
+not merely the presence of `bundle.json`. Engineering runs retain failures.
 
-The lightweight [Studio](../studio/README.md) uses the same Python compiler,
-then builds the plan with the real OpenCascade WebAssembly kernel. It offers
-independent joint controls and an animation view. The static primitive planner
-is kept separately for nonmechanical objects; it is not used to improvise a
-supported mechanical assembly's pivots or interfaces.
+## Physics and motion scope
 
-## What is encoded
+MuJoCo receives the same joint graph, exact CAD volume/center of mass/inertia,
+physical density, payload, gravity, actuator bounds and explicit collision
+primitives. The backend integrates rigid-body dynamics with effort-limited
+computed-torque control. Transmission equalities are finite numerical
+constraints: residuals and solver settings are recorded, not assumed zero.
+Actual speed, acceleration, applied effort and saturation are reported.
 
-- Shared shaft and bore dimensions determine radial clearance. Paired bearing
-  supports, retaining features, rigid links and actuator attachments are created
-  from the same axis frames.
-- Every moving body has a parent, an axis, a pivot and bounded travel. Fixed
-  attachments inherit the parent's transformation; actuated joints have named
-  controls. Belt followers derive their value from their source joint.
-- Guides and linear actuator envelopes are constructed with the gripper. A
-  cylinder is not presented as a modeled helical screw or a torque-qualified motor.
-- Interfaces and load paths name the actual generated parts. These describe the
-  intended nominal geometry and support topology; they are not force analysis.
-- The complete plan survives the mesh cache. Reloading binds the evaluator to
-  serialized joints instead of dropping motion or guessing pivots from meshes.
+Visual meshes are not silently used as filled convex collision hulls. Current
+component proxies are material-contained primitives; cut parts are omitted and
+listed. Their contacts are disabled in the included studies by explicit source
+policy. Source-declared ground and free bodies can exercise actual contact.
+Consequently, a successful arm trajectory does not prove object manipulation,
+full self-contact, belt traction or successful gripping.
 
-Retention is part of the constructed geometry. Each rotary cartridge has two
-separated flanged bushings, a shaft shoulder and a removable rear split collar
-with clamp-fastener envelopes. The shaft can be inserted from the output side
-before the collar halves are installed radially. A keyed output flange seats
-against the shaft shoulder; a boss-seated cap and an axial screw capture the
-flange from the other side. The next structural carrier, or the tool palm at the
-last axis, uses that flange. Belt-drive pulleys have removable keys and their own
-shoulders, caps or retaining cups. Named interface records preserve nominal
-clearances and assembly order along with the part identities.
+The clearance certifier uses actual CAD distances plus conservative rigid-body
+interval displacement bounds. It covers the continuous specified path and the
+explicit joint/follower error tube, and fails closed when it cannot resolve a
+pair. It checks source-to-B-rep identity. Every retained numerical integration
+state must lie in the certified tube before that run is accepted. This is not
+full joint-space clearance, a proof between physics integration steps, or a
+hardware safety certificate. Imported JSON flags never grant runtime authority.
 
-The construction record also names axial capture probes. For each listed pose,
-the audit virtually displaces the captured output flange or pulley along its
-local shaft axis and checks that it intersects the named stop. This tests the
-existence of a geometric obstruction to axial escape. It does not simulate
-contact, establish clamp force or thread strength, or verify the complete
-assembly/disassembly sequence. Fastener threads are simplified and actuator
-internals remain purchased-component envelopes.
+## Recorded evidence
 
-## Evidence and its limits
+The [current receipt](pr-assets/engineering/evidence.json) binds the following
+results to canonical source `d655f957...` and model `9c3a583e...`:
 
-Recorded default artifacts are available as actual mesh views below. Each GIF
-contains 64 frames from the generated CAD at prescribed joint poses, with a
-fixed camera. These are software inspection renders, not live browser captures
-or dynamics recordings.
-
-| Original study | Reference view | Motion | Native STEP solids / GLB parts | Sampled axial captures |
-| --- | --- | --- | ---: | ---: |
-| Compact arm | [PNG](pr-assets/constructive/compact_arm-reference.png) | [GIF](pr-assets/constructive/compact_arm-motion.gif) | 109 / 109 | 60 / 60 |
-| Belt arm | [PNG](pr-assets/constructive/belt_arm-reference.png) | [GIF](pr-assets/constructive/belt_arm-motion.gif) | 121 / 121 | 100 / 100 |
-| Inspection head | [PNG](pr-assets/constructive/inspection_head-reference.png) | [GIF](pr-assets/constructive/inspection_head-motion.gif) | 58 / 58 | 30 / 30 |
-
-![Generated compact arm prescribed motion](pr-assets/constructive/compact_arm-motion.gif)
-
-The [native evidence receipt](pr-assets/constructive/evidence.json) binds these
-images and artifact checks to separate construction digests. Actual CAD
-intersection queries found zero unexpected intersections and zero query errors
-at 0, 1, 2, 3 and 4 seconds for each default. The delivered animated GLBs were
-decoded at 17 keyframes across eight seconds; the largest sampled vertex error
-against the joint evaluator was below 0.000009 mm. The no-argument build and
-subsequent cached animation were also executed, with unchanged cache hashes and
-timestamps.
-
-The [browser-kernel receipt](../studio/web-auth/evidence/acceptance.json) records
-independent WebAssembly construction, STEP/STL readback and nine Three.js/native
-motion comparisons per design. Live browser interaction was not verified because
-the execution environment exposed no browser surface. The native photographic
-preview was not run locally because no C++ compiler was available; the software
-mesh views above were generated and inspected. Quickstart CI retains that native
-preview check.
-
-Verification included 68 construction/Studio Python tests, 11 browser tests,
-11 existing core/animated-export tests and 7 existing kinematics tests. Two
-historical release-artifact checks skipped because their archives were absent.
-
-There are three separate levels of evidence:
-
-| Level | This implementation |
+| Executed result | Evidence |
 | --- | --- |
-| Constructed geometry and prescribed kinematics | Shared interfaces, bounded graph, rigid transforms, generated CAD/mesh and actual exported animation |
-| Simulated dynamics | Not implemented: no contact/traction solver, actuator torque, inertia, friction or controller model |
-| Hardware qualification | Not performed: nominal clearances are specified, but manufacturing fits/tolerance stacks, fastener preload, load/thermal/fatigue sizing and physical tests are unqualified |
+| 109 valid STEP solids and 109 GLB meshes; 245 artifact hashes checked | [Independent readback](pr-assets/engineering/artifact-readback.json) |
+| All 5,886 part pairs over the continuous specified path and error tube; 6,270 interval visits | [Clearance summary](pr-assets/engineering/evidence.json) |
+| MuJoCo 3.16, 8 seconds, 2 ms steps; 4,001 states inside the tube | [Simulation and membership summary](pr-assets/engineering/evidence.json) |
+| Worst rotary tracking error 0.001408 degrees; jaw error 0.001131 mm; declared operating limits passed | [Tracking plot](pr-assets/engineering/tracking.svg) |
+| Requested and integrated GLB replay decoded at 17 times; maximum sampled vertex discrepancy below 0.000009 mm | [Readback](pr-assets/engineering/artifact-readback.json) |
+| Actual native/WASM CAD and motion parity, including a new four-axis composition authored as data | [Browser CAD receipt](../studio/web-auth/evidence/acceptance.json) |
+| 109 parts at five actual MuJoCo poses matched Three.js vertices within 4.6e-13 mm | [Replay receipt](../studio/web-auth/evidence/simulation-replay.json) |
+| Accepted current engineering result; rejected stale, imported and failed results | [Browser gate receipt](../studio/web-auth/evidence/engineering-gate.json) |
 
-`tools/audit_constructed.py` checks actual CAD intersections at explicitly
-reported poses, with bounding-box pruning and exact solid intersection. It does
-not silently exempt parent/child bodies. A finite pose sample is not a continuous
-swept-volume proof; reports state the tested scope and any unresolved overlaps.
-It also reports minimum surface distances for named interface pairs and the
-axial capture probes. A distance measurement is not proof of a suitable bearing
-fit or mating contact under load.
+![Actual integrated CAD motion](pr-assets/engineering/simulated-motion.png)
 
-`tools/verify_construction_bundle.py` separately checks the bundle's recorded file
-hashes and current compiler identity, reopens the delivered analytic STEP and
-static GLB, and decodes the animated GLB's actual node transforms. It compares
-those transforms with the joint graph at listed keyframes, including unit and
-axis conversion. A successful bundle receipt alone is not an interference audit;
-these two reports must be inspected independently.
+[Integrated GIF](pr-assets/engineering/simulated-motion.gif) and
+[prescribed GIF](pr-assets/engineering/prescribed-motion.gif) are software mesh
+renders from the actual model. No image generation was used. They are not live
+browser screenshots. This executor exposed no browser surface for live UI QA.
 
-The following commands reproduce default artifact generation and both checks
-from the repository root after installation. They are instructions, not a claim
-that a particular run has passed. In Bash, stop at the first failed command:
+The mechanical regression target passed **151 tests plus 13 subtests**; browser
+tests passed **18/18**. Existing core checks passed **37 tests** locally; the
+native photographic preview test could not run because Windows has no `g++`
+with OpenMP. Quickstart CI for the prior published commit passed that real
+preview on Linux with Python 3.11, 3.12 and 3.13. Those CI results do not replace
+checks of this revision.
 
-```bash
-for architecture in compact_arm belt_arm inspection_head; do
-  bundle="outputs/mechanisms/$architecture"
-  lab mechanism "$architecture" --step --media --seconds 8 --fps 8 --size 1100x650 || exit 1
-  python tools/audit_constructed.py "$architecture" \
-    --times 0 1 2 3 4 --out "$bundle/cad-audit.json" || exit 1
-  python tools/verify_construction_bundle.py "$bundle" \
-    --samples 17 --out "$bundle/artifact-readback.json" || exit 1
-done
-```
+The [original belt-component diagnostic](pr-assets/engineering/belt-diagnostic.json)
+is deliberately retained as a failure. Tracking passes, but motor startup
+acceleration reaches 2,836 and 1,637 degrees/s² against declared 40 degrees/s²
+limits. Refining numerical transmission constraints did not make this an
+accepted operating case. It needs a physically specified drive/initialization
+model. This is not the ARX belt design and does not transfer a claim to it.
 
-For example, the individual PowerShell-compatible commands are:
+## Reference designs and provenance
 
-```powershell
-lab mechanism compact_arm --step --media --seconds 8
-python tools/audit_constructed.py compact_arm --times 0 1 2 3 4 5 6 7 8 --out outputs/mechanisms/compact_arm/cad-audit.json
-python tools/verify_construction_bundle.py outputs/mechanisms/compact_arm --samples 17 --out outputs/mechanisms/compact_arm/artifact-readback.json
-```
+IRIS-09, ARX-6 belt and ARX-6 compact are distinct reference designs. Their
+validation claims must remain separate.
 
-Require a zero exit status and `passed: true` in each report. Inspect the actual
-`reference.png`, `motion.png`, `motion.gif` and `motion.glb` as well. The GIF is a
-mesh view of the prescribed joint motion, not a dynamics recording. The audit
-rebuilds CAD from the architecture and parameters; its `compiled_geometry_sha256`
-must match the bundle's `construction_recipe_sha256`. Its separate
-`construction_recipe_sha256` hashes the full expanded audit input and is not the
-same digest field. Keep reports with their matching artifacts, and rerun after
-compiler or parameter changes. For a parameterized bundle, pass the same
-`--parameters parameters.json` to both `lab mechanism` and the CAD audit; the
-readback tool uses the saved descriptor inside the bundle.
+The public [IRIS source](https://github.com/cybrdelic/cybr-iris09/tree/6aac71594c211cc5934674b2113d9db8c5ec17c6)
+was inspected at the pinned commit. `bodyMap` creates a detailed analytic SDF
+housing with mounting ears, holes, slots and captive screw shapes. `hitIris`
+uses nine hinges, circular-prism intersections, canted leaf sheets and a fixed
+world clipping cylinder. Its handle and leaf motion are prescribed functions
+of time. There is no recovered transmission, constraint closure, load model or
+dynamics solver. The clipping boundary can change the displayed leaf shape
+with pose; a physical rigid part must instead keep its material invariant.
+Its sampled-clearance comment is not a reproduced engineering result.
 
-The browser CAD kernel has a separate reproducible readback probe. After
-`npm ci` in `studio/web-auth`, run the following there for a generated recipe:
+The recovered ARX belt architecture is being inspected separately. The parent
+handoff identifies CadQuery mass/inertia, hole-preserving material collision
+proxies, generated MJCF, six torque-controlled joints, opposed rack jaws and a
+contact-driven puck. Electrical drive and safety logic are distinct reusable
+layers. Direct reuse is only claimed after local source inspection and rights
+verification. The compact cinematic reconstruction must not inherit the belt
+controller or original compact scenario-suite claims.
 
-```bash
-npm run probe -- ../../outputs/mechanisms/compact_arm/recipe.json ../../outputs/mechanisms/compact_arm/browser
-```
-
-This builds actual WebAssembly CAD, reopens its exported STEP, checks binary STL
-records and writes `browser-acceptance.json`. It does not perform the native
-interference audit or prove browser interaction. Repeat with each architecture's
-own recipe and destination to keep their results distinct.
-
-**The default demonstration and manual controls have different scopes.** A
-passing default audit applies only to its saved parameter values and listed
-poses on the eight-second demonstration. That trajectory uses only part of each
-joint's nominal range. The independent Studio sliders expose other combinations;
-their full joint-range combinations have not been swept for collision freedom.
-There is no runtime collision avoidance or contact solver. A parameter variation
-accepted by the compiler also needs its own artifact and motion inspection.
-Increasing sample density improves observation but does not establish continuous
-path clearance or a safe operating workspace.
-
-Focused regressions complement the generated-artifact checks:
-
-```bash
-python -m pytest -q tests/test_construction.py tests/test_constructed.py \
-  tests/test_constructed_audit.py tests/test_construction_bundle.py \
-  tests/test_mechanism_entrypoints.py studio/tests/test_planning.py
-```
-
-IRIS-09, ARX-6 compact and ARX-6 belt are **three separate benchmark designs**.
-Their source packages were not readable in this implementation environment, so
-no source-derived equivalence, copied geometry, comparison result or inherited
-validation claim is asserted. The three built-ins are original mechanical
-studies. Assessing parity with those references remains explicit follow-up work.
-No reference artwork or unlicensed assets are included.
-
-## Extending an architecture
-
-Add paired construction operations in `mechanism_lab.construction`, rather than
-inventing standalone solids then assigning arbitrary animation labels. Extend
-the bounded input schema, name the interface/support relationships, construct
-both sides from the same datum and dimension, and attach every moving part to
-the graph. Native and browser consumers should not contain architecture-specific
-geometry. Add evidence that exercises changed input dimensions and poses, then
-inspect the emitted STEP/GLB and actual motion before making a claim.
+Current evidence establishes the shared foundation and bounded components.
+It does not establish parity with either ARX package or a working IRIS example.
+No reference artwork or unlicensed source has been imported into this change.

@@ -1,5 +1,6 @@
 // Construction metadata records design intent. It never certifies dynamics or hardware.
 import {validateJoints} from './joints.mjs';
+import {MotionTask} from './motion.mjs';
 
 function canonical(value) {
   if (typeof value === 'number') {
@@ -11,10 +12,18 @@ function canonical(value) {
   return value;
 }
 
-export async function recipeDigest(plan) {
-  const payload = JSON.stringify(canonical({parts:plan.parts,joints:plan.joints || []}));
+export async function objectDigest(value) {
+  const payload = JSON.stringify(canonical(value));
   const digest = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(payload));
   return [...new Uint8Array(digest)].map(n => n.toString(16).padStart(2,'0')).join('');
+}
+
+export function recipeDigest(plan) { return objectDigest({parts:plan.parts,joints:plan.joints || []}); }
+
+export function modelDigest(plan) {
+  const construction=structuredClone(plan.construction);
+  for(const key of ['recipe_sha256','mechanism_sha256','model_sha256'])delete construction[key];
+  return objectDigest({parts:plan.parts,joints:plan.joints || [],construction});
 }
 
 export async function preflightPlan(plan) {
@@ -23,6 +32,7 @@ export async function preflightPlan(plan) {
   if(plan.parts.some(part=>!part||typeof part.name!=='string'))throw Error('Every part needs a string name');
   // Run graph validation before creating even the first OpenCascade shape.
   const joints = validateJoints(plan.parts,plan.joints || []);
+  if(plan.construction?.motion)new MotionTask(plan.construction.motion);
   const expanded = !!plan.construction;
   if (plan.parts.length > (expanded ? 256 : 64)) throw Error('Recipe part budget exceeded');
   const names = new Set();
@@ -42,6 +52,11 @@ export async function preflightPlan(plan) {
     if(plan.construction.schema!=='cybrgeo-construction/1')throw Error('Unsupported construction schema');
     if (!/^[a-f0-9]{64}$/.test(plan.construction.recipe_sha256 || '') || plan.construction.recipe_sha256 !== digest) throw Error('Construction no longer matches the geometry or joints. Regenerate from the mechanism plan before building.');
     if (joints.length !== plan.parts.length) throw Error('Every constructed part must belong to the load and joint hierarchy');
+    if(plan.construction.mechanism || plan.construction.mechanism_sha256 || plan.construction.model_sha256){
+      if(plan.construction.mechanism?.schema!=='cybrgeo-mechanism/2')throw Error('Unsupported mechanism source schema');
+      if(await objectDigest(plan.construction.mechanism)!==plan.construction.mechanism_sha256)throw Error('Mechanism source no longer matches its identity. Recompile the source document.');
+      if(await modelDigest(plan)!==plan.construction.model_sha256)throw Error('Engineering inputs no longer match the compiled model. Recompile and rerun engineering.');
+    }
   }
   return {joints,digest,construction:expanded ? structuredClone(plan.construction) : null};
 }

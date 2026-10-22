@@ -41,6 +41,9 @@ def _check_construction_identity(plan):
         raise ValueError('Unsupported construction schema')
     if construction.get('recipe_sha256') != recipe_digest(plan):
         raise ValueError('Construction no longer matches the geometry or joints. Regenerate from the mechanism plan before building.')
+    if 'mechanism' in construction:
+        from .construction import validate_constructed_plan
+        validate_constructed_plan(plan)
     if len(plan.get('joints', [])) != len(plan.get('parts', [])):
         raise ValueError('Every constructed part must belong to the load and joint hierarchy')
 
@@ -54,7 +57,7 @@ class KinematicGraph:
     independently. Explicit out-of-range commands fail instead of being clipped.
     """
 
-    def __init__(self, part_names, joints):
+    def __init__(self, part_names, joints, motion=None):
         self.part_names = tuple(part_names)
         if len(set(self.part_names)) != len(self.part_names) or not self.part_names:
             raise ValueError('Construction requires unique, nonempty part names')
@@ -107,6 +110,12 @@ class KinematicGraph:
                 raise ValueError(f"{joint['name']}: follower limits do not cover source travel")
         self.drive_order = self._ordered(self.by_name, lambda name: (self.by_name[name].get('drive') or {}).get('joint'), 'drive graph')
         self.controls = tuple(j['name'] for j in self.joints if j['type'] != 'fixed' and j.get('drive') is None)
+        from .motion import MotionTask
+        self.motion_task = MotionTask.from_dict(motion) if motion is not None else MotionTask.from_joints(self.joints)
+        if set(self.motion_task.waypoints[0]) != set(self.controls):
+            raise ValueError('Motion task must cover the graph independent controls exactly')
+        for point in self.motion_task.waypoints:
+            self.resolve(point)
 
     @staticmethod
     def _ordered(nodes, parent, label):
@@ -170,24 +179,12 @@ class KinematicGraph:
         return transforms
 
     def demo_values(self, time_seconds):
-        """Eight-second bounded demonstration, starting and ending at reference.
+        """Evaluate the source-bound task; legacy plans use an 8-second task.
 
-        This is an input trajectory for visual inspection, with no implied
-        collision avoidance, dynamics, actuator sizing or operational approval.
+        These are requested positions. Execution authorization and actual
+        integrated motion are separate products of the engineering pipeline.
         """
-        time_seconds = _number(time_seconds, 'time')
-        blend = .5 * (1 - math.cos(math.tau * time_seconds / 8))
-        values = {}
-        for index, name in enumerate(self.controls):
-            joint = self.by_name[name]
-            reference = joint['value']
-            # Prefer the longer available side, alternating when symmetric.
-            left, right = reference - joint['min'], joint['max'] - reference
-            direction = -1 if left > right or (left == right and index % 2) else 1
-            available = left if direction < 0 else right
-            amplitude = min(available * .7, 22 if joint['type'] == 'revolute' else available * .7)
-            values[name] = reference + direction * amplitude * blend
-        return values
+        return self.motion_task.sample(time_seconds)['values']
 
     def report(self):
         roots = [name for name in self.part_names if name not in self.by_child or self.by_child[name]['parent'] is None]
@@ -222,7 +219,7 @@ class _PoseFactory:
     def bind(self, assembly):
         plan = assembly.metadata['construction_recipe']
         _check_construction_identity(plan)
-        graph = KinematicGraph([p.name for p in assembly.parts], plan['joints'])
+        graph = KinematicGraph([p.name for p in assembly.parts], plan['joints'], (plan.get('construction') or {}).get('motion'))
         selected = assembly.metadata.get('selected_joint_values')
         values = None if selected is None else {name: selected[name] for name in graph.controls}
         return ConstructedMotion(graph, values)
@@ -235,7 +232,8 @@ pose = _PoseFactory()
 
 def articulation(assembly, values):
     """Return a shallow assembly copy at a commanded pose; geometry is shared."""
-    graph = KinematicGraph([p.name for p in assembly.parts], assembly.metadata['construction_recipe']['joints'])
+    plan = assembly.metadata['construction_recipe']
+    graph = KinematicGraph([p.name for p in assembly.parts], plan['joints'], (plan.get('construction') or {}).get('motion'))
     graph.resolve(values)
     metadata = {**assembly.metadata, 'selected_joint_values': graph.resolve(values)}
     return replace(assembly, metadata=metadata, motion_function=ConstructedMotion(graph, values))
@@ -269,7 +267,7 @@ def build_from_plan(plan):
     plan = deepcopy(plan)
     if plan.get('units') != 'mm' or not isinstance(plan.get('parts'), list) or not 1 <= len(plan['parts']) <= 512:
         raise ValueError('Construction requires 1-512 parts in millimetres')
-    graph = KinematicGraph([part['name'] for part in plan['parts']], plan.get('joints', []))
+    graph = KinematicGraph([part['name'] for part in plan['parts']], plan.get('joints', []), (plan.get('construction') or {}).get('motion'))
     graph.resolve()
     _check_construction_identity(plan)
     # Validate primitive and material scalar inputs before invoking the kernel.
@@ -316,6 +314,10 @@ def build_from_plan(plan):
                 'qualification': {'kinematics': 'prescribed from construction graph',
                                   'dynamics': 'not simulated', 'hardware': 'not qualified'}}
     assembly = Assembly(plan['name'], parts, materials, metadata=metadata, motion_function=ConstructedMotion(graph))
+    # Preserve density-independent analytic inertia through the mesh cache.
+    # Dynamics later applies declared physical materials, never preview colors.
+    from .dynamics import geometry_integrals
+    assembly.metadata['geometry_mass_integrals'] = geometry_integrals(assembly)
     bounds = assembly.bounds
     center = tuple((bounds[0] + bounds[1]) / 2)
     scale = max(float(np.max(bounds[1] - bounds[0])) * .65, 20)
@@ -326,7 +328,8 @@ def build_from_plan(plan):
 
 
 def build(architecture='compact_arm', parameters=None):
-    from .construction import compile_plan
-    assembly = build_from_plan(compile_plan(architecture, parameters))
+    from .engineering_pipeline import compile_source
+    plan, _ = compile_source(architecture, parameters)
+    assembly = build_from_plan(plan)
     assembly.name = architecture
     return assembly

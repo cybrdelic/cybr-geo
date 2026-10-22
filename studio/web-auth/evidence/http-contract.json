@@ -1,0 +1,44 @@
+{
+  "schema": "cybrgeo-studio-http-evidence/1",
+  "default_example": "compact_arm",
+  "constructive_available": true,
+  "source_requests": [
+    {
+      "example": "belt_arm",
+      "status": 200,
+      "provider": "constructive",
+      "parts": 121,
+      "model_sha256": "37a7696d91c8d0b05fcb257782045e420d51263c0141af4adcf90501afde02f8"
+    },
+    {
+      "example": "compact_arm",
+      "status": 200,
+      "provider": "constructive",
+      "parts": 109,
+      "model_sha256": "9c3a583ea7c74fc7796fbb6539a786abd582620449f05bdd836cb3e50cbb21bc"
+    },
+    {
+      "example": "inspection_head",
+      "status": 200,
+      "provider": "constructive",
+      "parts": 58,
+      "model_sha256": "c86b3125fde01538e14e294d73a47467197312d8682bab5a0a26eda27314e6ad"
+    },
+    {
+      "example": "four_axis",
+      "status": 200,
+      "provider": "constructive",
+      "parts": 75,
+      "model_sha256": "818d13a042ceab0a3516f95a3ea8d5b0ba4234c63ed85362cd6c83d330df9114"
+    }
+  ],
+  "built_assets": {
+    "index": true,
+    "inspector": true,
+    "worker": true,
+    "wasm_bytes": 22980267,
+    "wasm_content_type": "application/wasm"
+  },
+  "missing_token_status": 403,
+  "scope": "Real loopback HTTP requests against local Studio; source compilation matched actual WASM artifact identities. No duplicated engineering solve and no live browser UI execution."
+}

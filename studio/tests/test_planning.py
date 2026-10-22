@@ -53,7 +53,8 @@ class PlanningTests(unittest.TestCase):
             for prompt, architecture in cases:
                 with self.subTest(prompt=prompt):
                     plan = studio.plan_design(prompt)
-                    self.assertEqual(plan['construction']['architecture'], architecture)
+                    self.assertEqual(plan['construction']['architecture'], 'component_graph')
+                    self.assertEqual(plan['generation']['architecture'], architecture)
                     self.assertFalse(plan['generation']['inference_used'])
                     self.assertGreater(len(plan['parts']), 32)
                     self.assertTrue(plan['joints'])
@@ -116,12 +117,12 @@ class PlanningTests(unittest.TestCase):
                 server.server_close()
                 worker.join(timeout=2)
 
-    def post(self, port, payload, token=True):
+    def post(self, port, payload, token=True, path='/api/plan'):
         connection = http.client.HTTPConnection('127.0.0.1', port, timeout=30)
         headers = {'Content-Type': 'application/json', 'Origin': f'http://127.0.0.1:{port}'}
         if token:
             headers['X-Studio-Token'] = studio.TOKEN
-        connection.request('POST', '/api/plan', json.dumps(payload), headers)
+        connection.request('POST', path, json.dumps(payload), headers)
         response = connection.getresponse()
         result = response.status, json.loads(response.read())
         connection.close()
@@ -134,7 +135,8 @@ class PlanningTests(unittest.TestCase):
             status, result = self.post(port, {'mechanism': {'architecture': 'inspection_head'}})
             self.assertEqual(status, 200, result)
             self.assertEqual(result['provider'], 'constructive')
-            self.assertEqual(result['plan']['construction']['architecture'], 'inspection_head')
+            self.assertEqual(result['plan']['construction']['architecture'], 'component_graph')
+            self.assertEqual(result['plan']['generation']['architecture'], 'inspection_head')
             status, _ = self.post(port, {'prompt': 'robot arm'}, token=False)
             self.assertEqual(status, 403)
 
@@ -143,6 +145,55 @@ class PlanningTests(unittest.TestCase):
                 patch.object(studio.subprocess, 'run', side_effect=AssertionError('Inference was invoked')):
             status, _ = self.post(port, {'prompt': 'Make a mounting flange'})
             self.assertEqual(status, 401)
+
+    def test_canonical_document_uses_the_same_compiler_without_inference(self):
+        from mechanism_lab.mechanism import load_example
+        source = load_example('inspection_head')
+        source['name'] = 'Custom documented component assembly'
+        with patch.object(studio.subprocess, 'run', side_effect=AssertionError('Inference was invoked')):
+            plan = studio.plan_design(mechanism_source=source)
+        self.assertEqual(plan['construction']['mechanism'], source)
+        self.assertEqual(plan['construction']['architecture'], 'component_graph')
+        self.assertEqual(plan['generation']['architecture'], 'component_graph')
+        self.assertTrue(plan['construction']['dynamics']['density_kg_m3'])
+        self.assertTrue(plan['construction']['engineering']['actuators'])
+
+    def test_alias_and_document_have_identical_physical_model_identity(self):
+        from mechanism_lab.engineering_pipeline import compile_source
+        from mechanism_lab.mechanism import load_example
+        alias = studio.plan_design(mechanism={'architecture': 'compact_arm'})
+        direct = studio.plan_design(mechanism_source=load_example('compact_arm'))
+        bundled, _ = compile_source('compact_arm')
+        for field in ('recipe_sha256', 'mechanism_sha256', 'model_sha256'):
+            self.assertEqual(alias['construction'][field], direct['construction'][field])
+            self.assertEqual(alias['construction'][field], bundled['construction'][field])
+
+    def test_http_accepts_canonical_source_and_rejects_missing_physics(self):
+        from mechanism_lab.mechanism import load_example
+        source = load_example('inspection_head')
+        with self.server() as port, \
+                patch.object(studio, 'signed_in', side_effect=AssertionError('Login checked for source compilation')):
+            status, result = self.post(port, {'mechanism_source': source})
+            self.assertEqual(status, 200, result)
+            self.assertEqual(result['plan']['construction']['mechanism'], source)
+            del source['materials']
+            status, _ = self.post(port, {'mechanism_source': source})
+            self.assertEqual(status, 422)
+
+    def test_http_engineering_retains_failed_analysis_without_authorizing_motion(self):
+        from mechanism_lab.mechanism import load_example
+        source = load_example('inspection_head')
+        def evaluate(plan, output):
+            return None, dict(plan=plan, passed=False, clearance=None, simulation=None,
+                              stage='complete', errors=[dict(stage='simulation', message='Declared acceleration exceeded')])
+        with self.server() as port, patch('mechanism_lab.engineering_pipeline.evaluate_plan', side_effect=evaluate):
+            status, result = self.post(port, {'mechanism_source': source}, path='/api/engineer')
+            self.assertEqual(status, 200, result)
+            self.assertFalse(result['passed'])
+            self.assertEqual(result['plan']['construction']['mechanism'], source)
+            self.assertEqual(result['errors'][0]['message'], 'Declared acceleration exceeded')
+            status, _ = self.post(port, {'mechanism_source': source}, token=False, path='/api/engineer')
+            self.assertEqual(status, 403)
 
 
 if __name__ == '__main__':

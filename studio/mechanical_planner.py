@@ -37,7 +37,7 @@ def _request(architecture, parameters):
     return {'architecture': architecture, 'parameters': dict(parameters)}
 
 
-def mechanical_request(prompt, mechanism=None):
+def mechanical_request(prompt, mechanism=None, mechanism_source=None):
     """Return a compiler request, None for static CAD, or reject unsupported motion.
 
     Explicit structured parameters are passed to the compiler, whose domain
@@ -46,6 +46,10 @@ def mechanical_request(prompt, mechanism=None):
     """
     if not isinstance(prompt, str) or len(prompt) > 6000:
         raise ValueError('Use a design request of at most 6000 characters.')
+    if mechanism_source is not None:
+        if mechanism is not None or not isinstance(mechanism_source, dict):
+            raise ValueError('Supply one canonical mechanism_source document.')
+        return {'mechanism_source': mechanism_source}
     if mechanism is not None:
         if (not isinstance(mechanism, dict)
                 or set(mechanism) - {'architecture', 'parameters'}):
@@ -92,19 +96,30 @@ def compile_request(request, prompt=''):
     source = Path(__file__).resolve().parents[1] / 'src'
     if source.is_dir() and str(source) not in sys.path:
         sys.path.insert(0, str(source))
-    from mechanism_lab.construction import compile_plan
-    plan = compile_plan(request['architecture'], request['parameters'])
+    from mechanism_lab.construction import compile_plan, compile_mechanism
+    direct = 'mechanism_source' in request
+    plan = (compile_mechanism(request['mechanism_source']) if direct else
+            compile_mechanism(compile_plan(request['architecture'], request['parameters'])['construction']['mechanism']))
     if not isinstance(plan, dict) or not plan.get('parts') or not plan.get('construction'):
         raise RuntimeError('The construction compiler did not return an assembly contract.')
     plan['generation'] = {
         'mode': 'constructive',
-        'architecture': request['architecture'],
-        'parameters': dict(request['parameters']),
+        'architecture': 'component_graph' if direct else request['architecture'],
+        'parameters': {} if direct else dict(request['parameters']),
         'prompt': prompt,
         'inference_used': False,
         'reference_reproduction': False,
-        'interpretation': ('The prompt selects an original architecture; only the '
+        'interpretation': ('The canonical engineering document owns geometry, interfaces, physical materials, drives and simulation inputs.' if direct else
+                          'The prompt selects an original example document; only the '
                            'structured parameters customize its geometry. Additional '
                            'requested features are not synthesized by this preset route.'),
     }
     return plan
+
+
+def example_documents():
+    source = Path(__file__).resolve().parents[1] / 'src'
+    if source.is_dir() and str(source) not in sys.path:
+        sys.path.insert(0, str(source))
+    from mechanism_lab.mechanism import EXAMPLES, load_example
+    return [{'id': path.stem, 'source': load_example(path.stem)} for path in sorted(EXAMPLES.glob('*.json'))]

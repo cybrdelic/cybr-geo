@@ -10,6 +10,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 from mechanism_lab.constructed import KinematicGraph
+from mechanism_lab.motion import MotionTask
 
 
 def main():
@@ -18,16 +19,23 @@ def main():
     parser.add_argument('output', type=Path)
     args = parser.parse_args()
     models = []
-    for architecture in ('compact_arm', 'belt_arm', 'inspection_head'):
-        plan = json.loads((args.recipes / (architecture + '.json')).read_text())
+    for path in sorted(args.recipes.glob('*.json')):
+        plan = json.loads(path.read_text(encoding='utf-8'))
+        if not isinstance(plan, dict) or not plan.get('parts') or not plan.get('construction'):
+            continue
+        architecture = path.stem
         graph = KinematicGraph([part['name'] for part in plan['parts']], plan['joints'])
+        motion = MotionTask.from_dict(plan['construction']['motion']) if plan['construction'].get('motion') else MotionTask.from_joints(plan['joints'])
         samples = []
-        for time in range(9):
-            values = graph.demo_values(time)
-            samples.append({'time_seconds': time, 'values': values, 'transforms': {
-                name: matrix.tolist() for name, matrix in graph.transforms(values).items()
+        for index in range(9):
+            time = index * motion.period_s / 8
+            command = motion.sample(time)
+            samples.append({'time_seconds': time, **command, 'transforms': {
+                name: matrix.tolist() for name, matrix in graph.transforms(command['values']).items()
             }})
-        models.append({'architecture': architecture, 'recipe_sha256': plan['construction']['recipe_sha256'], 'samples': samples})
+        models.append({'architecture': architecture, **{key: plan['construction'].get(key) for key in ('recipe_sha256', 'mechanism_sha256', 'model_sha256')}, 'motion': motion.to_dict(), 'peak_rates': motion.peak_rates(), 'samples': samples})
+    if not models:
+        raise ValueError('No compiled construction recipes found')
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps({'models': models}))
 

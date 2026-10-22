@@ -1,22 +1,12 @@
-# CYBR GEO Studio: construct the mechanism first
+# CYBR GEO Studio: one engineering document
 
-The default mechanical path now compiles a bounded assembly specification before
-creating any part geometry. The same compiler supplies the Python CLI and this
-Studio endpoint. It owns mating dimensions, support clearances, joints, actuation
-relationships and construction metadata together.
-
-Three **original nominal studies** are available without an AI account or a model
-request: `compact_arm`, `belt_arm` and `inspection_head`. Short requests such as
-“build a robot arm”, “belt driven arm”, “inspection head” or “pan-tilt gimbal” select
-these architectures. An empty/default request selects `compact_arm`.
-
-They are not reproductions of IRIS-09 or either ARX-6 package. Those source packages
-could not be materialized into this executor. The compact and belt studies retain
-separate construction records; no validation claim is transferred between designs.
+Studio edits the same canonical mechanical source used by `lab mechanism`.
+`GET /api/examples` returns example documents from the shared package. The UI
+loads a document, edits its components and physical assumptions, then calls the
+same compiler and engineering pipeline as the native CLI. There are no separate
+browser mechanism generators.
 
 ## Run
-
-Install CYBR GEO from the repository's main README, then run:
 
 ```bash
 cd studio/web-auth
@@ -26,86 +16,56 @@ cd ../..
 python studio/codex_studio.py
 ```
 
-The server binds only to `http://127.0.0.1:4320/`. On Windows,
-`studio/start-codex.ps1` uses the repository virtual environment when available.
-The build emits ignored `studio/public/` from tracked browser source and npm
-dependencies. It does not require CYBR LIGHT or a pre-existing example archive.
-The inspector opens a freshly compiled compact arm by default; select a family,
-change parameters, move joints, animate, or export actual CAD and viewport images.
-No existing live Studio directory is modified by this checkout.
+The server binds to `http://127.0.0.1:4320/`. The browser CAD kernel is actual
+OpenCascade WebAssembly through Replicad. Mechanical compilation and analysis
+need no AI account. They require the main project's Python CAD and MuJoCo install.
+The first engineering run can take several minutes because it constructs real
+solids and certifies continuous pairwise clearance.
 
-## Structured construction requests
+The JSON editor is the primary mechanical input. Payload and gravity controls
+update that same document. Run engineering performs construction, dynamics and
+clearance analysis. Editing the source invalidates the accepted result.
+Inspect-only compilation allows geometry inspection without claiming motion
+acceptance. Prescribed command playback and recorded MuJoCo replay are distinct
+modes. Failed simulations remain available as labeled diagnostic results.
 
-Python callers can use the same planning entry point without a browser:
+## Shared endpoints
 
-```python
-import sys
-sys.path.insert(0, "studio")
-from codex_studio import plan_design
+| Endpoint | Contract |
+| --- | --- |
+| `GET /api/examples` | Canonical example documents and default ID |
+| `GET /api/session` | Per-process request token and login information |
+| `POST /api/plan` | Compile `{ "mechanism_source": <document> }` for inspection |
+| `POST /api/engineer` | Compile and run the same source through CAD, MuJoCo and continuous clearance |
+| `GET /api/mechanism-schema` | Legacy bounded-alias request schema for older clients |
 
-plan = plan_design("belt driven arm")
-adjusted = plan_design(mechanism={
-    "architecture": "compact_arm",
-    "parameters": {"scale": 0.8, "joint_limit_deg": 10},
-})
-```
+Same-origin POST requests require `X-Studio-Token` from `/api/session`.
+`/api/engineer` returns the model, clearance, simulation, stage, errors and overall
+`passed` result. A completed failed analysis returns HTTP 200 with `passed: false`;
+invalid source returns 422. An imported JSON success flag never activates accepted
+motion. Physical assumptions and geometry identities must match the server result.
 
-The returned `parts`, `joints` and `construction` records are generated together.
-`generation.inference_used` is `false`. Requests and compiled recipes are saved
-under ignored `studio/output/codex-jobs/` for local recovery.
+Legacy requests such as `{ "mechanism": { "architecture": "compact_arm" } }`
+are compatibility loaders for external documents. Static custom-part prompts
+retain the official Codex CLI path and login gate. Unsupported mechanisms do not
+fall through to an arbitrary moving-parts proposal.
 
-| Parameter | Default | Allowed range |
-| --- | ---: | ---: |
-| `scale` | 1 | 0.5–2 |
-| `radial_clearance_mm` | 0.2 | 0.12–0.4 mm |
-| `joint_limit_deg` | 12 | 1–18° |
-| `jaw_travel_mm` | 10 | 2–14 mm |
-
-The jaw stroke also depends on scale: an omitted value becomes
-`min(14, 10 * scale)` mm, and an explicit value must be at most `14 * scale` mm.
-
-Use structured parameters to change dimensions. Prose requirements such as
-“500 mm arm” are rejected instead of being silently discarded. Unknown parameter
-names, nonfinite values, booleans and out-of-range values are rejected. Compiler
-domain checks remain authoritative. These ranges bound the study; they are not
-manufacturing tolerances or qualified operating ratings.
-
-`GET /api/session` returns the per-process request token, available architectures
-and `mechanismSchema`. `GET /api/mechanism-schema` returns the same bounded contract.
-`POST /api/plan` accepts `{ "prompt": "robot arm" }` or
-`{ "mechanism": { "architecture": "belt_arm", "parameters": {} } }`.
-Same-origin requests must include `X-Studio-Token` from the session response.
-Supported mechanical requests need no Codex login. Their response provider is
-`constructive`.
-
-## Static custom parts and existing Studio
-
-Static prompts such as “mounting flange”, “sensor bracket” and “instrument
-enclosure” retain the original bounded primitive planner and official Codex CLI
-login. That path cannot return moving joints. Unsupported mechanisms fail with a
-clear message; they do not fall through to arbitrary geometric proposals.
-
-The copied local server, codec and primitive schema are a source snapshot of the
-existing Studio planning boundary. Its legacy browser application is not imported
-with private jobs, authentication data, generated examples or renderer binaries.
-The new inspector is a separate reproducible consumer of the shared compiler.
-When integrating this endpoint with a legacy UI, use `constructiveAvailable` to
-enable mechanical generation independently of the `authenticated` field. Do not
-apply the old 32/64-part planner budget to compiler-expanded assembly parts.
-
-An exported construction record describes nominal kinematic relationships. It
-does not establish contact dynamics, torque capacity, stress, durability,
-electrical control, tolerance accumulation or physical qualification. Refer to
-the generated evidence for exactly which artifact and motion checks executed.
-
-## Test the actual routing
+## Evidence and limits
 
 ```bash
-python -m unittest discover -s studio/tests -v
+make test-mechanisms
+cd studio/web-auth
+npm test
+npm run build
+npm run probe -- ../../outputs/mechanisms/compact_arm/recipe.json ../../outputs/browser-current
 ```
 
-The tests call the real compiler through `plan_design`, block subprocess execution
-for mechanical prompts, exercise HTTP CSRF and login boundaries, check explicit
-parameters and unsupported-mechanism rejection, and preserve the static codec/CLI
-path using a local inference stub. They do not make paid model calls or claim
-mechanical qualification.
+The WASM probe constructs actual CAD, reimports STEP, checks binary STL and
+compares Three.js/native poses. Simulation replay tests compare actual MuJoCo
+body matrices, not nominal joint substitutions. These programmatic probes do
+not assert that live browser interaction or GPU rendering was inspected.
+
+Read [the source authoring guide](../docs/MECHANISM_SOURCE.md) and
+[engineering architecture and evidence](../docs/CONSTRUCTIVE_MECHANISMS.md).
+The current component catalog and collision coverage are bounded. A passing
+modeled trajectory is not hardware qualification or IRIS/ARX equivalence.

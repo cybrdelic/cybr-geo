@@ -11,6 +11,11 @@ import hashlib
 import json
 import math
 
+from .mechanism import (load_example, mechanism_digest, validate_mechanism,
+                        validate_rotary_component, validate_gripper_component)
+from .component_catalog import register_component, component_definition, component_catalog
+from .motion import MotionTask, derive_motion
+
 
 ARCHITECTURES = ('compact_arm', 'belt_arm', 'inspection_head')
 DEFAULTS = dict(scale=1.0, radial_clearance_mm=0.2, joint_limit_deg=12.0,
@@ -68,6 +73,7 @@ class _Builder:
         self.actuators = []
         self.paths = []
         self.roles = {}
+        self.materials = {}
         self.architecture = architecture
 
     def box(self, size, center):
@@ -91,6 +97,7 @@ class _Builder:
                     roughness=.5 if material in ('belt', 'pad') else .3)
         self.parts.append(part)
         self.roles[name] = role
+        self.materials[name] = material
         return part
 
     def joint(self, name, child, parent, kind='fixed', origin=(0, 0, 0),
@@ -118,9 +125,9 @@ def _radials(axis):
     return ([1., 0., 0.], [0., 1., 0.]) if axis[2] else ([0., 0., 1.], [0., 1., 0.] if axis[0] else [1., 0., 0.])
 
 
-def _carrier(b, index, origin, axis, previous=None):
+def _carrier(b, label, origin, axis, previous=None):
     """A load-carrying link: prior keyed flange, bridge and next housing in one solid."""
-    name = f'J{index}_carrier'
+    name = label + '_carrier'
     outer = b.axial(origin, axis, 18, -18, 18)
     cuts = [b.axial(origin, axis, 14, -19, 19)]
     unions = []
@@ -165,7 +172,7 @@ def _carrier(b, index, origin, axis, previous=None):
         for point in path[1:-1]:
             unions.append(dict(kind='sphere', size=[16*b.scale]*3,
                                position=_mul(point, b.scale), rotation=[0., 0., 0.]))
-        b.interface(f'J{index-1}_keyed_flange', parent, name, 'keyed_shaft_flange',
+        b.interface(parent.removesuffix('_shaft')+'_keyed_flange', parent, name, 'keyed_shaft_flange',
                     radial_clearance_mm=b.parameters['radial_clearance_mm'],
                     axial_seat_mm=24*b.scale, keyway_clearance_mm=2*b.parameters['radial_clearance_mm'])
     part = b.part(name, outer, 'Integral housing and structural link; bore and flange datums shared',
@@ -175,8 +182,7 @@ def _carrier(b, index, origin, axis, previous=None):
     return part
 
 
-def _cartridge(b, index, carrier, origin, axis, belt=False):
-    label = f'J{index}'
+def _cartridge(b, label, carrier, origin, axis, belt=False):
     u, v = _radials(axis)
     c = b.clearance
     # Two axially separated flanged plain bearings. Housing bores, journal sizes,
@@ -434,14 +440,227 @@ def _gripper(b, origin, axis, shaft):
         b.paths.append(dict(child=jaw['name'], support=palm['name'], path='two guide rods and actuator through rod'))
 
 
-def compile_plan(architecture='compact_arm', parameters=None):
-    """Return a complete constructive recipe; reject impossible input before CAD.
+def model_digest(plan):
+    """Bind geometry, canonical source and every derived mechanical assumption."""
+    construction = {key: value for key, value in plan['construction'].items()
+                    if key not in ('recipe_sha256', 'mechanism_sha256', 'model_sha256')}
+    return mechanism_digest(dict(parts=plan['parts'], joints=plan['joints'], construction=construction))
 
-    The bounded parameters describe a family, not arbitrary disconnected parts.
-    Each independent joint command starts at the constructed reference pose.
+
+def validate_constructed_plan(plan):
+    metadata = plan.get('construction', {})
+    if metadata.get('schema') != 'cybrgeo-construction/1' or metadata.get('recipe_sha256') != recipe_digest(plan):
+        raise ValueError('Construction geometry identity mismatch')
+    if 'mechanism' in metadata:
+        source = validate_mechanism(metadata['mechanism'])
+        if metadata.get('mechanism_sha256') != mechanism_digest(source):
+            raise ValueError('Canonical mechanism identity mismatch')
+        if metadata.get('model_sha256') != model_digest(plan):
+            raise ValueError('Full mechanical model identity mismatch')
+    return True
+
+
+def _renamed_gripper(b, component, previous):
+    """Instance the shared gripper; preserve legacy names for its default namespace."""
+    starts = {key: len(getattr(b, key)) for key in ('parts', 'joints', 'interfaces', 'actuators', 'paths')}
+    old_clearance = b.clearance
+    b.clearance = b.guide_clearance
+    _gripper(b, *previous)
+    b.clearance = old_clearance
+    # 'tool' is the default export namespace, not an architecture selection.
+    prefix = component['id']
+    names = [p['name'] for p in b.parts[starts['parts']:]]
+    mapping = {name: (name if prefix == 'tool' else prefix+'_'+name) for name in names}
+    joint_names = [j['name'] for j in b.joints[starts['joints']:]]
+    mapping.update({name: (name if prefix == 'tool' else prefix+'_'+name) for name in joint_names})
+    def rename(value):
+        if isinstance(value, str):
+            return mapping.get(value, value)
+        if isinstance(value, dict):
+            return {key: rename(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [rename(item) for item in value]
+        return value
+    for key, start in starts.items():
+        getattr(b, key)[start:] = rename(getattr(b, key)[start:])
+    for collection in (b.roles, b.materials):
+        for name in names:
+            value = collection.pop(name)
+            collection[mapping[name]] = value
+    return mapping['tool_palm'], {side: mapping['jaw_'+side+'_travel'] for side in ('left', 'right')}
+
+
+def _primitive_volume(primitive):
+    x, y, z = primitive['size']
+    return (math.pi*x*x*z/4 if primitive['kind'] == 'cylinder' else
+            math.pi*x*y*z/6 if primitive['kind'] == 'sphere' else x*y*z)
+
+
+def _load_screen(plan, source, dynamics):
+    """Conservative positive-CSG mass/gravity and own-axis inertia envelope.
+
+    Positive primitive volumes deliberately double-count union intersections and
+    ignore removed bores. It is a rejection screen, not stress/FEA certification
+    or a replacement for coupled forward dynamics.
     """
-    if architecture not in ARCHITECTURES:
-        raise ValueError(f'Unknown architecture {architecture!r}; choose {ARCHITECTURES}')
+    parts = {part['name']: part for part in plan['parts']}
+    by_name = {joint['name']: joint for joint in plan['joints']}
+    children = {}
+    for joint in plan['joints']:
+        children.setdefault(joint['parent'], []).append(joint['child'])
+    def descendants(name):
+        result = {name}
+        for child in children.get(name, []):
+            result.update(descendants(child))
+        return result
+    gravity = math.sqrt(sum(v*v for v in dynamics['gravity_mm_s2']))/1000
+    rows = []
+    for actuator in dynamics['actuators']:
+        joint = by_name[actuator['joint']]
+        affected = descendants(joint['child'])
+        for follower in plan['joints']:
+            if follower.get('drive') and follower['drive']['joint'] == joint['name']:
+                affected.update(descendants(follower['child']))
+        mass, first, second = 0., 0., 0.
+        for name in affected:
+            for primitive in [parts[name]['body']] + parts[name]['unions']:
+                weight = _primitive_volume(primitive)*dynamics['density_kg_m3'][name]*1e-9
+                # Bounding sphere is rotation invariant and contains each primitive.
+                radius = math.dist(joint['origin'], primitive['position']) + math.sqrt(sum(v*v for v in primitive['size']))/2
+                mass += weight
+                first += weight*radius
+                second += weight*radius*radius
+        payload = dynamics['payload']
+        if payload['part'] in affected:
+            radius = math.dist(joint['origin'], payload['com_world_mm'])
+            mass += payload['mass_kg']
+            first += payload['mass_kg']*radius
+            second += payload['mass_kg']*radius*radius
+        if joint['type'] == 'revolute':
+            alpha = math.radians(actuator['max_acceleration_deg_s2'])
+            omega = math.radians(actuator['max_speed_deg_s'])
+            required = gravity*first + (alpha+omega*omega)*second/1000
+            limit = actuator['effort_limit_Nmm']
+            unit = 'Nmm'
+            section = dynamics['nominal_shaft_sections'].get(joint['child'])
+            # Largest axial bore from the authored component, conservatively
+            # applied along the entire shaft. Keys/threads need separate local
+            # concentration and fatigue analysis; this is nominal torsion only.
+            nominal_capacity = None
+            if section:
+                radius, bore = section['outer_radius_mm'], section['axial_bore_radius_mm']
+                shear = source['materials'][source['material_roles']['shaft']]['allowable_shear_MPa']
+                nominal_capacity = math.pi*(radius**4-bore**4)*shear/(2*radius)
+                if limit > nominal_capacity:
+                    raise ValueError(f"Actuator {actuator['source_id']} exceeds nominal shaft torsion domain: {limit:g} Nmm > {nominal_capacity:.3f} Nmm")
+        else:
+            required = mass*(gravity+actuator['max_acceleration_mm_s2']/1000)
+            limit = actuator['effort_limit_N']
+            unit = 'N'
+        if required > limit:
+            raise ValueError(f"Actuator {actuator['source_id']} effort domain exceeded before CAD: requires {required:.3f} {unit}, assumption provides {limit:g} {unit}")
+        rows.append(dict(joint=joint['name'], moving_mass_upper_bound_kg=mass,
+                         required_effort_upper_bound=required, effort_limit=limit, units=unit,
+                         margin=limit/max(required, 1e-12)))
+        if joint['type'] == 'revolute' and nominal_capacity is not None:
+            rows[-1]['nominal_shaft_torque_capacity_Nmm'] = nominal_capacity
+            rows[-1]['shaft_assumption'] = 'Circular section with axial bore; keyways, thread roots, stress concentrations and fatigue are excluded'
+    return dict(method='positive-CSG mass bound, gravity and own-axis acceleration/centripetal envelope',
+                scope='Reference-layout rejection screen; coupled dynamics, link stress, deflection, fatigue, bearings, fastener preload and thermal duty remain unqualified',
+                duty_cycle=source['loads']['duty_cycle'], actuators=rows)
+
+
+def compile_mechanism(source):
+    """Lower one canonical mechanism source through the reusable component catalog."""
+    source = validate_mechanism(source)
+    scale = source['dimensions']['hardware_scale']
+    values = dict(scale=scale, radial_clearance_mm=source['tolerances']['journal']['radial_clearance_mm'],
+                  joint_limit_deg=12., jaw_travel_mm=10.)
+    b = _Builder(source['name'], values)
+    b.guide_clearance = source['tolerances']['guide']['radial_clearance_mm']/scale
+    outputs, components, actuator_map, probes, shaft_sections = {}, {}, {}, [], {}
+    for component in source['components']:
+        name = component['id']
+        parent = components.get(component['parent'])
+        previous = outputs.get(component['parent'])
+        definition = component_definition(component['type'])
+        expanded = definition['expander'](b, component, previous)
+        input_part, output_part = expanded['input_part'], expanded['output_part']
+        outputs[name] = expanded['output_datum']
+        actuator_map.update(expanded['actuators'])
+        probes.extend(expanded.get('capture_probes', []))
+        shaft_sections.update(expanded.get('shaft_sections', {}))
+        if parent and expanded.get('capture_parent'):
+            axis = previous[1]
+            for side, blocker, direction in (('forward', parent['id']+'_output_cap', axis),
+                                             ('backward', previous[2], _mul(axis, -1))):
+                probes.append(dict(name=parent['id']+'_flange_'+side+'_capture', moving_part=input_part,
+                                   blocker=blocker, direction=direction, distance_mm=scale))
+        components[name] = dict(id=name, type=component['type'], input_part=input_part, output_part=output_part)
+    plan = dict(name=source['name'], units='mm', summary='One canonical mechanical source lowered through shared component interfaces.',
+                assumptions=[source['provenance'], source['manufacturing']['qualification'],
+                             'Component solids are invariant under rigid-body motion. Actuator and material values are explicit design assumptions.',
+                             'No-slip belt coupling, ideal rigid connections and purchased actuator envelopes require hardware qualification.'],
+                parts=b.parts, joints=b.joints)
+    names = {part['name'] for part in b.parts}
+    joints_by_child = {joint['child']: joint for joint in b.joints}
+    if len(names) != len(b.parts) or len(names) != len(b.joints) or set(joints_by_child) != names or len(names) > 256:
+        raise ValueError('Component expansion requires unique parts and exactly one parent joint per part, up to 256 parts')
+    if len({joint['name'] for joint in b.joints}) != len(b.joints):
+        raise ValueError('Component expansion emitted duplicate joint names')
+    for name in names:
+        visited, node = set(), name
+        while node is not None:
+            if node not in names or node in visited:
+                raise ValueError('Component expansion emitted a missing parent or cyclic rigid-body graph')
+            visited.add(node)
+            node = joints_by_child[node]['parent']
+    independent = {joint['name'] for joint in b.joints if joint['type'] != 'fixed' and not joint['drive']}
+    if set(actuator_map) != independent or set(actuator_map.values()) != set(source['actuators']):
+        raise ValueError('Every independent expanded joint requires one source actuator binding')
+    part_materials = {name: source['material_roles'][role] for name, role in b.materials.items()}
+    actuators = []
+    for joint_name, source_id in actuator_map.items():
+        actuators.append(dict(joint=joint_name, source_id=source_id, **source['actuators'][source_id]))
+    motion = derive_motion(b.joints, source['motion'], {source_id: joint for joint, source_id in actuator_map.items()})
+    rates = MotionTask.from_dict(motion).peak_rates()
+    for actuator in actuators:
+        unit = 'deg' if 'effort_limit_Nmm' in actuator else 'mm'
+        for quantity, key in (('speed', f'max_speed_{unit}_s'), ('acceleration', f'max_acceleration_{unit}_s2')):
+            if rates[actuator['joint']][quantity] > actuator[key] + 1e-9:
+                raise ValueError(f"Motion task exceeds actuator {actuator['source_id']} {key}; change the source period or waypoints")
+    payload_source = source['loads']['payload']
+    payload_origin = _mul(outputs[payload_source['component']][0], scale)
+    payload = dict(part=components[payload_source['component']]['output_part'], mass_kg=payload_source['mass_kg'],
+                   com_mm=payload_source['com_offset_mm'], com_world_mm=_add(payload_origin, payload_source['com_offset_mm']))
+    # A cut-free union's primitives are safely inside its material. Parts with any
+    # cuts are omitted until a component-specific hollow decomposition exists.
+    proxies = [dict(part=part['name'], primitives=[part['body']]+part['unions']) for part in b.parts if not part['cuts']]
+    dynamics = dict(gravity_mm_s2=source['loads']['gravity_mm_s2'],
+                    density_kg_m3={name: source['materials'][material]['density_kg_m3'] for name, material in part_materials.items()},
+                    actuators=actuators, payload=payload, collision_proxies=proxies, contacts=source['contacts'],
+                    nominal_shaft_sections=shaft_sections,
+                    contact_policy=dict(enabled=source['contacts']['enable_component_proxies'], model=source['contacts']['model'], friction=source['contacts']['friction'],
+                                        omitted_parts=[part['name'] for part in b.parts if part['cuts']],
+                                        reason='Partial material-contained proxies only; cut parts are omitted rather than filling their bores. Ground and free body contacts are independently specified in the canonical scene.'))
+    fits = {name: dict(**fit, worst_case_minimum_clearance_mm=fit['radial_clearance_mm']-fit['shaft_radius_tolerance_mm']-fit['bore_radius_tolerance_mm'])
+            for name, fit in source['tolerances'].items()}
+    plan['construction'] = dict(schema='cybrgeo-construction/1', architecture='component_graph', parameters=values,
+                                mechanism=source, mechanism_sha256=mechanism_digest(source),
+                                components=list(components.values()), component_definitions={kind: component_catalog()[kind] for kind in {c['type'] for c in source['components']}}, interfaces=b.interfaces, actuators=b.actuators,
+                                load_paths=b.paths, part_roles=b.roles, part_materials=part_materials,
+                                tolerance_stacks=fits, dynamics=dynamics, motion=motion, capture_probes=probes,
+                                qualification=dict(kinematics='prescribed graph from construction', dynamics='not simulated',
+                                                   hardware='not qualified', interference='requires executed CAD and motion audit'))
+    plan['construction']['engineering'] = _load_screen(plan, source, dynamics)
+    plan['construction']['recipe_sha256'] = recipe_digest(plan)
+    plan['construction']['model_sha256'] = model_digest(plan)
+    return plan
+
+
+def compile_plan(architecture='compact_arm', parameters=None):
+    """Compatibility adapter: load external example data, then compile the same IR."""
+    source = load_example(architecture)
     if parameters is not None and not isinstance(parameters, dict):
         raise ValueError('Construction parameters must be an object')
     unknown = set(parameters or {}) - set(DEFAULTS)
@@ -455,54 +674,79 @@ def compile_plan(architecture='compact_arm', parameters=None):
         if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value) or not lo <= value <= hi:
             raise ValueError(f'{key} must be finite and within [{lo}, {hi}]')
         values[key] = float(value)
-    # Preserve full guide engagement: jaw outer face must remain before support.
     if values['jaw_travel_mm'] > 14*values['scale']:
         raise ValueError('jaw_travel_mm exceeds the scaled guide/support clearance')
-    b = _Builder(architecture, values)
-    if architecture == 'inspection_head':
-        locations = [([0, 0, 80], [0, 0, 1]), ([90, 0, 155], [0, 1, 0]),
-                     ([195, 0, 155], [1, 0, 0])]
-    else:
-        locations = [([0, 0, 80], [0, 0, 1]), ([90, 0, 155], [0, 1, 0]),
-                     ([235, 0, 155], [0, 1, 0]), ([375, 0, 155], [1, 0, 0]),
-                     ([455, 0, 155], [0, 1, 0]), ([540, 0, 155], [1, 0, 0])]
-    previous = None
-    for index, (origin, axis) in enumerate(locations, 1):
-        carrier = _carrier(b, index, origin, axis, previous)
-        shaft = _cartridge(b, index, carrier, origin, axis,
-                           belt=architecture == 'belt_arm' and index in (2, 3))
-        previous = (origin, axis, shaft)
-    _gripper(b, *previous)
-    plan = dict(name='CYBR ' + architecture.replace('_', ' ').title(), units='mm',
-                summary='Constructed supported serial mechanism with derived mating interfaces and guided jaws.',
-                assumptions=[
-                    'Original parametric design; not a reconstruction or validation of IRIS-09 or either ARX-6 source.',
-                    'Nominal dimensions and prescribed joint motion. Clearance values are design inputs, not tolerance qualification.',
-                    'Motor and through-rod linear actuator internals are purchased-component envelopes with unspecified power, force and controls.',
-                    'Smooth belt no-slip motion is an assumption; tension, traction, dynamics, wear and hardware loads are unqualified.'
-                    if architecture == 'belt_arm' else 'No dynamics, collision avoidance controller, force, stress, wear or hardware qualification is implied.',
-                ], parts=b.parts, joints=b.joints)
-    probes = []
-    for index, (_, axis) in enumerate(locations, 1):
-        moving = f'J{index+1}_carrier' if index < len(locations) else 'tool_palm'
-        for side, blocker, direction in (('forward', f'J{index}_output_cap', axis),
-                                          ('backward', f'J{index}_shaft', _mul(axis, -1))):
-            probes.append(dict(name=f'J{index}_flange_{side}_capture', moving_part=moving,
-                               blocker=blocker, direction=direction, distance_mm=b.scale))
-        if architecture == 'belt_arm' and index in (2, 3):
-            for end, moving_part, blocker, direction in (
-                ('driven_front', f'J{index}_driven_pulley', f'J{index}_retainer_a', axis),
-                ('driven_rear', f'J{index}_driven_pulley', f'J{index}_pulley_rear_cup', _mul(axis, -1)),
-                ('driver_front', f'J{index}_motor_pulley', f'J{index}_motor_pulley_cap', axis),
-                ('driver_rear', f'J{index}_motor_pulley', f'J{index}_motor_shaft', _mul(axis, -1)),
-            ):
-                probes.append(dict(name=f'J{index}_{end}_capture', moving_part=moving_part,
-                                   blocker=blocker, direction=direction, distance_mm=b.scale))
-    plan['construction'] = dict(schema='cybrgeo-construction/1', architecture=architecture,
-                                parameters=values, interfaces=b.interfaces, actuators=b.actuators,
-                                load_paths=b.paths, part_roles=b.roles, capture_probes=probes,
-                                qualification=dict(kinematics='prescribed graph from construction',
-                                                   dynamics='not simulated', hardware='not qualified',
-                                                   interference='requires executed sampled CAD audit'),
-                                recipe_sha256=recipe_digest(plan))
+    source['dimensions']['hardware_scale'] = values['scale']
+    for fit in source['tolerances'].values():
+        fit['radial_clearance_mm'] = values['radial_clearance_mm']
+    for component in source['components']:
+        if component['type'] == 'rotary_cartridge':
+            component['parameters']['origin_mm'] = _mul(component['parameters']['origin_mm'], values['scale'])
+            component['parameters']['limit_deg'] = values['joint_limit_deg']
+        else:
+            component['parameters']['travel_mm'] = values['jaw_travel_mm']
+    for actuator in source['actuators'].values():
+        key = 'effort_limit_Nmm' if 'effort_limit_Nmm' in actuator else 'effort_limit_N'
+        actuator[key] *= values['scale']**3
+    source['loads']['payload']['com_offset_mm'] = _mul(source['loads']['payload']['com_offset_mm'], values['scale'])
+    plan = compile_mechanism(source)
+    plan['construction']['architecture'] = architecture  # compatibility display field only
+    plan['construction']['parameters'] = values
+    plan['construction']['model_sha256'] = model_digest(plan)
     return plan
+
+
+def _expand_rotary(b, component, previous):
+    name, parameters = component['id'], component['parameters']
+    scale, actuator_map, probes = b.scale, {}, []
+    origin = _mul(parameters['origin_mm'], 1/scale)
+    axis = parameters['axis']
+    b.parameters['joint_limit_deg'] = parameters['limit_deg']
+    carrier = _carrier(b, name, origin, axis, previous)
+    belt = component['drive']['type'] == 'equal_pulley_belt'
+    shaft = _cartridge(b, name, carrier, origin, axis, belt=belt)
+    output_datum = (origin, axis, shaft)
+    input_part, output_part = carrier['name'], shaft
+    actuator_map[name+'_motor' if belt else name+'_output'] = component['drive']['actuator']
+    if belt:
+        # Read the authored relation rather than assuming a generated joint spelling.
+        stage = b.actuators[-1]
+        actuator_map.pop(name+'_motor', None)
+        actuator_map[stage['joint']] = component['drive']['actuator']
+        for end, moving, blocker, direction in (
+            ('driven_front', name+'_driven_pulley', name+'_retainer_a', axis),
+            ('driven_rear', name+'_driven_pulley', name+'_pulley_rear_cup', _mul(axis, -1)),
+            ('driver_front', name+'_motor_pulley', name+'_motor_pulley_cap', axis),
+            ('driver_rear', name+'_motor_pulley', name+'_motor_shaft', _mul(axis, -1))):
+            probes.append(dict(name=name+'_'+end+'_capture', moving_part=moving,
+                               blocker=blocker, direction=direction, distance_mm=scale))
+    sections = {shaft: dict(outer_radius_mm=6*scale, axial_bore_radius_mm=2.2*scale)}
+    if belt:
+        sections[name+'_motor_shaft'] = dict(outer_radius_mm=4*scale, axial_bore_radius_mm=1.5*scale)
+    return dict(input_part=input_part, output_part=output_part, output_datum=output_datum,
+                actuators=actuator_map, capture_probes=probes, capture_parent=True, shaft_sections=sections)
+
+
+def _expand_gripper(b, component, previous):
+    name, parameters = component['id'], component['parameters']
+    scale, actuator_map, probes = b.scale, {}, []
+    b.parameters['jaw_travel_mm'] = parameters['travel_mm']
+    input_part, joints = _renamed_gripper(b, component, previous)
+    for side, joint in joints.items():
+        actuator_map[joint] = component['drive'][side]
+    output_part = input_part
+    output_datum = (*previous[:2], output_part)
+    return dict(input_part=input_part, output_part=output_part, output_datum=output_datum,
+                actuators=actuator_map, capture_probes=probes, capture_parent=True)
+
+
+def register_builtin_components():
+    for name, validator, expander, root in (
+        ('rotary_cartridge', validate_rotary_component, _expand_rotary, True),
+        ('parallel_gripper', validate_gripper_component, _expand_gripper, False)):
+        if name not in component_catalog():
+            register_component(name, validator=validator, expander=expander, root_allowed=root,
+                               revision='1', provenance='Original CYBR constructive component; nominal hardware assumptions')
+
+
+register_builtin_components()

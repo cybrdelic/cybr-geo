@@ -4,18 +4,19 @@
 
 One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with an in-house C++ photographic path tracer and a separate Mitsuba/OIDN rendering backend.
 
-**Mechanical generation is constructive by default.** `lab build`, `lab preview`
-and Studio's default mechanical request create an articulated compact arm from
-shared interface dimensions and a joint/actuator graph. The same plan creates
-the supported shafts, bores, retainers, links, guides and motion. Original
-compact-arm, belt-arm and inspection-head studies are included.
-[Construction architecture, reproduction and limits](docs/CONSTRUCTIVE_MECHANISMS.md).
+**One engineering source drives mechanical construction.** A mechanism document
+declares components, mating dimensions, physical materials, tolerance stacks,
+actuators, loads and contact geometry. A reusable component compiler lowers it to
+the existing assembly API; native CAD, browser CAD, MuJoCo and exported geometry
+consume that same model. Examples are documents, not separate implementations.
+[Architecture and evidence](docs/CONSTRUCTIVE_MECHANISMS.md) ·
+[Author a mechanism](docs/MECHANISM_SOURCE.md).
 
-![Default compact arm: actual CAD mesh animation](docs/pr-assets/constructive/compact_arm-motion.gif)
+![One example compiled by the shared pipeline: actual MuJoCo replay](docs/pr-assets/engineering/simulated-motion.gif)
 
-*109 generated parts, six rotary axes and two independently guided jaws.
-Prescribed kinematics; dynamics and hardware qualification remain separate.*
-[Belt arm and inspection head evidence](docs/CONSTRUCTIVE_MECHANISMS.md#evidence-and-its-limits).
+*An original component example, rendered from its CAD and recorded MuJoCo states.
+The current run passed its declared motion and operating limits; hardware is
+unqualified. [Evidence and limitations](docs/CONSTRUCTIVE_MECHANISMS.md#recorded-evidence).*
 
 ![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
 
@@ -50,11 +51,12 @@ python -m pip install --no-deps --no-build-isolation -e .
 lab mechanism --step --media
 ```
 
-`lab mechanism` constructs the default arm and writes analytic STEP, static and
-animated GLB, its editable construction input, expanded recipe, BOM, joint samples
-and actual mesh PNG/GIF views to **`outputs/mechanisms/compact_arm/`**. It reads
-the exported GLB back before publishing `bundle.json`. Motion is prescribed
-kinematics; motors and linear actuators are declared envelopes, not sized hardware.
+`lab mechanism` compiles the included example document and runs MuJoCo plus
+continuous motion-clearance analysis before publishing its bundle in
+**`outputs/mechanisms/compact_arm/`**. Outputs include editable source, analytic
+STEP, GLB, BOM, model mass properties, actuator results, simulation traces and
+actual mesh PNG/GIF views. Prescribed and simulated motion are labeled separately.
+Actuator ratings and material properties remain explicit design assumptions.
 
 This first run needs no reference archive, display server, downloaded HDRI or
 denoiser. `lab preview --step` remains the native photographic preview command,
@@ -62,8 +64,8 @@ now also defaulting to `compact_arm`; its output is `outputs/compact_arm/preview
 Use `lab preview example_flange` for the previous quick static example.
 
 ```bash
-lab mechanism belt_arm --step --media
-lab mechanism inspection_head --media
+lab mechanism examples/constructed/compact_arm.json --step --media
+lab animate examples/constructed/compact_arm.json --seconds 8
 lab preview nitinol_fiber_actuator --spp 64
 lab preview examples/custom_flange.py --step
 lab build nitinol_fiber_actuator --step --stl
@@ -78,7 +80,8 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | System | Implementation |
 | --- | --- |
 | Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
-| Default mechanical construction | [Bounded plan compiler](src/mechanism_lab/construction.py), [CAD and joint evaluator](src/mechanism_lab/constructed.py), [Studio](studio/README.md) |
+| Mechanical source and components | [Canonical document](src/mechanism_lab/mechanism.py), [component registry](src/mechanism_lab/component_catalog.py), [compiler](src/mechanism_lab/construction.py) |
+| Engineering execution | [Shared pipeline](src/mechanism_lab/engineering_pipeline.py), [MuJoCo](src/mechanism_lab/dynamics.py), [continuous path clearance](src/mechanism_lab/motion_envelope.py), [Studio](studio/README.md) |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |
 | Native photography | [Thin-lens BVH/GGX/MIS tracer](src/mechanism_lab/native/photoreal.cpp), [Python adapter](src/mechanism_lab/photoreal.py) |

@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 import json, os, secrets, shutil, subprocess, threading, time, uuid
 from planner_codec import planner_schema, decode
-from mechanical_planner import ARCHITECTURES, mechanical_request, compile_request
+from mechanical_planner import ARCHITECTURES, mechanical_request, compile_request, example_documents
 
 ROOT = Path(__file__).resolve().parent
 PUBLIC = ROOT / 'public'
@@ -60,8 +60,8 @@ def signed_in():
         return False
 
 
-def plan_design(prompt='default', repair=None, mechanism=None):
-    request = mechanical_request(prompt, mechanism)
+def plan_design(prompt='default', repair=None, mechanism=None, mechanism_source=None):
+    request = mechanical_request(prompt, mechanism, mechanism_source)
     if request is not None:
         if repair:
             raise ValueError('Constructive assemblies are rebuilt from their mechanical '
@@ -174,6 +174,8 @@ class Handler(SimpleHTTPRequestHandler):
                               'authProvider': 'codex-local', 'csrf': TOKEN})
         if path == '/api/mechanism-schema':
             return self.json(json.loads(MECHANISM_SCHEMA.read_text(encoding='utf-8')))
+        if path == '/api/examples':
+            return self.json({'examples': example_documents(), 'default_example': 'compact_arm'})
         if path == '/api/last-recipe':
             recipes = sorted(JOBS.glob('*/recipe.json'), key=lambda p: p.stat().st_mtime, reverse=True)
             if not recipes or recipes[0].stat().st_size > 2000000:
@@ -203,7 +205,7 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.json({'id':key,'url':'/captures/'+key+'.png'})
             except (ValueError,OSError):
                 return self.json({'error':'Could not save capture'},400)
-        if self.path != '/api/plan':
+        if self.path not in ('/api/plan', '/api/engineer'):
             return self.json({'error': 'Unknown endpoint'}, 404)
         try:
             length = int(self.headers.get('Content-Length', '0'))
@@ -211,9 +213,12 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.json({'error': 'Request is too large'}, 413)
             body = json.loads(self.rfile.read(length))
             prompt, repair, mechanism = body.get('prompt', 'default'), body.get('repair'), body.get('mechanism')
+            mechanism_source = body.get('mechanism_source')
             if not isinstance(prompt, str) or len(prompt.strip()) > 6000 or (repair is not None and (not isinstance(repair, str) or len(repair) > 180000)):
                 return self.json({'error': 'Type what you want to build (up to 6000 characters).'}, 400)
-            request = mechanical_request(prompt, mechanism)
+            request = mechanical_request(prompt, mechanism, mechanism_source)
+            if self.path == '/api/engineer' and request is None:
+                raise ValueError('Engineering requires a canonical mechanism source; static primitive plans do not define physics.')
         except ValueError as error:
             return self.json({'error': str(error)[:400]}, 400)
         except (TypeError, AttributeError):
@@ -223,7 +228,11 @@ class Handler(SimpleHTTPRequestHandler):
         if not LOCK.acquire(blocking=False):
             return self.json({'error': 'Codex is planning another design. Wait for it to finish.'}, 409)
         try:
-            plan = plan_design(prompt.strip(), repair, mechanism)
+            plan = plan_design(prompt.strip(), repair, mechanism, mechanism_source)
+            if self.path == '/api/engineer':
+                from mechanism_lab.engineering_pipeline import evaluate_plan
+                _, report = evaluate_plan(plan, JOBS / uuid.uuid4().hex / 'engineering')
+                return self.json(report)
             return self.json({'plan': plan, 'provider': 'constructive' if request else 'codex-local'})
         except subprocess.TimeoutExpired:
             return self.json({'error': 'Codex planning reached the 3-minute service limit before returning a recipe. Your prompt is valid; retry the request.'}, 504)

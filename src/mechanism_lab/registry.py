@@ -8,6 +8,13 @@ DEFAULT_RECIPE='compact_arm'
 CONSTRUCTED=('compact_arm','belt_arm','inspection_head')
 BUILTINS=CONSTRUCTED+('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
 
+def is_mechanism_source(name):
+    if name in CONSTRUCTED:
+        return True
+    if str(name).endswith('.json'):
+        return json.loads(Path(name).read_text(encoding='utf-8')).get('schema') in ('cybrgeo-mechanism/1','cybrgeo-mechanism/2')
+    return False
+
 def factory(name):
     if name in CONSTRUCTED:
         from .constructed import build,pose
@@ -33,6 +40,14 @@ def factory(name):
         return build,None
     if name.endswith('.json'):
         descriptor=json.loads(Path(name).read_text(encoding='utf-8'))
+        if descriptor.get('schema')=='cybrgeo-mechanism/2':
+            from .construction import compile_mechanism
+            from .constructed import build_from_plan,pose
+            def build_document():
+                assembly=build_from_plan(compile_mechanism(descriptor))
+                assembly.name=Path(name).stem
+                return assembly
+            return build_document,pose
         if descriptor.get('schema')=='cybrgeo-mechanism/1':
             from .constructed import build,pose
             return lambda:build(descriptor.get('architecture',DEFAULT_RECIPE),descriptor.get('parameters')),pose
@@ -52,6 +67,8 @@ def fingerprint(name):
     for package in (Path(__file__).parent,Path(__file__).parent.parent/'cybrgeo'):
         for p in sorted(package.rglob('*.py')):
             h.update(str(p.relative_to(package.parent)).encode());h.update(p.read_bytes())
+        for p in sorted((package/'mechanisms').glob('*.json')):
+            h.update(str(p.relative_to(package.parent)).encode());h.update(p.read_bytes())
     if name.endswith('.py'):
         import ast
         recipe=Path(name).resolve();raw=recipe.read_bytes();h.update(raw)
@@ -64,7 +81,7 @@ def fingerprint(name):
     if name.endswith('.json'):
         path=Path(name).resolve();raw=path.read_bytes();h.update(raw)
         spec=json.loads(raw)
-        if spec.get('schema')=='cybrgeo-mechanism/1':return h.hexdigest()
+        if spec.get('schema') in ('cybrgeo-mechanism/1','cybrgeo-mechanism/2'):return h.hexdigest()
         source=path.parent/spec['source'];h.update(source.read_bytes())
         # External glTF buffers/images also affect geometry/provenance invalidation.
         if source.suffix.lower()=='.gltf':
@@ -87,8 +104,7 @@ def cache_directory(name):
 
 def load(name, rebuild=False, analytic=False):
     fn,motion=factory(name);cache=cache_directory(name);sig=fingerprint(name)
-    constructed=name in CONSTRUCTED or (name.endswith('.json') and
-        json.loads(Path(name).read_text(encoding='utf-8')).get('schema')=='cybrgeo-mechanism/1')
+    constructed=is_mechanism_source(name)
     valid=(cache/'manifest.json').exists() and (cache/'validation.json').exists() and (cache/'fingerprint.txt').exists() and (cache/'fingerprint.txt').read_text()==sig
     if valid and constructed:
         try:

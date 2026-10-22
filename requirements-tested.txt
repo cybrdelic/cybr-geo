@@ -1,4 +1,4 @@
-# Direct packages observed in the actual tested Linux environment.
+# Pinned runtime packages; MuJoCo 3.16.0 also verified in the isolated Windows executor.
 numpy==2.3.5
 cadquery==2.8.0
 cadquery-ocp==7.9.3.1.1
@@ -11,5 +11,6 @@ numba==0.65.1
 ezdxf==1.4.4
 CairoSVG==2.8.2
 mitsuba==3.7.1
+mujoco==3.16.0
 pytest==9.0.2
 setuptools==82.0.1

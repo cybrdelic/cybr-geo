@@ -57,8 +57,8 @@ def parser():
     q.add_argument('--rebuild',action='store_true');_truth_args(q)
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
     q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE);q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
-    q=sub.add_parser('mechanism',help='Construct an articulated assembly with paired interfaces, motion and an inspection bundle')
-    q.add_argument('architecture',nargs='?',choices=CONSTRUCTED,default=DEFAULT_RECIPE)
+    q=sub.add_parser('mechanism',help='Compile one engineering document to CAD, clearance and MuJoCo artifacts')
+    q.add_argument('architecture',nargs='?',default=DEFAULT_RECIPE,help='Mechanism JSON document, or a compatibility example alias')
     q.add_argument('--parameters',type=Path,help='JSON object of bounded construction parameters')
     q.add_argument('--out',type=Path);q.add_argument('--step',action='store_true')
     q.add_argument('--media',action='store_true',help='Also render actual mesh PNG/GIF inspection views')
@@ -99,7 +99,7 @@ def parser():
 
 
 def doctor():
-    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG','mitsuba'];dependencies={}
+    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG','mitsuba','mujoco'];dependencies={}
     for name in libraries:
         try:dependencies[name]=importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:dependencies[name]=None
@@ -115,7 +115,7 @@ def doctor():
 def run(args):
     if args.root:os.environ['MECHANISM_LAB_ROOT']=str(args.root.expanduser().resolve())
     from .core import project_root,validate
-    from .registry import load,BUILTINS
+    from .registry import load,BUILTINS,is_mechanism_source
     if args.command=='list':print('\n'.join(BUILTINS));return 0
     if args.command=='doctor':return doctor()
     root=project_root()
@@ -148,8 +148,20 @@ def run(args):
                     target=destination/uri;target.parent.mkdir(parents=True,exist_ok=True)
                     if (source.parent/uri).resolve()!=target.resolve():shutil.copy2(source.parent/uri,target)
         recipe=destination/(safe_name(args.name)+'.json');recipe.write_text(json.dumps({'schema':1,'kind':'geometry-import','source':source.name,'name':assembly.name,'units':assembly.metadata['source_units'],'up_axis':assembly.metadata['source_up_axis']},indent=2)+'\n');print(recipe);return 0
-    analytic=args.command in ('blueprint','whiteprint') or (args.command=='build' and args.step)
+    engineered=is_mechanism_source(args.recipe) and args.command in ('build','animate')
+    analytic=engineered or args.command in ('blueprint','whiteprint') or (args.command=='build' and args.step)
     assembly=load(args.recipe,rebuild=getattr(args,'rebuild',False),analytic=analytic);out=root/'outputs'/assembly.name;out.mkdir(parents=True,exist_ok=True)
+    if engineered:
+        from .engineering_pipeline import evaluate_plan
+        analysis_out=(args.out if args.command=='build' and args.out else out)/'engineering'
+        assembly,engineering=evaluate_plan(assembly.metadata['construction_recipe'], analysis_out,
+            seconds=getattr(args,'seconds',8.), assembly=assembly)
+        if not engineering['passed']:
+            raise RuntimeError('Engineering generation did not authorize motion: '+
+                '; '.join(item['stage']+': '+item['message'] for item in engineering['errors']))
+        if args.command=='animate' and args.mode=='motion':
+            from .dynamics import simulated_assembly
+            assembly=simulated_assembly(assembly,engineering['simulation'])
     if args.command=='build':
         from .exporters import export_glb,export_step,export_bom,export_stls
         out=args.out or out;out.mkdir(parents=True,exist_ok=True);export_glb(assembly,out/(assembly.name+'.glb'));export_bom(assembly,out)

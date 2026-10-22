@@ -1,12 +1,14 @@
 """Reopen the actual STEP/GLB deliverables and compare their sampled motion.
 
 Run with ``PYTHONPATH=src python tools/verify_construction_bundle.py BUNDLE
---out report.json``. This checks artifact identity and prescribed kinematics;
-it is not a dynamics, continuous collision or hardware qualification test.
+--out report.json``. This checks artifact identity, prescribed motion and
+integrated GLB replay against recorded MuJoCo states; it does not independently
+qualify the physical assumptions, continuous collision proof or hardware.
 """
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import json
 import math
@@ -15,7 +17,7 @@ import struct
 
 import numpy as np
 
-from mechanism_lab.construction import compile_plan, recipe_digest
+from mechanism_lab.construction import compile_plan, compile_mechanism, recipe_digest, validate_constructed_plan, _canonical
 from mechanism_lab.constructed import KinematicGraph
 from mechanism_lab.exporters import NATIVE_TO_GLTF
 
@@ -83,7 +85,7 @@ def positions(document, binary, node_index):
     return accessor(document, binary, primitives[0]['attributes']['POSITION'])
 
 
-def verify_motion(static, moving, graph, sample_count=17):
+def verify_motion(static, moving, graph, sample_count=17, expected_transforms=None):
     if not isinstance(sample_count, int) or not 2 <= sample_count <= 129:
         raise ValueError('Motion verification requires 2-129 requested samples')
     doc, binary = moving
@@ -149,7 +151,8 @@ def verify_motion(static, moving, graph, sample_count=17):
             matrices[index] = result
             return result
 
-        expected = graph.transforms(graph.demo_values(float(times[sample])))
+        expected = (expected_transforms(float(times[sample])) if expected_transforms is not None
+                    else graph.transforms(graph.demo_values(float(times[sample]))))
         for name, index in names.items():
             exported = world(index)
             native = inverse @ exported
@@ -169,10 +172,64 @@ def verify_motion(static, moving, graph, sample_count=17):
             'scope': 'Decoded artifact node transforms at the listed keyframes, including mm/Z-up to m/Y-up conversion. No continuous interpolation or collision proof.'}
 
 
+def verify_simulated_motion(static, moving, graph, simulation, sample_count=17):
+    from types import SimpleNamespace
+    from mechanism_lab.dynamics import SimulatedMotion
+    if simulation.get('backend') != 'MuJoCo' or not simulation.get('samples'):
+        raise ValueError('Integrated replay requires an executed MuJoCo trace')
+    motion = SimulatedMotion(simulation)
+    parts = {name: SimpleNamespace(name=name, explode=np.zeros(3)) for name in graph.part_names}
+    def expected(time):
+        return {name: motion(part, time) for name, part in parts.items()}
+    report = verify_motion(static, moving, graph, sample_count, expected)
+    if not math.isclose(report['duration_s'], simulation['seconds'], abs_tol=1e-5):
+        raise ValueError('Integrated GLB and simulation durations differ')
+    report['scope'] = 'Actual GLB decoded transforms compared with recorded MuJoCo body states and the declared interpolation; no new physics or hardware qualification.'
+    return report
+
+
+def verify_mujoco_states(model, manifest, simulation, sample_count=17):
+    """Recompute recorded body poses from actual reopened MJCF and joint state.
+
+    This checks serialized state/frame consistency, not a second integration of
+    the equations or independent validation of the modeling assumptions.
+    """
+    import mujoco as mj
+    from scipy.spatial.transform import Rotation
+    data = mj.MjData(model)
+    samples = simulation['samples']
+    indices = sorted(set(np.linspace(0, len(samples) - 1, min(sample_count, len(samples)), dtype=int)))
+    error = 0.
+    for index in indices:
+        sample = samples[index]
+        for name, factor in manifest['joint_native_to_SI'].items():
+            jid = mj.mj_name2id(model, mj.mjtObj.mjOBJ_JOINT, name)
+            data.qpos[model.jnt_qposadr[jid]] = sample['joint_values'][name] * factor
+        for name in manifest.get('free_bodies', []):
+            transform = np.array(sample['body_poses_mm'][name])
+            jid = mj.mj_name2id(model, mj.mjtObj.mjOBJ_JOINT, 'free_' + name)
+            adr = int(model.jnt_qposadr[jid])
+            data.qpos[adr:adr + 3] = transform[:3, 3] / 1000
+            data.qpos[adr + 3:adr + 7] = Rotation.from_matrix(transform[:3, :3]).as_quat()[[3, 0, 1, 2]]
+        mj.mj_kinematics(model, data)
+        for name, matrix in sample['body_poses_mm'].items():
+            bid = mj.mj_name2id(model, mj.mjtObj.mjOBJ_BODY, name)
+            if bid < 0:
+                raise ValueError(f'Simulation body {name} is absent from reopened MJCF')
+            expected = np.eye(4)
+            expected[:3, :3] = data.xmat[bid].reshape(3, 3)
+            expected[:3, 3] = data.xpos[bid] * 1000
+            error = max(error, float(np.max(np.abs(expected - np.asarray(matrix)))))
+    if error > 1e-6:
+        raise ValueError(f'Recorded MuJoCo body transforms disagree with reopened MJCF joint states: {error}')
+    return dict(sampled_states=len(indices), maximum_pose_component_error_mm_or_dimensionless=error,
+                scope='Reopened MJCF forward kinematics at recorded joint states; does not rerun dynamics')
+
+
 def verify_bundle(directory, sample_count=17):
     directory = Path(directory).resolve()
     report = {'bundle': str(directory), 'passed': False, 'errors': [],
-              'scope': 'Artifact identity, reopened analytic STEP and GLB, sampled prescribed kinematics. No dynamics or hardware qualification.'}
+              'scope': 'Artifact identity, reopened STEP/GLB/MJCF and sampled prescribed/integrated motion replay. No hardware qualification.'}
     try:
         import cadquery as cq
         import trimesh
@@ -193,14 +250,31 @@ def verify_bundle(directory, sample_count=17):
         plan = json.loads((directory / 'recipe.json').read_text(encoding='utf-8'))
         descriptor = json.loads((directory / 'mechanism.json').read_text(encoding='utf-8'))
         digest = recipe_digest(plan)
+        validate_constructed_plan(plan)
         if digest != plan['construction']['recipe_sha256'] or digest != receipt['construction_recipe_sha256']:
             raise ValueError('Recipe, construction and bundle identities disagree')
-        current = compile_plan(descriptor['architecture'], descriptor.get('parameters'))
+        canonical = descriptor.get('schema') == 'cybrgeo-mechanism/2'
+        current = compile_mechanism(descriptor) if canonical else compile_plan(descriptor['architecture'], descriptor.get('parameters'))
         if recipe_digest(current) != digest:
             raise ValueError('Bundle is stale relative to the current construction compiler and saved parameters')
-        report['recipe'] = {'architecture': descriptor['architecture'], 'sha256': digest, 'matches_current_compiler': True}
+        if canonical:
+            if descriptor != plan['construction']['mechanism']:
+                raise ValueError('Saved canonical source differs from the compiled mechanism source')
+            for key in ('model_sha256', 'mechanism_sha256'):
+                if receipt.get(key) != plan['construction'].get(key):
+                    raise ValueError(f'Bundle {key} differs from the full mechanical source')
+            if current['construction']['mechanism_sha256'] != plan['construction']['mechanism_sha256']:
+                raise ValueError('Bundle is stale relative to canonical mechanism validation')
+            if current['construction']['model_sha256'] != plan['construction']['model_sha256']:
+                raise ValueError('Bundle is stale relative to the complete compiled mechanical model')
+            # The complete model hash above uses the compiler's documented
+            # nine-decimal numeric canonicalization. Repeating raw float
+            # equality here rejects harmless roundoff in engineering sums.
+        report['recipe'] = {'architecture': plan['construction'].get('architecture'), 'sha256': digest,
+                            'mechanism_sha256': plan['construction'].get('mechanism_sha256'),
+                            'model_sha256': plan['construction'].get('model_sha256'), 'matches_current_compiler': True}
         names = [part['name'] for part in plan['parts']]
-        graph = KinematicGraph(names, plan['joints'])
+        graph = KinematicGraph(names, plan['joints'], plan['construction'].get('motion'))
         if receipt['parts'] != len(names):
             raise ValueError('Bundle component count disagrees with its recipe')
         static = read_glb(directory / 'assembly.glb')
@@ -232,6 +306,43 @@ def verify_bundle(directory, sample_count=17):
         report['motion_glb'] = verify_motion(static, read_glb(directory / 'motion.glb'), graph, sample_count)
         if report['motion_glb']['stored_keyframes'] != receipt['animation']['samples'] or not math.isclose(report['motion_glb']['duration_s'], receipt['animation']['duration'], abs_tol=1e-5):
             raise ValueError('Decoded animation timing differs from the bundle receipt')
+        if canonical:
+            from mechanism_lab.dynamics import load_model
+            required_simulation = {'simulation/model.json', 'simulation/model.xml', 'simulation/simulation.json', 'simulation/integrated-motion.glb'}
+            if not required_simulation <= hashes.keys():
+                raise ValueError('Canonical engineering bundle lacks its actual simulation artifacts')
+            simulation = json.loads((directory / 'simulation/simulation.json').read_text())
+            for key in ('recipe_sha256', 'mechanism_sha256', 'model_sha256'):
+                if simulation.get(key) != plan['construction'].get(key):
+                    raise ValueError(f'Simulation {key} differs from the construction model')
+            model, manifest = load_model(directory / 'simulation')
+            if simulation.get('model') != manifest:
+                raise ValueError('Simulation and reopened MJCF manifests differ')
+            if _canonical(manifest['settings']) != _canonical(plan['construction']['dynamics']):
+                raise ValueError('MJCF physical settings differ from the canonical source')
+            trace_meta = simulation['integration_trace_artifact']
+            trace_path = (directory / 'simulation' / trace_meta['path']).resolve()
+            if not trace_path.is_relative_to(directory / 'simulation') or 'simulation/' + trace_meta['path'] not in hashes:
+                raise ValueError('Integration trace is not a declared simulation artifact')
+            compressed = trace_path.read_bytes()
+            if hashlib.sha256(compressed).hexdigest() != trace_meta['sha256']:
+                raise ValueError('Compressed integration trace identity differs from simulation')
+            trace = json.loads(gzip.decompress(compressed))
+            if len(trace['times_s']) != simulation['integration_steps'] + 1 or len(trace['joint_values']) != len(trace['times_s']):
+                raise ValueError('Integration trace does not contain every declared solver state')
+            report['mujoco'] = dict(reopened_bodies=int(model.nbody), generalized_velocities=int(model.nv),
+                                    actuators=int(model.nu), backend_version=simulation['backend_version'],
+                                    trace_states=len(simulation['samples']),
+                                    integration_steps=simulation['integration_steps'],
+                                    tracking_passed=simulation['tracking_passed'],
+                                    operating_limits_passed=simulation['operating_limits_passed'])
+            report['mujoco']['state_readback'] = verify_mujoco_states(model, manifest, simulation, sample_count)
+            report['mujoco']['stored_integration_states'] = len(trace['times_s'])
+            report['integrated_motion_glb'] = verify_simulated_motion(static,
+                read_glb(directory / 'simulation/integrated-motion.glb'), graph, simulation, sample_count)
+            timing = receipt['simulated_animation']
+            if report['integrated_motion_glb']['stored_keyframes'] != timing['samples'] or not math.isclose(report['integrated_motion_glb']['duration_s'], timing['duration'], abs_tol=1e-5):
+                raise ValueError('Decoded integrated animation timing differs from the bundle receipt')
         report['passed'] = True
     except Exception as error:
         report['errors'].append(f'{type(error).__name__}: {error}')

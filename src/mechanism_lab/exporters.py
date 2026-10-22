@@ -174,7 +174,11 @@ def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion',sample_ti
     js=json.dumps(doc,separators=(',',':')).encode();js+=b' '*((-len(js))%4);data.extend(b'\0'*((-len(data))%4))
     body=struct.pack('<II',len(js),0x4E4F534A)+js+struct.pack('<II',len(data),0x004E4942)+data
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(struct.pack('<III',0x46546C67,2,12+len(body))+body)
+    source=assembly.metadata.get('motion_source','Prescribed rigid-body kinematics') if mode=='motion' else 'Prescribed exploded inspection'
+    note=('Interpolated replay of recorded MuJoCo body states. Contact coverage and physical assumptions belong to the simulation record; interpolation is not a continuous dynamics or clearance proof.'
+          if source=='MuJoCo integrated rigid-body dynamics' else
+          'Prescribed rigid-body inspection motion. No dynamics or hardware qualification is established by this export.')
     report=dict(file=path.name,duration=duration,samples=len(times),animated_channels=len(channels),rotation_roundtrip_error=residual,
-                note='Prescribed rigid-body kinematics. Not electromagnetic or contact-force simulation.')
+                motion_source=source,note=note)
     path.with_suffix('.animation.json').write_text(json.dumps(report,indent=2)+'\n')
     return report

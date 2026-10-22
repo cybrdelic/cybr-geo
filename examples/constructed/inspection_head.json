@@ -1,10 +1,214 @@
 {
-  "schema": "cybrgeo-mechanism/1",
-  "architecture": "inspection_head",
-  "parameters": {
-    "scale": 1,
-    "radial_clearance_mm": 0.2,
-    "joint_limit_deg": 12,
-    "jaw_travel_mm": 10
+  "schema": "cybrgeo-mechanism/2",
+  "name": "CYBR Inspection Head",
+  "units": "mm",
+  "provenance": "Original CYBR component composition. Not a reconstruction or validation of IRIS-09 or either ARX-6 source.",
+  "dimensions": {
+    "hardware_scale": 1
+  },
+  "materials": {
+    "frame_aluminium": {
+      "density_kg_m3": 2700,
+      "provenance": "Explicit homogeneous design assumption; actual stock and component data must replace it before hardware use"
+    },
+    "shaft_steel": {
+      "density_kg_m3": 7850,
+      "provenance": "Explicit homogeneous design assumption; actual stock and component data must replace it before hardware use",
+      "allowable_shear_MPa": 100
+    },
+    "bearing_bronze": {
+      "density_kg_m3": 8800,
+      "provenance": "Explicit homogeneous design assumption; actual stock and component data must replace it before hardware use"
+    },
+    "motor_effective": {
+      "density_kg_m3": 3500,
+      "provenance": "Explicit homogeneous design assumption; actual stock and component data must replace it before hardware use"
+    },
+    "belt_elastomer": {
+      "density_kg_m3": 1200,
+      "provenance": "Explicit homogeneous design assumption; actual stock and component data must replace it before hardware use"
+    },
+    "pad_polymer": {
+      "density_kg_m3": 1100,
+      "provenance": "Explicit homogeneous design assumption; actual stock and component data must replace it before hardware use"
+    }
+  },
+  "material_roles": {
+    "frame": "frame_aluminium",
+    "shaft": "shaft_steel",
+    "bushing": "bearing_bronze",
+    "motor": "motor_effective",
+    "belt": "belt_elastomer",
+    "pad": "pad_polymer"
+  },
+  "tolerances": {
+    "journal": {
+      "radial_clearance_mm": 0.2,
+      "shaft_radius_tolerance_mm": 0.01,
+      "bore_radius_tolerance_mm": 0.01,
+      "minimum_clearance_mm": 0.05
+    },
+    "guide": {
+      "radial_clearance_mm": 0.2,
+      "shaft_radius_tolerance_mm": 0.01,
+      "bore_radius_tolerance_mm": 0.01,
+      "minimum_clearance_mm": 0.05
+    }
+  },
+  "components": [
+    {
+      "id": "J1",
+      "type": "rotary_cartridge",
+      "parent": null,
+      "parameters": {
+        "origin_mm": [
+          0,
+          0,
+          80
+        ],
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "limit_deg": 12
+      },
+      "drive": {
+        "type": "direct",
+        "actuator": "J1_motor"
+      }
+    },
+    {
+      "id": "J2",
+      "type": "rotary_cartridge",
+      "parent": "J1",
+      "parameters": {
+        "origin_mm": [
+          90,
+          0,
+          155
+        ],
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "limit_deg": 12
+      },
+      "drive": {
+        "type": "direct",
+        "actuator": "J2_motor"
+      }
+    },
+    {
+      "id": "J3",
+      "type": "rotary_cartridge",
+      "parent": "J2",
+      "parameters": {
+        "origin_mm": [
+          195,
+          0,
+          155
+        ],
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "limit_deg": 12
+      },
+      "drive": {
+        "type": "direct",
+        "actuator": "J3_motor"
+      }
+    },
+    {
+      "id": "tool",
+      "type": "parallel_gripper",
+      "parent": "J3",
+      "parameters": {
+        "travel_mm": 10
+      },
+      "drive": {
+        "type": "independent_linear",
+        "left": "left_linear",
+        "right": "right_linear"
+      }
+    }
+  ],
+  "actuators": {
+    "J1_motor": {
+      "effort_limit_Nmm": 25000,
+      "max_speed_deg_s": 10,
+      "max_acceleration_deg_s2": 20,
+      "provenance": "Design envelope assumption, not a selected or vendor-validated actuator"
+    },
+    "J2_motor": {
+      "effort_limit_Nmm": 25000,
+      "max_speed_deg_s": 10,
+      "max_acceleration_deg_s2": 20,
+      "provenance": "Design envelope assumption, not a selected or vendor-validated actuator"
+    },
+    "J3_motor": {
+      "effort_limit_Nmm": 25000,
+      "max_speed_deg_s": 10,
+      "max_acceleration_deg_s2": 20,
+      "provenance": "Design envelope assumption, not a selected or vendor-validated actuator"
+    },
+    "left_linear": {
+      "effort_limit_N": 100,
+      "max_speed_mm_s": 10,
+      "max_acceleration_mm_s2": 30,
+      "provenance": "Design force assumption, not a selected or vendor-validated actuator"
+    },
+    "right_linear": {
+      "effort_limit_N": 100,
+      "max_speed_mm_s": 10,
+      "max_acceleration_mm_s2": 30,
+      "provenance": "Design force assumption, not a selected or vendor-validated actuator"
+    }
+  },
+  "loads": {
+    "gravity_mm_s2": [
+      0,
+      0,
+      -9810
+    ],
+    "duty_cycle": 0.2,
+    "payload": {
+      "component": "tool",
+      "mass_kg": 0.05,
+      "com_offset_mm": [
+        112,
+        0,
+        0
+      ]
+    }
+  },
+  "contacts": {
+    "model": "component_safe_primitives",
+    "friction": [
+      0.8,
+      0.01,
+      0.001
+    ],
+    "enable_component_proxies": false,
+    "ground": true,
+    "ground_position_mm": [
+      0,
+      0,
+      0
+    ],
+    "geoms": [],
+    "free_bodies": []
+  },
+  "manufacturing": {
+    "process": "Nominal machined components; tool access, finishes and GD&T are not qualified",
+    "threads": "Ordinary screw threads simplified as cylindrical envelopes",
+    "qualification": "No hardware, fatigue, thermal, bearing wear, clamp preload or belt traction qualification"
+  },
+  "motion": {
+    "period_s": 8,
+    "policy": "bounded_excursion"
   }
 }

@@ -80,10 +80,12 @@ export async function buildCad(plan,progress=()=>{},options={}){
     const joints=preflight.joints;
     const assembly={schema:'cybrgeo-browser/1',units:'mm',name:plan.name,geometries,materials,nodes,joints,construction:preflight.construction};
     const report={model:plan.name,parts:plan.parts.length,units:'mm',bounds_mm:bounds,checks,recipe_sha256:preflight.digest,construction_bound:!!preflight.construction,kinematics:'prescribed joint graph; not contact dynamics',dynamics:'not simulated',hardware:'unqualified',backend:'OpenCascade WebAssembly / CYBR GEO recipe contract',disclaimer:'Geometry checks only; no strength, fit, contact or manufacturing qualification.'};
+    if(preflight.construction?.model_sha256){report.mechanism_sha256=preflight.construction.mechanism_sha256;report.model_sha256=preflight.construction.model_sha256;}
     files['assembly.json']=encoder.encode(JSON.stringify(assembly));files['recipe.json']=encoder.encode(JSON.stringify(plan,null,2));files['validation.json']=encoder.encode(JSON.stringify(report,null,2));if(svg)files['whiteprint.svg']=encoder.encode(svg);
     files['parts.csv']=encoder.encode('id,name,analytic_cad,volume_mm3\n'+checks.map((r,i)=>`${i+1},${r.name},true,${r.volume_mm3}`).join('\n'));
     files['joints.json']=encoder.encode(JSON.stringify({units:'mm',angle_units:'degrees',joints},null,2));
     if(preflight.construction)files['construction.json']=encoder.encode(JSON.stringify(preflight.construction,null,2));
+    if(preflight.construction?.mechanism)files['mechanism.json']=encoder.encode(JSON.stringify(preflight.construction.mechanism,null,2));
     return {assembly,files,svg,report,bounds};
   }finally{shapes.forEach(shape=>{try{shape.delete();}catch{}});}
 }
