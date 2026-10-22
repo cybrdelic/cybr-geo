@@ -1,0 +1,136 @@
+{
+  "passed": true,
+  "manifest_file_sha256": "77e3897eb1258ffbe3dcc4a7fecfbae134c9033d42b3d79a6e52569a802e313e",
+  "verified_manifest_files": 16,
+  "render_script_hash_matches": true,
+  "shared_renderer_receipt_hashes_match": true,
+  "gif_frames": 106,
+  "gif_duration_ms": 17570,
+  "distinct_geometry_region_images": 106,
+  "stills": [
+    {
+      "file": "pose-00000.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2791.9178856581207,
+        2926.5837046332636,
+        3053.1499655947873
+      ]
+    },
+    {
+      "file": "pose-00168.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2595.3403594249307,
+        2725.504693936975,
+        2852.8365495602043
+      ]
+    },
+    {
+      "file": "pose-00330.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2917.0142229498438,
+        3061.1417755597877,
+        3201.290032594232
+      ]
+    },
+    {
+      "file": "pose-00732.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2352.3341420720662,
+        2490.807831937496,
+        2631.347162582222
+      ]
+    },
+    {
+      "file": "pose-01032.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2508.8919738435375,
+        2649.5916323187325,
+        2791.492009933264
+      ]
+    },
+    {
+      "file": "pose-01374.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2929.8058711090102,
+        3073.7919170898435,
+        3215.4685451715973
+      ]
+    },
+    {
+      "file": "pose-02076.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2792.5101676549957,
+        2927.2888948567665,
+        3053.906849266927
+      ]
+    },
+    {
+      "file": "pose-02088.png",
+      "size_px": [
+        800,
+        600
+      ],
+      "variance": [
+        2792.5766759487456,
+        2927.373187273329,
+        3054.0078371942664
+      ]
+    }
+  ],
+  "visually_inspected": [
+    {
+      "file": "pose-00168.png",
+      "time_s": 1.4,
+      "observation": "Arm and native components are framed completely during lift; no blank or clipped geometry."
+    },
+    {
+      "file": "pose-00330.png",
+      "time_s": 2.75,
+      "observation": "Transfer pose shows the gold-colored workpiece between the opposed jaws; arm remains fully framed."
+    },
+    {
+      "file": "pose-01032.png",
+      "time_s": 8.6,
+      "observation": "Workpiece is visible on destination nest B with the gripper above it; no rendering discontinuity is apparent."
+    },
+    {
+      "file": "pose-01374.png",
+      "time_s": 11.45,
+      "observation": "Return transfer shows the workpiece held by the jaws and the authored absence of lateral tool tilt."
+    },
+    {
+      "file": "pose-02088.png",
+      "time_s": 17.4,
+      "observation": "Complete final pose is framed, with the workpiece visibly returned to nest A and the other nest empty."
+    }
+  ],
+  "inspection": "Automated file/hash/dimension/timing readback passed, followed by manual inspection of the five named stills. Visual observations concern framing and visible states only; they do not establish contact forces, fault acceptance, continuous clearance or hardware qualification."
+}

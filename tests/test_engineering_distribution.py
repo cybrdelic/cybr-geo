@@ -99,11 +99,17 @@ def test_wheel_installs_exact_example_sources_and_loads_outside_checkout(tmp_pat
                 for destination, patterns in data_files.items()
                 for pattern in patterns for source in staging.glob(pattern)}
     for source in (staging / 'examples/engineering').rglob('*'):
-        if source.is_file() and source.suffix in ('.py', '.json', '.gz', '.xml', '.md', '.mjs', '.glsl', '.png'):
+        if source.is_file() and source.suffix in ('.py', '.json', '.gz', '.xml', '.md', '.mjs', '.glsl', '.png', '.brep'):
             relative = SHARE / source.relative_to(staging / 'examples/engineering')
             assert relative.as_posix() in expected, f'Authored example file missing from wheel: {relative}'
     for name in ('arx_belt', 'iris09'):
         assert any(path.startswith(f'{SHARE.as_posix()}/{name}/') for path in expected)
+    compact_data = f'{SHARE.as_posix()}/arx_compact/data/'
+    for filename in ('print-first-spec.json', 'print-first-inputs.json',
+                     'print-first-upper.brep', 'print-first-fore.brep', 'refined/source.json'):
+        assert compact_data + filename in expected, f'Latest compact input missing from wheel: {filename}'
+    assert any(path.startswith(compact_data + 'refined/cad/') and path.endswith('.brep')
+               for path in expected), 'Nested Refined BREP replacements missing from wheel'
 
     wheels = tmp_path / 'wheels'
     wheels.mkdir()
@@ -153,6 +159,68 @@ for descriptor in (target / 'share/cybr-geo/examples/engineering').glob('*/proje
 assert 'arx_belt' in resolved
 print(json.dumps(resolved))
 '''
-    output = _run([sys.executable, '-c', probe, str(target)], cwd=tmp_path, env=env)
+    probe_directory = tmp_path / 'probe'
+    probe_directory.mkdir()
+    output = _run([sys.executable, '-c', probe, str(target)], cwd=probe_directory, env=env)
     assert json.loads(output.strip().splitlines()[-1])['arx_belt'] == str(
         (target / SHARE / 'arx_belt').resolve())
+
+    # Exercise the installed share-data clients, including their direct-path
+    # sibling imports. This is bounded native input/property readback, not a
+    # second full Refined build or another six-article construction run.
+    native_probe = '''
+import json, math, pathlib, runpy, sys
+import cadquery as cq
+from mechanism_lab.engineering_source import project_directory, is_engineering_project
+import mechanism_lab.part_geometry as geometry
+target = pathlib.Path(sys.argv[1]).resolve()
+assert pathlib.Path(geometry.__file__).resolve().is_relative_to(target)
+directory = project_directory('arx_compact')
+assert directory == target / 'share/cybr-geo/examples/engineering/arx_compact'
+assert not is_engineering_project('arx_compact'), 'Geometry studies must not acquire a dynamics registration'
+def entries(root):
+    return {p.relative_to(root).as_posix(): (p.is_dir(), p.stat().st_size, p.stat().st_mtime_ns)
+            for p in root.rglob('*')}
+installed_before, cwd_before = entries(target), entries(pathlib.Path.cwd())
+refined = runpy.run_path(str(directory / 'refined.py'), run_name='installed_refined_probe')
+print_first = runpy.run_path(str(directory / 'print_first.py'), run_name='installed_print_first_probe')
+assert entries(target) == installed_before, 'Import changed installed files'
+assert entries(pathlib.Path.cwd()) == cwd_before, 'Import wrote output into the caller directory'
+manifest, payloads = refined['load_bundle']()
+design, pose, provenance, overrides, changes, inherited = refined['source_inputs'](manifest, payloads)
+assert manifest['commit'] == refined['COMMIT'] == print_first['SOURCE']['commit']
+assert len(overrides) == len(changes) > 0
+assert all((directory / 'data/refined' / row['path']).is_file() for row in overrides)
+inputs = print_first['verified_inputs']()
+spec, *_ = print_first['specification']()
+assert spec['schema'] == 'cybrgeo-print-first-test-articles/1'
+reopened = []
+for record in inputs['inputs']:
+    path = directory / 'data' / record['file']
+    solid = cq.Shape.importBrep(str(path))
+    assert solid.isValid() and len(solid.Solids()) == 1
+    assert math.isfinite(solid.Volume()) and solid.Volume() > 0
+    reopened.append(record['file'])
+assert set(reopened) == {'print-first-upper.brep', 'print-first-fore.brep'}
+records = {str(row['id']): row for row in design['parts']}
+resolver = geometry.PartGeometryResolver(refined['geometry_dag'](design, source=provenance), records,
+    overrides=overrides, asset_root=directory / 'data/refined', source=provenance)
+# Housing 2 carries an actual fillet/chamfer/envelope-clip replacement. Reading
+# that installed BREP must reproduce its archived native volume/mass/tensor,
+# rather than quietly evaluating its unmodified CSG record.
+part = '2'
+assert resolver.describe(part)['kind'] == 'brep'
+measured = resolver.mass_properties(part, density_kg_m3=refined['DENSITIES'][records[part]['material']])
+residuals = refined['property_residuals'](measured, changes[part]['refined'])
+assert measured['valid'] and measured['solid_count'] == 1
+assert all(row['passed'] for row in residuals.values()), residuals
+assert entries(target) == installed_before, 'Read-only source checks changed installed files'
+assert entries(pathlib.Path.cwd()) == cwd_before, 'Read-only source checks wrote output'
+print(json.dumps(dict(commit=manifest['commit'], verified_bundle_files=len(payloads),
+    refined_replacements=len(overrides), reopened_print_breps=sorted(reopened),
+    checked_refined_part=part, property_residuals=residuals, import_wrote_files=False)))
+'''
+    output = _run([sys.executable, '-c', native_probe, str(target)], cwd=probe_directory, env=env)
+    smoke = json.loads(output.strip().splitlines()[-1])
+    assert smoke['checked_refined_part'] == '2'
+    assert len(smoke['reopened_print_breps']) == 2 and not smoke['import_wrote_files']

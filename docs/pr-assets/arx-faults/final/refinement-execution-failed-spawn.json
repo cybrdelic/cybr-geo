@@ -1,0 +1,48 @@
+{
+  "schema": "cybrgeo-command-execution-observation/1",
+  "command": [
+    "${PYTHON_EXECUTABLE}",
+    "tools/check_arx_faults.py",
+    "--native",
+    "outputs/engineering-arx-core-final/native",
+    "--output",
+    "outputs/engineering-arx-core-refined-final",
+    "--workers",
+    "3",
+    "--clock",
+    "matched-phase",
+    "--case",
+    "nominal",
+    "--case",
+    "power_loss_3.2",
+    "--case",
+    "power_loss_7.2",
+    "--case",
+    "weak_spring_double_delay_3.2",
+    "--case",
+    "weak_spring_double_delay_7.2",
+    "--timestep-scale",
+    ".5"
+  ],
+  "cwd": "${REPO_ROOT}",
+  "explicit_thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "2",
+    "LP_NUM_THREADS": "2"
+  },
+  "other_thread_environment": "Not overridden by this wrapper",
+  "start_utc": "2026-10-22T22:57:28.028364+00:00",
+  "wrapper_sha256": "c516e686e0523bcecac932757e0435412da285f0a7f62b8740e75aba4c757538",
+  "scope": "Execution resources and wall-clock observation, outside physical model/source binding. No physics or acceptance changes.",
+  "end_utc": "2026-10-22T22:58:23.879803+00:00",
+  "elapsed_s": 55.849263199954294,
+  "returncode": 1,
+  "process_succeeded": false,
+  "public_derivation": {
+    "schema": "cybrgeo-public-evidence-path-derivation/1",
+    "original_bytes": 1309,
+    "original_sha256": "c609e09943e017cc7efb6ebbe0b9edf7fe8ac3ffa00bf412fcd3253689d80b17",
+    "provenance_file": "publication-provenance.json",
+    "scope": "Path-substituted public copy; not byte-identical to the recorded execution receipt."
+  }
+}

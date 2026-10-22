@@ -1,0 +1,48 @@
+{
+  "schema": "cybrgeo-latest-arx-ci/1",
+  "passed": false,
+  "source_commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "constructed_fresh": false,
+  "timeout_s": 600.0,
+  "versions": {
+    "system": "Windows",
+    "machine": "AMD64",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "packages": {
+      "cadquery": "2.8.0",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.5.4",
+      "trimesh": "5.1.1"
+    }
+  },
+  "helper_sha256": "af214d9236735647d7805a80895d718f05818ca75ea5eed17c06fe29fcfa1798",
+  "projects": [
+    "refined"
+  ],
+  "stages": [
+    {
+      "name": "refined-readback",
+      "command": [
+        "C:\\Users\\alexf\\Documents\\ChatGPT\\cybr\\cybr-geo\\.venv\\Scripts\\python.exe",
+        "-B",
+        "-u",
+        "C:\\Users\\alexf\\AppData\\Local\\Temp\\cybr-geo-assembly-20261022\\repo\\.github\\scripts\\check_latest_arx_geometry.py",
+        "--readback",
+        "refined",
+        "--output",
+        "C:\\Users\\alexf\\AppData\\Local\\Temp\\cybr-geo-assembly-20261022\\repo\\outputs\\arx-compact-refined-accepted-final",
+        "--evidence",
+        "C:\\Users\\alexf\\AppData\\Local\\Temp\\cybr-geo-assembly-20261022\\repo\\outputs\\arx-compact-refined-final-readback\\refined-readback.json"
+      ],
+      "elapsed_s": 28.54869049997069,
+      "passed": false,
+      "returncode": 1
+    }
+  ],
+  "scope": "Pinned source geometry, homogeneous-density properties and nominal CAD interfaces; no dynamics rerun, printed transmission integration, whole-arm load rating or hardware qualification",
+  "error": "CalledProcessError: Command '['C:\\\\Users\\\\alexf\\\\Documents\\\\ChatGPT\\\\cybr\\\\cybr-geo\\\\.venv\\\\Scripts\\\\python.exe', '-B', '-u', 'C:\\\\Users\\\\alexf\\\\AppData\\\\Local\\\\Temp\\\\cybr-geo-assembly-20261022\\\\repo\\\\.github\\\\scripts\\\\check_latest_arx_geometry.py', '--readback', 'refined', '--output', 'C:\\\\Users\\\\alexf\\\\AppData\\\\Local\\\\Temp\\\\cybr-geo-assembly-20261022\\\\repo\\\\outputs\\\\arx-compact-refined-accepted-final', '--evidence', 'C:\\\\Users\\\\alexf\\\\AppData\\\\Local\\\\Temp\\\\cybr-geo-assembly-20261022\\\\repo\\\\outputs\\\\arx-compact-refined-final-readback\\\\refined-readback.json']' returned non-zero exit status 1.",
+  "elapsed_s": 28.84450949996244,
+  "reports": {
+    "refined": "C:\\Users\\alexf\\AppData\\Local\\Temp\\cybr-geo-assembly-20261022\\repo\\outputs\\arx-compact-refined-final-readback\\refined-readback.json"
+  }
+}

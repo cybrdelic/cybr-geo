@@ -2,7 +2,8 @@
 
 Without --native this explicitly uses the shipped source mass records. With
 --native it verifies regenerated native artifacts before using their inertias.
-Friction loss changes declared contact friction at 2 s; it never moves the puck.
+Friction loss changes declared contact friction at source phase 2 s, mapped
+through the project's execution clock; it never moves the puck.
 """
 import argparse
 import gzip
@@ -20,10 +21,11 @@ def main():
     parser.add_argument('--project', default='arx_belt')
     parser.add_argument('--native', type=Path)
     parser.add_argument('--case', choices=('nominal', 'friction_loss'), default='nominal')
-    parser.add_argument('--seconds', type=float, default=10.)
+    parser.add_argument('--seconds', type=float, help='Defaults to the complete authored project cycle')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     project, source_files = load_project(args.project)
+    seconds = project.duration_s if args.seconds is None else args.seconds
     receipt = verify_native_build(args.native, project.specification, source_files=source_files) if args.native else None
     binding = verify_native_source_binding(args.native, project.specification, source_files, receipt=receipt) if receipt is not None else None
     physical, control, parameters = project.compile_physics(project.specification, native_directory=args.native)
@@ -33,11 +35,13 @@ def main():
         physical.provenance['native_source_binding_sha256'] = digest(binding)
     physical.write(args.output)
     (args.output/'control-source.json').write_text(json.dumps(control, indent=2), encoding='utf-8')
-    options = dict(frictionChangeTime=2., frictionAfterScale=.01) if args.case == 'friction_loss' else {}
+    from mechanism_lab.reference_clock import PhaseClock
+    clock = PhaseClock.from_source(parameters['reference_clock'])
+    options = dict(frictionChangeTime=clock.physical_time(2.), frictionAfterScale=.01) if args.case == 'friction_loss' else {}
     simulation = CausalSimulation(physical, control, lambda t: project.reference(t, parameters), options=options,
         reference_source=dict(source_files=source_files, task_parameters=parameters))
-    print(f'Integrating {args.case}: {args.seconds:g}s, {simulation.model.nbody} bodies, {simulation.model.ngeom} contact/display geoms', flush=True)
-    result = simulation.run(args.seconds, output=args.output)
+    print(f'Integrating {args.case}: {seconds:g}s, {simulation.model.nbody} bodies, {simulation.model.ngeom} contact/display geoms', flush=True)
+    result = simulation.run(seconds, output=args.output)
     result['physical_source'], result['task_parameters'] = physical.to_source(), parameters
     result['requirements'] = project.requirements(result, parameters)
     assert_project_source_identity(args.project, source_files)

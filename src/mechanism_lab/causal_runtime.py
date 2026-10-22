@@ -10,14 +10,34 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import asdict
 import gzip
+import hashlib
+from importlib import metadata
 import json
 import math
 from pathlib import Path
+import platform
 
 import numpy as np
 
 from .actuation import GearedDCMotor, CurrentBudget, TensionSpring, DelayedBrake, SafetyState
 from .physical_model import digest
+
+
+def _runtime_identity():
+    versions = {}
+    for package in ('numpy', 'mujoco'):
+        try:
+            versions[package] = metadata.version(package)
+        except metadata.PackageNotFoundError:
+            versions[package] = None
+    return dict(schema='cybrgeo-causal-runtime/1',
+        source_files={name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+                      for name in ('causal_runtime.py', 'actuation.py')},
+        packages=versions, runtime=dict(python=platform.python_version(), system=platform.system(), machine=platform.machine()),
+        capture='Source files and package versions observed at causal_runtime module import; not the complete Python import closure')
+
+
+_IMPLEMENTATION_IDENTITY = _runtime_identity()
 
 
 def _finite(value, name, minimum=None):
@@ -32,6 +52,7 @@ class CausalSimulation:
     def __init__(self, physical, control, reference, *, options=None, reference_source=None):
         import mujoco as mj
         self.mj, self.physical = mj, physical
+        self.implementation_identity = deepcopy(_IMPLEMENTATION_IDENTITY)
         self.physical_source = deepcopy(physical.to_source())
         self.reference_source = deepcopy(reference_source)
         # Fail before integration if a source receipt cannot be serialized.
@@ -91,8 +112,9 @@ class CausalSimulation:
                          TensionSpring(item['parameters'], item.get('axis', [0, 0, -1])), item)
                         for item in self.control.get('springs', [])]
         self.base_friction = self.model.dof_frictionloss[self.vadr].copy()
+        self.base_geom_friction = self.model.geom_friction.copy()
         self.base_pair_friction = self.model.pair_friction.copy()
-        self.model.pair_friction[:] = self.base_pair_friction * self.options['frictionScale']
+        self._apply_contact_friction_scale(self.options['frictionScale'])
         self.integral = np.zeros(len(self.drives))
         self.mass = np.zeros((self.model.nv, self.model.nv))
         self.brake_capacity = np.zeros(len(self.drives))
@@ -117,6 +139,12 @@ class CausalSimulation:
             self._check_rack_transmission(ids)
             self.rack_motor = GearedDCMotor(self.rack['motor'])
             self.rack_budget = CurrentBudget(self.rack['current_budget'])
+        configured = set(self.actuator_ids) | ({self.rack_actuator} if self.rack else set())
+        undeclared = set(range(self.model.nu)) - configured
+        if undeclared:
+            names = [mj.mj_id2name(self.model, mj.mjtObj.mjOBJ_ACTUATOR, i) or f'actuator_{i}'
+                     for i in sorted(undeclared)]
+            raise ValueError(f'All model actuators must have declared electrical drives; undeclared: {names}')
         key = self.control.get('initial_keyframe')
         if key is not None:
             mj.mj_resetDataKeyframe(self.model, self.data, self.model.key(key).id)
@@ -131,7 +159,7 @@ class CausalSimulation:
         self.stage = 0
         self.desired_q = self.data.qpos[self.qadr].copy()
         self.body_names = [mj.mj_id2name(self.model, mj.mjtObj.mjOBJ_BODY, i) or f'body_{i}' for i in range(self.model.nbody)]
-        self.geom_names = [mj.mj_id2name(self.model, mj.mjtObj.mjOBJ_GEOM, i) or f'geom_{i}' for i in range(self.model.ngeom)]
+        self.geom_names = self._object_names(mj.mjtObj.mjOBJ_GEOM, self.model.ngeom, 'geom')
         self.monitor = [dict(peak_current_A=0., peak_output_torque_Nm=0., peak_motor_speed_rad_s=0.,
                              peak_voltage_V=0., over_continuous_current_s=0., over_continuous_gear_torque_s=0.)
                         for _ in self.drives]
@@ -141,6 +169,196 @@ class CausalSimulation:
                 body = int(self.model.jnt_bodyid[joint])
                 self.free_bodies[self.body_names[body]] = dict(body_id=body, dof=int(self.model.jnt_dofadr[joint]),
                     max_imposed_generalized_force=0., max_applied_wrench_component=0.)
+        self.scalar_joints = {}
+        self.joint_monitor = {}
+        joint_names = self._object_names(mj.mjtObj.mjOBJ_JOINT, self.model.njnt, 'joint')
+        for joint in range(self.model.njnt):
+            kind = self.model.jnt_type[joint]
+            if kind not in (mj.mjtJoint.mjJNT_HINGE, mj.mjtJoint.mjJNT_SLIDE):
+                continue
+            name = joint_names[joint]
+            hinge = kind == mj.mjtJoint.mjJNT_HINGE
+            self.scalar_joints[name] = (int(self.model.jnt_qposadr[joint]), int(self.model.jnt_dofadr[joint]))
+            self.joint_monitor[name] = dict(joint_id=joint, type='hinge' if hinge else 'slide',
+                position_unit='rad' if hinge else 'm', speed_unit='rad/s' if hinge else 'm/s',
+                direct_motor_actuator=(self.drives[self.joint_ids.index(joint)]['actuator']
+                                       if joint in self.joint_ids else None),
+                samples=0, minimum_position=None,
+                maximum_position=None, peak_absolute_speed=None)
+        self._observe_joints(0.)
+        self.constraint_monitor = {}
+        self.constraint_names = {}
+        equality_names = self._object_names(mj.mjtObj.mjOBJ_EQUALITY, self.model.neq, 'equality')
+        for equality in range(self.model.neq):
+            name = equality_names[equality]
+            self.constraint_names[equality] = name
+            kind = mj.mjtEq(int(self.model.eq_type[equality])).name.removeprefix('mjEQ_').lower()
+            self.constraint_monitor[name] = dict(equality_id=equality, type=kind, sampled_steps=0,
+                active_steps=0, inactive_steps=0, missing_row_steps=0, components=[], vector_norms={})
+        self.transmission_monitor = [dict(joint=row['joint'], unit='Nm', minimum=None,
+            maximum=None, peak_absolute=None, samples=0,
+            method='motor output minus reflected dof armature times velocity increment / timestep; '
+                   'ideal output torque estimate, not a measured gear or belt stress') for row in self.drives]
+        self.contact_monitor = dict(samples=0, initial_state_sampled=True,
+            sampling='Initial mj_forward plus each mj_step solver contact evaluation; pre-integration for '
+                     'Euler/implicit, last internal stage for RK4. No terminal post-state refresh.')
+        self.contact_pairs = {}
+        self._observe_contacts(0., 0., initial=True)
+        self.rack_monitor = (dict(samples=0, peak_current_A=0., peak_output_torque_Nm=0.,
+                                  peak_absolute_current=None) if self.rack else None)
+
+    def _object_names(self, kind, count, prefix):
+        names = [self.mj.mj_id2name(self.model, kind, i) for i in range(count)]
+        used = set(names) - {None}
+        for i, name in enumerate(names):
+            if name is None:
+                name = f'{prefix}_{i}'
+                while name in used:
+                    name = '_' + name
+                names[i] = name
+                used.add(name)
+        return names
+
+    @staticmethod
+    def _extrema(record, minimum, maximum, peak, event):
+        """Keep signed extrema and their first occurrence without retaining a trace."""
+        value = event['value']
+        if minimum and (record[minimum] is None or value < record[minimum]['value']):
+            record[minimum] = event.copy()
+        if maximum and (record[maximum] is None or value > record[maximum]['value']):
+            record[maximum] = event.copy()
+        if peak and (record[peak] is None or abs(value) > abs(record[peak]['value'])):
+            record[peak] = event.copy()
+
+    def _observe_joints(self, time_s):
+        for name, (qadr, vadr) in self.scalar_joints.items():
+            record = self.joint_monitor[name]
+            self._extrema(record, 'minimum_position', 'maximum_position', None,
+                          dict(value=float(self.data.qpos[qadr]), time_s=time_s))
+            self._extrema(record, None, None, 'peak_absolute_speed',
+                          dict(value=float(self.data.qvel[vadr]), time_s=time_s))
+            record['samples'] += 1
+
+    def _constraint_component(self, equality, component):
+        """MuJoCo residual coordinates are not uniformly distances or angles.
+
+        See MuJoCo 3.16 engine_core_constraint.c: connect/weld/joint/tendon/flex.
+        Weld's angular residual is torquescale * sin(angle/2) * axis, not angle.
+        A fixed tendon may combine angular and linear coordinates via coefficients.
+        """
+        m, mj = self.model, self.mj
+        kind = self.constraint_monitor[self.constraint_names[equality]]['type']
+        info = dict(index=component, label=f'component_{component}', unit=None, peak_absolute=None, samples=0)
+        if kind == 'connect' or (kind == 'weld' and component < 3):
+            info.update(label=f'anchor_delta_{"xyz"[component]}', unit='m')
+        elif kind == 'weld':
+            info.update(label=f'torquescale_scaled_quaternion_{"xyz"[component-3]}', unit='m',
+                        torquescale_m=float(m.eq_data[equality, 10]),
+                        interpretation='scaled quaternion vector, not an angle or positional gap')
+        elif kind == 'joint':
+            joint = int(m.eq_obj1id[equality])
+            info.update(label='joint_polynomial_residual',
+                        unit='rad' if m.jnt_type[joint] == mj.mjtJoint.mjJNT_HINGE else 'm')
+        elif kind == 'tendon':
+            tendon = int(m.eq_obj1id[equality])
+            start, count = int(m.tendon_adr[tendon]), int(m.tendon_num[tendon])
+            fixed = any(m.wrap_type[start:start+count] == mj.mjtWrap.mjWRAP_JOINT)
+            info.update(label='tendon_polynomial_residual', unit='tendon_coordinate' if fixed else 'm')
+        elif kind == 'flex':
+            info.update(label=f'edge_length_residual_{component}', unit='m')
+        else:
+            info.update(label=f'native_scaled_{kind}_residual_{component}')
+        return info
+
+    def _observe_constraints(self, start_time_s, end_time_s):
+        # mj_step leaves solver residuals at its dynamics evaluation. For Euler
+        # and implicit integrators this precedes state integration. RK4 retains
+        # an internal stage: report the interval, without inventing a timestamp.
+        rk4 = self.model.opt.integrator == self.mj.mjtIntegrator.mjINT_RK4
+        counts, values = {}, {}
+        for k in range(self.data.nefc):
+            if self.data.efc_type[k] != self.mj.mjtConstraint.mjCNSTR_EQUALITY:
+                continue
+            equality = int(self.data.efc_id[k])
+            record = self.constraint_monitor[self.constraint_names[equality]]
+            component = counts.get(equality, 0)
+            counts[equality] = component + 1
+            if len(record['components']) <= component:
+                record['components'].append(self._constraint_component(equality, component))
+            row = record['components'][component]
+            value = float(self.data.efc_pos[k])
+            if not math.isfinite(value):
+                raise RuntimeError('Nonfinite equality constraint residual')
+            values.setdefault(equality, []).append(value)
+            event = dict(value=value,
+                         time_s=None if rk4 else start_time_s,
+                         interval_start_s=start_time_s, interval_end_s=end_time_s)
+            self._extrema(row, None, None, 'peak_absolute', event)
+            row['samples'] += 1
+        for equality, name in self.constraint_names.items():
+            record = self.constraint_monitor[name]
+            record['active_steps' if self.data.eq_active[equality] else 'inactive_steps'] += 1
+            record['sampled_steps' if equality in counts else 'missing_row_steps'] += 1
+            if record['type'] in ('connect', 'weld') and equality in values:
+                for start, label in [(0, 'anchor_delta')] + ([(3, 'torquescale_scaled_quaternion')]
+                                                            if record['type'] == 'weld' else []):
+                    group = record['vector_norms'].setdefault(label, dict(unit='m', peak_absolute=None, samples=0))
+                    event = dict(value=float(np.linalg.norm(values[equality][start:start+3])),
+                                 time_s=None if rk4 else start_time_s,
+                                 interval_start_s=start_time_s, interval_end_s=end_time_s)
+                    self._extrema(group, None, None, 'peak_absolute', event)
+                    group['samples'] += 1
+
+    def _observe_transmissions(self, previous_speed, start_time_s, end_time_s):
+        dt = self.model.opt.timestep
+        for i, record in enumerate(self.transmission_monitor):
+            acceleration = float((self.data.qvel[self.vadr[i]] - previous_speed[i]) / dt)
+            armature = float(self.model.dof_armature[self.vadr[i]])
+            torque = float(self.motors[i].state.torque_Nm)
+            event = dict(value=torque - armature * acceleration, time_s=end_time_s,
+                interval_start_s=start_time_s, motor_output_torque_Nm=torque,
+                armature_inertia_kg_m2=armature, acceleration_rad_s2=acceleration)
+            self._extrema(record, 'minimum', 'maximum', 'peak_absolute', event)
+            record['samples'] += 1
+
+    def _observe_contacts(self, start_time_s, end_time_s, *, initial=False):
+        rk4 = self.model.opt.integrator == self.mj.mjtIntegrator.mjINT_RK4
+        seen = set()
+        for index in range(self.data.ncon):
+            contact = self.data.contact[index]
+            endpoints = tuple(sorted((int(geom), int(flex)) for geom, flex in zip(contact.geom, contact.flex)))
+            if endpoints not in self.contact_pairs:
+                names = [self.geom_names[geom] if geom >= 0 else
+                         (self.mj.mj_id2name(self.model, self.mj.mjtObj.mjOBJ_FLEX, flex) or f'flex_{flex}')
+                         for geom, flex in endpoints]
+                self.contact_pairs[endpoints] = dict(geom_ids=[row[0] for row in endpoints],
+                    flex_ids=[row[1] for row in endpoints], geoms=names, contact_samples=0,
+                    initial_contacts=0, steps_with_contacts=0, maximum_penetration_m=0., peak_event=None)
+            row = self.contact_pairs[endpoints]
+            distance = float(contact.dist)
+            if not math.isfinite(distance):
+                raise RuntimeError('Nonfinite native contact distance')
+            event = dict(value=max(0., -distance), signed_distance_m=distance,
+                time_s=None if rk4 and not initial else start_time_s,
+                interval_start_s=start_time_s, interval_end_s=end_time_s,
+                sampling='initial-forward' if initial else 'integration-solver')
+            self._extrema(row, None, None, 'peak_event', event)
+            row['maximum_penetration_m'] = row['peak_event']['value']
+            row['contact_samples'] += 1
+            row['initial_contacts'] += int(initial)
+            seen.add(endpoints)
+        if not initial:
+            self.contact_monitor['samples'] += 1
+            for key in seen:
+                self.contact_pairs[key]['steps_with_contacts'] += 1
+
+    def _observe_rack(self, time_s):
+        if self.rack_monitor is not None:
+            row, state = self.rack_monitor, self.rack_motor.state
+            row['samples'] += 1
+            row['peak_current_A'] = max(row['peak_current_A'], abs(state.current_A))
+            row['peak_output_torque_Nm'] = max(row['peak_output_torque_Nm'], abs(state.torque_Nm))
+            self._extrema(row, None, None, 'peak_absolute_current', dict(value=state.current_A, time_s=time_s))
 
     def _check_direct_actuator(self, actuator, kind, target, gear):
         m, mj = self.model, self.mj
@@ -181,12 +399,19 @@ class CausalSimulation:
             result[index] += spring.state(float(q[index]), scale)['torque_Nm']
         return result
 
+    def _apply_contact_friction_scale(self, scale):
+        # MuJoCo uses geom coefficients for implicit contacts and pair
+        # coefficients for explicit pairs. Always scale the original arrays;
+        # a scheduled change replaces the scale rather than compounding it.
+        self.model.geom_friction[:] = self.base_geom_friction * scale
+        self.model.pair_friction[:] = self.base_pair_friction * scale
+
     def step(self):
         mj, m, d, o = self.mj, self.model, self.data, self.options
         dt, t = m.opt.timestep, self.steps * m.opt.timestep
         if o.get('frictionChangeTime') is not None and not self.friction_changed and t >= o['frictionChangeTime']:
             o['frictionScale'] = o.get('frictionAfterScale', .01)
-            m.pair_friction[:] = self.base_pair_friction * o['frictionScale']
+            self._apply_contact_friction_scale(o['frictionScale'])
             self.friction_changed = True
         if o.get('motorOffTime') is not None and t >= o['motorOffTime']:
             o['power'] = False
@@ -252,6 +477,11 @@ class CausalSimulation:
                         self.brake_energy[i] += max(0., -self.brake_torque[i] * (qd[i] + d.qvel[self.vadr[i]]) * .5 * dt)
         if not np.isfinite(d.qpos).all() or not np.isfinite(d.qvel).all():
             raise RuntimeError('Nonfinite simulation state')
+        self._observe_joints(self.steps * dt)
+        self._observe_constraints(t, self.steps * dt)
+        self._observe_transmissions(qd, t, self.steps * dt)
+        self._observe_contacts(t, self.steps * dt)
+        self._observe_rack(self.steps * dt)
         for i, (motor, monitor) in enumerate(zip(self.motors, self.monitor)):
             s, cfg = motor.state, motor.config
             for key, value in [('peak_current_A', abs(s.current_A)), ('peak_output_torque_Nm', abs(s.torque_Nm)),
@@ -314,15 +544,17 @@ class CausalSimulation:
             if (self.steps - start_step) % stride == 0 or self.steps == start_step + total:
                 frames.append(self.frame())
         actuator_metrics = {}
-        for row, motor, monitor in zip(self.drives, self.motors, self.monitor):
+        for row, motor, monitor, transmission in zip(self.drives, self.motors, self.monitor, self.transmission_monitor):
             state = motor.state
             actuator_metrics[row['actuator']] = dict(deepcopy(monitor),
                 rms_current_A=math.sqrt(state.current_squared_integral_A2_s/(self.steps*dt)),
                 final_temperature_C=state.temperature_C, electrical_energy_J=state.electrical_energy_J,
                 copper_heat_J=state.copper_heat_J, mechanical_energy_J=state.mechanical_energy_J,
                 gear_heat_J=state.gear_heat_J, belt_demand_limit_s=state.belt_demand_limit_s,
-                gear_demand_limit_s=state.gear_demand_limit_s, voltage_saturation_s=state.voltage_saturation_s)
+                gear_demand_limit_s=state.gear_demand_limit_s, voltage_saturation_s=state.voltage_saturation_s,
+                transmitted_torque_estimate=deepcopy(transmission))
         result = dict(schema='cybrgeo-causal-simulation/1', model_sha256=self.model_sha256,
+            runtime_implementation=deepcopy(self.implementation_identity),
             control_sha256=digest(self.control), options=deepcopy(self.initial_options),
             reference_source=deepcopy(self.reference_source), reference_sha256=self.reference_sha256,
             reference_identity='explicit source record' if self.reference_source is not None else 'unbound Python callback',
@@ -332,7 +564,14 @@ class CausalSimulation:
             events=deepcopy(self.safety.events), metrics=dict(max_tracking_error_rad=max_tracking,
             max_applied_generalized_force=max_qfrc, max_external_body_force_N=max_xfrc,
             actuators=actuator_metrics, free_bodies=deepcopy(self.free_bodies),
-            monitor_scope='Actuator and free-body extrema cover every integration step since initialization'),
+            joints=deepcopy(self.joint_monitor), constraints=deepcopy(self.constraint_monitor),
+            contacts=dict(deepcopy(self.contact_monitor), pairs=deepcopy(list(self.contact_pairs.values()))),
+            rack_motor=deepcopy(self.rack_monitor),
+            monitoring_interval=dict(start_time_s=0., end_time_s=self.steps*dt, integration_steps=self.steps),
+            constraint_sampling='Native solver residuals from every mj_step; pre-integration for Euler/implicit, '
+                'last internal stage for RK4. Missing rows are not zero residuals. No terminal post-state refresh.',
+            monitor_scope='Rotary/rack actuator, transmission, joint, constraint, contact and free-body extrema '
+                'cover every integration step since initialization; joints and contacts also include the initial state'),
             qualification=dict(dynamics='actual integrated electromechanical/contact model', hardware='not qualified'))
         if output:
             path = Path(output)

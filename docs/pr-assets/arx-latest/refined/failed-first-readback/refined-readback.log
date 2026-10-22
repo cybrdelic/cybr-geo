@@ -1,0 +1,23 @@
+Reopened Refined STEP parts: 25/278
+Reopened Refined STEP parts: 50/278
+Reopened Refined STEP parts: 75/278
+Reopened Refined STEP parts: 100/278
+Reopened Refined STEP parts: 125/278
+Reopened Refined STEP parts: 150/278
+Reopened Refined STEP parts: 175/278
+Reopened Refined STEP parts: 200/278
+Reopened Refined STEP parts: 225/278
+Reopened Refined STEP parts: 250/278
+Traceback (most recent call last):
+  File "C:\Users\alexf\AppData\Local\Temp\cybr-geo-assembly-20261022\repo\.github\scripts\check_latest_arx_geometry.py", line 391, in <module>
+    main()
+  File "C:\Users\alexf\AppData\Local\Temp\cybr-geo-assembly-20261022\repo\.github\scripts\check_latest_arx_geometry.py", line 380, in main
+    result = (verify_refined if args.readback == 'refined' else verify_print_first)(args.output.resolve())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alexf\AppData\Local\Temp\cybr-geo-assembly-20261022\repo\.github\scripts\check_latest_arx_geometry.py", line 169, in verify_refined
+    close(measured['inertia_kg_m2'], expected['inertia_kg_m2'], 'Refined inertia ' + key, atol=1e-12)
+  File "C:\Users\alexf\AppData\Local\Temp\cybr-geo-assembly-20261022\repo\.github\scripts\check_latest_arx_geometry.py", line 73, in close
+    require(actual.shape == expected.shape and np.isfinite(actual).all()
+  File "C:\Users\alexf\AppData\Local\Temp\cybr-geo-assembly-20261022\repo\.github\scripts\check_latest_arx_geometry.py", line 34, in require
+    raise ValueError(message)
+ValueError: Native readback mismatch: Refined inertia 272

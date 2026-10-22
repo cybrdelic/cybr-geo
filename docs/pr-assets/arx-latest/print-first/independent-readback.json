@@ -1,0 +1,161 @@
+{
+  "passed": true,
+  "source_commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "source": {
+    "repository": "https://github.com/cybrdelic/cybr-arx6-compact",
+    "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+    "path": "revisions/p6b-print-first/source/build_structural_prototypes.py",
+    "git_blob_sha1": "aef765032a8e1779078acd0ef763413686989719",
+    "sha256": "8e4c76d215d1f2c1e882f7756e6415ec5dd7bb1ab866b9c341aa0187b7065520"
+  },
+  "construction_code_sha256": {
+    "examples/engineering/arx_compact/print_first.py": "602fba0d9dbda16c3b37794c8b4af0f9b916dd83f51c965a0a0066d29d150a8a",
+    "src/mechanism_lab/manufacturing_joints.py": "06914c57a4bc23272babf671a383093b461c17461f22bb63738dfe7939724c0b",
+    "src/mechanism_lab/manufacturing_gears.py": "0cfd6dfcb890a6cc9544bceb947b44b98276b2bb1b055f76a6a64937e2298770",
+    "src/mechanism_lab/native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7"
+  },
+  "source_input_sha256": {
+    "print-first-fore.brep": "8fcb58eef0407a46ab233fed71248d238e98a50c13c15091bcfd56e1e5e8c738",
+    "print-first-upper.brep": "d1bb7d6de4bc26f44bd18e6872facb034005f44877426089950dc44b552e59d6"
+  },
+  "input_spec_sha256": "fdd92d8045dfb49c96bdb319cd90d62a8513c8660a7e480d5d7c58958c91cc56",
+  "native_build_sha256": "9d401da5821fed929bec5fd770130f8ba5615f441dd69a9bca9680d81564014a",
+  "native_build_canonical_sha256": "9d401da5821fed929bec5fd770130f8ba5615f441dd69a9bca9680d81564014a",
+  "native_build_file_sha256": "bf021f9b01941fa20c6d48b72450128f3c40b8e0fe21a3f83b58ecc4a67c37fd",
+  "native_build_sha256_encoding": "Canonical JSON via physical_model.digest; raw file bytes use native_build_file_sha256",
+  "parts": 6,
+  "placements": 6,
+  "mass_bodies": 4,
+  "native_step_readbacks": 6,
+  "print_local_step_readbacks": 6,
+  "verified_native_artifacts": 29,
+  "verified_print_artifacts": 12,
+  "nominal_interface_checks": [
+    {
+      "name": "proximal_vs_distal",
+      "intersection_volume_mm3": 0.0,
+      "minimum_distance_mm": 0.29999999999998295,
+      "volume_tolerance_mm3": 0.01,
+      "pass": true,
+      "required_minimum_clearance_mm": 0.3,
+      "distance_kernel_allowance_mm": 1e-06,
+      "clearance_passed": true
+    },
+    {
+      "name": "proximal_vs_coupler",
+      "intersection_volume_mm3": 0.0,
+      "minimum_distance_mm": 0.19999999999999574,
+      "volume_tolerance_mm3": 0.01,
+      "pass": true,
+      "required_minimum_clearance_mm": 0.2,
+      "distance_kernel_allowance_mm": 1e-06,
+      "clearance_passed": true
+    },
+    {
+      "name": "distal_vs_coupler",
+      "intersection_volume_mm3": 0.0,
+      "minimum_distance_mm": 0.19999999999999574,
+      "volume_tolerance_mm3": 0.01,
+      "pass": true,
+      "required_minimum_clearance_mm": 0.2,
+      "distance_kernel_allowance_mm": 1e-06,
+      "clearance_passed": true
+    }
+  ],
+  "source_module_scaling": {
+    "reference_pitch_radius_m": 0.003,
+    "pitch_radius_ratio": 4.0,
+    "torque_ratio_for_same_rack_force": 4.0,
+    "rack_force_ratio_at_same_pinion_torque": 0.25,
+    "rack_travel_ratio_per_pinion_radian": 4.0
+  },
+  "print_local_bounds_mm": {
+    "upper-frame-proximal": [
+      [
+        4.999999999999993,
+        4.999999999999993,
+        0.0
+      ],
+      [
+        71.0,
+        185.85,
+        47.0
+      ]
+    ],
+    "upper-frame-distal": [
+      [
+        5.0,
+        5.0,
+        0.0
+      ],
+      [
+        93.0,
+        180.85,
+        48.0
+      ]
+    ],
+    "upper-frame-lap-coupler": [
+      [
+        5.0,
+        5.0,
+        0.0
+      ],
+      [
+        52.6,
+        85.0,
+        31.6
+      ]
+    ],
+    "fore-frame-reinforced": [
+      [
+        5.0,
+        4.999999999999993,
+        0.0
+      ],
+      [
+        84.0,
+        174.0,
+        72.0
+      ]
+    ],
+    "gripper-pinion-tooth-trial": [
+      [
+        4.999999999999526,
+        4.999999999999526,
+        0.0
+      ],
+      [
+        31.400000000000475,
+        31.400000000000475,
+        12.0
+      ]
+    ],
+    "gripper-rack-tooth-trial": [
+      [
+        5.0,
+        5.0,
+        0.0
+      ],
+      [
+        65.318578948924,
+        12.2,
+        12.0
+      ]
+    ]
+  },
+  "print_coordinate_kernel_allowance_mm": 1e-06,
+  "solid_continuum_mass_kg": 0.5290804840712985,
+  "scope": "Pinned source geometry, homogeneous-density properties and nominal CAD interfaces; no dynamics rerun, printed transmission integration, whole-arm load rating or hardware qualification",
+  "elapsed_s": 50.30256060004467,
+  "versions": {
+    "system": "Windows",
+    "machine": "AMD64",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "packages": {
+      "cadquery": "2.8.0",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.5.4",
+      "trimesh": "5.1.1"
+    }
+  }
+}

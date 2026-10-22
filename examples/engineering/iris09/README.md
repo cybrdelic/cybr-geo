@@ -1,6 +1,95 @@
-# IRIS-09 source geometry study
+# IRIS-09 derived mechanism and source geometry
 
-This example constructs the actual IRIS-09 source's nine-leaf geometry and housing features with CYBR GEO's shared `ShapeEvaluator` and `NativeConstruction` services. It exports analytic CAD at a defined reference pose. It is a geometry study; it has no mechanical acceptance gate or physics model.
+IRIS is now an authored client of CYBR GEO's shared construction, physical-model,
+control, MuJoCo and native replay services. The pinned optical source supplies
+the leaf profiles, cant and housing geometry. A separately identified engineering
+adaptation adds a single driven annular rotor, nine bored connecting rods, passive
+leaf shafts, bearings and retaining features. Only the rotor has a motor; the
+leaves respond through the integrated pin constraints and rod forces.
+
+The original source geometry study is retained below. Its prescribed display
+motion and world clipping are separate from the new rigid mechanism.
+
+## Run the derived mechanism
+
+With CYBR GEO installed, from the repository root:
+
+```sh
+lab mechanism iris09 --out outputs/engineering-iris09-derived --step --media --size 800x600 --fps 8
+```
+
+The project uses its declared eight-second cycle. The shared pipeline constructs
+native CAD and full inertias, binds the complete project and shared-service source
+identities, integrates the causal electrical/motor and constrained mechanical
+model, then replays the saved body poses. It writes `engineering.json`, the
+editable physical/control sources, `simulation/trace.json.gz`, native build and
+source-binding receipts, and actual geometry media. Accepted runs write
+`assembly.glb` and the requested analytic STEP; failed runs remain inspectable as
+`diagnostic-assembly.glb` and do not gain a passing result.
+
+The [engineering evidence packet](../../../docs/pr-assets/iris-engineering/README.md)
+contains the measured run, actual native-geometry PNG/GIF and identity checks.
+It was rebuilt with the current shared runtime and linkage helpers. Its original
+nine-pose clearance audit remains separate from the exact native-geometry and
+recorded-state equivalence receipt; no whole-motion clearance claim is inferred.
+The source-derived dimensions and new assumptions are declared in
+[data/mechanism.json](data/mechanism.json); the geometry and physical layout are
+authored together in [mechanism.py](mechanism.py). Shared `PinnedLink`,
+`NativeConstruction`, `PhysicalModel`, `CausalSimulation` and `native_replay`
+provide the reusable implementation. This example supplies no separate physics
+solver or renderer.
+
+## What was added, and what remains assumed
+
+The original shader removes leaf material with a stationary world cylinder at
+each pose. A rigid part cannot do that. The new [leaf construction](leaf_geometry.py)
+makes one invariant crop of the source's two-circle canted slab for the declared
+0–0.9 radian hinge interval. It also removes the continuous swept envelopes of
+neighboring fixed shafts. The source profile and cant remain visible, while the
+crop and shaft keepouts are explicitly new geometry. These particular envelope
+constructions do not establish clearance for every part of the assembly.
+
+The adaptation adds 20 mm connecting rods, 2 mm pins with 0.05 mm nominal
+diametral bore clearance, grooved split retainers, a fixed reaction housing and
+an assumed annular direct-drive torque port. Native interface measurements and
+integrated closure/travel checks have separate receipts. The solver uses ideal
+pin axes and loop constraints; it does not resolve bearing contact, fit or wear.
+No independent actuator or prescribed motion is applied to a follower leaf.
+
+The pin, keeper, bearing lip and rotor heights share one `axial_stack`
+construction. The lower fixed lip starts 0.2 mm above the moving pin/keeper
+envelope; the rotor starts another 0.2 mm above that lip. A native interface
+requirement measures the complete radial moving envelope against the lip. This
+specific planar envelope applies throughout the declared motion, while the
+independent whole-assembly audit remains limited to its recorded sample poses.
+The same stack rejects a keeper that enters the authored radial bearing, and a
+second native envelope check retains at least 0.1 mm nominal separation there.
+These parameter guards require a mating-support redesign when the declared
+stack no longer fits; they do not silently accept arbitrary rod dimensions.
+
+The **50 mm per scene unit conversion remains an assumption**. It preserves the
+source's **0.0325 mm foil thickness**, whose stiffness, buckling, attachment to the
+hub, fatigue and manufacturing tolerance stack are unqualified. The rigid-body
+model treats each leaf/shaft/crank as a rigid assembly. The split retainers have
+nominal CAD capture, but their elastic installation and retention strength are
+not established. Joint travel guards do not establish physical stop hardware.
+Motor electrical, thermal and torque limits and material densities are explicit
+engineering assumptions, not selected supplier data or measurements. Simulation
+acceptance does not establish hardware buildability or a complete continuous
+clearance proof.
+
+Run the focused construction, linkage and replay tests with:
+
+```sh
+python -m pytest tests/test_iris09_mechanism.py tests/test_iris09_leaf_mechanism.py tests/test_linkages.py tests/test_native_replay.py
+```
+
+## Original source geometry study
+
+This separate path constructs the actual IRIS-09 source's nine-leaf geometry and
+housing features with shared `ShapeEvaluator` and `NativeConstruction` services.
+It exports analytic CAD at a defined prescribed reference pose. This path has no
+mechanical acceptance gate or physics model.
 
 ![IRIS-09 reference CAD](evidence/reference.png)
 
@@ -50,7 +139,7 @@ At the default scale, the invariant leaf volume remains about **230.238 mm³**. 
 
 ![Unclipped invariant leaf profiles](evidence/invariant-profiles.png)
 
-The authored hinge positions are mathematical placement frames. The source does not supply hinge pins, a solved pin-slot linkage, actuation closure, a validated torque path, contact dynamics or an established tolerance model. This example adds none of those claims. The source's sampled-clearance comment is not transferred into evidence. Neither geometry checks nor the images establish physical buildability.
+The authored hinge positions are mathematical placement frames. The source does not supply hinge pins, a solved pin-slot linkage, actuation closure, a validated torque path, contact dynamics or an established tolerance model. The original geometry-study path adds none of those claims; the new derived mechanism above has its own geometry and measured scope. The source's sampled-clearance comment is not transferred into evidence. Neither geometry checks nor the images establish physical buildability.
 
 ## Verification and attribution
 

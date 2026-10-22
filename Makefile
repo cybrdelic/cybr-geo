@@ -1,6 +1,6 @@
 .PHONY: test test-core test-mechanisms preview doctor motor media drawings release
 
-ENGINEERING_TESTS := $(wildcard tests/test_engineering_*.py tests/test_arx*.py tests/test_iris*.py)
+ENGINEERING_TESTS := $(wildcard tests/test_engineering_*.py tests/test_arx*.py tests/test_iris*.py tests/test_linkages.py tests/test_native_replay.py tests/test_reference_clock.py tests/test_part_geometry.py tests/test_manufacturing_*.py)
 STUDIO_TESTS := $(wildcard studio/tests/test_*.py)
 
 test-mechanisms:

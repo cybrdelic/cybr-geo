@@ -1,0 +1,9 @@
+{
+  "repository": "cybrdelic/cybr-arx6-compact",
+  "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "path": "revisions/p6b-print-first/source/build_printed_gear_trials.py",
+  "git_blob_sha": "2795680a8120c6165a91298f07215538d9125058",
+  "sha256": "7d8493b46fa73b21e39441c7b41170d9dd5bbfbd570f4cb466e9e0c24e5209e1",
+  "bytes": 4177,
+  "scope": "Unmodified actual source fixture. Tests explicitly invoke main with ROOT rebound to isolated temporary output; original source bytes stay unchanged. No print, contact, strength or robot integration qualification."
+}

@@ -19,6 +19,14 @@ the original three statements between its previous-current test and `requestI`.
 `parameters.json` retains the original motor and gripper data plus the spring,
 brake, soft-limit and gripper-driver specifications needed by the tests.
 
+`source-reference.mjs` is the byte-exact contiguous `controller.mjs` section
+from `const clip=` through `referenceDerivatives`, before `export class
+ArmSimulation`. Its SHA-256 is
+`609ecfefebd8fd77d24a095008f3b2b7b7ee1a7c4c78fe949b64f16209e97886`.
+`reference-oracle.mjs` executes this published task, including its original
+finite-difference derivatives. The Python parity test uses source-default
+parameters; newly authored task policies have separately identified outcomes.
+
 Source limitations are retained: ideal current reset on power loss; lumped
 provisional thermal constants; screening gearbox/belt limits; brake delay and
 dynamic torque assumptions; nominal spring data. The generic safety port adds

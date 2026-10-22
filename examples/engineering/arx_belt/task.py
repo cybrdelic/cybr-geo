@@ -7,8 +7,9 @@ Port of ``reference`` and ``referenceDerivatives`` in the pinned source's
 The reference is a target for a force/torque controller. It does not prescribe
 the actual body state, attach a workpiece, or prove contact/placement success.
 The original finite-difference stencil and angle branch choices are retained,
-including across stage boundaries. This example-specific task is not a core
-trajectory policy.
+including across stage boundaries. The optional lateral-tilt coefficient
+reduces only the authored transfer posture; its default preserves the source.
+This example-specific task is not a core trajectory policy.
 """
 from __future__ import annotations
 
@@ -75,7 +76,7 @@ def _transpose_mul(a, vector):
             a[2] * vector[0] + a[5] * vector[1] + a[8] * vector[2]]
 
 
-def _position(time, parameters):
+def _position(time, parameters, lateral_tilt_scale=1.0):
     t = math.fmod(time, PERIOD_S)
     if t < 0:
         t += PERIOD_S
@@ -106,7 +107,7 @@ def _position(time, parameters):
         tcp, stage = list(high_end), 7
     cfg = parameters['controller']
     gap = cfg['jaw_closed_target_half_gap_m'] if .40 <= h < 3.4 else cfg['jaw_open_half_gap_m']
-    direction = [.15 * hump, -1, direction_sign * .34 * hump]
+    direction = [.15 * hump, -1, direction_sign * .34 * hump * lateral_tilt_scale]
     direction = _scale(direction, 1 / math.hypot(*direction))
     wrist = _sub(tcp, _scale(direction, parameters['tool_length_m']))
     delta = _sub(wrist, [0, parameters['shoulder_height_m'], 0])
@@ -132,21 +133,28 @@ def _position(time, parameters):
     return dict(q=[q1, q2, q3, q4, q5, q6], gap=gap, stage=stage)
 
 
-def reference(time: float, parameters: Mapping) -> dict:
+def reference(time: float, parameters: Mapping, *, lateral_tilt_scale: float = 1.0) -> dict:
     """Return q [rad], qd [rad/s], qdd [rad/s²], half-gap [m], and stage.
 
     Accepts arbitrary finite times, including negative times and later cycles.
     Derivatives use the original centred 0.00025-second stencil without angle
     unwrapping or smoothing; gap remains the source's switched half-gap target.
-    Parameters are read only. No integration or body-state mutation occurs.
+    ``lateral_tilt_scale=1`` preserves the pinned source posture. Values in
+    [0, 1] reduce the sideways transfer tilt while retaining the forward tilt,
+    source roll, TCP targets and IK equations. This changes the desired joint
+    path, not the physical model. Parameters are read only; no body state is
+    imposed. Contact, braking and task success require separate simulation.
     """
     if isinstance(time, bool) or not isinstance(time, (int, float)) or not math.isfinite(time):
         raise ValueError('Reference time must be a finite number of seconds')
     if not isinstance(parameters, Mapping):
         raise TypeError('Reference parameters must be the source parameter mapping')
-    result = _position(time, parameters)
-    before = _position(time - DERIVATIVE_STEP_S, parameters)['q']
-    after = _position(time + DERIVATIVE_STEP_S, parameters)['q']
+    if (isinstance(lateral_tilt_scale, bool) or not isinstance(lateral_tilt_scale, (int, float))
+            or not math.isfinite(lateral_tilt_scale) or not 0 <= lateral_tilt_scale <= 1):
+        raise ValueError('lateral_tilt_scale must be finite and within [0, 1]')
+    result = _position(time, parameters, lateral_tilt_scale)
+    before = _position(time - DERIVATIVE_STEP_S, parameters, lateral_tilt_scale)['q']
+    after = _position(time + DERIVATIVE_STEP_S, parameters, lateral_tilt_scale)['q']
     result['qd'] = [(b - a) / (2 * DERIVATIVE_STEP_S) for a, b in zip(before, after)]
     result['qdd'] = [(b - 2 * q + a) / (DERIVATIVE_STEP_S * DERIVATIVE_STEP_S)
                      for q, a, b in zip(result['q'], before, after)]

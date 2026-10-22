@@ -1,0 +1,17 @@
+{
+  "schema": "cybrgeo-geometry-client-run/1",
+  "output": "C:\\Users\\alexf\\AppData\\Local\\Temp\\cybr-geo-assembly-20261022\\repo\\outputs\\arx-compact-refined-accepted-resumed",
+  "parts": 278,
+  "changed_parts": 123,
+  "captured_time_s": 2.5,
+  "geometry_density_mass_delta_kg": -0.004916670604505643,
+  "build_and_reconciliation_seconds": 141.80714020004962,
+  "render_seconds": 9.500558899948373,
+  "media_sha256": {
+    "reference.png": "95873dae9bc33228bebe9488ab5635cb01908c7f6aa3c85a8626460f2b0844bf"
+  },
+  "property_reconciliation_sha256": "397edb4b7205a56a79e6c41f0f5a959aa2224b3c06fc5637462d2e0cf415c2dd",
+  "passed": true,
+  "dynamics_rerun": false,
+  "hardware_qualified": false
+}

@@ -1,0 +1,3096 @@
+{
+  "model": "ARX belt / integrated native geometry",
+  "requested_intent": "inspection",
+  "resolved_intent": "inspection",
+  "allow_estimates": false,
+  "passed": true,
+  "part_count": 385,
+  "tier_counts": {
+    "authoritative": 385
+  },
+  "blocked": [],
+  "uncertain": [],
+  "parts": [
+    {
+      "name": "fixed__large_bearing_housing_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__large_rear_bearing_cover_1",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__large_front_bearing_cover_2",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_inner_race_spacer_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_DIN471_installed_retainer_1",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_selective_inner_race_shim_2",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J1_output_shaft",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_bearing_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_bearing_-34",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__large_brake_front_adapter_5",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_strut_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_strut_1",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_strut_2",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_strut_3",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_stator",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J1_brake_armature",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_brake_keyed_hub_5",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_brake_shaft_key_6",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J1_integral_stop_target",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_stop_pin_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_stop_pin_1",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_back_adapter",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_index_sensor",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_sensor_mount",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_spacer_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_spacer_1",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_spacer_2",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_spacer_3",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_spacer_4",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_brake_spacer_5",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_gearhead",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_motor",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_carrier_deck",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_housing_rails",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_front_cover",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_tension_block",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_tension_screw",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_timing_belt",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_drive_pulley",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_input_support_bearing",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_input_shaft",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J1_driven_pulley",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J1_pulley_output_key",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_pulley_input_key",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_gear_mount_screw_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_gear_mount_screw_1",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_gear_mount_screw_2",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_gear_mount_screw_3",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_carrier_screw_0",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_carrier_screw_1",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_carrier_screw_2",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__J1_carrier_screw_3",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_bearing_housing_10",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_rear_bearing_cover_11",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_front_bearing_cover_12",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_inner_race_spacer_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_DIN471_installed_retainer_1",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_selective_inner_race_shim_2",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J2_output_shaft",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_bearing_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_bearing_-34",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__large_brake_front_adapter_15",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_strut_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_strut_1",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_strut_2",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_strut_3",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_stator",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J2_brake_armature",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_brake_keyed_hub_5",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_brake_shaft_key_6",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J2_integral_stop_target",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_stop_pin_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_stop_pin_1",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_back_adapter",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_index_sensor",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_sensor_mount",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_spacer_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_spacer_1",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_spacer_2",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_spacer_3",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_spacer_4",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_brake_spacer_5",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_gearhead",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_motor",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_carrier_deck",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_housing_rails",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_front_cover",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_tension_block",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_tension_screw",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_timing_belt",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_drive_pulley",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_input_support_bearing",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_input_shaft",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J2_driven_pulley",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J2_pulley_output_key",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_pulley_input_key",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_gear_mount_screw_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_gear_mount_screw_1",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_gear_mount_screw_2",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_gear_mount_screw_3",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_carrier_screw_0",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_carrier_screw_1",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_carrier_screw_2",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__J2_carrier_screw_3",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_bearing_housing_10",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_rear_bearing_cover_11",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_front_bearing_cover_12",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__large_inner_race_spacer_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__large_DIN471_installed_retainer_1",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__large_selective_inner_race_shim_2",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J3_output_shaft",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_bearing_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_bearing_-34",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__large_brake_front_adapter_15",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_strut_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_strut_1",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_strut_2",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_strut_3",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_stator",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J3_brake_armature",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__large_brake_keyed_hub_5",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__large_brake_shaft_key_6",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J3_integral_stop_target",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_stop_pin_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_stop_pin_1",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_back_adapter",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_index_sensor",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_sensor_mount",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_spacer_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_spacer_1",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_spacer_2",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_spacer_3",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_spacer_4",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_brake_spacer_5",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_gearhead",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_motor",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_carrier_deck",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_housing_rails",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_front_cover",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_tension_block",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_tension_screw",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_timing_belt",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_drive_pulley",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_input_support_bearing",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_input_shaft",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J3_driven_pulley",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J3_pulley_output_key",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_pulley_input_key",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_gear_mount_screw_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_gear_mount_screw_1",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_gear_mount_screw_2",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_gear_mount_screw_3",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_carrier_screw_0",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_carrier_screw_1",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_carrier_screw_2",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__J3_carrier_screw_3",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__small_bearing_housing_10",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__small_rear_bearing_cover_11",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__small_front_bearing_cover_12",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_inner_race_spacer_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_DIN471_installed_retainer_1",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_selective_inner_race_shim_2",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J4_output_shaft",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_bearing_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_bearing_-20",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__small_brake_front_adapter_15",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_strut_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_strut_1",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_strut_2",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_strut_3",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_stator",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J4_brake_armature",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_brake_keyed_hub_5",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_brake_shaft_key_6",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J4_integral_stop_target",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_stop_pin_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_stop_pin_1",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_back_adapter",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_index_sensor",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_sensor_mount",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_spacer_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_spacer_1",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_brake_spacer_2",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gearhead",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_motor",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_carrier_deck",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_housing_rails",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_front_cover",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_tension_block",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_tension_screw",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_timing_belt",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_drive_pulley",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_input_support_bearing",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_input_shaft",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J4_driven_pulley",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J4_pulley_output_key",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_pulley_input_key",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gear_mount_screw_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gear_mount_screw_1",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gear_mount_screw_2",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gear_mount_screw_3",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gear_mount_screw_4",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_gear_mount_screw_5",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_carrier_screw_0",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_carrier_screw_1",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_carrier_screw_2",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__J4_carrier_screw_3",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_bearing_housing_10",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_rear_bearing_cover_11",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_front_bearing_cover_12",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_inner_race_spacer_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_DIN471_installed_retainer_1",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_selective_inner_race_shim_2",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J5_output_shaft",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_bearing_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_bearing_-20",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__small_brake_front_adapter_15",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_strut_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_strut_1",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_strut_2",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_strut_3",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_stator",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J5_brake_armature",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_brake_keyed_hub_5",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_brake_shaft_key_6",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J5_integral_stop_target",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_stop_pin_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_stop_pin_1",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_back_adapter",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_index_sensor",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_sensor_mount",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_spacer_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_spacer_1",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_brake_spacer_2",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gearhead",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_motor",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_carrier_deck",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_housing_rails",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_front_cover",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_tension_block",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_tension_screw",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_timing_belt",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_drive_pulley",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_input_support_bearing",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_input_shaft",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J5_driven_pulley",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J5_pulley_output_key",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_pulley_input_key",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gear_mount_screw_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gear_mount_screw_1",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gear_mount_screw_2",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gear_mount_screw_3",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gear_mount_screw_4",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_gear_mount_screw_5",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_carrier_screw_0",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_carrier_screw_1",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_carrier_screw_2",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_carrier_screw_3",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_bearing_housing_10",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_rear_bearing_cover_11",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_front_bearing_cover_12",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__small_inner_race_spacer_0",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__small_DIN471_installed_retainer_1",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__small_selective_inner_race_shim_2",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__J6_output_shaft",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_bearing_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_bearing_-20",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__small_brake_front_adapter_15",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_strut_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_strut_1",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_strut_2",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_strut_3",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_stator",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__J6_brake_armature",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__small_brake_keyed_hub_5",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__small_brake_shaft_key_6",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__J6_integral_stop_target",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_stop_pin_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_stop_pin_1",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_back_adapter",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_index_sensor",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_sensor_mount",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_spacer_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_spacer_1",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_brake_spacer_2",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gearhead",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_motor",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_carrier_deck",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_housing_rails",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_front_cover",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_tension_block",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_tension_screw",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_timing_belt",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_drive_pulley",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_input_support_bearing",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_input_shaft",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__J6_driven_pulley",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__J6_pulley_output_key",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_pulley_input_key",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gear_mount_screw_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gear_mount_screw_1",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gear_mount_screw_2",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gear_mount_screw_3",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gear_mount_screw_4",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_gear_mount_screw_5",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_carrier_screw_0",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_carrier_screw_1",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_carrier_screw_2",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__J6_carrier_screw_3",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_plate_42",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__pedestal_sleeve_43",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_backing_washer_44",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_bolt_45",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_nut_46",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_backing_washer_47",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_bolt_48",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_nut_49",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_backing_washer_50",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_bolt_51",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_nut_52",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_backing_washer_53",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_bolt_54",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_nut_55",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_backing_washer_56",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_bolt_57",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_nut_58",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_backing_washer_59",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_bolt_60",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__bench_mount_nut_61",
+      "group": "fixed_hardware",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__turret_yoke_52",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__upper_link_tube_52",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__upper_root_ear_53",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__upper_nut_strip_54",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__fore_link_tube_51",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__fore_root_ear_52",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__fore_nut_strip_53",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__upper_elbow_housing_clamp_55",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__fore_roll_housing_clamp_54",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__fore_clamp_side_shims_55",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__wrist_roll_fork_51",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__idle_bearing_inner_cover_52",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__idle_bearing_outer_cover_53",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "roll__J5_idle_bearing",
+      "group": "roll",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__wrist_bend_cradle_51",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "bend__wrist_idle_trunnion_52",
+      "group": "bend",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_bridge_10",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_motor",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_pinion_m0p3_z20_12",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__pinion_front_bushing_13",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__guide_rod_-10",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__guide_rod_10",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "jaw__right_jaw_carriage_0",
+      "group": "jaw_left",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "jaw__finger_pad_1",
+      "group": "jaw_left",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "jaw__jaw_guide_bushing_2",
+      "group": "jaw_left",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "jaw__jaw_guide_bushing_3",
+      "group": "jaw_left",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "jaw__upper_rack",
+      "group": "jaw_left",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_cable_clamp_mount_16",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_cable_clamp_base_17",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_cable_clamp_cap_18",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "tool__gripper_cable_clamp_liner_19",
+      "group": "tool",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__shoulder_spring_fixed_clevis_53",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__shoulder_spring_moving_clevis_56",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__shoulder_spring_nut_plate_57",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__spring_eye_pin_54",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__spring_eye_pin_58",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "turret__spring_eye_pin_55",
+      "group": "turret",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__spring_eye_pin_59",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__elbow_spring_fixed_clevis_62",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__elbow_fixed_anchor_nut_strips_63",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__elbow_spring_moving_clevis_56",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__elbow_moving_anchor_nut_plate_57",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__spring_eye_pin_64",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__spring_eye_pin_58",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "upper__spring_eye_pin_65",
+      "group": "upper",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fore__spring_eye_pin_59",
+      "group": "fore",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "opposed_jaw__left_jaw_carriage",
+      "group": "jaw_right",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "opposed_jaw__finger_pad_1",
+      "group": "jaw_right",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "opposed_jaw__jaw_guide_bushing_2",
+      "group": "jaw_right",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "opposed_jaw__jaw_guide_bushing_3",
+      "group": "jaw_right",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "opposed_jaw__lower_rack",
+      "group": "jaw_right",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "puck__free_workpiece",
+      "group": "puck",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "world__nest_A_base",
+      "group": "world",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "world__nest_A_seat",
+      "group": "world",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "world__nest_B_base",
+      "group": "world",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "world__nest_B_seat",
+      "group": "world",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    }
+  ],
+  "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
+}

@@ -19,6 +19,32 @@ with a 0.00025-second step. It neither unwraps angles nor changes the reference
 to suit a solver. The task outputs controller targets; it does not prescribe
 actual body motion or attach the workpiece.
 
+The default project authors its operating policy in `data/default-task.json`.
+It removes the source's lateral wrist tilt during transfer while retaining its
+TCP path, endpoints, forward tilt, roll formula and inverse-kinematics branch.
+This reduces gravity loading on the wrist brake during a transfer stop; it is
+an explicit change to requested orientation, not increased brake capacity.
+Calling `task.reference` without the optional policy argument still executes
+the original source oracle above.
+
+The project applies the shared `mechanism_lab.reference_clock.PhaseClock` to
+that authored reference. Source and physical knot times declare a complete
+default cycle of 17.4 seconds.
+Transfer uses rate 0.5 and loaded descent rate 0.2. Requested velocity scales
+with rate and acceleration with rate squared. Every changed-rate join is
+screened at two probe widths for continuity and stationarity before simulation;
+the source stencil's small numerical residuals are retained with explicit
+tolerances in `reference_clock_validation`. This is a bounded numerical screen,
+not an analytic trajectory certificate.
+
+The same map converts the source placement landmarks (4.9 and 9.9 seconds) and
+fault phases into physical times. Source scenario names retain their original
+time labels; receipts state both the requested phase and actual trigger time.
+Original-clock checks and matched-phase checks are distinguished. The operating
+policy changes requested speed and transfer orientation. Motor, brake, spring
+and belt ratings and source fault thresholds remain unchanged. The plain
+`task.reference` API above remains the source oracle.
+
 Run the independent Python/JavaScript comparison from the repository root:
 
 ```sh

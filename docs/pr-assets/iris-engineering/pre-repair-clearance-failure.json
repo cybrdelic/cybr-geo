@@ -1,0 +1,917 @@
+{
+  "schema": "cybrgeo-sampled-native-clearance-audit-failure/1",
+  "status": "failed; audit stopped after completing two poses once the repeatable collision was identified",
+  "native_parts": 68,
+  "cross_body_pairs_per_pose": 2103,
+  "pose_count": 2,
+  "native_distances": 450,
+  "aabb_pruned": 3756,
+  "native_intersections": 9,
+  "no_material_intersections": false,
+  "diagnosis": "Every leaf crank output-pin tip enters the fixed lower rotor-bearing lip at the intermediate pose. Pin top Z32.6 mm; lip occupies Z32.5..32.8 mm, inner radius63 mm.",
+  "identity": {
+    "native_directory": "outputs\\engineering-iris09-derived\\native",
+    "trace_sha256": "94d781a11f70efa2df34e242007ac07709592b09fec3fefdb7eac20d4c378cf0",
+    "model_sha256": "4b04d5be073be6a5dab5c68ef8553952e2d680fddf0e61f20d867af513f546fc",
+    "native_build_sha256": "7b6150bb68ac69ccf21c05e3689bee688abf9e78f6b0190389fbc4342711a084",
+    "native_source_binding_sha256": "9efa9419f47884708cc718718ecfd83cf2e04dd36213e1c9728653174d1b7e8d"
+  },
+  "method": "Native STEP bodies placed at recorded integrated body poses; all cross-body pairs, conservative AABB pruning then BRep distance and zero-distance BRep intersection.",
+  "scope": "Two complete sampled poses only. A subsequent partial pose was interrupted and is excluded. No continuous articulated envelope claim.",
+  "poses": [
+    {
+      "time_s": 0.0,
+      "cross_body_pairs": 2103,
+      "aabb_pruned": 1879,
+      "native_distances": 224,
+      "native_intersections": 0,
+      "minimum_distance_mm": 0.024999999994753015,
+      "overlaps": [],
+      "touches": [],
+      "pairs_within_0_1mm": [
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999994534
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999689906
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999834505
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999638235
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995506
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995495636
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999964256
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999677527
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999949935
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.04999999999999716
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999950536
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_01/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687597
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687601
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999999431
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999515875
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "leaf_02/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687594
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999919477
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999502913
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "leaf_03/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687596
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999995134702
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999506275
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "leaf_04/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687593
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999922548
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999950507
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "leaf_05/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687596
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999994753015
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999950492
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "leaf_06/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687633
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999996264392
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999523233
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "leaf_07/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687601
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000016342
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999502448
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890942097687597
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000009237
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999505328
+        },
+        {
+          "time_s": 0.0,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999834713
+        }
+      ]
+    },
+    {
+      "time_s": 0.9996,
+      "cross_body_pairs": 2103,
+      "aabb_pruned": 1877,
+      "native_distances": 226,
+      "native_intersections": 9,
+      "minimum_distance_mm": 0.0,
+      "overlaps": [
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297214174,
+          "artifact": "overlap-001.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297220773,
+          "artifact": "overlap-002.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297248765,
+          "artifact": "overlap-003.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297288014,
+          "artifact": "overlap-004.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297292223,
+          "artifact": "overlap-005.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.0256633382972987,
+          "artifact": "overlap-006.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.02566333829728175,
+          "artifact": "overlap-007.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297255374,
+          "artifact": "overlap-008.step"
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297228715,
+          "artifact": "overlap-009.step"
+        }
+      ],
+      "touches": [],
+      "pairs_within_0_1mm": [
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999978224
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999966792
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999826713
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999996555496
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999552373
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995512834
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999981717
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999703752
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999950118
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.04999999999999716
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499983231269054
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_01/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200795
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200806
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999994277
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297214174
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499983231267766
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "leaf_02/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200798
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999094597
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297220773
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499983231267988
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "leaf_03/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200788
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.0249999999950688
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297248765
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999832312704307
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "leaf_04/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.0851305927820079
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999310376
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297288014
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999832312687653
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "leaf_05/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.0851305927820081
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999995205646
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297292223
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999832312685433
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "leaf_06/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200791
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999996489927
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.0256633382972987
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999832312698533
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "leaf_07/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200792
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999988177
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.02566333829728175
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499983231268743
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08513059278200796
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000009237
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297255374
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499983231268943
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999843668
+        },
+        {
+          "time_s": 0.9996,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.0,
+          "intersection_volume_mm3": 0.025663338297228715
+        }
+      ]
+    }
+  ],
+  "unexpected_intersections": [
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_00/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297214174,
+      "artifact": "overlap-001.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_01/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297220773,
+      "artifact": "overlap-002.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_02/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297248765,
+      "artifact": "overlap-003.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_03/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297288014,
+      "artifact": "overlap-004.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_04/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297292223,
+      "artifact": "overlap-005.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_05/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.0256633382972987,
+      "artifact": "overlap-006.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_06/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.02566333829728175,
+      "artifact": "overlap-007.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_07/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297255374,
+      "artifact": "overlap-008.step"
+    },
+    {
+      "time_s": 0.9996,
+      "parts": [
+        "leaf_08/leaf_shaft_crank",
+        "fixed/housing_material_2"
+      ],
+      "distance_mm": 0.0,
+      "intersection_volume_mm3": 0.025663338297228715,
+      "artifact": "overlap-009.step"
+    }
+  ],
+  "files_sha256": {
+    "overlap-001.step": "b9fdb70c62f04fa2b378379aeb9deed8862e088c7d93895a4bb95f111ee2cea1",
+    "overlap-002.step": "8032ab55074042e73199712d69eef8b7709e99882769710380f9ac6c9fdb9dda",
+    "overlap-003.step": "13e93c3acce6d508fcb351979a05bd929a8b497854fd5e708c93fdaab498c0ac",
+    "overlap-004.step": "66d76113ca4731d13b00e5da4c06271bd41df0ff75e705ad663dd87d2acce620",
+    "overlap-005.step": "16078125c5d25b8c1b13fe36ea959d49731ca0ec9f32e8fb3b979dd9d6969e37",
+    "overlap-006.step": "93366467ae93252f186188280ae94190e214fab1247c4d9bd3d878cfbe10b37c",
+    "overlap-007.step": "d3278cb0888c5dac85d8650970ac42a8721079b24c7d4a2d806a055b919d8cb7",
+    "overlap-008.step": "cc3bc73b37f30b3a1b8ef80913fdd38d3127ad96bd91e609220f0fdbaf4a99a7",
+    "overlap-009.step": "eeb654205932cd451172e79904628205d364b65b72dc36488ea7be798bc2ff1d",
+    "native-build.json": "6bd632c8090a1dedc645b924de770a82dea7fc8af8683c577596814c5dc5ccc1",
+    "native-source-binding.json": "7168220f1629b0021a0cd32884d5f21c6797f3625b2ceb6bd0587a0cbe98ead0",
+    "mechanism-layout.json": "3e626752ddcd1f893c12a61882fe22e98bb88ce3408d54ace482a98a74512cbf"
+  }
+}

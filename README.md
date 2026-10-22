@@ -10,14 +10,25 @@ electrical drives, springs, brakes and MuJoCo feed the existing assembly and
 rendering API. The default ARX belt example directly reuses its published source
 and transfers an independent puck through simulated contact. Examples supply
 designs and tasks; construction, control and replay services are shared.
+The dynamic ARX client targets the pinned P5 belt source. The latest inspected
+Refined/P6B source also feeds shared native-part, joint and gear construction;
+its static geometry and print prototypes retain separate evidence from the
+belt dynamics.
 [Architecture and evidence](docs/CONSTRUCTIVE_MECHANISMS.md) ·
-[Author a mechanism](docs/MECHANISM_SOURCE.md).
+[Author a mechanism](docs/CONSTRUCTIVE_MECHANISMS.md#author-another-project).
 
-![ARX through the shared engineering pipeline: recorded MuJoCo motion](docs/pr-assets/arx-engineering/motion.gif)
+![ARX through the shared engineering pipeline: recorded MuJoCo motion](docs/pr-assets/arx-faults/integrated-motion.gif)
 
 *Fresh native CAD posed by integrated body states. Puck motion comes from contact,
-not an attachment or animation path. [Evidence and limits](docs/pr-assets/arx-engineering/README.md).
-IRIS remains a source-derived geometric study; hardware is unqualified.*
+not an attachment or animation path. [Motion evidence and limits](docs/pr-assets/arx-faults/MEDIA.md).
+The IRIS example uses a new single-motor, nine-link adaptation of its source
+geometry. Both use the same engineering services; hardware is unqualified.*
+
+[IRIS motion, native CAD and causal controls](docs/pr-assets/iris-engineering/README.md)
+show the same pipeline driving nine passive leaves from one motor.
+[Refined/P6B construction and native evidence](docs/pr-assets/arx-latest/README.md)
+show actual selected BREP geometry and six print-first test articles through
+the shared part, joint and gear services.
 
 ![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
 
@@ -55,7 +66,7 @@ lab mechanism --step --media
 ```
 
 `lab mechanism` builds the actual ARX belt example through shared services and
-runs its ten-second causal contact task. **`outputs/arx_belt/`** contains native
+runs its 17.4-second causal contact task. **`outputs/arx_belt/`** contains native
 and placed STEP, GLB, material/mass records, editable physical source, motor
 results, simulation traces and actual rendered PNG/GIF views. Allow several
 minutes for initial construction. Ratings and material properties remain
@@ -71,7 +82,8 @@ Use `lab preview example_flange` for the previous quick static example.
 
 ```bash
 lab mechanism arx_belt --step --media
-lab animate arx_belt --seconds 10
+lab mechanism iris09 --step --media
+lab animate arx_belt --seconds 17.4
 lab mechanism examples/constructed/compact_arm.json --step --media
 lab preview nitinol_fiber_actuator --spp 64
 lab preview examples/custom_flange.py --step
@@ -89,6 +101,8 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
 | Engineering source | [Project protocol](src/mechanism_lab/engineering_source.py), [native construction](src/mechanism_lab/native_construction.py), [CSG DAG](src/mechanism_lab/shape_dag.py), [physical tree](src/mechanism_lab/physical_model.py) |
 | Causal engineering execution | [Shared pipeline](src/mechanism_lab/engineering_pipeline.py), [electromechanical kernels](src/mechanism_lab/actuation.py), [MuJoCo runtime](src/mechanism_lab/causal_runtime.py), [recorded replay](src/mechanism_lab/physical_replay.py) |
+| Passive mechanism construction | [Pinned links](src/mechanism_lab/linkages.py), [native CAD replay](src/mechanism_lab/native_replay.py), [IRIS client](examples/engineering/iris09/README.md) |
+| Source-aware manufacturing geometry | [Native part resolver](src/mechanism_lab/part_geometry.py), [coupled tube/splice interfaces](src/mechanism_lab/manufacturing_joints.py), [involute pinion/rack](src/mechanism_lab/manufacturing_gears.py), [Refined/P6B clients](examples/engineering/arx_compact/README.md) |
 | Component document compatibility | [Component compiler](src/mechanism_lab/construction.py), [continuous path clearance](src/mechanism_lab/motion_envelope.py), [Studio](studio/README.md) |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |

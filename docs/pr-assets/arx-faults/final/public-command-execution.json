@@ -1,0 +1,45 @@
+{
+  "public_command": [
+    "${PYTHON_EXECUTABLE}",
+    "-m",
+    "mechanism_lab",
+    "mechanism",
+    "--step",
+    "--out",
+    "outputs/engineering-arx-core-final"
+  ],
+  "timeout_s": 1800.0,
+  "passed": true,
+  "stages": [
+    {
+      "name": "default-command",
+      "elapsed_s": 1178.6729632999632,
+      "passed": true,
+      "returncode": 0
+    },
+    {
+      "name": "independent-readback",
+      "elapsed_s": 74.47312450001482,
+      "passed": true,
+      "returncode": 0
+    }
+  ],
+  "elapsed_s": 1253.1533693000092,
+  "completed_markers": {
+    "native/native-build.json": true,
+    "native/native-source-binding.json": true,
+    "engineering.json": true,
+    "simulation/simulation.json": true,
+    "arx_belt.step": true,
+    "assembly.glb": true,
+    "ci-readback.json": true
+  },
+  "native_files_written": 630,
+  "public_derivation": {
+    "schema": "cybrgeo-public-evidence-path-derivation/1",
+    "original_bytes": 927,
+    "original_sha256": "76b615e0c8165baa8991e058bcb25df423ef692af51549363b16dcec0c58b3e9",
+    "provenance_file": "publication-provenance.json",
+    "scope": "Path-substituted public copy; not byte-identical to the recorded execution receipt."
+  }
+}

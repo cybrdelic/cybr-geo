@@ -5,8 +5,10 @@ must resolve names, apply motor forces, and leave free-body integration alone.
 """
 from copy import deepcopy
 import gzip
+import hashlib
 import json
 import math
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -80,6 +82,41 @@ def test_free_workpiece_contact_friction_has_causal_effect_without_pose_commands
         assert np.all(sim.data.qfrc_applied[:6] == 0)
         assert np.all(sim.data.xfrc_applied == 0)
     assert nominal.model.jnt_type[nominal.model.joint('free_workpiece').id] == nominal.mj.mjtJoint.mjJNT_FREE
+
+
+@pytest.mark.parametrize('explicit_pair', [False, True])
+def test_friction_intervention_scales_native_contact_sources_and_changes_free_motion(explicit_pair):
+    xml = XML if explicit_pair else XML.replace(
+        '<contact><pair geom1="floor" geom2="block" friction=".8 .8 .01 .001 .001"/></contact>', '')
+    nominal = make(xml=xml)
+    slippery = make({'frictionScale': .001}, xml=xml)
+    assert nominal.model.npair == int(explicit_pair)
+    np.testing.assert_array_equal(slippery.model.geom_friction, nominal.model.geom_friction*.001)
+    np.testing.assert_array_equal(slippery.model.pair_friction, nominal.model.pair_friction*.001)
+    nominal.run(.3, output_hz=10)
+    slippery.run(.3, output_hz=10)
+    assert slippery.data.qpos[0]-nominal.data.qpos[0] > .03
+    assert np.all(slippery.data.qfrc_applied[:6] == 0)
+    assert np.all(slippery.data.xfrc_applied == 0)
+
+
+@pytest.mark.parametrize('explicit_pair', [False, True])
+def test_scheduled_friction_change_uses_original_coefficients_without_compounding(explicit_pair):
+    xml = XML if explicit_pair else XML.replace(
+        '<contact><pair geom1="floor" geom2="block" friction=".8 .8 .01 .001 .001"/></contact>', '')
+    initial = make({'frictionScale': .5}, xml=xml)
+    changed = make({'frictionScale': .5, 'frictionChangeTime': .002, 'frictionAfterScale': .001}, xml=xml)
+    for _ in range(2):
+        initial.step()
+        changed.step()
+        np.testing.assert_array_equal(changed.data.qpos, initial.data.qpos)
+    changed.step()
+    np.testing.assert_array_equal(changed.model.geom_friction, changed.base_geom_friction*.001)
+    np.testing.assert_array_equal(changed.model.pair_friction, changed.base_pair_friction*.001)
+    changed.step()
+    np.testing.assert_array_equal(changed.model.geom_friction, changed.base_geom_friction*.001)
+    np.testing.assert_array_equal(changed.model.pair_friction, changed.base_pair_friction*.001)
+    assert changed.friction_changed
 
 
 def test_fault_delayed_brake_native_constraint_and_watchdog():
@@ -170,3 +207,300 @@ def test_source_identity_is_snapshot_of_compiled_model_control_and_reference():
     assert report['reference_sha256'] == expected_reference
     assert report['reference_source']['q'] == [.3]
     assert sim.control['drives'][0]['motor']['peak_current_A'] == 10
+
+
+def passive_model(equality='<connect name="closure" site1="rod_tip" site2="passive_tip"/>',
+                  *, extra='', key='.2 .01 .2 -.2', velocity='0 0 0 0', armature=0., damping=.01):
+    # Passive hinge and spring-loaded slide deliberately precede the driven DOF.
+    # A parallelogram four-bar couples the hinges through a passive rod and
+    # actual connect forces. No passive position target or actuator is supplied.
+    return f'''<mujoco><compiler angle="radian"/>
+      <option timestep=".001" gravity="0 0 0" integrator="implicitfast"/>
+      <worldbody>
+        <body name="passive" pos=".2 0 0"><joint name="follower" axis="0 0 1"/>
+          <inertial pos="0 0 0" mass="1" diaginertia=".01 .01 .01"/>
+          <site name="passive_tip" pos=".1 0 0"/>
+        </body>
+        <body name="slider" pos="2 0 0"><joint name="translation" type="slide" axis="1 0 0"
+            stiffness="10000" damping=".1"/>
+          <inertial pos="0 0 0" mass="1" diaginertia=".01 .01 .01"/>
+        </body>
+        <body name="input"><joint name="swing" axis="0 0 1" armature="{armature}" damping="{damping}"/>
+          <inertial pos="0 0 0" mass="1" diaginertia=".01 .01 .01"/>
+          <site name="input_tip" pos=".1 0 0"/>
+          <body name="rod" pos=".1 0 0"><joint name="rod_hinge" axis="0 0 1"/>
+            <inertial pos=".1 0 0" mass=".1" diaginertia=".0001 .0004 .0004"/>
+            <site name="rod_tip" pos=".2 0 0"/>
+          </body>
+        </body>
+      </worldbody>{extra}<equality>{equality}</equality>
+      <actuator><motor name="motor" joint="swing"/></actuator>
+      <keyframe><key name="start" qpos="{key}" qvel="{velocity}"/></keyframe>
+    </mujoco>'''
+
+
+def passive_sim(xml=None, **kwargs):
+    cfg = control()
+    cfg.update(inertial_feedforward=False, gravity_and_coriolis_feedforward=False)
+    cfg['drives'][0].update(kp=5., kd=.3)
+    cfg['drives'][0].pop('brake')
+    return make(xml=xml or passive_model(), ctrl=cfg,
+                ref=lambda t: dict(q=[.6], qd=[0.], qdd=[0.]), **kwargs)
+
+
+def test_undeclared_position_actuator_cannot_secretly_drive_a_passive_coordinate():
+    xml = passive_model().replace('</actuator>', '<position name="hidden_servo" joint="follower" kp="10"/></actuator>')
+    with pytest.raises(ValueError, match='undeclared.*hidden_servo'):
+        passive_sim(xml)
+
+
+def test_declared_rack_is_included_in_complete_actuator_coverage():
+    cfg = control()
+    cfg.pop('initial_keyframe')
+    cfg['rack'] = dict(joints=['jaw_left', 'jaw_right'], actuator='rack_motor',
+        motor=deepcopy(cfg['drives'][0]['motor']), pinion_pitch_radius_m=.01,
+        max_jaw_velocity_m_s=.1, position_to_velocity_gain_per_s=10., velocity_force_gain_N_s_m=1.,
+        output_torque_limit_Nm=.1, output_torque_per_current_Nm_A=.5, no_load_current_A=.01,
+        current_budget=dict(continuous_current_A=1., peak_current_A=2., peak_budget_s=.1))
+    xml = passive_model('').split('<keyframe>')[0] + '</mujoco>'
+    jaws = ''.join(f'<body name="{name}"><joint name="{name}" type="slide" axis="1 0 0"/>'
+                   '<inertial pos="0 0 0" mass="1" diaginertia=".01 .01 .01"/></body>'
+                   for name in cfg['rack']['joints'])
+    xml = xml.replace('</worldbody>', jaws + '</worldbody><tendon><fixed name="rack">'
+        '<joint joint="jaw_left" coef="50"/><joint joint="jaw_right" coef="50"/></fixed></tendon>')
+    xml = xml.replace('</actuator>', '<motor name="rack_motor" tendon="rack"/></actuator>')
+    sim = make(ctrl=cfg, xml=xml, ref=lambda t: dict(q=[0.], qd=[0.], qdd=[0.], gap=.01))
+    result = sim.run(.002)
+    assert sim.model.nu == 2
+    assert result['metrics']['joints']['jaw_left']['position_unit'] == 'm'
+    assert sim.data.qfrc_actuator[sim.rack_vadr[0]] > 0
+    rack = result['metrics']['rack_motor']
+    assert rack['samples'] == 2 and rack['peak_current_A'] > 0
+    assert rack['peak_current_A'] == pytest.approx(abs(rack['peak_absolute_current']['value']))
+    assert rack['peak_output_torque_Nm'] > 0
+
+
+def test_all_scalar_joint_extrema_cover_unsaved_steps_and_repeated_runs():
+    oracle, sparse = passive_sim(), passive_sim()
+    positions = [oracle.data.qpos.copy()]
+    velocities = [oracle.data.qvel.copy()]
+    for _ in range(120):
+        oracle.step()
+        positions.append(oracle.data.qpos.copy())
+        velocities.append(oracle.data.qvel.copy())
+    positions, velocities = np.array(positions), np.array(velocities)
+    first = sparse.run(.06, output_hz=1)
+    result = sparse.run(.06, output_hz=1)
+    metrics = result['metrics']
+    assert len(first['frames']) == len(result['frames']) == 2
+    assert metrics['monitoring_interval'] == dict(start_time_s=0., end_time_s=.12, integration_steps=120)
+    assert set(metrics['joints']) == {'follower', 'translation', 'swing', 'rod_hinge'}
+    for name, qadr in [('follower', 0), ('translation', 1), ('swing', 2), ('rod_hinge', 3)]:
+        record = metrics['joints'][name]
+        assert record['samples'] == 121
+        for event_name, index in [('minimum_position', np.argmin(positions[:, qadr])),
+                                  ('maximum_position', np.argmax(positions[:, qadr]))]:
+            assert record[event_name] == pytest.approx(dict(value=positions[index, qadr], time_s=index*.001))
+        speed_index = np.argmax(abs(velocities[:, qadr]))
+        assert record['peak_absolute_speed'] == pytest.approx(
+            dict(value=velocities[speed_index, qadr], time_s=speed_index*.001))
+    assert metrics['joints']['follower']['direct_motor_actuator'] is None
+    assert metrics['joints']['swing']['direct_motor_actuator'] == 'motor'
+    assert metrics['joints']['translation']['position_unit'] == 'm'
+    assert metrics['joints']['translation']['speed_unit'] == 'm/s'
+    assert metrics['joints']['follower']['position_unit'] == 'rad'
+    peak = metrics['joints']['translation']['peak_absolute_speed']
+    assert peak['time_s'] not in [f['time_s'] for f in first['frames'] + result['frames']]
+    assert abs(peak['value']) > .9
+    assert np.array_equal(sparse.data.qpos, oracle.data.qpos)
+    assert sparse.data.qpos[0] > .3  # The motor moves the passive follower through the rod.
+    assert sparse.data.qfrc_actuator[0] == sparse.data.qfrc_applied[0] == 0
+
+
+def test_connect_residual_is_actual_solver_gap_and_inactive_rows_are_not_zero():
+    sim = passive_sim(passive_model(key='.22 .01 .2 -.2'))
+    gaps = []
+    for _ in range(25):
+        sim.step()
+        rows = sim.data.efc_type == sim.mj.mjtConstraint.mjCNSTR_EQUALITY
+        gaps.append(sim.data.efc_pos[rows].copy())
+    frozen = deepcopy(sim.constraint_monitor['closure'])
+    sim.data.eq_active[:] = 0
+    result = sim.run(.005, output_hz=1)
+    record = result['metrics']['constraints']['closure']
+    assert record['active_steps'] == record['sampled_steps'] == 25
+    assert record['inactive_steps'] == record['missing_row_steps'] == 5
+    gaps = np.array(gaps)
+    for axis, row in enumerate(record['components']):
+        index = np.argmax(abs(gaps[:, axis]))
+        assert row['unit'] == 'm'
+        assert row['peak_absolute']['value'] == pytest.approx(gaps[index, axis])
+        # These are pre-integration solver evaluations, not end-of-step qpos.
+        assert row['peak_absolute']['time_s'] == pytest.approx(index*.001)
+        assert row['samples'] == 25
+    norm = np.linalg.norm(gaps, axis=1)
+    assert record['vector_norms']['anchor_delta']['peak_absolute']['value'] == pytest.approx(max(norm))
+    assert record['vector_norms'] == frozen['vector_norms']
+    assert record['components'] == frozen['components']
+
+
+def test_never_active_constraint_has_no_fabricated_zero_residual():
+    sim = passive_sim(passive_model().replace('name="closure"', 'name="closure" active="false"'))
+    record = sim.run(.003)['metrics']['constraints']['closure']
+    assert record['sampled_steps'] == record['active_steps'] == 0
+    assert record['missing_row_steps'] == record['inactive_steps'] == 3
+    assert record['components'] == [] and record['vector_norms'] == {}
+
+
+def test_unnamed_passive_joint_does_not_overwrite_a_named_joint_monitor():
+    xml = passive_model().replace('name="follower"', '').replace('name="translation"', 'name="joint_0"')
+    result = passive_sim(xml).run(.002)
+    joints = result['metrics']['joints']
+    assert len(joints) == 4
+    assert joints['joint_0']['joint_id'] == 1 and joints['joint_0']['position_unit'] == 'm'
+    assert joints['_joint_0']['joint_id'] == 0 and joints['_joint_0']['position_unit'] == 'rad'
+
+
+def test_rk4_constraint_event_reports_stage_interval_without_false_timestamp():
+    sim = passive_sim(passive_model().replace('integrator="implicitfast"', 'integrator="RK4"'))
+    record = sim.run(.003)['metrics']['constraints']['closure']
+    event = record['vector_norms']['anchor_delta']['peak_absolute']
+    assert event['time_s'] is None
+    assert 0 <= event['interval_start_s'] < event['interval_end_s'] <= .003
+
+
+@pytest.mark.parametrize('equality,extra,expected', [
+    ('<joint name="closure" joint1="follower" joint2="swing"/>', '', ['rad']),
+    ('<joint name="closure" joint1="translation" joint2="swing" polycoef="0 .01 0 0 0"/>', '', ['m']),
+    ('<weld name="closure" body1="passive" body2="input" torquescale=".2"/>', '', ['m']*6),
+    ('<tendon name="closure" tendon1="mixed"/>',
+     '<tendon><fixed name="mixed"><joint joint="follower" coef=".2"/><joint joint="translation" coef="1"/></fixed></tendon>',
+     ['tendon_coordinate']),
+    ('<tendon name="closure" tendon1="length"/>',
+     '<tendon><spatial name="length"><site site="input_tip"/><site site="passive_tip"/></spatial></tendon>', ['m']),
+])
+def test_equality_residual_units_follow_native_coordinate_type(equality, extra, expected):
+    sim = passive_sim(passive_model(equality, extra=extra, key='.22 .01 .2 -.2'))
+    result = sim.run(.002, output_hz=1)
+    record = result['metrics']['constraints']['closure']
+    assert [row['unit'] for row in record['components']] == expected
+    assert record['sampled_steps'] == 2
+    if record['type'] == 'weld':
+        angular = record['components'][5]
+        assert angular['torquescale_m'] == .2
+        assert angular['label'] == 'torquescale_scaled_quaternion_z'
+        assert abs(angular['peak_absolute']['value']) == pytest.approx(.2*math.sin(.02/2))
+        assert 'not an angle' in angular['interpretation']
+
+
+@pytest.mark.parametrize('powered', [True, False])
+def test_transmission_estimate_includes_measured_rotor_acceleration_and_deceleration(powered):
+    sim = passive_sim(passive_model('', armature=.02, damping=1., velocity='0 0 2 -2'), options={'power': powered})
+    expected = []
+    for _ in range(40):
+        before = float(sim.data.qvel[2])
+        sim.step()
+        acceleration = (float(sim.data.qvel[2]) - before)/.001
+        motor = sim.motors[0].state.torque_Nm
+        expected.append((motor-.02*acceleration, motor, acceleration))
+    record = sim.transmission_monitor[0]
+    assert record['samples'] == 40
+    for name, index in [('minimum', np.argmin([v[0] for v in expected])),
+                        ('maximum', np.argmax([v[0] for v in expected])),
+                        ('peak_absolute', np.argmax([abs(v[0]) for v in expected]))]:
+        value, motor, acceleration = expected[index]
+        event = record[name]
+        assert event == pytest.approx(dict(value=value, time_s=(index+1)*.001, interval_start_s=index*.001,
+            motor_output_torque_Nm=motor, armature_inertia_kg_m2=.02, acceleration_rad_s2=acceleration))
+    if not powered:
+        assert all(v[1] == 0 and v[2] < 0 and v[0] > 0 for v in expected)
+    # A later run must preserve prior events and output an independent snapshot.
+    report = sim.run(.001)['metrics']['actuators']['motor']['transmitted_torque_estimate']
+    snapshot = deepcopy(report)
+    sim.step()
+    assert report == snapshot
+
+
+def test_observers_do_not_recompute_or_change_integration_dynamics(monkeypatch):
+    observed, original = passive_sim(), passive_sim()
+    for name in ('_observe_joints', '_observe_constraints', '_observe_transmissions', '_observe_contacts', '_observe_rack'):
+        monkeypatch.setattr(original, name, lambda *args: None)
+    for _ in range(100):
+        observed.step()
+        original.step()
+    for field in ('qpos', 'qvel', 'qacc', 'qfrc_bias', 'qfrc_constraint', 'efc_pos'):
+        assert np.array_equal(getattr(observed.data, field), getattr(original.data, field))
+    matrices = [np.zeros((sim.model.nv, sim.model.nv)) for sim in (observed, original)]
+    for sim, matrix in zip((observed, original), matrices):
+        sim.mj.mj_fullM(sim.model, sim.data, matrix)
+    assert np.array_equal(*matrices)
+    assert observed.motors[0].state == original.motors[0].state
+
+
+def test_contact_penetration_covers_initialization_and_every_unsaved_solver_step():
+    xml = XML.replace('qpos="0 0 .021', 'qpos="0 0 .019')
+    oracle, sparse = make(xml=xml), make(xml=xml)
+    distances = [float(oracle.data.contact[i].dist) for i in range(oracle.data.ncon)]
+    initial_contacts = len(distances)
+    assert initial_contacts > 0
+    steps_with_contacts = 0
+    for _ in range(30):
+        oracle.step()
+        distances += [float(oracle.data.contact[i].dist) for i in range(oracle.data.ncon)]
+        steps_with_contacts += int(oracle.data.ncon > 0)
+    sparse.run(.015, output_hz=1)
+    result = sparse.run(.015, output_hz=1)
+    contacts = result['metrics']['contacts']
+    assert contacts['samples'] == 30 and contacts['initial_state_sampled']
+    assert len(contacts['pairs']) == 1
+    pair = contacts['pairs'][0]
+    assert pair['geoms'] == ['floor', 'block']
+    assert pair['initial_contacts'] == initial_contacts
+    assert pair['contact_samples'] == len(distances)
+    assert pair['steps_with_contacts'] == steps_with_contacts
+    assert pair['maximum_penetration_m'] == pytest.approx(max(0., -min(distances)))
+    assert pair['maximum_penetration_m'] >= .001-1e-12
+    assert pair['peak_event']['signed_distance_m'] == pytest.approx(min(distances))
+    assert result['metrics']['rack_motor'] is None
+
+
+def test_unnamed_contact_geom_has_a_distinct_label_from_existing_fallback_name():
+    xml = XML.replace(
+        '<contact><pair geom1="floor" geom2="block" friction=".8 .8 .01 .001 .001"/></contact>', ''
+    ).replace('name="floor"', '').replace('name="block"', 'name="geom_0"').replace(
+        'qpos="0 0 .021', 'qpos="0 0 .019')
+    sim = make(xml=xml)
+    assert sim.geom_names[:2] == ['_geom_0', 'geom_0']
+    result = sim.run(.001, output_hz=1000)
+    assert result['frames'][0]['contacts']
+    for frame in result['frames']:
+        assert all(contact['geoms'] == ['_geom_0', 'geom_0'] for contact in frame['contacts'])
+    pair = result['metrics']['contacts']['pairs'][0]
+    assert pair['geom_ids'] == [0, 1]
+    assert pair['geoms'] == ['_geom_0', 'geom_0']
+
+
+def test_contact_observation_preserves_actual_contact_integration(monkeypatch):
+    observed, original = make(), make()
+    monkeypatch.setattr(original, '_observe_contacts', lambda *args: None)
+    for _ in range(100):
+        observed.step()
+        original.step()
+    for field in ('qpos', 'qvel', 'qacc', 'qfrc_constraint', 'efc_force', 'efc_pos'):
+        assert np.array_equal(getattr(observed.data, field), getattr(original.data, field))
+    assert observed.motors[0].state == original.motors[0].state
+
+
+def test_runtime_identity_captures_imported_source_and_is_snapshot_per_run(monkeypatch):
+    import mechanism_lab.causal_runtime as runtime
+    sim = make()
+    identity = deepcopy(sim.implementation_identity)
+    for name, expected in identity['source_files'].items():
+        assert hashlib.sha256(Path(runtime.__file__).with_name(name).read_bytes()).hexdigest() == expected
+    assert identity['packages']['mujoco'] == sim.mj.__version__
+    assert identity['packages']['numpy'] == np.__version__
+    monkeypatch.setattr(runtime, '_IMPLEMENTATION_IDENTITY', {'mutated_after_initialization': True})
+    result = sim.run(.002)
+    assert result['runtime_implementation'] == identity
+    sim.implementation_identity['source_files']['actuation.py'] = 'changed_after_run'
+    assert result['runtime_implementation'] == identity

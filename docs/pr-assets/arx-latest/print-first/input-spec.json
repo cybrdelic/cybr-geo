@@ -1,0 +1,87 @@
+{
+  "schema": "cybrgeo-print-first-test-articles/1",
+  "material": {
+    "name": "PETG",
+    "density_kg_m3": 1250,
+    "assumption": "Solid continuum; no infill, anisotropy, creep or strength model"
+  },
+  "upper_span": {
+    "width_mm": 60,
+    "height_mm": 44,
+    "length_mm": 168,
+    "wall_mm": 6,
+    "center_y_mm": 148,
+    "inner_radius_mm": 1.2,
+    "outer_radius_mm": 0
+  },
+  "fore_span": {
+    "width_mm": 60,
+    "height_mm": 60,
+    "length_mm": 62,
+    "wall_mm": 6,
+    "center_y_mm": 95,
+    "inner_radius_mm": 1.2,
+    "outer_radius_mm": 0
+  },
+  "splice": {
+    "overlap_length_mm": 80,
+    "gap_mm": 0.3,
+    "radial_clearance_mm": 0.2,
+    "coupler_wall_mm": 5,
+    "hole_offsets_y_mm": [
+      -30,
+      -12,
+      12,
+      30
+    ],
+    "coupler_inner_radius_mm": 1.2,
+    "coupler_outer_radius_mm": 1.4
+  },
+  "cross_bore": {
+    "sleeve_outer_diameter_mm": 6,
+    "sleeve_inner_diameter_mm": 4.5,
+    "bolt_diameter_mm": 4,
+    "radial_clearance_mm": 0.1,
+    "sleeve_length_mm": 60
+  },
+  "upper_pockets": {
+    "positions_y_mm": [
+      96,
+      220
+    ],
+    "positions_x_mm": [
+      -19,
+      19
+    ],
+    "hole_radius_mm": 1.45,
+    "pocket_width_mm": 5.4,
+    "pocket_depth_mm": 2.15,
+    "opening_overlap_mm": 0.05
+  },
+  "fore_pockets": {
+    "positions_y_mm": [
+      96,
+      114
+    ],
+    "positions_x_mm": [
+      -19,
+      19
+    ],
+    "hole_radius_mm": 1.45,
+    "pocket_width_mm": 5.4,
+    "pocket_depth_mm": 2.15,
+    "opening_overlap_mm": 0.05
+  },
+  "gear_pair": {
+    "module_mm": 1.2,
+    "teeth": 20,
+    "pressure_angle_deg": 20,
+    "face_width_mm": 12,
+    "tooth_thickness_reduction_mm": 0.1,
+    "pinion_bore_mm": 4.1,
+    "rack_teeth": 16,
+    "rack_back_depth_mm": 6
+  },
+  "planning_cube_mm": 246,
+  "scope": "Four structural and two tooth test articles only; no whole-arm, reducer, dynamic or load qualification"
+}

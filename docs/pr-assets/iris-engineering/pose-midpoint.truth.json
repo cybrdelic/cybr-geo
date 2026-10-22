@@ -1,0 +1,560 @@
+{
+  "model": "iris09",
+  "requested_intent": "inspection",
+  "resolved_intent": "inspection",
+  "allow_estimates": false,
+  "passed": true,
+  "part_count": 68,
+  "tier_counts": {
+    "authoritative": 68
+  },
+  "blocked": [],
+  "uncertain": [],
+  "parts": [
+    {
+      "name": "rotor__annular_rotor_and_drive_pins",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__knob_mean_radius_approximation",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_00",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_00__leaf_shaft_crank",
+      "group": "leaf_00",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_00__output_pin_keeper",
+      "group": "leaf_00",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_00__lower_shaft_collar",
+      "group": "leaf_00",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_00__upper_shaft_collar",
+      "group": "leaf_00",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_00__bored_connecting_rod",
+      "group": "rod_00",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_01",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_01__leaf_shaft_crank",
+      "group": "leaf_01",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_01__output_pin_keeper",
+      "group": "leaf_01",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_01__lower_shaft_collar",
+      "group": "leaf_01",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_01__upper_shaft_collar",
+      "group": "leaf_01",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_01__bored_connecting_rod",
+      "group": "rod_01",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_02",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_02__leaf_shaft_crank",
+      "group": "leaf_02",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_02__output_pin_keeper",
+      "group": "leaf_02",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_02__lower_shaft_collar",
+      "group": "leaf_02",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_02__upper_shaft_collar",
+      "group": "leaf_02",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_02__bored_connecting_rod",
+      "group": "rod_02",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_03",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_03__leaf_shaft_crank",
+      "group": "leaf_03",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_03__output_pin_keeper",
+      "group": "leaf_03",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_03__lower_shaft_collar",
+      "group": "leaf_03",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_03__upper_shaft_collar",
+      "group": "leaf_03",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_03__bored_connecting_rod",
+      "group": "rod_03",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_04",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_04__leaf_shaft_crank",
+      "group": "leaf_04",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_04__output_pin_keeper",
+      "group": "leaf_04",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_04__lower_shaft_collar",
+      "group": "leaf_04",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_04__upper_shaft_collar",
+      "group": "leaf_04",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_04__bored_connecting_rod",
+      "group": "rod_04",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_05",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_05__leaf_shaft_crank",
+      "group": "leaf_05",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_05__output_pin_keeper",
+      "group": "leaf_05",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_05__lower_shaft_collar",
+      "group": "leaf_05",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_05__upper_shaft_collar",
+      "group": "leaf_05",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_05__bored_connecting_rod",
+      "group": "rod_05",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_06",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_06__leaf_shaft_crank",
+      "group": "leaf_06",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_06__output_pin_keeper",
+      "group": "leaf_06",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_06__lower_shaft_collar",
+      "group": "leaf_06",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_06__upper_shaft_collar",
+      "group": "leaf_06",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_06__bored_connecting_rod",
+      "group": "rod_06",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_07",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_07__leaf_shaft_crank",
+      "group": "leaf_07",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_07__output_pin_keeper",
+      "group": "leaf_07",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_07__lower_shaft_collar",
+      "group": "leaf_07",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_07__upper_shaft_collar",
+      "group": "leaf_07",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_07__bored_connecting_rod",
+      "group": "rod_07",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rotor__input_pin_keeper_08",
+      "group": "rotor",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_08__leaf_shaft_crank",
+      "group": "leaf_08",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_08__output_pin_keeper",
+      "group": "leaf_08",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_08__lower_shaft_collar",
+      "group": "leaf_08",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "leaf_08__upper_shaft_collar",
+      "group": "leaf_08",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "rod_08__bored_connecting_rod",
+      "group": "rod_08",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__housing_material_3",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__housing_material_2",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__housing_material_5",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__housing_material_1",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__screw_0",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__screw_1",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__screw_2",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__screw_3",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__screw_4",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__screw_5",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__lens_0",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    },
+    {
+      "name": "fixed__lens_1",
+      "group": "fixed",
+      "role": "Native body-local display mesh; collision geometry is separately authored",
+      "provenance": "imported-analytic-cad",
+      "tier": "authoritative",
+      "allowed": true
+    }
+  ],
+  "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
+}

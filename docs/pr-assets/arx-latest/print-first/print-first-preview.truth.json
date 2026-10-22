@@ -1,0 +1,64 @@
+{
+  "model": "arx_p6b_shared_native_test_articles",
+  "requested_intent": "concept",
+  "resolved_intent": "concept",
+  "allow_estimates": false,
+  "passed": true,
+  "part_count": 6,
+  "tier_counts": {
+    "designed": 6
+  },
+  "blocked": [],
+  "uncertain": [],
+  "parts": [
+    {
+      "name": "upper-frame-proximal",
+      "group": "structure",
+      "role": "Source-derived test article",
+      "provenance": "designed-concept",
+      "tier": "designed",
+      "allowed": true
+    },
+    {
+      "name": "upper-frame-distal",
+      "group": "structure",
+      "role": "Source-derived test article",
+      "provenance": "designed-concept",
+      "tier": "designed",
+      "allowed": true
+    },
+    {
+      "name": "fore-frame-reinforced",
+      "group": "structure",
+      "role": "Source-derived test article",
+      "provenance": "designed-concept",
+      "tier": "designed",
+      "allowed": true
+    },
+    {
+      "name": "upper-frame-lap-coupler",
+      "group": "structure",
+      "role": "Source-derived test article",
+      "provenance": "designed-concept",
+      "tier": "designed",
+      "allowed": true
+    },
+    {
+      "name": "gripper-pinion-tooth-trial",
+      "group": "structure",
+      "role": "Source-derived test article",
+      "provenance": "designed-concept",
+      "tier": "designed",
+      "allowed": true
+    },
+    {
+      "name": "gripper-rack-tooth-trial",
+      "group": "structure",
+      "role": "Source-derived test article",
+      "provenance": "designed-concept",
+      "tier": "designed",
+      "allowed": true
+    }
+  ],
+  "claim": "explicitly designed concept geometry; no estimates or unknowns"
+}

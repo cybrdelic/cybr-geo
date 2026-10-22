@@ -1,0 +1,62 @@
+{
+  "schema": "cybrgeo-inspection-view/1",
+  "time_s": 3.9984,
+  "trace_file_sha256": "3abcbc1aab9681d37234fed7584b39bf4150afd2cecf8f67308aa135bf27377f",
+  "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+  "camera": {
+    "azimuth_deg": 235,
+    "elevation_deg": 90,
+    "image_size_px": [
+      1120,
+      840
+    ]
+  },
+  "display_only_overrides": [
+    {
+      "part": "rotor__annular_rotor_and_drive_pins",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__knob_mean_radius_approximation",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_00",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_01",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_02",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_03",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_04",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_05",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_06",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_07",
+      "opacity": 0.16
+    },
+    {
+      "part": "rotor__input_pin_keeper_08",
+      "opacity": 0.16
+    }
+  ],
+  "geometry_or_pose_changes": false,
+  "png_sha256": "c7a8d6c3e42d01b5f1c6135bdb9a2f2139b010a93a60d9c49044a2995ed822ea"
+}

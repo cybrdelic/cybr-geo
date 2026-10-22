@@ -65,7 +65,7 @@ def parser():
     q.add_argument('--reuse-native',type=Path,help='Reuse a hash-verified native build of the same authored project')
     q.add_argument('--media',action='store_true',help='Also render actual mesh PNG/GIF inspection views')
     q.add_argument('--size',type=resolution,default=(960,720))
-    q.add_argument('--seconds',type=positive_float,default=10.)
+    q.add_argument('--seconds',type=positive_float,help='Simulation duration; defaults to the authored project cycle (legacy mechanisms: 10 seconds)')
     q.add_argument('--fps',type=positive_int,default=12)
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
@@ -137,7 +137,8 @@ def run(args):
             print(json.dumps(report,indent=2));return 0 if report['passed'] else 2
         from .mechanism_bundle import generate
         parameters=json.loads(args.parameters.read_text(encoding='utf-8')) if args.parameters else None
-        report=generate(args.architecture,parameters,args.out,args.step,args.media,args.size,args.seconds,args.fps)
+        report=generate(args.architecture,parameters,args.out,args.step,args.media,args.size,
+                        10. if args.seconds is None else args.seconds,args.fps)
         print(json.dumps(report,indent=2));return 0
     if args.command=='preview':
         from .preview import preview

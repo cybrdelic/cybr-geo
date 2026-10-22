@@ -29,11 +29,17 @@ flowchart LR
 | --- | --- |
 | `native_construction.py` | Native parts, densities and explicit mass overrides, placements, parallel-axis inertia, exports and completion receipts |
 | `shape_dag.py` | Analytic CSG with shared nodes, transforms, booleans and bounded inputs; used by component documents and imported geometry |
+| `part_geometry.py` | One part resolver for CSG roots and explicit hash-bound native replacements; body-local frames, material identity and measured properties |
+| `manufacturing_joints.py` | Rounded box tubes and split lap splices with coupled fit, fastener and print-envelope dimensions |
+| `manufacturing_gears.py` | Source-derived sampled involute pinion/rack geometry and explicit SI force, torque and travel conversion |
 | `physical_model.py` | Physical tree preserving bodies, inertias, joints, transmissions, contacts and initialization; rejects unrealizable CAD inertia |
+| `linkages.py` | Bored rigid links constructed from material pin axes; the same frames close passive planar loops in MuJoCo |
 | `contact_geometry.py` | Material-region proxies, annular regions, transformed primitives and perforated tabletops |
 | `actuation.py` | Source-derived voltage/current/back-EMF, gearbox/belt demand limits, thermal/energy accounting, springs, brakes and faults |
 | `causal_runtime.py` | Named-joint forces applied to MuJoCo, independent free bodies, contacts, every-step extrema and state receipts |
+| `reference_clock.py` | Source/physical phase mapping with mandatory boundary screening, derivative scaling and implementation identity |
 | `physical_replay.py` | Native local geometry transformed only by recorded body states; explicit units, identity and cache restoration |
+| `native_replay.py` | Reusable native STEP/mesh replay, with matching physical mass mappings and source/model/recorded-state identities |
 | `engineering_source.py`, `engineering_pipeline.py` | One project protocol connecting these services and retaining source/native/model/control/reference identities |
 
 Examples supply geometry, topology, parameters and tasks. They do not own another
@@ -55,13 +61,14 @@ Install the environment in the main README, then:
 ```bash
 lab mechanism --step --media
 lab mechanism arx_belt --step --media
+lab mechanism iris09 --step --media
 lab preview --step
 lab build arx_belt --step
-lab animate arx_belt --seconds 10
+lab animate arx_belt --seconds 17.4
 ```
 
 The default builds native CAD, binds new mass/inertia and transmission records,
-runs a ten-second causal contact transfer, then exports recorded motion. It needs
+runs a 17.4-second causal contact transfer, then exports recorded motion. It needs
 no benchmark checkout, archived film, network download or image generation.
 Allow several minutes for the initial CAD construction and simulation.
 
@@ -112,6 +119,12 @@ Run it with `lab mechanism path/to/project --step --media`.
 | `requirements(result, parameters)` | State design-specific task outcomes and their scope |
 | `replay(directory, result)` | Bind native local geometry to shared recorded physical-body transforms |
 
+Set `duration_s` to the complete authored cycle. The CLI uses it when
+`--seconds` is omitted; an explicitly shorter run must still meet the same
+declared task outcomes before it can produce an accepted export. Keep physical
+units explicit: native CAD uses millimetres, while MuJoCo uses metres, kilograms,
+seconds, radians, newtons and newton-metres.
+
 Keep geometry, interfaces and mechanism-specific layout in the project. Reuse
 the shared CAD/CSG, inertia, contact primitives, actuation, solver and renderer;
 do not fork those engines for another design. The physical tree is authoritative
@@ -120,9 +133,34 @@ geometries; historical unresolved body aliases are provenance labels, not an
 independently editable attachment graph. Trusted project source and data are
 snapshotted together, and changes during generation prevent accepted exports.
 
-Geometry-only examples such as [IRIS](../examples/engineering/iris09/README.md)
-and [compact ARX](../examples/engineering/arx_compact/README.md) use the same
-native/CSG/render services without registering nonexistent dynamics contracts.
+The [IRIS client](../examples/engineering/iris09/README.md) uses this same
+protocol for a new single-motor mechanism derived from the source optical
+geometry. Nine rigid bored links connect an annular rotor to nine passive leaf
+cranks. `PinnedLink` measures each rod from its material pin frames, constructs
+the clearance bores, and installs the passive hinge and force-based loop
+closure. Mismatched CAD/model frames and unsupported tilting pin axes are
+rejected before attachment. New projects can reuse this bounded planar
+primitive without maintaining another solver or follower controller.
+
+IRIS leaves have immutable native solids with continuous radial and neighboring
+shaft keepouts. The original shader's moving world clip remains available in
+the explicitly named geometry study; it is not used as moving physical material.
+The motor, bearings, retention geometry and linkage are disclosed new design
+assumptions, not recovered IRIS engineering. Only the rotor has an actuator;
+leaf motion arises from the links. Power-off and disconnected-link controls
+must fail the same task outcomes. Every integration step records passive joint
+ranges and solver closure errors, including peaks between output frames.
+
+Generated link joints explicitly declare their pin origin, reference and
+passive dynamics instead of inheriting unrelated MJCF defaults. Loop closures
+explicitly start active. The shared contact intervention scales both explicit
+pair friction and implicit geometry-contact friction; neither contact form
+silently ignores the same declared perturbation.
+
+[Compact ARX](../examples/engineering/arx_compact/README.md) remains a source
+CSG/render example without an invented dynamics contract. Projects declare
+their complete cycle duration; omitted `--seconds` uses that duration. Explicit
+partial runs remain diagnostics unless they satisfy the full task requirements.
 
 ## Source reuse and evidence
 
@@ -130,6 +168,12 @@ The default directly adapts [ARX belt at aabdf8c](https://github.com/cybrdelic/c
 native generation, material-region contacts, model lowering, control and safety.
 The restored source geometry cache was hash-verified before comparison.
 [Source notices](../NOTICE-SOURCES.md) identify pins and retained material.
+This is the P5 belt lineage. Its dynamics results remain separate from the
+newly inspected Refined/P6B geometry at compact commit `85bd6d2c`. The compact
+clients use the same native construction and part resolver for actual selected
+BREP replacements and six print-first test articles. They do not inherit the
+belt controller or its validation results. Missing P6A controller, thermal and
+full manufacturing source is not reconstructed from its renders or reports.
 
 Fresh construction produced **118 unique parts and 375 placements**. **127 STEP
 exports reopened as valid solids**; the source's **52 nominal BREP interface
@@ -146,10 +190,47 @@ the same native runtime; native/WASM differences are measured separately.
 
 The nominal task transfers an independent puck through pad contact. No weld,
 attachment, teleport or tool-following payload pose is applied. Friction loss
-reproduces a drop and roughly 78 mm placement error. The original adverse-case
+reproduces a drop and rejected placement. The original adverse-case
 validator did not reject that placement, so the new task requirement does.
-[Fresh receipts and actual media](pr-assets/arx-engineering/README.md) distinguish
-new native builds from cached-source comparisons.
+[Earlier reference-run receipts](pr-assets/arx-engineering/README.md) distinguish
+their native builds from cached-source comparisons; the maintained policy's
+[fresh motion and fault evidence](pr-assets/arx-faults/README.md) is separate.
+
+The source-default ten-second oracle remains available in `task.py` for numerical
+comparison. The default's authored policy removes lateral transfer tilt while
+retaining its TCP path, endpoints, forward tilt and roll formula. This changes
+the transfer orientation to reduce gravity demand on the wrist brake. The shared
+phase clock runs transfer at half rate and loaded descent at one fifth rate. Rate changes
+occur at stationary source phase boundaries; finite-difference derivative
+residuals are measured and retained. The same map supplies placement and fault
+landmarks, so a slower cycle cannot evade a fault by moving the trigger to a
+different phase. Motor, brake, spring, belt and contact ratings stay unchanged.
+The authored posture, timing and implementation identity are part of the reference
+receipt. This is an operating-policy change, not increased hardware capacity.
+
+The first timing-only attempt exposed a further stop failure: at the matched
+7.2-second source phase, wrist gravity demand exceeded the dynamic brake plus
+dry friction. Slowing that same pose further did not fix holding capacity.
+[Preserved diagnostic receipts](pr-assets/arx-faults/diagnostic-17.4s/) retain
+the failed complete suite, timestep check and static-load reproduction. The
+posture policy addresses that load at reference construction, while the same
+fault scenarios and numeric limits remain in force.
+
+The final policy passes all 43 ordinary scenario rows and correctly rejects
+six adverse controls. Five selected half-timestep runs pass as well. The
+smallest estimated transmitted-torque margin is only 0.076687 Nm at the finer
+step. A contact-sensitive J5 peak changes by 0.916136 Nm, so these outcomes do
+not imply whole-system convergence. All-step jaw travel remains within its
+authored ranges. [Lossless numeric receipts and inspector](pr-assets/arx-faults/final/README.md)
+retain those details and the power-loss payload drop.
+
+The [IRIS evidence packet](pr-assets/iris-engineering/README.md) records fresh
+native construction of 68 parts, 102 declared interfaces and the full
+eight-second, 40,000-step single-motor cycle. Disabling motor power from
+initialization stops every leaf; disconnecting one loop closure leaves that
+leaf stationary while the other eight move. A nine-pose native BRep audit
+found no cross-body intersections, and two specific axial interference pairs
+are excluded by continuous construction bounds. Those scopes are distinct.
 
 ## Remaining limits
 
@@ -163,12 +244,16 @@ new native builds from cached-source comparisons.
   can exceed those limits. The gripper additionally clamps actual current.
   Ideal power loss and finite brake friction are retained. Temperature accounting
   is not a validated thermal cutoff.
-* Original failures remain unresolved: `power_loss_3.2`,
-  `weak_spring_double_delay_3.2`, `weak_spring_double_delay_7.2`. Archived 21/24
-  ordinary passes and four adverse controls are not a fresh full-suite pass.
-* IRIS is source-derived geometry with prescribed motion. Its world clipping
-  changes visible material with pose. Invariant leaves and display geometry are
-  separate; no missing mechanical closure or dynamics has been invented.
+* Historical source failures and the rejected timing-only policy remain in the
+  evidence. Power loss can still drop the puck; an arm stopping within its
+  declared limit does not establish payload retention or a safe hardware stop.
+* IRIS dynamics uses ideal pin bearings and closed-loop constraints. Native
+  geometry supplies the masses and nominal interfaces, but contact, wear,
+  flexible foil behavior and actuator supplier ratings are not established.
+  The source foil is only 32.5 micrometres thick, with approximately 14.89
+  micrometres sampled neighboring-face clearance. A continuous radial/housing
+  bound does not prove the full articulated assembly's motion envelope or a
+  production tolerance stack. Motor and retention strength remain assumptions.
 * Compact ARX's CSG/render interfaces are separate. Its reconstructed PD/contact
   capture does not inherit belt's electrical, fault or validation claims.
 

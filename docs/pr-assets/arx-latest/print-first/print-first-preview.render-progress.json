@@ -1,0 +1,15 @@
+{
+  "stage": "complete",
+  "elapsed_s": 3.1572737999958917,
+  "timings_s": {
+    "initialization": 1.0475622999947518,
+    "render_and_capture": 1.8707884000032209,
+    "image_save": 0.23280440003145486
+  },
+  "resolution": [
+    1280,
+    960
+  ],
+  "supersample": 2,
+  "render_window": "vtkWin32OpenGLRenderWindow"
+}

@@ -17,9 +17,11 @@ jobs:
   engineering:
     name: Engineering on ${{ matrix.os }} / ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
-    # Full native default + ten simulated seconds + independent STEP readback,
-    # alongside the existing kernel suite, wheel install and real PBR smoke.
-    timeout-minutes: 40
+    # Per-command bounds total 105 minutes: 2x30 native projects,
+    # 15 latest-source geometry, 15 faults, 12 required tests and 3 PBR.
+    # Leave 10 for setup and artifacts
+    # without preempting a command that remains inside its own deadline.
+    timeout-minutes: 115
     strategy:
       fail-fast: false
       matrix:
@@ -105,28 +107,116 @@ jobs:
                          'tests/test_actuation.py', 'tests/test_contact_geometry.py',
                          'tests/test_native_construction.py', 'tests/test_shape_dag.py',
                          'tests/test_causal_runtime.py', 'tests/test_causal_counterfactual.py',
-                         'tests/test_physical_model.py',
-                         'tests/test_physical_replay.py', 'tests/test_engineering_distribution.py',
+                         'tests/test_reference_clock.py',
+                         'tests/test_arx_project.py', 'tests/test_arx_reference.py', 'tests/test_arx_faults.py',
+                         'tests/test_arx_compact_geometry.py',
+                         'tests/test_part_geometry.py', 'tests/test_arx_refined_geometry.py',
+                         'tests/test_manufacturing_gears.py', 'tests/test_manufacturing_joints.py',
+                         'tests/test_physical_model.py', 'tests/test_linkages.py',
+                         'tests/test_physical_replay.py', 'tests/test_native_replay.py',
+                         'tests/test_iris09_leaf_mechanism.py', 'tests/test_iris09_mechanism.py',
+                         'tests/test_engineering_distribution.py',
                          'tests/test_engineering_native_source_binding.py',
                          'tests/test_preview.py']
               command += sorted(str(path) for path in pathlib.Path('studio/tests').glob('test_*.py'))
-              with (output / 'tests.log').open('w', encoding='utf-8') as log:
-                  result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=720)
-              print((output / 'tests.log').read_text(encoding='utf-8'))
+              try:
+                  with (output / 'tests.log').open('w', encoding='utf-8') as log:
+                      result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=720)
+              finally:
+                  print((output / 'tests.log').read_text(encoding='utf-8'))
               if not result.returncode:
                   suites = ET.parse(output / 'tests.xml').getroot().iter('testsuite')
                   assert sum(int(suite.get('skipped', '0')) for suite in suites) == 0, 'Required platform tests were skipped'
               sys.exit(result.returncode)
       - name: Construct and independently reopen the full public default
-        # One 1200-second helper deadline includes construction, the nominal
+        # One 1800-second helper deadline includes construction, the nominal
         # contact simulation, aggregate STEP export and fresh-process readback.
         # The small outer margin permits timeout evidence and artifact upload.
-        timeout-minutes: 22
+        timeout-minutes: 32
         shell: python
         run: |
           import subprocess, sys
           subprocess.run([sys.executable, '-u', '.github/scripts/check_default_engineering.py',
-                          '--output', 'outputs/portable-default', '--timeout', '1200'], check=True)
+                          '--output', 'outputs/portable-default', '--timeout', '1800'], check=True)
+      - name: Construct and independently reopen the full single-motor IRIS client
+        # Fresh source-bound CAD and masses, the declared 8-second/40,000-step
+        # passive-linkage task, aggregate exports and fresh-process readback.
+        timeout-minutes: 32
+        shell: python
+        run: |
+          import subprocess, sys
+          subprocess.run([sys.executable, '-u', '.github/scripts/check_iris_engineering.py',
+                          '--output', 'outputs/portable-iris09', '--timeout', '1800'], check=True)
+      - name: Rebuild actual Refined geometry and six P6B test articles
+        # Shared construction from the latest inspected source; no inherited
+        # dynamics or hardware qualification is assigned to changed geometry.
+        timeout-minutes: 17
+        shell: python
+        run: |
+          import subprocess, sys
+          subprocess.run([sys.executable, '-B', '-u', '.github/scripts/check_latest_arx_geometry.py',
+                          '--output', 'outputs/portable-latest-arx', '--timeout', '900'], check=True)
+      - name: Exercise four ARX fault regressions and two adverse controls
+        # Reuse this job's verified fresh default CAD, retaining source fault
+        # thresholds and matching fault events to the authored task phase.
+        timeout-minutes: 16
+        shell: python
+        run: |
+          import hashlib, json, pathlib, subprocess, sys, time
+          output = pathlib.Path('outputs/portable-arx-faults')
+          log = pathlib.Path('outputs/portable-smoke/arx-faults.log')
+          cases = ['power_loss_3.2', 'weak_spring_double_delay_3.2',
+                   'weak_spring_double_delay_7.2', 'power_loss_7.2', 'friction_loss', 'weak_grip']
+          command = [sys.executable, '-u', 'tools/check_arx_faults.py',
+                     '--native', 'outputs/portable-default/native', '--output', str(output),
+                     '--workers', '2', '--clock', 'matched-phase']
+          for case in cases:
+              command += ['--case', case]
+          started = time.perf_counter()
+          status = dict(command=command, timeout_s=900, passed=False)
+          try:
+              with log.open('w', encoding='utf-8') as stream:
+                  result = subprocess.run(command, stdout=stream, stderr=subprocess.STDOUT, timeout=900)
+              status['returncode'] = result.returncode
+              result.check_returncode()
+              summary = json.loads((output / 'summary.json').read_text(encoding='utf-8'))
+              assert summary['schema'] == 'cybrgeo-arx-source-fault-suite/1'
+              assert summary['complete'] and summary['passed'] and not summary['errors']
+              assert summary['mass_scope'] == 'verified fresh native build'
+              nominal = json.loads(pathlib.Path('outputs/portable-default/engineering.json').read_text())
+              assert summary['native_build_sha256'] == nominal['native_build_sha256']
+              assert summary['native_source_binding_sha256'] == nominal['native_source_binding_sha256']
+              assert summary['source_files'] == nominal['source_files']
+              rows = summary['results']
+              assert len(rows) == 6 and {row['case']['name'] for row in rows} == set(cases)
+              for row in rows:
+                  assert row['measurement_coverage_valid'] and row['scenario_valid']
+                  assert row['expected_outcome_observed']
+                  timed = any(key.endswith('Time') or key == 'heartbeatUntil' for key in row['case']['source_options'])
+                  assert row['case']['clock_scope'] == ('matched-phase' if timed else 'same-clock-independent')
+                  assert row['runtime_implementation'] == nominal['simulation']['runtime_implementation']
+                  assert row['numeric_acceptance_passed'] == row['original_source_numeric_acceptance_passed']
+                  if row['case']['deliberate_negative_control']:
+                      # Friction/grip controls must lose the transfer task.
+                      # Their original numerical limits may still pass; retain
+                      # that result separately instead of inventing a failure.
+                      assert not row['passed'] and row['task_outcome_checks']
+                      assert not row['task_outcomes_passed']
+                      assert any(not check['passed'] for check in row['task_outcome_checks'])
+                  else:
+                      assert row['numeric_acceptance_passed'] and row['passed']
+                  trace = output / row['case']['id'] / 'trace.json.gz'
+                  assert hashlib.sha256(trace.read_bytes()).hexdigest() == row['trace_sha256']
+              status['passed'] = True
+          except subprocess.TimeoutExpired:
+              status['timed_out'] = True
+              raise
+          finally:
+              status['elapsed_s'] = time.perf_counter()-started
+              if log.exists():
+                  print(log.read_text(encoding='utf-8', errors='replace')[-18000:])
+              pathlib.Path('outputs/portable-smoke/arx-faults-command.json').write_text(json.dumps(status, indent=2), encoding='utf-8')
+              print(json.dumps(status, indent=2))
       - name: Run and verify the public PBR preview command
         shell: python
         run: |
@@ -184,5 +274,26 @@ jobs:
             outputs/portable-default/native/native-interface-requirements.json
             outputs/portable-default/native/placed-native-parts.json
             outputs/portable-default/native/mass_properties.json
+            outputs/portable-iris09/*.json
+            outputs/portable-iris09/*.log
+            outputs/portable-iris09/model.xml
+            outputs/portable-iris09/iris09.step
+            outputs/portable-iris09/assembly.glb
+            outputs/portable-iris09/simulation/
+            outputs/portable-iris09/native/native-build.json
+            outputs/portable-iris09/native/native-source-binding.json
+            outputs/portable-iris09/native/native-interface-requirements.json
+            outputs/portable-iris09/native/mechanism-layout.json
+            outputs/portable-iris09/native/placed-native-parts.json
+            outputs/portable-iris09/native/mass_properties.json
+            outputs/portable-arx-faults/
+            outputs/portable-latest-arx/*.json
+            outputs/portable-latest-arx/*.log
+            outputs/portable-latest-arx/refined/geometry-study.json
+            outputs/portable-latest-arx/refined/property-reconciliation.json
+            outputs/portable-latest-arx/refined/reference.step
+            outputs/portable-latest-arx/refined/reference.glb
+            outputs/portable-latest-arx/print-first/*.json
+            outputs/portable-latest-arx/print-first/print-local/
           if-no-files-found: error
           retention-days: 30

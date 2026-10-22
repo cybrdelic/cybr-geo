@@ -1,0 +1,106 @@
+{
+  "schema": "cybrgeo-evidence-packet/1",
+  "files": {
+    "cad_parts.json": {
+      "bytes": 1492,
+      "sha256": "1b0167a9f179f52cfd4bb328cbecd5b9dc672751d4518f2a5986cd6c275ecd27",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/cad_parts.json"
+    },
+    "independent-readback.json": {
+      "bytes": 4955,
+      "sha256": "275dbf7aff3e1674432d42e9700ac6a4d56c3778b97a4845d14c7c75366d7923",
+      "copied_from": "outputs/latest-arx-print-readback-005/print-first-readback.json"
+    },
+    "input-identities.json": {
+      "bytes": 746,
+      "sha256": "bccf55ffcb8fac8243ae6cf9900d775faec976ade22173198a426325377fcf1e",
+      "copied_from": "examples/engineering/arx_compact/data/print-first-inputs.json"
+    },
+    "input-spec.json": {
+      "bytes": 1969,
+      "sha256": "c5e1e50baf0cec0e8e431b44da21c0bdec244171c2563ec4ec9e2e184c6cf532",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/input-spec.json"
+    },
+    "mass_properties.json": {
+      "bytes": 8578,
+      "sha256": "85726ccd1bd08190fb5c9952c9fbfe92c4fcd056981335fa72e06d030fef5d7c",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/mass_properties.json"
+    },
+    "native-build.json": {
+      "bytes": 6461,
+      "sha256": "bf021f9b01941fa20c6d48b72450128f3c40b8e0fe21a3f83b58ecc4a67c37fd",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/native-build.json"
+    },
+    "native-interface-requirements.json": {
+      "bytes": 2794,
+      "sha256": "9159a89db58e1ffe3089c67d3c42836c8efc5e3cc0a1a8c322a3111a36250690",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/native-interface-requirements.json"
+    },
+    "parity.junit.xml": {
+      "bytes": 3539,
+      "sha256": "f0bd0c91f67c0209a41f8fecbc44652114c87f46e6fc00d4e08c98ce92f71261",
+      "copied_from": "outputs/joints-final-005.junit.xml"
+    },
+    "print-first-plan.json": {
+      "bytes": 11367,
+      "sha256": "e9aa155c08919ac5d807e2038a542f87d7fdf26d09c71108f4db2c9acc9af2d8",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/print-first-plan.json"
+    },
+    "print-first-preview-evidence.json": {
+      "bytes": 2734,
+      "sha256": "91954fbc7360b063e55e73c43b1f4974d6292b1029a019e7937e45e7db37c99b",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/print-first-preview-evidence.json"
+    },
+    "print-first-preview.png": {
+      "bytes": 849187,
+      "sha256": "991a06afd8287d6c0aa5a2235775c0baa62675162b51a556b6e81c3fc1bffcf2",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/print-first-preview.png"
+    },
+    "print-first-preview.render-progress.json": {
+      "bytes": 334,
+      "sha256": "e33b931bf5351d78e4c623ce074bce630f8d54e48c52eb1f6b11dd41b3488dde",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/print-first-preview.render-progress.json"
+    },
+    "print-first-preview.render.json": {
+      "bytes": 8167,
+      "sha256": "7197c659d6b1f79dbf697798f3112c4e8d12b4a2217e7092006f07b36b63bff0",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/print-first-preview.render.json"
+    },
+    "print-first-preview.truth.json": {
+      "bytes": 1703,
+      "sha256": "8193f2ace57b8a397af6235fe4d3d62e040da5fbd38f4b11730e78153bf4faed",
+      "copied_from": "outputs/joints-pytest-005/adapted-p6b-structural0/print-first-preview.truth.json"
+    },
+    "README.md": {
+      "bytes": 6915,
+      "sha256": "71e3e92578627edef78012356a5a420e6edb1f49ef449e273f09e7b5a0ace4f5"
+    },
+    "source-default-spec.json": {
+      "bytes": 1552,
+      "sha256": "55277a265ebc91cf10c68f96575bfc2cf51da3affbb91a8e3446a0b71adaa15e",
+      "copied_from": "examples/engineering/arx_compact/data/print-first-spec.json"
+    },
+    "source-identities.json": {
+      "bytes": 2100,
+      "sha256": "01694084e3aae4d2464ea2ab1ad1893edb48af1c471b4017cfce0e2270d32c10"
+    },
+    "source-structural-execution.json": {
+      "bytes": 9722,
+      "sha256": "43ecda69278e5d87108c077e8a27d445e141c6225a51c123f188dd12ad76b9f9",
+      "copied_from": "outputs/joints-pytest-005/original-p6b-structural0/reports/structural-prototypes.json"
+    },
+    "test-run.json": {
+      "bytes": 1368,
+      "sha256": "bbaf9ceeb3577a59fe3e04299eb1ebf1408d688a9798b451a7161dad7f5897e9"
+    },
+    "verify-packet.py": {
+      "bytes": 3660,
+      "sha256": "828636f15640df9c516960132dc8066744f4884b29b99491cfe83c797c1cc62f"
+    }
+  },
+  "scope": "Included packet bytes only; referenced native CAD/STL files are reproduced separately",
+  "excludes": [
+    "SHA256SUMS.json",
+    "packet-verification.json"
+  ]
+}

@@ -55,7 +55,8 @@ def verify(output):
     assert all(check["pass"] for check in interfaces["checks"])
     simulation = report["simulation"]
     assert simulation["schema"] == "cybrgeo-causal-simulation/1"
-    assert simulation["duration_s"] >= 10 - 1e-9 and simulation["steps"] >= 24000
+    assert simulation["duration_s"] >= project.duration_s - 1e-9
+    assert simulation["steps"] >= round(project.duration_s / simulation["timestep_s"])
     assert simulation["model_sha256"] == report["model_sha256"]
     physical_source = json.loads((output / "physical-source.json").read_text())
     assert report["model_sha256"] == digest(physical_source)
@@ -160,7 +161,7 @@ if __name__ == "__main__":
     faulthandler.enable()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("outputs/portable-default"))
-    parser.add_argument("--timeout", type=float, default=1200)
+    parser.add_argument("--timeout", type=float, default=1800)
     parser.add_argument("--verify", action="store_true")
     args = parser.parse_args()
     if args.verify:

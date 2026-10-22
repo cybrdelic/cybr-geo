@@ -64,6 +64,143 @@ Body-local shape lengths are millimetres; captured translations are metres and
 are multiplied by 1000. The final right-handed coordinate change is
 source `(x,y,z)` to GEO `(x,-z,y)`. Missing or nonrigid body frames are rejected.
 
+The design also contains 24 shaft-relative `spin` records for rotors, carriers,
+brakes and encoders. This static adapter retains those source records but does
+not animate them. The retained first-frame capture supplies ten rigid body
+transforms, not measured internal shaft states; neither this geometry study nor
+the published film establishes internal drivetrain motion or electrical control.
+
+The **278 parts and 10 captured bodies are pinned benchmark assertions**, not
+adapter limits. `build()` verifies those counts and the original byte hashes.
+The data-only `build_records(output, design, pose, source=..., body_aliases=...)`
+entry point accepts a different nonempty record count through the same shared
+DAG. It requires explicit source provenance (`repository` and `commit`), records
+canonical hashes of the supplied parsed design and pose, and derives captions
+and reported counts from those records. Callers must verify and identify their
+actual source files; a provenance label alone does not authenticate them.
+
+Frame aliases are explicit. This benchmark passes
+`{"fixed": "fixed_hardware"}`; an alias cannot overwrite a captured frame or
+refer to an absent frame. Shape lengths remain millimetres and captured
+translations remain metres regardless of record count.
+
+This entry point handles the documented CSG records and static pose schema.
+Optional `brep_overrides` and `asset_root` pass explicit native replacements
+through the shared `PartGeometryResolver`. Each override binds the complete
+part record (including body, material and original shape), body-local mm frame,
+confined relative path and exact file hash. It replaces the complete evaluated
+local root before the one body-to-world transform. It never imports foreign
+generator scripts or guesses replacements from filenames. Synthetic
+cardinality/units tests establish the adapter contract, not source compatibility.
+
+## Actual Refined source through the same adapter
+
+```powershell
+python -m examples.engineering.arx_compact.refined --output outputs/arx-compact-refined --render
+```
+
+`refined.py` uses the actual P5 Refined source at
+[`85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf`](https://github.com/cybrdelic/cybr-arx6-compact/tree/85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf/revisions/p5-refined).
+Its local `data/refined/source.json` retains the upstream Git blob and SHA-256
+identities. The source tessellation report selects **123 BREP replacements**;
+the other 155 parts use the existing shared CSG evaluator. The source's actual
+fillets, chamfers, socket recesses and envelope-preserving cuts remain native
+geometry. This rebuild does not claim byte-preservation of the old rendering
+mesh cache or use its triangle meshes as substitute CAD.
+
+The default static placement is saved capture frame 300 at **2.5 seconds**.
+`--frame-index` selects another actual saved frame; the client does not run the
+old controller, interpolate frames or animate the changed geometry. The full
+278-part STEP/GLB and optional PNG come from the selected analytic CAD through
+GEO's existing exporters and renderer.
+
+`property-reconciliation.json` independently recomputes original CSG and refined
+BREP properties for all 123 changed parts: volume, homogeneous-density mass,
+CoM, full inertia about CoM, bounds and solid count. It retains source properties,
+residuals, explicit tolerances, rejected refinement attempts and artifact hashes.
+Aluminum and steel densities are explicit source assumptions. There is no
+silent material fallback. The inherited assembly mass records remain separate
+and unchanged; the reported geometric mass delta does not update their mass
+overrides, inertias or dynamics.
+
+The original comparison follows the source's single-solid `.clean()` step
+before integration; the imported replacements are not modified. Native
+property bounds use analytic BREP surfaces, independent of cached display
+tessellation. The client captures the explicit resolver, CSG evaluator, mass
+integrator and client code identities before construction and rejects changes
+to those files during the build. The [evidence packet](../../../docs/pr-assets/arx-latest/refined/README.md)
+retains the failed first comparison, its source-specific correction and the
+final native readback without changing acceptance tolerances.
+
+Archived property agreement uses the original source integration convention.
+The independent STEP check separately compares converged adaptive integrals
+of each verified source BREP and its STEP export. Differences between the
+archived/default and adaptive methods remain explicit in the evidence; those
+methods' values are not silently substituted for one another.
+
+Changed geometry does **not** inherit the old capture's mechanical acceptance.
+Reducer/bearing envelopes still lack supplier internal geometry; multi-solid
+source coils remain reported. There is no new fit, full-motion clearance, load,
+thermal, fatigue, printing or hardware qualification. This P5 Refined client
+does not stand in for the missing P6-A implementation or P6-B prototype checks.
+
+An installed wheel supports the same maintained script without a checkout:
+
+```python
+import runpy
+from mechanism_lab.engineering_source import project_directory
+runpy.run_path(str(project_directory('arx_compact') / 'refined.py'), run_name='__main__')
+```
+
+## P6B print-first articles through shared construction
+
+```sh
+python -m examples.engineering.arx_compact.print_first --output outputs/arx-print-first --render
+```
+
+This client directly adapts the original P6B builders at the same `85bd6d2c`
+source pin. Shared `RoundedBoxTube` and `SplitLapSplice` construct the actual
+source joint ends, reinforced walls, 0.30 mm split, 0.20 mm nominal per-side
+sleeve fit and coupled cross-hole geometry. Shared `InvoluteRackPair` supplies
+the module 1.2 pinion and rack trials. Its sampled radial roots are not generated
+trochoids. The editable `data/print-first-spec.json` controls these dimensions;
+`--spec` accepts an explicit copy. Inconsistent combinations fail before
+accepted export.
+
+Outputs include six source-local native parts, measured density properties and
+STEP readback, plus six plate-local STEP and six STL files under `print-local/`.
+The plan records nominal mating checks and geometry assumptions. These are
+**six test articles**, not a completed printed arm or a rated transmission.
+The coarse trial's four-times larger pitch radius requires four-times ideal
+torque for the same rack force; it is not a drop-in gripper/controller change.
+The solid-fill PETG density assumption, 246 mm planning cube and plate
+orientation are not slicer settings or printing qualification. Bolts and
+sleeves are candidates and are not modeled.
+
+An installed wheel can run the same client outside the checkout:
+
+```python
+import runpy
+import sys
+from mechanism_lab.engineering_source import project_directory
+client = project_directory("arx_compact") / "print_first.py"
+sys.argv = [str(client), "--output", "outputs/arx-print-first", "--render"]
+runpy.run_path(str(client), run_name="__main__")
+```
+
+The Refined and print-first clients return geometry and reports. They do not
+implement a dynamics project or the registry's zero-argument
+`build() -> Assembly` recipe contract. Use their commands above;
+`lab mechanism` remains the shared causal engineering route.
+
+Source reducer envelopes do not contain actual printed reducer internals.
+Torque transfer, bearing retention, printed strength, creep, thermal response,
+production fits and load capacity remain unresolved. The source's beam
+calculations are payload-only sensitivities, not whole-arm FEA or a rating.
+Inherited workpiece and torque commands express demand, not P6B capacity.
+Full P6A optical/thermal/contact builders and electrical controller remain
+unavailable; they are not inferred from images, film or replacement records.
+
 Reuse follows the user's explicit instruction to adapt their CYBR sources.
 No additional upstream project-wide license is asserted. Source attribution
 and these limits remain with the example; GEO's existing license is preserved.
@@ -71,5 +208,5 @@ and these limits remain with the example; GEO's existing license is preserved.
 Focused checks:
 
 ```powershell
-python -m pytest tests/test_arx_compact_geometry.py tests/test_shape_dag.py
+python -m pytest tests/test_arx_compact_geometry.py tests/test_arx_refined_geometry.py tests/test_part_geometry.py tests/test_shape_dag.py tests/test_manufacturing_joints.py tests/test_manufacturing_gears.py
 ```

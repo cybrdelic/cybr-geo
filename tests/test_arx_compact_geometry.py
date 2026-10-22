@@ -13,18 +13,20 @@ from OCP.gp import gp_Trsf
 from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
 
 from examples.engineering.arx_compact.design import (
-    COMMIT, SOURCE, SOURCE_TO_CAD, body_frames, bounds, geometry_dag, load_source,
+    COMMIT, PINNED_BODY_ALIASES, SOURCE, SOURCE_TO_CAD, body_frames, bounds,
+    build_records, geometry_dag, geometry_scope, load_source, verify_pinned_benchmark,
 )
 from mechanism_lab.shape_dag import ShapeEvaluator
 
 
 def test_entire_source_lowers_without_a_second_generator():
     design, pose = load_source()
-    dag = geometry_dag(design)
+    dag = geometry_dag(design, source=SOURCE)
     assert len(dag['roots']) == len(design['parts']) == 278
+    assert len(pose['body_names']) == 10
     assert len(dag['nodes']) < 2000
     assert sum(node['op'] == 'helix' for node in dag['nodes'].values()) == 2
-    assert set(p['body'] for p in design['parts']) <= body_frames(pose).keys()
+    assert set(p['body'] for p in design['parts']) <= body_frames(pose, aliases=PINNED_BODY_ALIASES).keys()
 
 
 def test_source_si_pose_and_local_millimetres_are_composed_in_order():
@@ -34,9 +36,9 @@ def test_source_si_pose_and_local_millimetres_are_composed_in_order():
     local_point = np.array([15., 23., -7.])
     expected_source = row[3:].reshape(3, 3) @ local_point + 1000 * row[:3]
     assert np.allclose(frame @ np.r_[local_point, 1], SOURCE_TO_CAD @ np.r_[expected_source, 1])
-    evaluator = ShapeEvaluator(geometry_dag(design))
+    evaluator = ShapeEvaluator(geometry_dag(design, source=SOURCE))
     source = evaluator.evaluate('0')
-    world = evaluator.evaluate('0', frame=body_frames(pose)['fixed'])
+    world = evaluator.evaluate('0', frame=body_frames(pose, aliases=PINNED_BODY_ALIASES)['fixed'])
     assert world.Volume() == pytest.approx(source.Volume(), rel=1e-10)
 
 
@@ -53,7 +55,115 @@ def test_invalid_body_frames_fail_closed(invalid):
     else:
         pose['body_poses'][0][0] = float('nan')
     with pytest.raises(ValueError):
-        body_frames(pose)
+        body_frames(pose, aliases=PINNED_BODY_ALIASES)
+
+
+def synthetic_records(part_count, body_count):
+    """Adapter contract fixture only; these boxes are not another ARX revision."""
+    names = [f'fixture_body_{index}' for index in range(body_count)]
+    pose = dict(body_names=names, time_s=1.25,
+                body_poses=[[index * .01, .002, .003, 1, 0, 0, 0, 1, 0, 0, 0, 1]
+                            for index in range(body_count)])
+    design = dict(units='mm', revision='synthetic-adapter-contract', scope='Not ARX source evidence',
+                  parts=[dict(id=index, name=f'fixture_box_{index}', body=names[index % body_count],
+                              shape=dict(op='box', args=[1, 2, 3], children=[]),
+                              bounds_mm=[[-1, -2, -3], [1, 2, 3]], finish='steel',
+                              group='fixture', role='adapter test', status='synthetic')
+                         for index in range(part_count)])
+    source = dict(repository='test-fixture:compact-adapter', commit='synthetic-contract-v1')
+    return design, pose, source
+
+
+@pytest.mark.parametrize('part_count,body_count', [(1, 1), (279, 11)])
+def test_adapter_cardinality_is_independent_of_pinned_benchmark(part_count, body_count):
+    design, pose, source = synthetic_records(part_count, body_count)
+    dag = geometry_dag(design, source=source)
+    assert len(dag['roots']) == part_count
+    assert len(body_frames(pose)) == body_count
+    assert dag['provenance']['commit'] == 'synthetic-contract-v1'
+    assert dag['provenance']['commit'] != COMMIT
+    with pytest.raises(ValueError, match='pinned benchmark'):
+        verify_pinned_benchmark(design, pose)
+
+
+@pytest.mark.parametrize('aliases', [{'fixed_hardware': 'fixed_hardware'},
+                                     {'fixed': 'missing'}, {'fixed': 'other', 'other': 'fixed_hardware'}])
+def test_aliases_cannot_overwrite_or_invent_captured_frames(aliases):
+    _, pose = load_source()
+    with pytest.raises(ValueError, match='alias|Alias'):
+        body_frames(pose, aliases=aliases)
+
+
+def test_existing_fixed_frame_is_not_silently_replaced():
+    _, pose = load_source()
+    pose['body_names'].append('fixed')
+    pose['body_poses'].append([.5, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1])
+    assert body_frames(pose)['fixed'][0, 3] == 500
+    with pytest.raises(ValueError, match='conflicts'):
+        body_frames(pose, aliases=PINNED_BODY_ALIASES)
+
+
+@pytest.mark.parametrize('source', [None, {}, {'repository': 'fixture'}, {'repository': '', 'commit': 'fixture'}])
+def test_alternate_records_require_explicit_provenance(source):
+    design, _, _ = synthetic_records(1, 1)
+    with pytest.raises(ValueError, match='provenance'):
+        geometry_dag(design, source=source)
+
+
+def test_alternate_units_and_missing_pose_fail_before_output(tmp_path):
+    design, pose, source = synthetic_records(1, 1)
+    design['units'] = 'm'
+    with pytest.raises(ValueError, match='millimetres'):
+        build_records(tmp_path / 'bad-units', design, pose, source=source)
+    assert not (tmp_path / 'bad-units').exists()
+    design['units'] = 'mm'
+    design['parts'][0]['body'] = 'absent'
+    with pytest.raises(ValueError, match='Missing source body pose'):
+        build_records(tmp_path / 'bad-pose', design, pose, source=source)
+    assert not (tmp_path / 'bad-pose').exists()
+
+
+def test_variable_count_native_build_retains_units_provenance_and_artifacts(tmp_path):
+    design, pose, source = synthetic_records(11, 11)
+    assembly, report = build_records(tmp_path, design, pose, source=source)
+    assert len(assembly.parts) == report['part_count'] == 11
+    assert report['captured_body_count'] == report['part_body_count'] == 11
+    assert report['source'] == source
+    assert report['time_s'] == 1.25
+    assert assembly.views['hero'].note == '11 source parts / captured t=1.25 / geometry study only'
+    assert geometry_scope(report) == ('Source CAD at captured t=1.25 placement; '
+                                      'no engineering acceptance, dynamics or hardware qualification')
+    assert not report['qualification']['engineering_acceptance']
+    assert np.asarray(report['body_frames_to_world']['fixture_body_10'])[:3, 3] == pytest.approx([100, -3, 2])
+    for row in report['parts']:
+        native = cq.importers.importStep(str(tmp_path / row['local_step'])).val()
+        assert native.Volume() == pytest.approx(48)
+        assert hashlib.sha256((tmp_path / row['local_step']).read_bytes()).hexdigest() == row['local_step_sha256']
+    for name, identity in report['artifacts'].items():
+        assert hashlib.sha256((tmp_path / name).read_bytes()).hexdigest() == identity['sha256']
+    from mechanism_lab.importers import import_geometry
+    reloaded = import_geometry(tmp_path / 'reference.glb')
+    assert len(reloaded.parts) == 11
+    assert reloaded.bounds == pytest.approx(assembly.bounds, abs=1e-4)
+
+
+def test_client_edit_during_export_cannot_produce_accepted_report(tmp_path, monkeypatch):
+    from examples.engineering.arx_compact import design as compact
+    from mechanism_lab import exporters
+    key = 'examples/engineering/arx_compact/design.py'
+    path = tmp_path / 'design.py'
+    path.write_bytes(compact.CONSTRUCTION_CODE_PATHS[key].read_bytes())
+    monkeypatch.setitem(compact.CONSTRUCTION_CODE_PATHS, key, path)
+    export = exporters.export_glb
+    def changed(*args, **kwargs):
+        result = export(*args, **kwargs)
+        path.write_bytes(path.read_bytes() + b'\n# simulated concurrent edit\n')
+        return result
+    monkeypatch.setattr(exporters, 'export_glb', changed)
+    design, pose, source = synthetic_records(1, 1)
+    with pytest.raises(ValueError, match='Construction code changed'):
+        compact.build_records(tmp_path / 'rejected', design, pose, source=source)
+    assert not (tmp_path / 'rejected/geometry-study.json').exists()
 
 
 @pytest.fixture(scope='module')
@@ -85,7 +195,7 @@ def test_actual_springs_preserve_independently_measured_source_defects(part_id, 
     design, _ = load_source()
     row = next(p for p in design['parts'] if str(p['id']) == part_id)
     reference = original_native_build(copy.deepcopy(row['shape']))
-    shape = ShapeEvaluator(geometry_dag(design)).evaluate(part_id)
+    shape = ShapeEvaluator(geometry_dag(design, source=SOURCE)).evaluate(part_id)
     assert shape.isValid() and reference.isValid()
     assert len(shape.Solids()) == len(reference.Solids()) == 2
     assert shape.Volume() == pytest.approx(reference.Volume(), rel=1e-8)

@@ -16,7 +16,7 @@ import tempfile
 import numpy as np
 
 
-def generate_project(source, output=None, *, seconds=10., reuse_native=None, media=False,
+def generate_project(source, output=None, *, seconds=None, reuse_native=None, media=False,
                      size=(960, 720), fps=12):
     """Execute a trusted authored design through shared construction and physics.
 
@@ -30,6 +30,11 @@ def generate_project(source, output=None, *, seconds=10., reuse_native=None, med
     from .physical_model import digest
     from .causal_runtime import CausalSimulation
     project, source_files = load_project(source)
+    # A complete authored task may need longer than the historical ten-second
+    # demo. The default runs its declared cycle; explicit partial runs remain
+    # available and must satisfy the same task requirements before acceptance.
+    seconds = _finite(getattr(project, 'duration_s', 10.) if seconds is None else seconds,
+                      'Simulation duration', positive=True)
     root = Path(output or project_root() / 'outputs' / project.name)
     root.mkdir(parents=True, exist_ok=True)
     (root / 'engineering.json').unlink(missing_ok=True)
@@ -84,8 +89,8 @@ def generate_project(source, output=None, *, seconds=10., reuse_native=None, med
         simulation={key: value for key, value in result.items()
                     if key not in ('frames', 'task_parameters', 'physical_source', 'requirements')},
         qualification=dict(construction='native authored geometry and explicit mass records',
-            dynamics='actual MuJoCo integration with causal electrical, brake, spring and contact forces',
-            clearance='declared conservative contact geometry; not a complete continuous B-rep motion envelope',
+            dynamics='actual MuJoCo integration of declared electrical drives, mechanical constraints and contacts',
+            clearance='project-declared contact and native clearance scope; not a complete continuous B-rep motion envelope',
             hardware='not qualified'))
     (root / 'engineering.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     assembly.metadata['engineering_result'] = report

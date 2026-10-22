@@ -159,6 +159,7 @@ def test_pipeline_fresh_reuse_and_midrun_artifact_acceptance(tmp_path, monkeypat
     project.compile_physics = lambda *args, **kwargs: (
         PhysicalModel.from_xml('<mujoco><worldbody><body name="fixture"/></worldbody></mujoco>'), {}, {})
     project.reference = lambda *args: {}
+    project.duration_s = 17.4
     project.requirements = lambda *args: {'passed': True, 'checks': []}
     project.replay = lambda *args: SimpleNamespace(metadata={})
     monkeypatch.setattr(source, 'load_project', lambda _: (project, identity))
@@ -181,11 +182,13 @@ def test_pipeline_fresh_reuse_and_midrun_artifact_acceptance(tmp_path, monkeypat
         return
     _, first = engineering_pipeline.generate_project(path, output)
     assert first['passed'] and (output / 'assembly.glb').exists()
+    assert first['simulation']['duration_s'] == 17.4
     native = output / 'native'
     before = (native / 'native-build.json').read_bytes()
     project.construct = lambda *args: pytest.fail('reuse must not construct again')
-    _, second = engineering_pipeline.generate_project(path, tmp_path / 'reused', reuse_native=native)
+    _, second = engineering_pipeline.generate_project(path, tmp_path / 'reused', reuse_native=native, seconds=2.)
     assert second['passed'] and second['native_source_binding_sha256'] == first['native_source_binding_sha256']
+    assert second['simulation']['duration_s'] == 2.
     assert (native / 'native-build.json').read_bytes() == before
 
 
