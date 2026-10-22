@@ -9,6 +9,7 @@ import shutil
 import sys
 
 from .render_profiles import V9
+from .registry import DEFAULT_RECIPE,CONSTRUCTED
 
 
 def resolution(text):
@@ -48,14 +49,22 @@ def parser():
     sub.add_parser('list',help='List built-in recipes')
     sub.add_parser('doctor',help='Inspect installed dependencies and system tools')
     q=sub.add_parser('preview',help='Build, check, export GLB and render a native preview in one command')
-    q.add_argument('recipe',nargs='?',default='example_flange')
+    q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE)
     q.add_argument('--view',default='hero');q.add_argument('--size',type=resolution,default=(640,480))
     q.add_argument('--spp',type=positive_int,default=32);q.add_argument('--depth',type=positive_int,default=8)
     q.add_argument('--threads',type=positive_int,default=4);q.add_argument('--out',type=Path)
     q.add_argument('--step',action='store_true',help='Also export analytic STEP (requires CAD-backed parts)')
     q.add_argument('--rebuild',action='store_true');_truth_args(q)
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
-    q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
+    q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE);q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
+    q=sub.add_parser('mechanism',help='Construct an articulated assembly with paired interfaces, motion and an inspection bundle')
+    q.add_argument('architecture',nargs='?',choices=CONSTRUCTED,default=DEFAULT_RECIPE)
+    q.add_argument('--parameters',type=Path,help='JSON object of bounded construction parameters')
+    q.add_argument('--out',type=Path);q.add_argument('--step',action='store_true')
+    q.add_argument('--media',action='store_true',help='Also render actual mesh PNG/GIF inspection views')
+    q.add_argument('--size',type=resolution,default=(960,720))
+    q.add_argument('--seconds',type=positive_float,default=8.)
+    q.add_argument('--fps',type=positive_int,default=12)
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
     q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=positive_int,default=V9.still_spp);q.add_argument('--depth',type=positive_int,default=V9.still_depth);q.add_argument('--threads',type=positive_int,default=4)
@@ -110,6 +119,11 @@ def run(args):
     if args.command=='list':print('\n'.join(BUILTINS));return 0
     if args.command=='doctor':return doctor()
     root=project_root()
+    if args.command=='mechanism':
+        from .mechanism_bundle import generate
+        parameters=json.loads(args.parameters.read_text(encoding='utf-8')) if args.parameters else None
+        report=generate(args.architecture,parameters,args.out,args.step,args.media,args.size,args.seconds,args.fps)
+        print(json.dumps(report,indent=2));return 0
     if args.command=='preview':
         from .preview import preview
         print(json.dumps(preview(args),indent=2));return 0

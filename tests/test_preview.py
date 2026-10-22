@@ -41,7 +41,7 @@ def test_actual_preview_and_failed_replacement_do_not_share_success(tmp_path,mon
     from PIL import Image
     monkeypatch.setenv('MECHANISM_LAB_ROOT',str(tmp_path))
     output=tmp_path/'result'
-    argv=['preview','--step','--size','64x64','--spp','2','--threads','2','--out',str(output)]
+    argv=['preview','example_flange','--step','--size','64x64','--spp','2','--threads','2','--out',str(output)]
     assert main(argv)==0
     report=json.loads((output/'preview.json').read_text())
     assert report['passed'] and report['resolution']==[64,64]

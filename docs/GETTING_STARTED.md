@@ -2,6 +2,15 @@
 
 ## A new recipe
 
+For an articulated mechanism, start with `lab mechanism --step --media`.
+The default compact arm, belt arm and inspection head are generated from shared
+interface dimensions and a joint/actuator graph. Use a bounded JSON mechanism
+descriptor to adjust dimensions while retaining their construction relationships.
+[Construction guide](CONSTRUCTIVE_MECHANISMS.md) and
+[local browser Studio](../studio/web-auth/README.md).
+
+For independent static geometry, use the Python recipe interface below.
+
 Start from [custom_flange.py](../examples/custom_flange.py). Its `build()` returns a `mechanism_lab.Assembly` with uniquely named parts, materials and views. `lab preview path/to/recipe.py` performs the normal geometry checks, exports and native render in one invocation. No separate validation command is needed for ordinary iteration.
 
 Use `--view exploded`, `--size 960x720` and `--spp 64` to inspect a different composition. A local Python recipe is trusted executable code. A mesh recipe supports GLB and rendering; `--step` requires analytic CAD for every part. `lab build --step` retains its existing mixed-assembly coverage behavior.
@@ -17,7 +26,7 @@ Use `--view exploded`, `--size 960x720` and `--spp 64` to inspect a different co
 | V9 photographic output | `lab render recipe.py` | Mitsuba, OIDN, external CC0 studio assets; [setup](SHARED_PHOTOGRAPHY.md) |
 | Raster inspection | `lab render recipe.py --renderer pbr` | VTK, EGL/OpenGL/Mesa |
 
-Use `lab doctor` for the complete toolkit dependency inventory. It reports video and V9 prerequisites too; those are broader than the offline preview's requirements. FFmpeg is needed for MP4/GIF encoding.
+Use `lab doctor` for the complete toolkit dependency inventory. It reports video and V9 prerequisites too; those are broader than the offline preview's requirements. FFmpeg is needed for the video commands. `lab mechanism --media` writes its software mesh inspection PNG/GIF with Pillow and needs no FFmpeg or native renderer.
 
 ## Asset-backed models
 

@@ -1,0 +1,151 @@
+{
+  "schema": "cybrgeo-browser-evidence/1",
+  "recorded_at": "2026-10-22T14:02:47.372Z",
+  "runtime": {
+    "node": "v22.17.1",
+    "platform": "win32"
+  },
+  "scope": "Actual Replicad/OpenCascade WebAssembly construction and export readback in Node.js; actual exported mesh vertices and Three.js joint transforms compared with native prescribed kinematics.",
+  "limits": [
+    "No live browser UI verification: computer-use browser inventory was empty.",
+    "No contact dynamics, strength, fatigue, thermal or hardware qualification.",
+    "These original mechanism families are not reproductions or validation of IRIS-09 or either ARX-6 source.",
+    "Only recorded recipes and trajectory samples are covered."
+  ],
+  "source_sha256": {
+    "src/mechanism_lab/construction.py": "518e4fd25bbf884f8c7073c9fb00d6f8fdffd1118991b86aff3a6eb365bd8ab3",
+    "src/mechanism_lab/constructed.py": "02261eb9bc229de5ad783d9521bf2c68c3dd2d5a471d3196c7ad29afd5233139",
+    "studio/web-auth/src/cad-kernel.mjs": "ad14cbf82ae9c28d2b1ee3e1c4c7d1e3cc9f42838e3c294cd3b696820395513d",
+    "studio/web-auth/src/preflight.mjs": "b053571b32f6eae6af6cfc61cf95adf66cf4c78069dd1c441ff0f95f57bb27d7",
+    "studio/web-auth/src/joints.mjs": "7d3da37b4547359c1b73b31e6dc72b9cbf84a75a2715e4c68e221f2a788aab13",
+    "studio/web-auth/src/inspector.mjs": "86310947b229bf124b5378dd748674988e830243942b5fc4e780fce0947b7a6a",
+    "studio/web-auth/src/cad-worker.mjs": "094624d710ea6d1c8adcd625e9df28441f3da55e1a9f13f652bc42f1f91863de",
+    "studio/web-auth/build.mjs": "a35f02707a62723ea77ccaebfb8d277f1410b527b6fa9a890236e121eaa4b5ff",
+    "studio/web-auth/probe-cad.mjs": "3591b170d8fb7cf005d86e7d1cd8f42cdfabbe8e9d1ec8a4d4a683aee66d8112",
+    "studio/web-auth/probe-motion.mjs": "acfe1a2c311b85f83a9ff1429e4a83d73ad8bca25b0c34e0faaf96fcc70c67d2",
+    "studio/web-auth/make-motion-fixture.py": "db5c07a39b406f7a0b991aca7adddfd35a8dcaf7f53e5163d8fc5023f7d3e74d",
+    "studio/web-auth/record-acceptance.mjs": "4a27fc13ecf3914f3934c3e9f1fed6f704f95906155bc4f24b3dfba319684f49",
+    "studio/web-auth/package-lock.json": "191504f8573374949485d518132aac67a647ac584e538c3d28946e117026f569"
+  },
+  "motion_report_sha256": "63de34c69982cc8a5d6bfd42d997e1c72f2786874d7586a4621a5d04fccb37e2",
+  "models": [
+    {
+      "architecture": "compact_arm",
+      "recipe_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+      "parts": 109,
+      "triangles": 100870,
+      "all_parts_valid_closed_solids": true,
+      "construction_bound": true,
+      "drawings": false,
+      "step_readback": {
+        "solid_count": 109,
+        "volume_mm3": 741506.077249767,
+        "relative_volume_error": 2.9416735787509683e-7,
+        "relative_volume_tolerance": 0.00001
+      },
+      "stl_binary_records": {
+        "files": 109,
+        "triangles": 100872,
+        "finite": true,
+        "declared_lengths_match": true
+      },
+      "motion": {
+        "architecture": "compact_arm",
+        "recipe_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+        "parts": 109,
+        "samples": 9,
+        "independent_controls": 8,
+        "maximum_transform_or_vertex_error": 1.687538997430238e-13,
+        "maximum_sampled_vertex_motion_mm": 102.13808342489318,
+        "passed": true
+      },
+      "full_cad_report_sha256": "ff2c638414e2215ba82323987619c692d3b82aa8fbf33941c742a3ae2a9aca24",
+      "export_sha256": {
+        "assembly.step": "8afafbf3b36da9709a79fbe5cb176c0c63a453c173bcc6c7134b7f20f13a8f74",
+        "assembly.json": "e9ce93dcbbfb6034360a04de79a7fb5d907ca9d43439d25d1e725018cc37f37d",
+        "recipe.json": "4f0873fa5732a3cd91b0d43eda488b495e08989d6efd648534153cdb05ca9d74",
+        "validation.json": "4b6ac6729dc4e9e4f20b14e99b924e12261490f31678de17fb89e34f335a7465",
+        "construction.json": "22e79f74dcc5d7848e51e24f716d33b3de94c3982aea8db2e9d9a1fce80aea58"
+      }
+    },
+    {
+      "architecture": "belt_arm",
+      "recipe_sha256": "704c2f31eb3512624bb94ccbbb4469194661c4f2013fed01deb70030e6e49fac",
+      "parts": 121,
+      "triangles": 118526,
+      "all_parts_valid_closed_solids": true,
+      "construction_bound": true,
+      "drawings": false,
+      "step_readback": {
+        "solid_count": 121,
+        "volume_mm3": 788154.0936468223,
+        "relative_volume_error": 0.0000010505261939140832,
+        "relative_volume_tolerance": 0.00001
+      },
+      "stl_binary_records": {
+        "files": 121,
+        "triangles": 118528,
+        "finite": true,
+        "declared_lengths_match": true
+      },
+      "motion": {
+        "architecture": "belt_arm",
+        "recipe_sha256": "704c2f31eb3512624bb94ccbbb4469194661c4f2013fed01deb70030e6e49fac",
+        "parts": 121,
+        "samples": 9,
+        "independent_controls": 8,
+        "maximum_transform_or_vertex_error": 1.687538997430238e-13,
+        "maximum_sampled_vertex_motion_mm": 102.13808342489318,
+        "passed": true
+      },
+      "full_cad_report_sha256": "1054bc62dc194c51bcda1413f4ab26c4f84aeee3ab6f7fc86f4f2ac1b5aa5b0d",
+      "export_sha256": {
+        "assembly.step": "6e38de9bb2a31eab9004f3ae1d0085c6ebb06d51481ca2225c825f49cb85689d",
+        "assembly.json": "df81608d2276dc89a646f5293292719c16a5469a45903860ea2a28149302fab3",
+        "recipe.json": "ee3860d4ecfdfc95c0548a48019d85645df2eec8fb8ab34a48510b35242d163a",
+        "validation.json": "78d1b662c0e7b850d47009c274f7136f0e7cdfd3fc2d4ee63deebf37f75b9e76",
+        "construction.json": "3efdb22f8002f7b37e46394ba3192402d0431faaf26068a9936544f2747c2509"
+      }
+    },
+    {
+      "architecture": "inspection_head",
+      "recipe_sha256": "150b89ccc226a86d85e9fb36d846063134e3f3df578ca1037bb3da219b5b4132",
+      "parts": 58,
+      "triangles": 54880,
+      "all_parts_valid_closed_solids": true,
+      "construction_bound": true,
+      "drawings": true,
+      "step_readback": {
+        "solid_count": 58,
+        "volume_mm3": 485916.439729185,
+        "relative_volume_error": 4.792658606115446e-7,
+        "relative_volume_tolerance": 0.00001
+      },
+      "stl_binary_records": {
+        "files": 58,
+        "triangles": 54881,
+        "finite": true,
+        "declared_lengths_match": true
+      },
+      "motion": {
+        "architecture": "inspection_head",
+        "recipe_sha256": "150b89ccc226a86d85e9fb36d846063134e3f3df578ca1037bb3da219b5b4132",
+        "parts": 58,
+        "samples": 9,
+        "independent_controls": 5,
+        "maximum_transform_or_vertex_error": 1.180442248897588e-13,
+        "maximum_sampled_vertex_motion_mm": 62.77460564365769,
+        "passed": true
+      },
+      "full_cad_report_sha256": "d933199438ada650cb3ad5868af945f43cf066972c8c3ce0e07fe61257c93eb5",
+      "export_sha256": {
+        "assembly.step": "b0f0682ade78bce55c2e865638964a2ca2349ceb19bef6ce57845ec7ddf56a65",
+        "assembly.json": "b21810c59fc2655ac9e1a79f4f682508aaae3cb802025d2ad97dbdcf678ebb67",
+        "recipe.json": "71c5f7fbb6bc0bf363335626b8c33c31eda1ead2f4cc55a77760253b3bdd4bfb",
+        "validation.json": "68dea8ec708e2d4c96829381a785ffbfe90ba79259b9ba9108d5efc3f2b3861f",
+        "whiteprint.svg": "899c1be0bedf5e3a2a49ddf6a1df9b08c8c75601f1a5c52a54a72c1cc4a60d5b",
+        "construction.json": "e85907cdeac67a3d9e0ef886ed2196348340b0728cbf5b765eccce711736b9b6"
+      }
+    }
+  ]
+}

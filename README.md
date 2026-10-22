@@ -4,6 +4,19 @@
 
 One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with an in-house C++ photographic path tracer and a separate Mitsuba/OIDN rendering backend.
 
+**Mechanical generation is constructive by default.** `lab build`, `lab preview`
+and Studio's default mechanical request create an articulated compact arm from
+shared interface dimensions and a joint/actuator graph. The same plan creates
+the supported shafts, bores, retainers, links, guides and motion. Original
+compact-arm, belt-arm and inspection-head studies are included.
+[Construction architecture, reproduction and limits](docs/CONSTRUCTIVE_MECHANISMS.md).
+
+![Default compact arm: actual CAD mesh animation](docs/pr-assets/constructive/compact_arm-motion.gif)
+
+*109 generated parts, six rotary axes and two independently guided jaws.
+Prescribed kinematics; dynamics and hardware qualification remain separate.*
+[Belt arm and inspection head evidence](docs/CONSTRUCTIVE_MECHANISMS.md#evidence-and-its-limits).
+
 ![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
 
 *ORBIT: 148 components, geared wrist, opposed-screw gripper, hollow palm and removable housing.* [Recipe](examples/orbit_inspection_wrist.py) · [Service sequence](docs/ORBIT_SERVICE.md) · [Geometry coverage](docs/ORBIT_SHOWCASE.md)
@@ -34,14 +47,23 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-tested.txt
 python -m pip install --no-deps --no-build-isolation -e .
-lab preview --step
+lab mechanism --step --media
 ```
 
-`lab preview` builds an independent flange recipe, checks its geometry, exports a GLB and component list, renders a native 640 × 480 image, reads the exported GLB back and checks the image dimensions. `--step` also exports analytic CAD. Results are in **`outputs/example_flange/preview/`**; `preview.json` is written only after successful completion.
+`lab mechanism` constructs the default arm and writes analytic STEP, static and
+animated GLB, its editable construction input, expanded recipe, BOM, joint samples
+and actual mesh PNG/GIF views to **`outputs/mechanisms/compact_arm/`**. It reads
+the exported GLB back before publishing `bundle.json`. Motion is prescribed
+kinematics; motors and linear actuators are declared envelopes, not sized hardware.
 
-This first run uses the in-house renderer and included geometry. It needs no downloaded reference archive, HDRI or denoiser. Sample count is deliberately modest for iteration.
+This first run needs no reference archive, display server, downloaded HDRI or
+denoiser. `lab preview --step` remains the native photographic preview command,
+now also defaulting to `compact_arm`; its output is `outputs/compact_arm/preview/`.
+Use `lab preview example_flange` for the previous quick static example.
 
 ```bash
+lab mechanism belt_arm --step --media
+lab mechanism inspection_head --media
 lab preview nitinol_fiber_actuator --spp 64
 lab preview examples/custom_flange.py --step
 lab build nitinol_fiber_actuator --step --stl
@@ -56,6 +78,7 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | System | Implementation |
 | --- | --- |
 | Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
+| Default mechanical construction | [Bounded plan compiler](src/mechanism_lab/construction.py), [CAD and joint evaluator](src/mechanism_lab/constructed.py), [Studio](studio/README.md) |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |
 | Native photography | [Thin-lens BVH/GGX/MIS tracer](src/mechanism_lab/native/photoreal.cpp), [Python adapter](src/mechanism_lab/photoreal.py) |
@@ -69,6 +92,7 @@ Recipes define the object; shared code handles its outputs. Geometry validation 
 
 ```bash
 make test-core       # independent geometry / rendering contracts
+make test-mechanisms # shared construction, kinematics, cache and Studio routes
 make preview         # real CAD → GLB / STEP → native image
 make test            # complete suite; see prerequisite notes below
 ```

@@ -34,11 +34,12 @@ jobs:
           python -m pip install -r requirements-tested.txt
           python -m pip install --no-deps --no-build-isolation -e .
       - run: make test-core
+      - run: make test-mechanisms
       - name: Run documented CAD and native render preview
         run: lab preview --step --threads 2
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: quickstart-python-${{ matrix.python }}
-          path: outputs/example_flange/preview/
+          path: outputs/compact_arm/preview/
           if-no-files-found: error

@@ -1,0 +1,10 @@
+{
+  "schema": "cybrgeo-mechanism/1",
+  "architecture": "compact_arm",
+  "parameters": {
+    "scale": 1,
+    "radial_clearance_mm": 0.2,
+    "joint_limit_deg": 12,
+    "jaw_travel_mm": 10
+  }
+}

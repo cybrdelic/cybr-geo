@@ -142,7 +142,13 @@ def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion',sample_ti
     lookup={n.get('name'):i for i,n in enumerate(doc['nodes'])}
     roots=doc['scenes'][doc.get('scene',0)]['nodes']
     if len(roots)!=1 or doc['nodes'][roots[0]].get('mesh') is not None:
-        raise ValueError('Expected a single non-mesh world root')
+        # Recent trimesh versions omit an identity non-mesh world root and
+        # serialize each part as a scene root. Animated part TRS below is in
+        # native mm/Z-up, so restore an explicit shared conversion parent.
+        root_index=len(doc['nodes'])
+        doc['nodes'].append(dict(name='CYBR_GEO_world',children=list(roots)))
+        doc['scenes'][doc.get('scene',0)]['nodes']=[root_index]
+        roots=[root_index]
     root=doc['nodes'][roots[0]]
     for key in ('translation','rotation','scale'):root.pop(key,None)
     root['matrix']=NATIVE_TO_GLTF.T.reshape(-1).tolist()
