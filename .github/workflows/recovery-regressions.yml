@@ -29,6 +29,7 @@ jobs:
       - name: Install and regenerate missing source-only inputs
         run: |
           set -euo pipefail
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
           python -m pip install -r requirements-tested.txt
@@ -70,6 +71,7 @@ jobs:
       - name: Install tested dependencies and native prerequisites
         run: |
           set -euo pipefail
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
           python -m pip install -r requirements-tested.txt
