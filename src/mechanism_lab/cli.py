@@ -48,11 +48,12 @@ def parser():
     sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('list',help='List built-in recipes')
     sub.add_parser('doctor',help='Inspect installed dependencies and system tools')
-    q=sub.add_parser('preview',help='Build, check, export GLB and render a native preview in one command')
+    q=sub.add_parser('preview',help='Build, check, export GLB and render a geometry preview in one command')
     q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE)
     q.add_argument('--view',default='hero');q.add_argument('--size',type=resolution,default=(640,480))
     q.add_argument('--spp',type=positive_int,default=32);q.add_argument('--depth',type=positive_int,default=8)
     q.add_argument('--threads',type=positive_int,default=4);q.add_argument('--out',type=Path)
+    q.add_argument('--renderer',choices=['auto','native','pbr'],default='auto')
     q.add_argument('--step',action='store_true',help='Also export analytic STEP (requires CAD-backed parts)')
     q.add_argument('--rebuild',action='store_true');_truth_args(q)
     q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
@@ -61,9 +62,10 @@ def parser():
     q.add_argument('architecture',nargs='?',default=DEFAULT_RECIPE,help='Mechanism JSON document, or a compatibility example alias')
     q.add_argument('--parameters',type=Path,help='JSON object of bounded construction parameters')
     q.add_argument('--out',type=Path);q.add_argument('--step',action='store_true')
+    q.add_argument('--reuse-native',type=Path,help='Reuse a hash-verified native build of the same authored project')
     q.add_argument('--media',action='store_true',help='Also render actual mesh PNG/GIF inspection views')
     q.add_argument('--size',type=resolution,default=(960,720))
-    q.add_argument('--seconds',type=positive_float,default=8.)
+    q.add_argument('--seconds',type=positive_float,default=10.)
     q.add_argument('--fps',type=positive_int,default=12)
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
@@ -120,6 +122,19 @@ def run(args):
     if args.command=='doctor':return doctor()
     root=project_root()
     if args.command=='mechanism':
+        from .engineering_source import is_engineering_project
+        if is_engineering_project(args.architecture):
+            from .engineering_pipeline import generate_project
+            if args.parameters:
+                raise ValueError('Edit the authored project specification; legacy cartridge parameters do not apply')
+            assembly,report=generate_project(args.architecture,args.out,seconds=args.seconds,
+                reuse_native=args.reuse_native,media=args.media,size=args.size,fps=args.fps)
+            if args.step and report['passed']:
+                from .exporters import export_step, artifact_stem
+                stem=artifact_stem(assembly)
+                destination=args.out or root/'outputs'/stem
+                export_step(assembly,destination/(stem+'.step'),mesh_filename='assembly.glb')
+            print(json.dumps(report,indent=2));return 0 if report['passed'] else 2
         from .mechanism_bundle import generate
         parameters=json.loads(args.parameters.read_text(encoding='utf-8')) if args.parameters else None
         report=generate(args.architecture,parameters,args.out,args.step,args.media,args.size,args.seconds,args.fps)
@@ -150,7 +165,9 @@ def run(args):
         recipe=destination/(safe_name(args.name)+'.json');recipe.write_text(json.dumps({'schema':1,'kind':'geometry-import','source':source.name,'name':assembly.name,'units':assembly.metadata['source_units'],'up_axis':assembly.metadata['source_up_axis']},indent=2)+'\n');print(recipe);return 0
     engineered=is_mechanism_source(args.recipe) and args.command in ('build','animate')
     analytic=engineered or args.command in ('blueprint','whiteprint') or (args.command=='build' and args.step)
-    assembly=load(args.recipe,rebuild=getattr(args,'rebuild',False),analytic=analytic);out=root/'outputs'/assembly.name;out.mkdir(parents=True,exist_ok=True)
+    assembly=load(args.recipe,rebuild=getattr(args,'rebuild',False),analytic=analytic)
+    from .exporters import artifact_stem
+    stem=artifact_stem(assembly);out=root/'outputs'/stem;out.mkdir(parents=True,exist_ok=True)
     if engineered:
         from .engineering_pipeline import evaluate_plan
         analysis_out=(args.out if args.command=='build' and args.out else out)/'engineering'
@@ -164,8 +181,8 @@ def run(args):
             assembly=simulated_assembly(assembly,engineering['simulation'])
     if args.command=='build':
         from .exporters import export_glb,export_step,export_bom,export_stls
-        out=args.out or out;out.mkdir(parents=True,exist_ok=True);export_glb(assembly,out/(assembly.name+'.glb'));export_bom(assembly,out)
-        if args.step:export_step(assembly,out/(assembly.name+'_analytic.step'))
+        out=args.out or out;out.mkdir(parents=True,exist_ok=True);export_glb(assembly,out/(stem+'.glb'));export_bom(assembly,out)
+        if args.step:export_step(assembly,out/(stem+'_analytic.step'))
         if args.stl:export_stls(assembly,out/'stl')
         from .registry import cache_directory
         shutil.copy2(cache_directory(args.recipe)/'validation.json',out/'validation.json')
@@ -187,7 +204,7 @@ def run(args):
         truth=assert_renderable(assembly,args.intent,args.allow_estimates)
         from .media import Shot,render_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'videos'/(assembly.name+'_'+args.renderer+'.mp4')
+        output=args.out or out/'videos'/(stem+'_'+args.renderer+'.mp4')
         if args.renderer=='v9':
             from .v9_dispatch import render_v9_video
             report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
@@ -200,7 +217,7 @@ def run(args):
     elif args.command=='film':
         from .media import Shot
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'films'/(assembly.name+'_'+args.renderer+'.mp4')
+        output=args.out or out/'films'/(stem+'_'+args.renderer+'.mp4')
         if args.renderer=='v9':
             from .v9_dispatch import render_v9_video
             report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
@@ -210,13 +227,13 @@ def run(args):
         print(json.dumps({k:v for k,v in report.items() if k!='truth' and k!='frames_log'},indent=2))
     elif args.command=='animate':
         from .exporters import export_animated_glb
-        output=args.out or out/(assembly.name+'_'+args.mode+'.glb');print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))
+        output=args.out or out/(stem+'_'+args.mode+'.glb');print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))
     elif args.command=='catalogue':
         from .media import catalogue
         output=args.out or out/'parts';items=catalogue(assembly,output,args.size);print(json.dumps({'parts':len(items),'catalogue':str(output/'index.html')},indent=2))
     elif args.command in ('blueprint','whiteprint'):
         from .whiteprint import whiteprint
-        output=args.out or out/'drawings'/(assembly.name+'_whiteprint');specification=json.loads(args.annotations.read_text()) if args.annotations else None;print(json.dumps(whiteprint(assembly,output,args.part,args.title,args.scale,specification),indent=2))
+        output=args.out or out/'drawings'/(stem+'_whiteprint');specification=json.loads(args.annotations.read_text()) if args.annotations else None;print(json.dumps(whiteprint(assembly,output,args.part,args.title,args.scale,specification),indent=2))
     elif args.command=='validate':
         report=validate(assembly,args.expensive);text=json.dumps(report,indent=2)+'\n'
         if args.out:args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(text)

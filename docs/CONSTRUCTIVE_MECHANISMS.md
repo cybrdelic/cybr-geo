@@ -1,167 +1,170 @@
-# One mechanical engineering source
+# Shared engineering construction
 
-CYBR GEO uses one canonical document and one component compiler. The included
-arm and head documents exercise that compiler; they are not separate mechanical
-implementations, nor reproductions of IRIS-09 or ARX-6. Existing Python recipes
-and the original `cybrgeo` API remain available.
+CYBR GEO's default is an authored engineering project executed by shared CAD,
+mass, contact, actuation, MuJoCo and replay services. ARX belt is the default
+example. Its actual source is adapted directly. Existing component documents
+and Python recipes remain supported.
 
 ```mermaid
 flowchart LR
-  Source[Components / materials / tolerances / loads / drives / contacts / motion] --> Compiler[Registered component compiler]
-  Compiler --> Model[One expanded mechanical model]
-  Model --> Native[CadQuery solids and mass properties]
-  Model --> Browser[Replicad CAD and Three.js inspection]
-  Native --> Simulation[MuJoCo dynamics]
-  Model --> Simulation
-  Native --> Envelope[Continuous path and error-tube clearance]
-  Simulation --> Envelope
-  Envelope --> Gate[Engineering result]
-  Gate --> Exports[STEP / GLB / BOM / prescribed and integrated replay]
+  Design[Example: specification + geometry + task] --> CAD[Shared native construction / CSG]
+  CAD --> Solids[Named solids / interfaces / material records]
+  Solids --> Mass[CAD volume / CoM / full inertia]
+  Design --> Physics[Editable physical body and joint tree]
+  Mass --> Physics
+  Design --> Contacts[Material-region contact construction]
+  Contacts --> Physics
+  Design --> Drives[Electrical / gear / belt / spring / brake parameters]
+  Drives --> Runtime[Shared causal drive and safety runtime]
+  Physics --> Runtime
+  Runtime --> Solver[MuJoCo forces and contact integration]
+  Solver --> Replay[Recorded body states]
+  Solids --> Replay
+  Replay --> Outputs[STEP / GLB / inspection / actual rendered evidence]
 ```
 
-## Authoring and construction
+## Shared core
 
-[The source contract](MECHANISM_SOURCE.md) describes editable JSON documents and
-trusted Python component extensions. The registered component expands both sides
-of an interface from the same datum and dimensions. Its parts, joints, drive
-relations, materials, support paths and fit requirements are lowered together.
-CAD backends contain no architecture-name branches.
+| Service | Contract |
+| --- | --- |
+| `native_construction.py` | Native parts, densities and explicit mass overrides, placements, parallel-axis inertia, exports and completion receipts |
+| `shape_dag.py` | Analytic CSG with shared nodes, transforms, booleans and bounded inputs; used by component documents and imported geometry |
+| `physical_model.py` | Physical tree preserving bodies, inertias, joints, transmissions, contacts and initialization; rejects unrealizable CAD inertia |
+| `contact_geometry.py` | Material-region proxies, annular regions, transformed primitives and perforated tabletops |
+| `actuation.py` | Source-derived voltage/current/back-EMF, gearbox/belt demand limits, thermal/energy accounting, springs, brakes and faults |
+| `causal_runtime.py` | Named-joint forces applied to MuJoCo, independent free bodies, contacts, every-step extrema and state receipts |
+| `physical_replay.py` | Native local geometry transformed only by recorded body states; explicit units, identity and cache restoration |
+| `engineering_source.py`, `engineering_pipeline.py` | One project protocol connecting these services and retaining source/native/model/control/reference identities |
 
-The current built-in catalog is deliberately bounded: rotary cartridges and
-parallel grippers in supported serial frames. A new component registers its
-validator and expander; it does not add another arm generator. Nonlinear
-pin-slot closure, arbitrary loop constraints and an iris mechanism are not yet
-implemented. Unsupported requests are rejected before CAD construction.
+Examples supply geometry, topology, parameters and tasks. They do not own another
+solver, motor implementation, mass-accounting engine or renderer. The physical
+tree is serialized to `physical-source.json` and lowered to MJCF. Render meshes
+cannot silently replace physical inertia or collision solids. Physical materials
+are separate from display finishes.
 
-Physical material records are separate from render finishes. Nominal clearance
-and shaft/bore tolerance bounds are combined before geometry. The compiler
-rejects insufficient fit clearance and insufficient declared actuator effort
-using conservative positive-CSG mass and reference-layout load estimates.
-These are construction constraints. They do not establish production fits,
-local keyway stress, bearing life, structural deflection, fatigue or thermal duty.
+ARX retains its authored interfaces, fasteners, bearing seats, stops and folded
+transmissions. Unsupported edits to its coupled bench fixture fail before CAD.
+This source-derived design does not promise that arbitrary dimension edits are
+valid. New projects use the same protocol; reusable primitives belong in the
+core, while design-specific construction remains in the example.
 
-The source digest binds the authored mechanical assumptions. The geometry digest
-binds parts and joints. The full model digest also binds component definitions
-and derived physical metadata. Changed loads, materials, actuator limits or
-contact assumptions invalidate the engineering result even when triangles are
-unchanged.
+## Run it
 
-## Run the shared pipeline
+Install the environment in the main README, then:
 
 ```bash
-lab mechanism examples/constructed/compact_arm.json --step --media
-lab build examples/constructed/compact_arm.json --step
-lab animate examples/constructed/compact_arm.json --seconds 8
+lab mechanism --step --media
+lab mechanism arx_belt --step --media
+lab preview --step
+lab build arx_belt --step
+lab animate arx_belt --seconds 10
 ```
 
-`lab mechanism` writes an engineering bundle under `outputs/mechanisms/`.
-`mechanism.json` is the canonical input; `recipe.json` is its expanded model.
-The bundle contains actual analytic STEP, static and animated GLB, BOM,
-`engineering.json`, `motion-envelope.json`, MJCF, explicit simulation meshes,
-MuJoCo traces and tracking plots. `--media` renders actual CAD triangles.
-`motion.gif` shows the requested kinematics; `simulation/motion.gif` shows the
-integrated MuJoCo response. Neither is image-generated evidence.
+The default builds native CAD, binds new mass/inertia and transmission records,
+runs a ten-second causal contact transfer, then exports recorded motion. It needs
+no benchmark checkout, archived film, network download or image generation.
+Allow several minutes for the initial CAD construction and simulation.
 
-`lab build` and `lab animate` run the same engineering pipeline for canonical
-mechanism inputs and compatibility aliases. Failed analysis prevents publishing
-accepted motion. `lab animate` exports the integrated response. Static preview
-and low-level articulation remain inspection tools; displaying a pose does not
-authorize it. Legacy nonmechanical recipes retain their existing behavior.
+`outputs/arx_belt/` contains `native/`, `design-source.json`,
+`physical-source.json`, `model.xml`, `control-source.json`,
+`simulation/trace.json.gz`, `engineering.json`, `assembly.glb` and optional STEP
+and media. Native outputs retain individual/placed STEP, named mesh geometry,
+component mass records, transmission data and a hashed completion receipt.
+Failed tasks retain diagnostics and return failure; their GLB is named
+`diagnostic-assembly.glb`.
 
 ```bash
-python tools/verify_construction_bundle.py outputs/mechanisms/compact_arm \
-  --samples 17 --out outputs/mechanisms/compact_arm/artifact-readback.json
+lab mechanism arx_belt --reuse-native outputs/arx_belt/native --out outputs/arx-repeat --media
+python tools/run_arx_causal.py --help
+python -m examples.engineering.arx_belt.verify_geometry --help
 make test-mechanisms
 ```
 
-The artifact verifier reopens STEP and GLB, checks source and file hashes, and
-decodes actual animation node transforms. Inspect its result and the media,
-not merely the presence of `bundle.json`. Engineering runs retain failures.
+Explicit native reuse verifies the semantic specification, geometry recipe,
+construction implementation and every artifact hash. Original file-byte hashes
+are separate from semantic JSON identity. Cache changes invalidate motion as
+well as geometry. Recorded replay holds the prior pose between samples. Generic
+animated GLB interpolation is a visualization, not extra solver evidence.
 
-## Physics and motion scope
+## Author another project
 
-MuJoCo receives the same joint graph, exact CAD volume/center of mass/inertia,
-physical density, payload, gravity, actuator bounds and explicit collision
-primitives. The backend integrates rigid-body dynamics with effort-limited
-computed-torque control. Transmission equalities are finite numerical
-constraints: residuals and solver settings are recorded, not assumed zero.
-Actual speed, acceleration, applied effort and saturation are reported.
+To author another design, create a trusted local folder with `project.json`
+(`schema: cybrgeo-engineering-project/1`) and `project.py`. Its `create()` returns
+an `EngineeringProject`, as in the [ARX registration](../examples/engineering/arx_belt/project.py).
+Run it with `lab mechanism path/to/project --step --media`.
 
-Visual meshes are not silently used as filled convex collision hulls. Current
-component proxies are material-contained primitives; cut parts are omitted and
-listed. Their contacts are disabled in the included studies by explicit source
-policy. Source-declared ground and free bodies can exercise actual contact.
-Consequently, a successful arm trajectory does not prove object manipulation,
-full self-contact, belt traction or successful gripping.
-
-The clearance certifier uses actual CAD distances plus conservative rigid-body
-interval displacement bounds. It covers the continuous specified path and the
-explicit joint/follower error tube, and fails closed when it cannot resolve a
-pair. It checks source-to-B-rep identity. Every retained numerical integration
-state must lie in the certified tube before that run is accepted. This is not
-full joint-space clearance, a proof between physics integration steps, or a
-hardware safety certificate. Imported JSON flags never grant runtime authority.
-
-## Recorded evidence
-
-The [current receipt](pr-assets/engineering/evidence.json) binds the following
-results to canonical source `d655f957...` and model `9c3a583e...`:
-
-| Executed result | Evidence |
+| Project callback | Shared boundary |
 | --- | --- |
-| 109 valid STEP solids and 109 GLB meshes; 245 artifact hashes checked | [Independent readback](pr-assets/engineering/artifact-readback.json) |
-| All 5,886 part pairs over the continuous specified path and error tube; 6,270 interval visits | [Clearance summary](pr-assets/engineering/evidence.json) |
-| MuJoCo 3.16, 8 seconds, 2 ms steps; 4,001 states inside the tube | [Simulation and membership summary](pr-assets/engineering/evidence.json) |
-| Worst rotary tracking error 0.001408 degrees; jaw error 0.001131 mm; declared operating limits passed | [Tracking plot](pr-assets/engineering/tracking.svg) |
-| Requested and integrated GLB replay decoded at 17 times; maximum sampled vertex discrepancy below 0.000009 mm | [Readback](pr-assets/engineering/artifact-readback.json) |
-| Actual native/WASM CAD and motion parity, including a new four-axis composition authored as data | [Browser CAD receipt](../studio/web-auth/evidence/acceptance.json) |
-| 109 parts at five actual MuJoCo poses matched Three.js vertices within 4.6e-13 mm | [Replay receipt](../studio/web-auth/evidence/simulation-replay.json) |
-| Accepted current engineering result; rejected stale, imported and failed results | [Browser gate receipt](../studio/web-auth/evidence/engineering-gate.json) |
+| `construct(specification, directory)` | Build named native solids, placements and material mass records through `NativeConstruction`; return a hashed completion receipt |
+| `compile_physics(specification, native_directory=...)` | Return `PhysicalModel`, drive configuration and task parameters; consume the new native mass records |
+| `reference(time_s, parameters)` | Supply requested joint/gap states; the shared controller computes forces |
+| `requirements(result, parameters)` | State design-specific task outcomes and their scope |
+| `replay(directory, result)` | Bind native local geometry to shared recorded physical-body transforms |
 
-![Actual integrated CAD motion](pr-assets/engineering/simulated-motion.png)
+Keep geometry, interfaces and mechanism-specific layout in the project. Reuse
+the shared CAD/CSG, inertia, contact primitives, actuation, solver and renderer;
+do not fork those engines for another design. The physical tree is authoritative
+for body attachment. Serialized contact records are checked against its named
+geometries; historical unresolved body aliases are provenance labels, not an
+independently editable attachment graph. Trusted project source and data are
+snapshotted together, and changes during generation prevent accepted exports.
 
-[Integrated GIF](pr-assets/engineering/simulated-motion.gif) and
-[prescribed GIF](pr-assets/engineering/prescribed-motion.gif) are software mesh
-renders from the actual model. No image generation was used. They are not live
-browser screenshots. This executor exposed no browser surface for live UI QA.
+Geometry-only examples such as [IRIS](../examples/engineering/iris09/README.md)
+and [compact ARX](../examples/engineering/arx_compact/README.md) use the same
+native/CSG/render services without registering nonexistent dynamics contracts.
 
-The mechanical regression target passed **151 tests plus 13 subtests**; browser
-tests passed **18/18**. Existing core checks passed **37 tests** locally; the
-native photographic preview test could not run because Windows has no `g++`
-with OpenMP. Quickstart CI for the prior published commit passed that real
-preview on Linux with Python 3.11, 3.12 and 3.13. Those CI results do not replace
-checks of this revision.
+## Source reuse and evidence
 
-The [original belt-component diagnostic](pr-assets/engineering/belt-diagnostic.json)
-is deliberately retained as a failure. Tracking passes, but motor startup
-acceleration reaches 2,836 and 1,637 degrees/s² against declared 40 degrees/s²
-limits. Refining numerical transmission constraints did not make this an
-accepted operating case. It needs a physically specified drive/initialization
-model. This is not the ARX belt design and does not transfer a claim to it.
+The default directly adapts [ARX belt at aabdf8c](https://github.com/cybrdelic/cybr-arx6-belt/tree/aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2):
+native generation, material-region contacts, model lowering, control and safety.
+The restored source geometry cache was hash-verified before comparison.
+[Source notices](../NOTICE-SOURCES.md) identify pins and retained material.
 
-## Reference designs and provenance
+Fresh construction produced **118 unique parts and 375 placements**. **127 STEP
+exports reopened as valid solids**; the source's **52 nominal BREP interface
+checks** and **eight stop checks** passed. All eight body mass, CoM and full
+inertia records matched the unmodified generator under the same CAD kernel.
+Archived CadQuery 2.7/OpenCascade 7.8 records differ slightly from the local
+2.8/7.9 spring geometry; the historical difference is retained.
 
-IRIS-09, ARX-6 belt and ARX-6 compact are distinct reference designs. Their
-validation claims must remain separate.
+The contact builder reproduces **2,095 source proxies and 315 tabletop tiles**.
+Motor/fault kernels are compared numerically with actual JavaScript source.
+The task reference is compared at 24,262 timestamps including boundaries.
+Original XML and shared lowering produce identical retained state arrays through
+the same native runtime; native/WASM differences are measured separately.
 
-The public [IRIS source](https://github.com/cybrdelic/cybr-iris09/tree/6aac71594c211cc5934674b2113d9db8c5ec17c6)
-was inspected at the pinned commit. `bodyMap` creates a detailed analytic SDF
-housing with mounting ears, holes, slots and captive screw shapes. `hitIris`
-uses nine hinges, circular-prism intersections, canted leaf sheets and a fixed
-world clipping cylinder. Its handle and leaf motion are prescribed functions
-of time. There is no recovered transmission, constraint closure, load model or
-dynamics solver. The clipping boundary can change the displayed leaf shape
-with pose; a physical rigid part must instead keep its material invariant.
-Its sampled-clearance comment is not a reproduced engineering result.
+The nominal task transfers an independent puck through pad contact. No weld,
+attachment, teleport or tool-following payload pose is applied. Friction loss
+reproduces a drop and roughly 78 mm placement error. The original adverse-case
+validator did not reject that placement, so the new task requirement does.
+[Fresh receipts and actual media](pr-assets/arx-engineering/README.md) distinguish
+new native builds from cached-source comparisons.
 
-The recovered ARX belt architecture is being inspected separately. The parent
-handoff identifies CadQuery mass/inertia, hole-preserving material collision
-proxies, generated MJCF, six torque-controlled joints, opposed rack jaws and a
-contact-driven puck. Electrical drive and safety logic are distinct reusable
-layers. Direct reuse is only claimed after local source inspection and rights
-verification. The compact cinematic reconstruction must not inherit the belt
-controller or original compact scenario-suite claims.
+## Remaining limits
 
-Current evidence establishes the shared foundation and bounded components.
-It does not establish parity with either ARX package or a working IRIS example.
-No reference artwork or unlicensed source has been imported into this change.
+* Nominal CAD interfaces do not qualify supplier fits, production tolerance
+  stacks, belt pretension, stiffness, fatigue or thermal duty. Envelope mass
+  overrides remain explicit assumptions.
+* ARX proxies over-cover some material regions. Small holes and flexible
+  belt/spring/cable contact are omitted. This is not exact CAD contact, a complete
+  continuous BREP motion envelope or full joint-space clearance.
+* Arm current is request-limited before winding integration; actual transients
+  can exceed those limits. The gripper additionally clamps actual current.
+  Ideal power loss and finite brake friction are retained. Temperature accounting
+  is not a validated thermal cutoff.
+* Original failures remain unresolved: `power_loss_3.2`,
+  `weak_spring_double_delay_3.2`, `weak_spring_double_delay_7.2`. Archived 21/24
+  ordinary passes and four adverse controls are not a fresh full-suite pass.
+* IRIS is source-derived geometry with prescribed motion. Its world clipping
+  changes visible material with pose. Invariant leaves and display geometry are
+  separate; no missing mechanical closure or dynamics has been invented.
+* Compact ARX's CSG/render interfaces are separate. Its reconstructed PD/contact
+  capture does not inherit belt's electrical, fault or validation claims.
+
+Earlier bounded component documents remain compatible. Their continuous
+prescribed-path/error-tube clearance and recorded results are documented in
+[Component studies](COMPONENT_STUDIES.md); those results do not transfer to ARX
+or IRIS. Studio starts the same authored engineering project as the CLI and
+loads its accepted CAD export with recorded solver body transforms. Its
+component editor remains an explicit compatibility route. Browser replay uses
+recorded states; it does not run a separate CAD or dynamics implementation.

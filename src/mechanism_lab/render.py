@@ -11,6 +11,8 @@ os.environ.setdefault('LP_NUM_THREADS','4')
 os.environ.setdefault('OMP_NUM_THREADS','4')
 os.environ.setdefault('OPENBLAS_NUM_THREADS','1')
 import math
+import json
+import sys
 from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont
@@ -19,14 +21,28 @@ from vtk.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray,vtk_to_n
 from .core import Part, Assembly, View
 
 
-FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-BOLD='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+FONT='DejaVuSans.ttf'
+BOLD='DejaVuSans-Bold.ttf'
 FG=(220,230,236);MUTED=(140,156,168)
 
 
 def font(sz,bold=False):
     try:return ImageFont.truetype(BOLD if bold else FONT,sz)
     except OSError:return ImageFont.load_default(size=sz)
+
+
+def render_window():
+    """Use an available native OpenGL window, with headless EGL on Linux.
+
+    Windows/macOS VTK wheels use their WGL/Cocoa factory; they need not expose
+    the Linux EGL class. Offscreen rendering still requires a working OpenGL
+    context. A missing or broken graphics driver is not a successful render.
+    """
+    egl = getattr(vtk, 'vtkEGLRenderWindow', None)
+    use_egl = sys.platform.startswith('linux') and egl is not None and not os.environ.get('VTK_DEFAULT_OPENGL_WINDOW')
+    window = egl() if use_egl else vtk.vtkRenderWindow()
+    window.SetOffScreenRendering(1)
+    return window
 
 
 def studio_texture():
@@ -112,7 +128,7 @@ class Studio:
         self.output_size=tuple(map(int,size));self.supersample=max(1,int(supersample))
         render_size=(self.output_size[0]*self.supersample,self.output_size[1]*self.supersample)
         self.ren=vtk.vtkRenderer();self.ren.SetBackground(.026,.031,.038);self.ren.SetBackground2(.065,.074,.086);self.ren.GradientBackgroundOn()
-        self.win=vtk.vtkEGLRenderWindow();self.win.SetOffScreenRendering(1);self.win.SetSize(*render_size);self.win.SetMultiSamples(0);self.win.SetAlphaBitPlanes(1);self.win.AddRenderer(self.ren)
+        self.win=render_window();self.win.SetSize(*render_size);self.win.SetMultiSamples(0);self.win.SetAlphaBitPlanes(1);self.win.AddRenderer(self.ren)
         self.ren.UseImageBasedLightingOn();self.ren.AutomaticLightCreationOff();self.tex=studio_texture();self.ren.SetEnvironmentTexture(self.tex,False)
         self.ren.SetEnvironmentUp(0,0,1);self.ren.SetEnvironmentRight(1,0,0);self.ren.UseSphericalHarmonicsOn()
 
@@ -220,5 +236,12 @@ def render_still(assembly,output,view_name='hero',size=(1600,1100),time_seconds=
                         f'Actual 3D geometry / {view.projection} PBR / {truth}',
                         tag='CYBR MECHANISM LAB / TRUTH-GATED RENDER')
         output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);im.save(output)
+        metadata = dict(backend='vtk-pbr', renderer='VTK PBR rasterizer',
+                        render_window=studio.win.GetClassName(), vtk_version=vtk.vtkVersion.GetVTKVersion(),
+                        graphics_capabilities=studio.win.ReportCapabilities(),
+                        model=assembly.name, view=view_name, resolution=list(size),
+                        supersample=studio.supersample, spp=None, generated_imagery=False,
+                        scope='Actual geometry with PBR materials and rasterized studio lighting; not path tracing or dynamics evidence.')
+        output.with_suffix('.render.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf-8')
         write_truth_report(report,output.with_suffix('.truth.json'));return output
     finally:studio.close()

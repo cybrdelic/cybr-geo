@@ -9,6 +9,9 @@ const [sessionResponse,examplesResponse,indexResponse,scriptResponse,workerRespo
 for(const response of [sessionResponse,examplesResponse,indexResponse,scriptResponse,workerResponse,wasmResponse])if(!response.ok)throw Error('Failed route '+new URL(response.url).pathname+':'+response.status);
 const session=await sessionResponse.json(),examples=await examplesResponse.json(),html=await indexResponse.text(),script=await scriptResponse.text(),worker=await workerResponse.text(),wasm=new Uint8Array(await wasmResponse.arrayBuffer());
 if(!html.includes('id="document"')||!html.includes('Run engineering')||!script.includes('/api/engineer')||!worker.includes('buildCad')||wasm.length<1e6||wasm[0]!==0||wasm[1]!==97||wasm[2]!==115||wasm[3]!==109)throw Error('Built Studio source closure was not served');
+if(examples.default_example!=='arx_belt'||examples.default_source?.schema!=='cybrgeo-project-selection/1'||!examples.projects?.some(p=>p.name==='arx_belt'))throw Error('Studio default must be the authored native project');
+const selectionResponse=await fetch(base+'/api/plan',{method:'POST',headers:{'Content-Type':'application/json','Origin':base,'X-Studio-Token':session.csrf},body:JSON.stringify({prompt:'default'})});
+const selection=await selectionResponse.json();if(!selectionResponse.ok||selection.plan?.project!=='arx_belt'||selection.provider!=='engineering-project')throw Error('Default planning route did not select the native project');
 const cases=[...examples.examples.map(example=>({id:example.id,source:example.source})),{id:'four_axis',source:JSON.parse(await readFile('evidence/four-axis-source.json','utf8'))}];
 const results=[];
 for(const item of cases){

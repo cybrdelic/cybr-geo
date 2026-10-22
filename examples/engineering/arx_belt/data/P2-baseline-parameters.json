@@ -1,0 +1,1852 @@
+{
+  "schema": "arx6-dynamics-1",
+  "status": "Frozen catalog drive selection, full CAD/estimated component mass integration and final mechanically reconciled collision proxies; prototype design.",
+  "scene_units_to_meters": 0.2,
+  "gravity": [
+    0.0,
+    -9.80665,
+    0.0
+  ],
+  "timestep_seconds": 0.0004166666666666667,
+  "upper_length_m": 0.28,
+  "fore_length_m": 0.26,
+  "tool_length_m": 0.224,
+  "shoulder_height_m": 0.144,
+  "puck": {
+    "outer_radius_m": 0.019,
+    "bore_radius_m": 0.004,
+    "height_m": 0.028,
+    "density_kg_m3": 2700
+  },
+  "bodies": {
+    "turret": {
+      "mass_kg": 2.3341777857521757,
+      "com_m": [
+        -1.2968526534948163e-11,
+        0.12200066461869549,
+        -0.12130438830369517
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        0.023851537587191114,
+        0.02082905152500793,
+        0.004063875417510109,
+        8.677220587242309e-13,
+        -1.183059886980013e-12,
+        0.005510427609760947
+      ]
+    },
+    "upper": {
+      "mass_kg": 2.5143572249299977,
+      "com_m": [
+        -1.2039201897537166e-11,
+        0.21756282508656188,
+        0.10318535735570161
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        0.055318567073609874,
+        0.02939024833362827,
+        0.027104627184821747,
+        1.6882424320721457e-12,
+        1.7315380316246938e-12,
+        -0.021084102807610226
+      ]
+    },
+    "fore": {
+      "mass_kg": 1.1325109678810188,
+      "com_m": [
+        -7.076996860215718e-05,
+        0.08890658329852343,
+        0.01786673768039378
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        0.007041489286710873,
+        0.0013441346496134013,
+        0.006159070567321139,
+        8.423002527529075e-06,
+        -1.4319791045693398e-06,
+        0.001696783203277576
+      ]
+    },
+    "roll": {
+      "mass_kg": 0.6829510281152592,
+      "com_m": [
+        7.837693988788366e-09,
+        -0.011317015323110349,
+        -0.06977379005088899
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        0.0038435188529999413,
+        0.0035284480780451103,
+        0.00044568252033858334,
+        -1.1368353504157996e-10,
+        -1.075727260746648e-10,
+        0.0005375913393267222
+      ]
+    },
+    "bend": {
+      "mass_kg": 0.6723982377352811,
+      "com_m": [
+        7.538654751955171e-10,
+        0.07577297806700345,
+        -0.005568314151091055
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        0.0027818540778562044,
+        0.00039960136773989845,
+        0.0025795589787214685,
+        -2.8655514657408125e-11,
+        -9.172959106978153e-12,
+        -0.00027626358265323155
+      ]
+    },
+    "tool": {
+      "mass_kg": 0.25694460930610763,
+      "com_m": [
+        -5.436396078875912e-10,
+        0.1851509114683428,
+        -0.0013015965781633591
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        0.00010261727153045524,
+        0.000128668680489092,
+        0.00018439797282520181,
+        9.744775603702724e-13,
+        1.737370417576732e-13,
+        5.4125595159844745e-06
+      ]
+    },
+    "jaw": {
+      "mass_kg": 0.02627413114348886,
+      "com_m": [
+        -0.0011914934304496153,
+        -0.009412561580182787,
+        -8.412000173017512e-20
+      ],
+      "fullinertia_mujoco_kg_m2": [
+        3.694824915605103e-06,
+        5.674802436209333e-06,
+        7.95262251475581e-06,
+        -6.421246107752188e-07,
+        3.721133428854279e-23,
+        -1.128252795426776e-22
+      ]
+    }
+  },
+  "motors": {
+    "gear_ratio": [
+      42.875,
+      81.37037037037037,
+      81.37037037037037,
+      127.85538461538462,
+      127.85538461538462,
+      127.85538461538462
+    ],
+    "gear_efficiency": [
+      0.7,
+      0.7,
+      0.7,
+      0.55,
+      0.55,
+      0.55
+    ],
+    "torque_constant_Nm_A": [
+      0.091,
+      0.091,
+      0.091,
+      0.0348,
+      0.0348,
+      0.0348
+    ],
+    "resistance_ohm": [
+      0.994,
+      0.994,
+      0.994,
+      13.1,
+      13.1,
+      13.1
+    ],
+    "inductance_H": [
+      0.000995,
+      0.000995,
+      0.000995,
+      0.000729,
+      0.000729,
+      0.000729
+    ],
+    "bus_voltage_V": [
+      48,
+      48,
+      48,
+      48,
+      48,
+      48
+    ],
+    "peak_current_A": [
+      4,
+      4,
+      4,
+      1.4,
+      1.4,
+      1.4
+    ],
+    "continuous_current_A": [
+      2.41,
+      2.41,
+      2.41,
+      0.716,
+      0.716,
+      0.716
+    ],
+    "rotor_inertia_kg_m2": [
+      4.4e-06,
+      4.4e-06,
+      4.4e-06,
+      4.45e-07,
+      4.45e-07,
+      4.45e-07
+    ],
+    "joint_viscous_Nm_s_rad": [
+      0.03,
+      0.06,
+      0.04,
+      0.006,
+      0.006,
+      0.004
+    ],
+    "joint_friction_Nm": [
+      0.06,
+      0.1,
+      0.07,
+      0.012,
+      0.012,
+      0.008
+    ],
+    "thermal_capacity_J_K": [
+      20,
+      35,
+      25,
+      12,
+      12,
+      8
+    ],
+    "thermal_resistance_K_W": [
+      5,
+      4,
+      5,
+      7,
+      7,
+      9
+    ],
+    "gear_output_torque_limit_Nm": [
+      11,
+      20,
+      20,
+      3,
+      3,
+      3
+    ],
+    "gear_continuous_torque_Nm": [
+      15,
+      15,
+      15,
+      3,
+      3,
+      3
+    ],
+    "gear_intermittent_torque_Nm": [
+      22.5,
+      22.5,
+      22.5,
+      3.5,
+      3.5,
+      3.5
+    ],
+    "gear_max_input_speed_rad_s": [
+      837.7580409572781,
+      837.7580409572781,
+      837.7580409572781,
+      1256.6370614359173,
+      1256.6370614359173,
+      1256.6370614359173
+    ],
+    "max_pwm_duty": [
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      0.9
+    ],
+    "gear_efficiency_transition_motor_rad_s": [
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0
+    ],
+    "gear_input_inertia_kg_m2": [
+      1.5e-06,
+      9.4e-07,
+      9.4e-07,
+      4e-08,
+      4e-08,
+      4e-08
+    ]
+  },
+  "controller": {
+    "kp_Nm_rad": [
+      180,
+      260,
+      180,
+      30,
+      30,
+      20
+    ],
+    "kd_Nm_s_rad": [
+      10,
+      15,
+      10,
+      1.5,
+      1.5,
+      1.2
+    ],
+    "ki_Nm_rad_s": [
+      15,
+      80.0,
+      60.0,
+      1,
+      1,
+      0.7
+    ],
+    "integrator_limit_rad_s": 0.06,
+    "gravity_and_coriolis_feedforward": true,
+    "inertial_feedforward": true,
+    "jaw_kp_N_m": 1200,
+    "jaw_kd_N_s_m": 8,
+    "jaw_force_limit_N_each": 8.333333333333334,
+    "jaw_closed_target_half_gap_m": 0.0165,
+    "jaw_open_half_gap_m": 0.038
+  },
+  "contact": {
+    "pad_puck_sliding_friction": 0.65,
+    "pad_puck_torsional_friction_m": 0.002,
+    "pad_puck_rolling_friction_m": 0.0001,
+    "fixture_sliding_friction": 0.35,
+    "time_constant_s": 0.002,
+    "damping_ratio": 1.0
+  },
+  "motor_part_numbers": [
+    "maxon EC-i40 488607 / GP42C 203120",
+    "maxon EC-i40 488607 / GP42C 203124",
+    "maxon EC-i40 488607 / GP42C 203124",
+    "maxon EC-max22 283860 / GP22HP 370785",
+    "maxon EC-max22 283860 / GP22HP 370785",
+    "maxon EC-max22 283860 / GP22HP 370785"
+  ],
+  "assumptions": {
+    "inertia": "Custom-part CAD density integration, catalog motor/gear/bearing masses and envelope inertias, published R+W coupling masses, estimated cable/fastener reserves. Full COM tensors from mechanical/mass_properties.json; no installed brakes. Canonical jaw mirrored about X; small upper/lower rack COM difference approximated.",
+    "gear_efficiency": "Constant asymptotic efficiencies .70 (GP42C), .55 (GP22HP), inferred .6134 gripper; passive smooth low-speed factor exp(log(eta)*tanh(omega_motor/3 rad/s)*sign(current)). Transition speed is an uncalibrated engineering assumption; native dry friction remains separately modeled.",
+    "contact_friction": "Dry rubber/aluminum sliding coefficient .65 is an engineering assumption and must be measured for chosen pad finish/contamination.",
+    "thermal": "Single-node thermal capacity/resistance are provisional assumptions; temperatures are model estimates, not component certification.",
+    "collision": "Mechanical segmented motor/gear/coupling/bearing cylinders and exterior structural boxes with adjacent-body collisions enabled. Only fixed-bearing/turret mating hull and synchronized opposed-jaw pair excluded. Puck bore changes mass/inertia; external collision hull remains cylindrical. All-body sampled clearance is not a complete CAD/tolerance/deflection verification.",
+    "rotating_inertia": "Published motor rotor plus published gearhead input inertia, reflected by N squared into native joint armature. Gear spin is lumped; individual tooth/bearing/rotor bodies are not simulated."
+  },
+  "gripper": {
+    "architecture": "single opposed rack and pinion; q_left=q_right constraint; equal forces from common pinion torque",
+    "motor_part": "Pololu 5216 HPCB 12V 100.37:1 with encoder",
+    "gear_ratio": 100.37,
+    "gear_efficiency": 0.6133904324842206,
+    "torque_constant_Nm_A": 0.0030906391622725336,
+    "back_emf_V_s_rad": 0.0030906391622725336,
+    "resistance_ohm": 16.0,
+    "inductance_H": 0.0005,
+    "bus_voltage_V": 12.0,
+    "peak_current_A": 0.35,
+    "continuous_current_A": 0.1875,
+    "no_load_current_A": 0.08,
+    "output_torque_per_current_Nm_A": 0.19027828358208954,
+    "motor_rotor_inertia_kg_m2": 1e-09,
+    "output_torque_limit_Nm": 0.05,
+    "pinion_pitch_radius_m": 0.003,
+    "pinion_teeth": 20,
+    "module_m": 0.0003,
+    "max_jaw_velocity_m_s": 0.04,
+    "position_to_velocity_gain_per_s": 30.0,
+    "velocity_force_gain_N_s_m": 80.0,
+    "rail_friction_force_N_each": 0.15,
+    "thermal_capacity_J_K": 3.0,
+    "thermal_resistance_K_W": 15.0,
+    "inference": "R from12V/.75A extrapolatedstall; Kt=Ke inferred from330rpm no-load/.08A; eta inferred from1.3kgcm extrapolatedstall torque. Lumped Coulomb loss calibrated tono-loadcurrent. L andJ areassumed; notmanufacturerwindingmeasurements.",
+    "gear_efficiency_transition_motor_rad_s": 3.0
+  },
+  "collision_packages": [
+    {
+      "name": "J1",
+      "parent_body": "fixed",
+      "origin_mm": [
+        0,
+        60,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "segments": [
+        {
+          "type": "motor",
+          "z_mm": [
+            -245.1,
+            -189
+          ],
+          "r_mm": 20
+        },
+        {
+          "type": "gearhead",
+          "z_mm": [
+            -189,
+            -119
+          ],
+          "r_mm": 21
+        },
+        {
+          "type": "gear_mount_and_rear_flange",
+          "z_mm": [
+            -119,
+            -107
+          ],
+          "r_mm": 36
+        },
+        {
+          "type": "coupling_cage",
+          "z_mm": [
+            -107,
+            -50
+          ],
+          "r_mm": 32
+        },
+        {
+          "type": "front_flange_and_rear_cover",
+          "z_mm": [
+            -50,
+            -40
+          ],
+          "r_mm": 36
+        },
+        {
+          "type": "bearing_housing",
+          "z_mm": [
+            -40,
+            10
+          ],
+          "r_mm": 27
+        }
+      ]
+    },
+    {
+      "name": "J2",
+      "parent_body": "turret",
+      "origin_mm": [
+        0,
+        144,
+        -45
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "segments": [
+        {
+          "type": "motor",
+          "z_mm": [
+            -245.1,
+            -189
+          ],
+          "r_mm": 20
+        },
+        {
+          "type": "gearhead",
+          "z_mm": [
+            -189,
+            -119
+          ],
+          "r_mm": 21
+        },
+        {
+          "type": "gear_mount_and_rear_flange",
+          "z_mm": [
+            -119,
+            -107
+          ],
+          "r_mm": 36
+        },
+        {
+          "type": "coupling_cage",
+          "z_mm": [
+            -107,
+            -50
+          ],
+          "r_mm": 32
+        },
+        {
+          "type": "front_flange_and_rear_cover",
+          "z_mm": [
+            -50,
+            -40
+          ],
+          "r_mm": 36
+        },
+        {
+          "type": "bearing_housing",
+          "z_mm": [
+            -40,
+            10
+          ],
+          "r_mm": 27
+        }
+      ]
+    },
+    {
+      "name": "J3",
+      "parent_body": "upper",
+      "origin_mm": [
+        0,
+        280,
+        45
+      ],
+      "axis": [
+        0,
+        0,
+        -1
+      ],
+      "segments": [
+        {
+          "type": "motor",
+          "z_mm": [
+            -245.1,
+            -189
+          ],
+          "r_mm": 20
+        },
+        {
+          "type": "gearhead",
+          "z_mm": [
+            -189,
+            -119
+          ],
+          "r_mm": 21
+        },
+        {
+          "type": "gear_mount_and_rear_flange",
+          "z_mm": [
+            -119,
+            -107
+          ],
+          "r_mm": 36
+        },
+        {
+          "type": "coupling_cage",
+          "z_mm": [
+            -107,
+            -50
+          ],
+          "r_mm": 32
+        },
+        {
+          "type": "front_flange_and_rear_cover",
+          "z_mm": [
+            -50,
+            -40
+          ],
+          "r_mm": 36
+        },
+        {
+          "type": "bearing_housing",
+          "z_mm": [
+            -40,
+            10
+          ],
+          "r_mm": 27
+        }
+      ]
+    },
+    {
+      "name": "J4",
+      "parent_body": "fore",
+      "origin_mm": [
+        0,
+        204,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "segments": [
+        {
+          "type": "motor",
+          "z_mm": [
+            -161.6,
+            -113
+          ],
+          "r_mm": 11
+        },
+        {
+          "type": "gearhead",
+          "z_mm": [
+            -113,
+            -74
+          ],
+          "r_mm": 11
+        },
+        {
+          "type": "gear_mount_and_rear_flange",
+          "z_mm": [
+            -74,
+            -66
+          ],
+          "r_mm": 25
+        },
+        {
+          "type": "coupling_cage",
+          "z_mm": [
+            -66,
+            -32
+          ],
+          "r_mm": 20
+        },
+        {
+          "type": "front_flange_and_rear_cover",
+          "z_mm": [
+            -32,
+            -24
+          ],
+          "r_mm": 25
+        },
+        {
+          "type": "bearing_housing",
+          "z_mm": [
+            -24,
+            8
+          ],
+          "r_mm": 18
+        }
+      ]
+    },
+    {
+      "name": "J5",
+      "parent_body": "roll",
+      "origin_mm": [
+        0,
+        0,
+        -45
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "segments": [
+        {
+          "type": "motor",
+          "z_mm": [
+            -161.6,
+            -113
+          ],
+          "r_mm": 11
+        },
+        {
+          "type": "gearhead",
+          "z_mm": [
+            -113,
+            -74
+          ],
+          "r_mm": 11
+        },
+        {
+          "type": "gear_mount_and_rear_flange",
+          "z_mm": [
+            -74,
+            -66
+          ],
+          "r_mm": 25
+        },
+        {
+          "type": "coupling_cage",
+          "z_mm": [
+            -66,
+            -32
+          ],
+          "r_mm": 20
+        },
+        {
+          "type": "front_flange_and_rear_cover",
+          "z_mm": [
+            -32,
+            -24
+          ],
+          "r_mm": 25
+        },
+        {
+          "type": "bearing_housing",
+          "z_mm": [
+            -24,
+            8
+          ],
+          "r_mm": 18
+        }
+      ]
+    },
+    {
+      "name": "J6",
+      "parent_body": "bend",
+      "origin_mm": [
+        0,
+        169.6,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "segments": [
+        {
+          "type": "motor",
+          "z_mm": [
+            -161.6,
+            -113
+          ],
+          "r_mm": 11
+        },
+        {
+          "type": "gearhead",
+          "z_mm": [
+            -113,
+            -74
+          ],
+          "r_mm": 11
+        },
+        {
+          "type": "gear_mount_and_rear_flange",
+          "z_mm": [
+            -74,
+            -66
+          ],
+          "r_mm": 25
+        },
+        {
+          "type": "coupling_cage",
+          "z_mm": [
+            -66,
+            -32
+          ],
+          "r_mm": 20
+        },
+        {
+          "type": "front_flange_and_rear_cover",
+          "z_mm": [
+            -32,
+            -24
+          ],
+          "r_mm": 25
+        },
+        {
+          "type": "bearing_housing",
+          "z_mm": [
+            -24,
+            8
+          ],
+          "r_mm": 18
+        }
+      ]
+    }
+  ],
+  "collision_boxes": [
+    {
+      "name": "turret_foot",
+      "parent_body": "turret",
+      "center_mm": [
+        0,
+        82,
+        -22
+      ],
+      "half_size_mm": [
+        40,
+        4,
+        67
+      ]
+    },
+    {
+      "name": "turret_web",
+      "parent_body": "turret",
+      "center_mm": [
+        0,
+        104,
+        -62
+      ],
+      "half_size_mm": [
+        36,
+        26,
+        7
+      ]
+    },
+    {
+      "name": "turret_clamp_side_-31.5",
+      "parent_body": "turret",
+      "center_mm": [
+        -31.5,
+        153.5,
+        -62
+      ],
+      "half_size_mm": [
+        4.5,
+        26.5,
+        7
+      ]
+    },
+    {
+      "name": "turret_clamp_side_31.5",
+      "parent_body": "turret",
+      "center_mm": [
+        31.5,
+        153.5,
+        -62
+      ],
+      "half_size_mm": [
+        4.5,
+        26.5,
+        7
+      ]
+    },
+    {
+      "name": "turret_clamp_top",
+      "parent_body": "turret",
+      "center_mm": [
+        0,
+        175.5,
+        -62
+      ],
+      "half_size_mm": [
+        27,
+        4.5,
+        7
+      ]
+    },
+    {
+      "name": "upper_tube",
+      "parent_body": "upper",
+      "center_mm": [
+        0,
+        140,
+        0
+      ],
+      "half_size_mm": [
+        30,
+        98,
+        22
+      ]
+    },
+    {
+      "name": "upper_root_tab",
+      "parent_body": "upper",
+      "center_mm": [
+        0,
+        32,
+        -24.5
+      ],
+      "half_size_mm": [
+        30,
+        32,
+        2.5
+      ]
+    },
+    {
+      "name": "upper_root_flange",
+      "parent_body": "upper",
+      "center_mm": [
+        0,
+        0,
+        -24.5
+      ],
+      "half_size_mm": [
+        27,
+        27,
+        2.5
+      ]
+    },
+    {
+      "name": "upper_elbow_mount_web",
+      "parent_body": "upper",
+      "center_mm": [
+        0,
+        230,
+        62
+      ],
+      "half_size_mm": [
+        36,
+        20,
+        7
+      ]
+    },
+    {
+      "name": "upper_elbow_mount_side_-31.5",
+      "parent_body": "upper",
+      "center_mm": [
+        -31.5,
+        283,
+        62
+      ],
+      "half_size_mm": [
+        4.5,
+        33,
+        7
+      ]
+    },
+    {
+      "name": "upper_elbow_mount_side_31.5",
+      "parent_body": "upper",
+      "center_mm": [
+        31.5,
+        283,
+        62
+      ],
+      "half_size_mm": [
+        4.5,
+        33,
+        7
+      ]
+    },
+    {
+      "name": "upper_elbow_mount_top",
+      "parent_body": "upper",
+      "center_mm": [
+        0,
+        311.5,
+        62
+      ],
+      "half_size_mm": [
+        27,
+        4.5,
+        7
+      ]
+    },
+    {
+      "name": "upper_mount_standoff_-20",
+      "parent_body": "upper",
+      "center_mm": [
+        -20,
+        224,
+        38.5
+      ],
+      "half_size_mm": [
+        7,
+        14,
+        16.5
+      ]
+    },
+    {
+      "name": "upper_mount_standoff_20",
+      "parent_body": "upper",
+      "center_mm": [
+        20,
+        224,
+        38.5
+      ],
+      "half_size_mm": [
+        7,
+        14,
+        16.5
+      ]
+    },
+    {
+      "name": "fore_tube",
+      "parent_body": "fore",
+      "center_mm": [
+        0,
+        123,
+        0
+      ],
+      "half_size_mm": [
+        30,
+        81,
+        30
+      ]
+    },
+    {
+      "name": "fore_root_flange",
+      "parent_body": "fore",
+      "center_mm": [
+        0,
+        0,
+        24.5
+      ],
+      "half_size_mm": [
+        27,
+        27,
+        2.5
+      ]
+    },
+    {
+      "name": "fore_root_neck",
+      "parent_body": "fore",
+      "center_mm": [
+        0,
+        17.5,
+        24.5
+      ],
+      "half_size_mm": [
+        30,
+        17.5,
+        2.5
+      ]
+    },
+    {
+      "name": "fore_root_step",
+      "parent_body": "fore",
+      "center_mm": [
+        0,
+        36,
+        28.5
+      ],
+      "half_size_mm": [
+        30,
+        6,
+        6.5
+      ]
+    },
+    {
+      "name": "fore_root_tab",
+      "parent_body": "fore",
+      "center_mm": [
+        0,
+        53.5,
+        32.5
+      ],
+      "half_size_mm": [
+        30,
+        11.5,
+        2.5
+      ]
+    },
+    {
+      "name": "roll_fork_bridge",
+      "parent_body": "roll",
+      "center_mm": [
+        0,
+        -37,
+        0
+      ],
+      "half_size_mm": [
+        21,
+        3,
+        38
+      ]
+    },
+    {
+      "name": "roll_cheek_-34_-18",
+      "parent_body": "roll",
+      "center_mm": [
+        -18,
+        -7,
+        -34
+      ],
+      "half_size_mm": [
+        3,
+        27,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_-34_18",
+      "parent_body": "roll",
+      "center_mm": [
+        18,
+        -7,
+        -34
+      ],
+      "half_size_mm": [
+        3,
+        27,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_top_-34",
+      "parent_body": "roll",
+      "center_mm": [
+        0,
+        17.5,
+        -34
+      ],
+      "half_size_mm": [
+        15,
+        2.5,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_bottom_-34",
+      "parent_body": "roll",
+      "center_mm": [
+        0,
+        -24.5,
+        -34
+      ],
+      "half_size_mm": [
+        15,
+        9.5,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_34_-18",
+      "parent_body": "roll",
+      "center_mm": [
+        -18,
+        -7,
+        34
+      ],
+      "half_size_mm": [
+        3,
+        27,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_34_18",
+      "parent_body": "roll",
+      "center_mm": [
+        18,
+        -7,
+        34
+      ],
+      "half_size_mm": [
+        3,
+        27,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_top_34",
+      "parent_body": "roll",
+      "center_mm": [
+        0,
+        17.5,
+        34
+      ],
+      "half_size_mm": [
+        15,
+        2.5,
+        4
+      ]
+    },
+    {
+      "name": "roll_cheek_bottom_34",
+      "parent_body": "roll",
+      "center_mm": [
+        0,
+        -24.5,
+        34
+      ],
+      "half_size_mm": [
+        15,
+        9.5,
+        4
+      ]
+    },
+    {
+      "name": "roll_clamp_bar_-21",
+      "parent_body": "roll",
+      "center_mm": [
+        -21,
+        0,
+        -42.5
+      ],
+      "half_size_mm": [
+        3,
+        4,
+        7.5
+      ]
+    },
+    {
+      "name": "roll_clamp_bar_21",
+      "parent_body": "roll",
+      "center_mm": [
+        21,
+        0,
+        -42.5
+      ],
+      "half_size_mm": [
+        3,
+        4,
+        7.5
+      ]
+    },
+    {
+      "name": "bend_bridge",
+      "parent_body": "bend",
+      "center_mm": [
+        0,
+        6,
+        0
+      ],
+      "half_size_mm": [
+        31.5,
+        2,
+        29
+      ]
+    },
+    {
+      "name": "bend_ear_-26.5",
+      "parent_body": "bend",
+      "center_mm": [
+        0,
+        0,
+        -26.5
+      ],
+      "half_size_mm": [
+        18,
+        16,
+        2.5
+      ]
+    },
+    {
+      "name": "bend_ear_26.5",
+      "parent_body": "bend",
+      "center_mm": [
+        0,
+        0,
+        26.5
+      ],
+      "half_size_mm": [
+        18,
+        16,
+        2.5
+      ]
+    },
+    {
+      "name": "bend_support_rail_-28.5",
+      "parent_body": "bend",
+      "center_mm": [
+        -28.5,
+        83.8,
+        0
+      ],
+      "half_size_mm": [
+        3,
+        75.8,
+        4
+      ]
+    },
+    {
+      "name": "bend_support_rail_28.5",
+      "parent_body": "bend",
+      "center_mm": [
+        28.5,
+        83.8,
+        0
+      ],
+      "half_size_mm": [
+        3,
+        75.8,
+        4
+      ]
+    },
+    {
+      "name": "bend_clamp_side_-24.5",
+      "parent_body": "bend",
+      "center_mm": [
+        -24.5,
+        159.6,
+        0
+      ],
+      "half_size_mm": [
+        5.5,
+        6,
+        18
+      ]
+    },
+    {
+      "name": "bend_clamp_side_24.5",
+      "parent_body": "bend",
+      "center_mm": [
+        24.5,
+        159.6,
+        0
+      ],
+      "half_size_mm": [
+        5.5,
+        6,
+        18
+      ]
+    },
+    {
+      "name": "bend_clamp_cap_-24.5",
+      "parent_body": "bend",
+      "center_mm": [
+        0,
+        159.6,
+        -24.5
+      ],
+      "half_size_mm": [
+        18,
+        6,
+        5.5
+      ]
+    },
+    {
+      "name": "bend_clamp_cap_24.5",
+      "parent_body": "bend",
+      "center_mm": [
+        0,
+        159.6,
+        24.5
+      ],
+      "half_size_mm": [
+        18,
+        6,
+        5.5
+      ]
+    },
+    {
+      "name": "gripper_floor",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        187.6,
+        0
+      ],
+      "half_size_mm": [
+        53,
+        2,
+        16
+      ]
+    },
+    {
+      "name": "gripper_end_-51",
+      "parent_body": "tool",
+      "center_mm": [
+        -51,
+        199.05,
+        0
+      ],
+      "half_size_mm": [
+        2,
+        9.45,
+        16
+      ]
+    },
+    {
+      "name": "gripper_end_51",
+      "parent_body": "tool",
+      "center_mm": [
+        51,
+        199.05,
+        0
+      ],
+      "half_size_mm": [
+        2,
+        9.45,
+        16
+      ]
+    },
+    {
+      "name": "gripper_front_wall",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        199.05,
+        15
+      ],
+      "half_size_mm": [
+        49,
+        9.45,
+        1
+      ]
+    },
+    {
+      "name": "gripper_rear_wall_side_-27.5375",
+      "parent_body": "tool",
+      "center_mm": [
+        -27.5375,
+        199.05,
+        -15
+      ],
+      "half_size_mm": [
+        21.4625,
+        9.45,
+        1
+      ]
+    },
+    {
+      "name": "gripper_rear_wall_side_27.5375",
+      "parent_body": "tool",
+      "center_mm": [
+        27.5375,
+        199.05,
+        -15
+      ],
+      "half_size_mm": [
+        21.4625,
+        9.45,
+        1
+      ]
+    },
+    {
+      "name": "gripper_rear_wall_bottom",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        193.0125,
+        -15
+      ],
+      "half_size_mm": [
+        6.075,
+        3.4125,
+        1
+      ]
+    },
+    {
+      "name": "gripper_rear_wall_top",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        207.5375,
+        -15
+      ],
+      "half_size_mm": [
+        6.075,
+        0.9625,
+        1
+      ]
+    },
+    {
+      "name": "gripper_front_bearing_post",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        196.3,
+        6.5
+      ],
+      "half_size_mm": [
+        4,
+        10.7,
+        2.5
+      ]
+    },
+    {
+      "name": "gripper_motor_clamp_side_-11.5375",
+      "parent_body": "tool",
+      "center_mm": [
+        -11.5375,
+        200.05,
+        -12
+      ],
+      "half_size_mm": [
+        5.4625,
+        8.45,
+        4
+      ]
+    },
+    {
+      "name": "gripper_motor_clamp_side_11.5375",
+      "parent_body": "tool",
+      "center_mm": [
+        11.5375,
+        200.05,
+        -12
+      ],
+      "half_size_mm": [
+        5.4625,
+        8.45,
+        4
+      ]
+    },
+    {
+      "name": "gripper_motor_clamp_bottom",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        194.0125,
+        -12
+      ],
+      "half_size_mm": [
+        6.075,
+        2.4125,
+        4
+      ]
+    },
+    {
+      "name": "gripper_motor_clamp_top",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        207.5375,
+        -12
+      ],
+      "half_size_mm": [
+        6.075,
+        0.9625,
+        4
+      ]
+    },
+    {
+      "name": "gripper_motor_clamp_leg_-14",
+      "parent_body": "tool",
+      "center_mm": [
+        -14,
+        191.1,
+        -12
+      ],
+      "half_size_mm": [
+        3,
+        2.5,
+        4
+      ]
+    },
+    {
+      "name": "gripper_motor_clamp_leg_14",
+      "parent_body": "tool",
+      "center_mm": [
+        14,
+        191.1,
+        -12
+      ],
+      "half_size_mm": [
+        3,
+        2.5,
+        4
+      ]
+    },
+    {
+      "name": "gripper_motor",
+      "parent_body": "tool",
+      "center_mm": [
+        0,
+        201.5,
+        -24
+      ],
+      "half_size_mm": [
+        6,
+        5,
+        16
+      ]
+    },
+    {
+      "name": "jaw_carriage",
+      "parent_body": "jaw",
+      "center_mm": [
+        5.8,
+        -26.19999999999999,
+        0
+      ],
+      "half_size_mm": [
+        4,
+        3.2,
+        13.8
+      ]
+    },
+    {
+      "name": "jaw_finger",
+      "parent_body": "jaw",
+      "center_mm": [
+        5.8,
+        -5.099999999999994,
+        0
+      ],
+      "half_size_mm": [
+        4,
+        17.9,
+        10
+      ]
+    }
+  ],
+  "mechanical_source_sha256": {
+    "mass_properties.json": "b83075130a31ce913079ca1be15d11e3785b4543bffb656c2d505ef2087b5328",
+    "collision_boxes.json": "a3f4bd1df3f31138fa2aa6de1b66b144d0593fa55e94eed3dbc25ad0c5ee97c7",
+    "packaging_envelopes.json": "9a8acc5f1407ab52e295520311f42ce14471da51d86db8f4273251f0cc9c4b1e"
+  },
+  "jaw_origin_y_m": 0.2192,
+  "nominal_tool_datum_m": 0.22,
+  "grasp_frame_note": "Commanded puck centre224mm along tool axis; fixed physical pad/jaw origin219.2mm and nominal mechanical datum220mm. Gives1.5mm housing/puck clearance and21.2mm pad overlap at aligned pickup.",
+  "workpiece_targets_m": {
+    "A": [
+      0.29,
+      0.028,
+      -0.124
+    ],
+    "B": [
+      0.33,
+      0.028,
+      0.124
+    ]
+  },
+  "geometry_revision_note": "Wrist/J5 centre extended16mm to elbow-to-wrist260mm, J4 cartridge remains atforeY204mm. NestA moved20mm outward toX290mm to preserve elbow tube/clamp clearance. Full-width6mm cradle rails; fork heelY-40..-34mm. Parent-body collision filtering disabled.",
+  "integration": {
+    "revision": "P2-mechanical-integration",
+    "status": "Executable engineering prototype; supplier interfaces and physical safety qualification remain open",
+    "baseline_source_zip_sha256": "1da69bb3febdabe38822fea7b3a342e3023cbb872aa066f131c838915b41da50",
+    "baseline_cad_zip_sha256": "09d5bf725c5e15fe048b9d82f8f8950aae715ca2f1549f07c48f59f8d3bc7c15",
+    "brakes": {
+      "large": {
+        "family": "Kendrion PM Line size 09",
+        "proposed_part": "86 61109H00-0050",
+        "source": "https://www.kendrion.com/en/productfinder/group/product/brakes/86-61109h00-0050",
+        "holding_torque_Nm": 22.0,
+        "screening_dynamic_torque_Nm": 13.2,
+        "dynamic_torque_status": "Engineering derating to 60% of M4; not a vendor-certified M1 value",
+        "max_single_stop_energy_J": 550.0,
+        "max_estops": 500,
+        "max_estop_speed_rpm": 3000.0,
+        "mass_kg": 1.1,
+        "coil_voltage_V": 24.0,
+        "coil_power_W": 17.0,
+        "OD_mm": 90.0,
+        "ID_mm": 40.0,
+        "length_mm": 37.6,
+        "coupling_time_s": 0.025,
+        "delay_s": 0.02,
+        "ramp_s": 0.015,
+        "delay_status": "Conservative model delay/ramp; exact installation switching time must be measured",
+        "stack_extension_mm": 60.0,
+        "mount_pcd_mm": 75.0,
+        "mount_count": 6,
+        "mount_clearance_mm": 3.3,
+        "mount_status": "Nominal PM size09 pattern; configured 0050 drawing and hub interface require vendor confirmation"
+      },
+      "small": {
+        "family": "Kendrion PM Line size 04 compact stator",
+        "proposed_part": "86 61104H00 configured shaft/hub",
+        "source": "https://www.kendrion.com/fileadmin/user_upload/Downloads/Datasheets_Operating_instructions/Industrial_Brakes/Operating-Instructions-permanent-magnet-brake-pm-line-BA-86-621..H00-2021.09.pdf",
+        "holding_torque_Nm": 2.2,
+        "screening_dynamic_torque_Nm": 1.32,
+        "dynamic_torque_status": "Engineering derating to 60% of M4; not a vendor-certified M1 value",
+        "max_single_stop_energy_J": 200.0,
+        "max_estops": 500,
+        "max_estop_speed_rpm": 3000.0,
+        "mass_kg": 0.19,
+        "coil_voltage_V": 24.0,
+        "coil_power_W": 8.2,
+        "OD_mm": 39.5,
+        "ID_mm": 13.0,
+        "length_mm": 25.7,
+        "coupling_time_s": 0.014,
+        "delay_s": 0.012,
+        "ramp_s": 0.012,
+        "delay_status": "Conservative model delay/ramp; exact installation switching time must be measured",
+        "stack_extension_mm": 46.0,
+        "mount_pcd_mm": 32.5,
+        "mount_count": 3,
+        "mount_clearance_mm": 2.2,
+        "mount_status": "Compact 611 envelope, NOT the 62.5mm flange envelope of 62104-0018. Configured drawing and hub remain procurement gates"
+      }
+    },
+    "joint_hard_limits_rad": [
+      [
+        -0.65,
+        0.65
+      ],
+      [
+        -0.25,
+        0.95
+      ],
+      [
+        0.95,
+        2.1
+      ],
+      [
+        -0.6,
+        0.6
+      ],
+      [
+        0.85,
+        1.75
+      ],
+      [
+        2.1,
+        4.2
+      ]
+    ],
+    "joint_soft_limits_rad": [
+      [
+        -0.55,
+        0.55
+      ],
+      [
+        -0.1,
+        0.75
+      ],
+      [
+        1.05,
+        1.95
+      ],
+      [
+        -0.45,
+        0.45
+      ],
+      [
+        0.9,
+        1.65
+      ],
+      [
+        2.2,
+        4.1
+      ]
+    ],
+    "counterbalance": {
+      "joint_index": 1,
+      "spring_count": 2,
+      "parent_anchor_m": [
+        -0.1,
+        -0.05,
+        0.06
+      ],
+      "child_anchor_m": [
+        0,
+        0.1,
+        0.06
+      ],
+      "second_spring_z_m": 0.084,
+      "wire_diameter_mm": 2.3,
+      "mean_coil_diameter_mm": 18.0,
+      "active_turns": 40,
+      "shear_modulus_MPa": 79000.0,
+      "free_eye_length_m": 0.11,
+      "reference_q_rad": 0.2,
+      "reference_total_torque_Nm": 11.0,
+      "density_kg_m3": 7850.0,
+      "material": "Proposed EN 10270-1 spring steel; grade, hook form, initial tension and fatigue life require spring supplier review",
+      "model": "Two tension-only Hookean springs between the actual moving anchor coordinates; no ideal constant torque",
+      "installation": "Adjustable pinned clevis anchors; preload set with arm mechanically supported; guarded stored-energy component",
+      "stiffness_N_m": 1184.5978545096018,
+      "initial_tension_N": 23.627243646327543,
+      "reference_length_m": 0.19045748185438566,
+      "reference_force_each_N": 118.937004030278
+    },
+    "gripper_driver": {
+      "part": "Pololu 4036 DRV8876 carrier",
+      "source": "https://www.pololu.com/product/4036",
+      "bus_V": 12.0,
+      "logic_V": 3.3,
+      "sense_V_per_A": 2.5,
+      "continuous_current_A": 0.1875,
+      "peak_current_A": 0.35,
+      "peak_budget_s": 0.2,
+      "vref_continuous_V": 0.46875,
+      "vref_peak_V": 0.875,
+      "vref_absolute_ceiling_V": 0.875,
+      "board_mm": [
+        15.24,
+        17.78
+      ],
+      "control": "PH/EN; PWM with synchronized current sampling; independent hardware chopping ceiling; fault latches; VREF low by default"
+    },
+    "circlips": {
+      "source": "https://www.seeger-orbis.com/fileadmin/assets/pdf_datenblaetter/datenblatt_seeger-ringe_471.pdf",
+      "A20": {
+        "groove_diameter_mm": 19.0,
+        "groove_diameter_tol_mm": [
+          0,
+          -0.13
+        ],
+        "groove_width_min_mm": 1.3,
+        "ring_thickness_mm": 1.2
+      },
+      "A12": {
+        "groove_diameter_mm": 11.5,
+        "groove_diameter_tol_mm": [
+          0,
+          -0.11
+        ],
+        "groove_width_min_mm": 1.1,
+        "ring_thickness_mm": 1.0
+      }
+    },
+    "gripper_cable": {
+      "outer_diameter_mm": 4.0,
+      "clamp_bore_mm": 5.0,
+      "elastomer_liner_thickness_mm": 0.5,
+      "separate_from_power_and_encoder_trunk": true,
+      "liner_inner_diameter_mm": 4.0,
+      "note": "Corrected: 4mm jacket + two 0.5mm liner walls requires 5mm hardware bore."
+    },
+    "assumptions": [
+      "Brake stator/armature split and interfaces are engineering envelopes, not vendor native CAD.",
+      "Brake torque/time/energy model is a screening model, not safety certification.",
+      "Cable routing is a nominal route with strain-relief geometry, not a flex-life qualification.",
+      "Spring winding/hook geometry and thermal motor constants require measured qualification."
+    ],
+    "sources_reviewed_date": "2026-10-21",
+    "elbow_counterbalance": {
+      "joint_index": 2,
+      "spring_count": 2,
+      "parent_anchor_m": [
+        -0.04,
+        0.07,
+        -0.055
+      ],
+      "child_anchor_m": [
+        0,
+        0.085,
+        -0.055
+      ],
+      "second_spring_z_m": -0.079,
+      "wire_diameter_mm": 1.8,
+      "mean_coil_diameter_mm": 15.0,
+      "active_turns": 34,
+      "shear_modulus_MPa": 79000.0,
+      "free_eye_length_m": 0.095,
+      "reference_q_rad": 1.5,
+      "reference_total_torque_Nm": 6.0,
+      "density_kg_m3": 7850.0,
+      "material": "Proposed spring steel; exact grade, initial tension, hook form and fatigue life require spring supplier qualification",
+      "model": "Two tension-only springs at actual moving anchors. Reaction is represented by joint-3 generalized torque, not external support.",
+      "installation": "Pinned clevises on independent bolted link plates; negative-Z side clears forearm and wrist drive; install only with arm supported",
+      "stiffness_N_m": 903.3882352941177,
+      "reference_length_m": 0.1402362050579732,
+      "reference_force_each_N": 68.12431219031181,
+      "initial_tension_N": 27.25845673158655,
+      "hook_span_total_mm": 33.8
+    },
+    "design_decisions": [
+      "Retain finite 22Nm/2.2Nm static brake selection; dynamic braking remains an explicitly derated screening assumption.",
+      "Add a real 6Nm-reference elbow spring pair after doubled-delay fault tests showed approximately 10 degrees elbow travel without it.",
+      "Do not treat low catalog switching work as proof of acceptable stop distance.",
+      "Use nominal spring torque in control feedforward while plant strength varies; weak-spring testing no longer assumes perfect knowledge of deterioration."
+    ],
+    "interface_completion": {
+      "output_flange_cover_axial_clearance_mm": 0.3,
+      "pinion_root_blend_mm": 0.06,
+      "pinion_shaft_nominal_diameter_mm": 3.0,
+      "pinion_shaft_nominal_across_flat_mm": 2.5,
+      "pinion_socket_diameter_mm": 3.05,
+      "pinion_socket_across_flat_mm": 2.55,
+      "groove_diameters_mm": {
+        "A20": 19.0,
+        "A12": 11.5
+      },
+      "groove_widths_mm": {
+        "A20": 1.3,
+        "A12": 1.1
+      },
+      "retainer_thicknesses_mm": {
+        "A20": 1.2,
+        "A12": 1.0
+      },
+      "selective_shim_nominal_mm": 0.1,
+      "qualifications": [
+        "Ring shape is installed envelope, not free-state supplier geometry.",
+        "Inner-race endplay must be measured and shim thickness selected; no unverified preload.",
+        "The specified root blend is not a claim of hob-generated trochoidal geometry.",
+        "D-flat nominal size is manufacturer-documented; tolerance, runout, clamping and inspection remain release gates."
+      ]
+    }
+  },
+  "model_revision": "P2",
+  "cad_mass_properties_sha256": "93de0c1dacbe37c0d5590c5d5173759a488d00aaa38358dc6ceb28141090ad4b"
+}

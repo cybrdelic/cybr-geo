@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "fresh_generation": true,
+  "elapsed_seconds": 666.988523899985,
+  "strict_native_verifier_passed": true,
+  "exact_same_kernel_source_mass_parity": true,
+  "original_mass_body_ids": [
+    "fixed",
+    "turret",
+    "upper",
+    "fore",
+    "roll",
+    "bend",
+    "tool",
+    "jaw"
+  ],
+  "additional_native_mass_record": "jaw_opposed",
+  "jaw_opposed_mass_kg": 0.02627413114348885,
+  "parts": 118,
+  "placements": 375,
+  "native_interface_checks": 52,
+  "native_interface_passed": true,
+  "artifact_count": 628,
+  "provenance": {
+    "repository": "https://github.com/cybrdelic/cybr-arx6-belt",
+    "commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+    "generator_sha256": "ae3b03b11f533c59a3507d18d93f9b0f7df7a804a8e52ced44b1d3f577d55e37",
+    "input_spec_sha256": "66217c3e02fee00cd6bdbb27ce2b01f33c84266f15a8b9cd472d705b3e946ffe",
+    "canonical_specification_sha256": "66217c3e02fee00cd6bdbb27ce2b01f33c84266f15a8b9cd472d705b3e946ffe",
+    "input_spec_hash_encoding": "physical_model.digest: sorted-key compact UTF-8 JSON; no numeric rounding",
+    "input_spec_file_sha256": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed",
+    "adapted_recipe_sha256": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+    "adaptation": "Original geometry recipe; shared native placement and mass accounting",
+    "native_construction_sha256": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7"
+  }
+}

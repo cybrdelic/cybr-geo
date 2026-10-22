@@ -32,6 +32,16 @@ def linear_to_srgb(x):
     x=np.clip(np.asarray(x),0,1)
     return np.where(x<=.0031308,12.92*x,1.055*np.power(x,1/2.4)-.055)
 
+
+def artifact_stem(assembly):
+    """Separate descriptive display labels from portable output filenames."""
+    from .importers import safe_name
+    name = (assembly.metadata.get('engineering_result') or {}).get('name', assembly.name)
+    stem = safe_name(name, fallback='assembly')
+    if stem.split('.')[0].upper() in {'CON', 'PRN', 'AUX', 'NUL', *('COM'+str(i) for i in range(1, 10)), *('LPT'+str(i) for i in range(1, 10))}:
+        stem = '_' + stem
+    return stem
+
 def scene(assembly, time_seconds=0,explode=0):
     s=trimesh.Scene();materials=[]
     for m in assembly.materials:
@@ -49,7 +59,7 @@ def export_glb(assembly,path,time_seconds=0,explode=0):
     scene(assembly,time_seconds,explode).export(path)
     return path
 
-def export_step(assembly,path,individual=True):
+def export_step(assembly,path,individual=True,mesh_filename=None):
     """Export only existing BReps; never pass tessellated substitutes off as analytic CAD."""
     import cadquery as cq
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
@@ -66,7 +76,7 @@ def export_step(assembly,path,individual=True):
     if not included:raise ValueError('No analytic BRep bodies; use GLB/STL for mesh-only geometry')
     cad.export(str(path),exportType='STEP',mode='default')
     report=dict(units='mm',axis='X-shaft/Z-up',analytic_components=included,mesh_only_components_not_in_STEP=omitted,
-                full_mesh_assembly=path.stem.replace('_analytic','')+'.glb',manufacturing_validated=False)
+                full_mesh_assembly=mesh_filename or path.stem.replace('_analytic','')+'.glb',manufacturing_validated=False)
     path.with_suffix('.coverage.json').write_text(json.dumps(report,indent=2)+'\n')
     return report
 

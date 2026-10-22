@@ -44,11 +44,10 @@ class PlanningTests(unittest.TestCase):
         self.addCleanup(changed.stop)
 
     def test_short_mechanical_prompts_use_real_compiler_without_subprocess(self):
-        cases = [('Build a robot arm', 'compact_arm'),
+        cases = [('compact arm', 'compact_arm'),
                  ('belt driven arm', 'belt_arm'),
                  ('inspection head', 'inspection_head'),
-                 ('pan-tilt gimbal', 'inspection_head'),
-                 ('default', 'compact_arm')]
+                 ('pan-tilt gimbal', 'inspection_head')]
         with patch.object(studio.subprocess, 'run', side_effect=AssertionError('Inference was invoked')):
             for prompt, architecture in cases:
                 with self.subTest(prompt=prompt):
@@ -73,7 +72,7 @@ class PlanningTests(unittest.TestCase):
 
     def test_unknown_mechanisms_and_reference_names_never_fall_back(self):
         with patch.object(studio.subprocess, 'run', side_effect=AssertionError('Inference was invoked')):
-            for prompt in ('Build a crank mechanism', 'IRIS-09', 'ARX-6 belt architecture', 'robot arm 500 mm long'):
+            for prompt in ('Build a crank mechanism', 'IRIS-09', 'robot arm 500 mm long'):
                 with self.subTest(prompt=prompt), self.assertRaises(ValueError):
                     studio.plan_design(prompt)
             with self.assertRaisesRegex(ValueError, 'Primitive repair'):

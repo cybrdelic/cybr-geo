@@ -16,6 +16,75 @@ import tempfile
 import numpy as np
 
 
+def generate_project(source, output=None, *, seconds=10., reuse_native=None, media=False,
+                     size=(960, 720), fps=12):
+    """Execute a trusted authored design through shared construction and physics.
+
+    The component-plan entry point below remains a compatibility lowering.
+    This protocol retains explicit bodies, arbitrary authored CAD, transmissions
+    and causal drives instead of forcing imported designs into cartridges.
+    """
+    from .engineering_source import load_project, verify_native_build, assert_project_source_identity
+    from .core import project_root
+    from .physical_model import digest
+    from .causal_runtime import CausalSimulation
+    project, source_files = load_project(source)
+    root = Path(output or project_root() / 'outputs' / project.name)
+    root.mkdir(parents=True, exist_ok=True)
+    (root / 'engineering.json').unlink(missing_ok=True)
+    for owned_export in ('assembly.glb', 'diagnostic-assembly.glb', project.name + '.step'):
+        (root / owned_export).unlink(missing_ok=True)
+    native = Path(reuse_native).resolve() if reuse_native else root / 'native'
+    if not reuse_native:
+        project.construct(project.specification, native)
+    receipt = verify_native_build(native, project.specification, recipe_sha256=source_files.get('design.py'))
+    physical, control, task_parameters = project.compile_physics(project.specification, native_directory=native)
+    physical.provenance['native_build_sha256'] = digest(receipt)
+    physical.provenance['design_source_files'] = source_files
+    physical.write(root)
+    (root / 'control-source.json').write_text(json.dumps(control, indent=2), encoding='utf-8')
+    (root / 'design-source.json').write_text(json.dumps(dict(schema='cybrgeo-design-source/1',
+        name=project.name, specification=project.specification, source_files=source_files), indent=2), encoding='utf-8')
+    simulation = CausalSimulation(physical, control, lambda t: project.reference(t, task_parameters),
+        reference_source=dict(source_files=source_files, task_parameters=task_parameters))
+    result = simulation.run(seconds, output=root / 'simulation')
+    result['task_parameters'] = task_parameters
+    result['physical_source'] = physical.to_source()
+    outcomes = project.requirements(result, task_parameters)
+    result['requirements'] = outcomes
+    with gzip.open(root / 'simulation' / 'trace.json.gz', 'wt', encoding='utf-8') as stream:
+        json.dump(result, stream, separators=(',', ':'), allow_nan=False)
+    assembly = project.replay(native, result)
+    assert_project_source_identity(source, source_files)
+    from .exporters import export_glb
+    # Failed task traces remain inspectable, but cannot masquerade as accepted
+    # output from an earlier successful run in the same directory.
+    accepted_glb = root / 'assembly.glb'
+    diagnostic_glb = root / 'diagnostic-assembly.glb'
+    export_glb(assembly, diagnostic_glb)
+    if media:
+        from .physical_replay import render_evidence
+        render_evidence(assembly, root / 'media', size=size, fps=fps)
+    assert_project_source_identity(source, source_files)
+    if outcomes['passed']:
+        diagnostic_glb.replace(accepted_glb)
+    report = dict(schema='cybrgeo-engineering-result/2', name=project.name,
+        passed=bool(outcomes['passed']), requirements=outcomes,
+        model_sha256=digest(physical.to_source()), control_sha256=digest(control),
+        source_files=source_files, native_build_sha256=digest(receipt),
+        native=dict(parts=receipt['parts'], placements=receipt['placements'],
+                    verified_artifacts=len(receipt['files_sha256']), directory=str(native)),
+        simulation={key: value for key, value in result.items()
+                    if key not in ('frames', 'task_parameters', 'physical_source', 'requirements')},
+        qualification=dict(construction='native authored geometry and explicit mass records',
+            dynamics='actual MuJoCo integration with causal electrical, brake, spring and contact forces',
+            clearance='declared conservative contact geometry; not a complete continuous B-rep motion envelope',
+            hardware='not qualified'))
+    (root / 'engineering.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
+    assembly.metadata['engineering_result'] = report
+    return assembly, report
+
+
 def compile_source(source='compact_arm', parameters=None):
     from .construction import compile_mechanism, compile_plan
     if isinstance(source, dict):

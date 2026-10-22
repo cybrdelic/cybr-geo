@@ -15,3 +15,7 @@
 *.mp4 binary
 *.pdf binary
 # Current assets are stored as normal Git blobs, not unresolved LFS pointers.
+# Pinned benchmark inputs and parity oracles retain their exact source bytes.
+examples/engineering/arx_belt/data/* -text whitespace=cr-at-eol
+examples/engineering/arx_compact/data/* -text whitespace=cr-at-eol
+tests/fixtures/arx_actuation/* -text whitespace=cr-at-eol

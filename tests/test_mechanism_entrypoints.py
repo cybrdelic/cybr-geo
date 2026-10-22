@@ -7,11 +7,33 @@ from mechanism_lab.registry import DEFAULT_RECIPE, factory, fingerprint
 
 
 def test_default_build_and_preview_are_constructive():
-    assert DEFAULT_RECIPE == 'compact_arm'
+    assert DEFAULT_RECIPE == 'arx_belt'
     for command in ('build', 'preview'):
         assert parser().parse_args([command]).recipe == DEFAULT_RECIPE
     assert parser().parse_args(['mechanism']).architecture == DEFAULT_RECIPE
     assert parser().parse_args(['build', 'example_flange']).recipe == 'example_flange'
+
+
+def test_project_step_uses_canonical_name_instead_of_display_label(tmp_path, monkeypatch, flange):
+    from copy import deepcopy
+    from mechanism_lab import cli, engineering_pipeline, exporters
+    assembly = deepcopy(flange)
+    assembly.name = 'ARX belt / native geometry: recorded motion'
+    report = {'name': 'arx_belt', 'passed': True}
+    assembly.metadata['engineering_result'] = report
+    monkeypatch.setattr(engineering_pipeline, 'generate_project', lambda *a, **kw: (assembly, report))
+    destinations = []
+    monkeypatch.setattr(exporters, 'export_step', lambda a, path, **kw: destinations.append((path, kw)))
+    assert cli.run(parser().parse_args(['mechanism', '--step', '--out', str(tmp_path)])) == 0
+    assert destinations == [(tmp_path/'arx_belt.step', {'mesh_filename': 'assembly.glb'})]
+
+
+def test_artifact_filename_cannot_escape_or_use_windows_reserved_name(flange):
+    from mechanism_lab.exporters import artifact_stem
+    flange.name = '../../a/b: display'
+    assert artifact_stem(flange) == 'a_b_display'
+    flange.name = 'CON'
+    assert artifact_stem(flange) == '_CON'
 
 
 def test_descriptor_keeps_parameters_and_changes_fingerprint(tmp_path):

@@ -1,8 +1,8 @@
-# Constructive browser inspector
+# Native engineering Studio
 
 This source builds a standalone local CYBR GEO Studio. It needs Node.js 20 or
 newer and the repository Python environment. It does not need CYBR LIGHT, an API
-key, hosted assets, or a model call for supported component compositions.
+key, hosted assets, or a model call for authored engineering projects or supported component compositions.
 
 ```sh
 cd studio/web-auth
@@ -13,44 +13,52 @@ cd ../..
 python studio/codex_studio.py
 ```
 
-Open the printed loopback URL. Studio loads example documents from the local
-server, selects its default example and runs the engineering pipeline. The main
-editor contains the canonical `cybrgeo-mechanism/2` source: component composition,
-interfaces, materials, tolerances, actuator assumptions, loads and contact policy.
-Examples have no separate compiler or browser-side catalog. Edit that document,
-or open your own JSON source, then choose **Run engineering**. The load controls
-edit payload mass and gravity in the same document. The Python environment needs
-the repository's native CAD and MuJoCo dependencies for full engineering runs.
+Open the printed loopback URL. Studio selects the server's authored `arx_belt`
+engineering project and starts the same native `generate_project` pipeline used
+by the CLI. Its asynchronous job builds/validates native CAD and interfaces,
+runs the declared electrical, control and contact model, and exposes the actual
+GLB plus recorded solver body states. A first run can take several minutes. Edit
+`examples/engineering/arx_belt` for project changes; the project-selection JSON
+is an identifier, not a replacement design or arbitrary-geometry prompt.
 
-**Inspect geometry** compiles without making a physics claim. Manual sliders
-remain available when later engineering stages fail. The legacy static-prompt
-workflow retains the separately authenticated Codex planner.
+The native viewer flattens body-local mesh nodes and applies each recorded
+mm/Z-up matrix exactly once. The puck retains its independent simulated body.
+The timeline holds the preceding recorded state without interpolation. Passing
+labels require the local server's model/control/reference-bound report and mean
+only that the declared task requirements passed. They do not certify continuous
+clearance, manufactured hardware or unmodelled physics. Failed jobs expose their
+diagnostics; imported passed flags cannot enable a passing receipt.
 
-Accepted motion evaluates the canonical source's period and cosine waypoint
-trajectory, restricted to the fresh server-returned certified command path.
-Its gate requires the complete engineering pipeline's motion authorization.
-MuJoCo playback instead uses recorded body matrices in a flat Three.js
-group, so the ideal joint hierarchy cannot hide tracking or coupling errors.
-Failed runs can be replayed as diagnostics; tracking, effort saturation and stage
-errors remain visible. A sampled dynamics trace does not establish continuous
-clearance. Editing the document invalidates playback access, and imported passed
-flags never enable it: the local server must recompute the records.
+Native exports contain the reference GLB, viewed-pose GLB, recorded replay and
+server report. Analytic STEP files remain in the native server job output. The
+selected-pose GLB is standard metres/Y-up. **Capture PNG** captures the actual
+interactive viewport when WebGL is available.
 
-The browser builds real OpenCascade solids in a worker. **All joint and drive
-validation happens before the first CAD operation.** A construction digest binds
-the part geometry and joint definitions. Mechanism and model digests additionally
-bind the complete source and derived physical assumptions. Editing any bound
-field invalidates its record and requires recompilation. Digests are consistency
-checks, not signatures, mechanical certification, or proof of trusted authorship.
+The dropdown also labels the older `cybrgeo-mechanism/2` component examples as
+**Compatibility**. That route retains editable composition and load fields,
+Replicad/OpenCascade geometry, manual joint inspection, prescribed accepted-path
+motion and its separate MuJoCo playback. Its ZIP retains reference STEP/STL,
+recipe, source and geometry records. Joint and drive validation precedes CAD;
+geometry/source/model digests detect inconsistent edits, not trusted authorship
+or physical qualification. Editing a document invalidates playback access.
+Static custom part prompts retain the separately authenticated Codex planner.
 
-Export package saves the actual STEP assembly, per-part STEP/STL, selected-pose
-GLB, source document, construction recipe, joint graph, viewed controls/body state,
-geometry validation and construction record. Fresh server engineering results
-are included when present. STEP/STL and optional analytic drawings use the
-reference pose; GLB uses the viewed pose in metres/Y-up. Capture PNG saves the
-actual interactive CAD viewport. Physics results apply only to the explicit
-model, contact and controller assumptions; they do not establish hardware,
-fatigue, thermal or manufacturing qualification.
+The native replay contract can be checked programmatically against a fresh run:
+
+```sh
+python studio/web-auth/make-native-fixture.py \
+  --trace outputs/engineering-arx-default/simulation/trace.json.gz \
+  --native outputs/engineering-arx-native-final \
+  --report outputs/engineering-arx-default/engineering.json \
+  --out outputs/engineering-arx-browser
+node studio/web-auth/probe-native-replay.mjs \
+  outputs/engineering-arx-browser/native-three-fixture.json \
+  outputs/engineering-arx-default/assembly.glb \
+  outputs/engineering-arx-browser/three-replay-check.json
+```
+
+This uses the actual GLTFLoader, native mesh vertices and independent source SI
+body-transform expectations; it is not a live browser screenshot test.
 
 To inspect an emitted native recipe, use **Open a mechanism or CAD recipe**. To run the
 same kernel headlessly against a generated artifact:

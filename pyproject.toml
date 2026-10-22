@@ -12,8 +12,8 @@ license = "GPL-2.0-only"
 dependencies = ["numpy>=2.3.5,<2.6", "cadquery>=2.7,<2.9", "vtk>=9.3.1,<9.7", "trimesh>=4.11.1,<6", "shapely==2.1.2", "scipy>=1.16,<2", "Pillow==12.3.0", "numba==0.65.1", "ezdxf>=1.4,<2", "CairoSVG>=2.8,<3", "mitsuba>=3.6,<3.8", "mujoco>=3.16,<4"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10"]
-test = ["pytest>=8,<10"]
+dev = ["pytest>=8,<10", "setuptools>=75", "pip>=24"]
+test = ["pytest>=8,<10", "setuptools>=75", "pip>=24"]
 
 [project.scripts]
 lab = "mechanism_lab.cli:main"
@@ -25,6 +25,18 @@ where = ["src"]
 [tool.setuptools.package-data]
 cybrgeo = ["native/*.cpp"]
 mechanism_lab = ["native/*.cpp", "native/*.h", "mechanisms/*.json"]
+
+[tool.setuptools.data-files]
+"share/cybr-geo/examples/engineering" = ["examples/engineering/*.md", "examples/engineering/*.json"]
+"share/cybr-geo/examples/engineering/arx_belt" = ["examples/engineering/arx_belt/*.py", "examples/engineering/arx_belt/*.json", "examples/engineering/arx_belt/*.md", "examples/engineering/arx_belt/*.mjs"]
+"share/cybr-geo/examples/engineering/arx_belt/data" = ["examples/engineering/arx_belt/data/*.json", "examples/engineering/arx_belt/data/*.json.gz", "examples/engineering/arx_belt/data/*.xml"]
+"share/cybr-geo/examples/engineering/arx_belt/evidence" = ["examples/engineering/arx_belt/evidence/*.json", "examples/engineering/arx_belt/evidence/*.png"]
+"share/cybr-geo/examples/engineering/arx_compact" = ["examples/engineering/arx_compact/*.py", "examples/engineering/arx_compact/*.json", "examples/engineering/arx_compact/*.md", "examples/engineering/arx_compact/*.mjs"]
+"share/cybr-geo/examples/engineering/arx_compact/data" = ["examples/engineering/arx_compact/data/*.json", "examples/engineering/arx_compact/data/*.json.gz", "examples/engineering/arx_compact/data/*.xml"]
+"share/cybr-geo/examples/engineering/arx_compact/evidence" = ["examples/engineering/arx_compact/evidence/*.json", "examples/engineering/arx_compact/evidence/*.png"]
+"share/cybr-geo/examples/engineering/iris09" = ["examples/engineering/iris09/*.py", "examples/engineering/iris09/*.json", "examples/engineering/iris09/*.md", "examples/engineering/iris09/*.glsl"]
+"share/cybr-geo/examples/engineering/iris09/data" = ["examples/engineering/iris09/data/*.json", "examples/engineering/iris09/data/*.json.gz", "examples/engineering/iris09/data/*.xml"]
+"share/cybr-geo/examples/engineering/iris09/evidence" = ["examples/engineering/iris09/evidence/*.json", "examples/engineering/iris09/evidence/*.png"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "tests_legacy"]

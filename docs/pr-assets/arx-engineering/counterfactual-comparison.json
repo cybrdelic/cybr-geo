@@ -1,0 +1,132 @@
+{
+  "schema": "cybrgeo-causal-counterfactual/1",
+  "body": "puck",
+  "baseline": {
+    "path": "outputs\\engineering-arx-default\\simulation\\trace.json.gz",
+    "sha256": "3a623f9b11c8512b6f11b759389f6f7a337af901371515bd4997b56e6e645013",
+    "requirements": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "complete nominal transfer cycle recorded",
+          "passed": true,
+          "duration_s": 10.000000000007999,
+          "required_s": 10.0
+        },
+        {
+          "name": "contact-driven placement B",
+          "passed": true,
+          "error_m": 0.00025764829176943367,
+          "limit_m": 0.0015,
+          "time_s": 4.90000000000392
+        },
+        {
+          "name": "contact-driven placement A",
+          "passed": true,
+          "error_m": 0.0003098728598905802,
+          "limit_m": 0.0015,
+          "time_s": 9.90000000000792
+        },
+        {
+          "name": "no externally applied body wrench",
+          "passed": true,
+          "value": 0.0
+        },
+        {
+          "name": "no unexpected fault",
+          "passed": true,
+          "events": []
+        }
+      ],
+      "scope": "Nominal task outcomes only; known adverse cases remain failures. No hardware qualification.",
+      "known_original_failures": [
+        "power_loss_3.2",
+        "weak_spring_double_delay_3.2",
+        "weak_spring_double_delay_7.2"
+      ]
+    }
+  },
+  "intervention": {
+    "path": "outputs\\engineering-arx-default-frictionloss\\trace.json.gz",
+    "sha256": "cdb63a078435d086932e77684c537a51fb94eb30551545e052ee50d395045ac2",
+    "requirements": {
+      "passed": false,
+      "checks": [
+        {
+          "name": "complete nominal transfer cycle recorded",
+          "passed": true,
+          "duration_s": 10.000000000007999,
+          "required_s": 10.0
+        },
+        {
+          "name": "contact-driven placement B",
+          "passed": false,
+          "error_m": 0.07823815058798725,
+          "limit_m": 0.0015,
+          "time_s": 4.90000000000392
+        },
+        {
+          "name": "contact-driven placement A",
+          "passed": false,
+          "error_m": 0.19528960157461478,
+          "limit_m": 0.0015,
+          "time_s": 9.90000000000792
+        },
+        {
+          "name": "no externally applied body wrench",
+          "passed": true,
+          "value": 0.0
+        },
+        {
+          "name": "no unexpected fault",
+          "passed": true,
+          "events": []
+        }
+      ],
+      "scope": "Nominal task outcomes only; known adverse cases remain failures. No hardware qualification.",
+      "known_original_failures": [
+        "power_loss_3.2",
+        "weak_spring_double_delay_3.2",
+        "weak_spring_double_delay_7.2"
+      ]
+    }
+  },
+  "model_sha256": "50450830f75b947a555b16dd012ffdb9667eb7f0a0c956ef354de00e094d3732",
+  "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+  "reference_sha256": "dca42e65614e259b6e8651e16349952d9863fa1166c71402779036022be07de8",
+  "options_difference": {
+    "frictionChangeTime": {
+      "baseline": null,
+      "intervention": 2.0
+    },
+    "frictionAfterScale": {
+      "baseline": null,
+      "intervention": 0.01
+    }
+  },
+  "change_time_s": 2.0,
+  "comparison_before_s": 3.4,
+  "maximum_state_difference_before_intervention": 0.0,
+  "maximum_free_body_position_divergence_m": 0.20160737138364407,
+  "time_of_maximum_s": 2.21666666666844,
+  "divergence_vector_m": [
+    0.02372474364770394,
+    -0.20012419439880139,
+    -0.005742434266412282
+  ],
+  "free_body_force_monitors": {
+    "baseline": {
+      "body_id": 10,
+      "dof": 8,
+      "max_imposed_generalized_force": 0.0,
+      "max_applied_wrench_component": 0.0
+    },
+    "intervention": {
+      "body_id": 10,
+      "dof": 8,
+      "max_imposed_generalized_force": 0.0,
+      "max_applied_wrench_component": 0.0
+    }
+  },
+  "scope": "Same model/control/reference and zero imposed free-body forces; comparison of recorded solver states, not hardware qualification"
+}

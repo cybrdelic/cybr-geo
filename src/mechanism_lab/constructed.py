@@ -240,26 +240,24 @@ def articulation(assembly, values):
 
 
 def primitive(spec):
-    """Construct a primitive using exactly the browser Studio coordinate rules."""
-    import cadquery as cq
+    """Construct a Studio primitive through the common analytic CSG evaluator."""
     size = _vector(spec.get('size'), 'primitive size')
-    position = _vector(spec.get('position'), 'primitive position')
-    rotation = _vector(spec.get('rotation'), 'primitive rotation')
+    _vector(spec.get('position'), 'primitive position')
+    _vector(spec.get('rotation'), 'primitive rotation')
     if np.any(size <= 0):
         raise ValueError('Primitive dimensions must be positive')
-    kind = spec.get('kind')
-    if kind == 'box':
-        shape = cq.Workplane('XY').box(*size).val()
-    elif kind == 'cylinder':
-        shape = cq.Workplane('XY').circle(size[0] / 2).extrude(size[2]).translate((0, 0, -size[2] / 2)).val()
-    elif kind == 'sphere':
-        shape = cq.Workplane('XY').sphere(size[0] / 2).val()
-    else:
-        raise ValueError(f'Unknown construction primitive: {kind}')
-    for angle, axis in zip(rotation, np.eye(3)):
-        if angle:
-            shape = shape.rotate((0, 0, 0), tuple(axis), float(angle))
-    return shape.translate(tuple(position))
+    from .shape_dag import ShapeEvaluator, flat_plan_part_to_dag
+    return ShapeEvaluator(flat_plan_part_to_dag({'body': spec})).evaluate()
+
+
+def part_shape(spec):
+    """One CAD lowering path shared by construction and source identity checks."""
+    from .shape_dag import ShapeEvaluator, flat_plan_part_to_dag
+    shape = ShapeEvaluator(flat_plan_part_to_dag(spec)).evaluate()
+    if spec.get('fillet', 0):
+        import cadquery as cq
+        shape = cq.Workplane(obj=shape).edges().fillet(spec['fillet']).val()
+    return shape
 
 
 def build_from_plan(plan):
@@ -288,14 +286,7 @@ def build_from_plan(plan):
     materials, lookup, parts = [], {}, []
     roles = (plan.get('construction') or {}).get('part_roles', {})
     for spec in plan['parts']:
-        shape = primitive(spec['body'])
-        for item in spec['unions']:
-            shape = shape.fuse(primitive(item))
-        for item in spec['cuts']:
-            shape = shape.cut(primitive(item))
-        if spec.get('fillet', 0):
-            import cadquery as cq
-            shape = cq.Workplane(obj=shape).edges().fillet(spec['fillet']).val()
+        shape = part_shape(spec)
         if not shape.isValid() or len(shape.Solids()) != 1 or not math.isfinite(shape.Volume()) or shape.Volume() <= .001:
             raise ValueError(f"{spec['name']}: expected one connected valid positive-volume solid")
         key = (*spec['color'], spec['metalness'], spec['roughness'])

@@ -159,15 +159,8 @@ def _brep_fingerprint(shape):
 
 def _verified_primitive_source(shape, spec):
     """A stale or edited actual B-rep cannot inherit recipe symmetry claims."""
-    from .constructed import primitive
-    reconstructed = primitive(spec['body'])
-    for operand in spec['unions']:
-        reconstructed = reconstructed.fuse(primitive(operand))
-    for operand in spec['cuts']:
-        reconstructed = reconstructed.cut(primitive(operand))
-    if spec.get('fillet', 0):
-        import cadquery as cq
-        reconstructed = cq.Workplane(obj=reconstructed).edges().fillet(spec['fillet']).val()
+    from .constructed import part_shape
+    reconstructed = part_shape(spec)
     original, rebuilt = _brep_fingerprint(shape), _brep_fingerprint(reconstructed)
     return original if original == rebuilt else None
 

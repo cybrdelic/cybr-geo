@@ -1,0 +1,776 @@
+{
+  "passed": true,
+  "elapsed_seconds": 220.25561290001497,
+  "native_build_sha256": "f64ee61bbf00a2cc34900f640719e3599a7c83d3f1c1ee9c9722fe25c0f4fc80",
+  "native_step_files": [
+    {
+      "file": "bench_backing_washer.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "134ab5cdcfe16802482baedf556a4202e69c9baa4df8c33da31ac1f7b745d2e0"
+    },
+    {
+      "file": "bench_mount_bolt.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "c3bddd87b2c396d13c662a619247a1c530419d6569c8142943acd3cc519cfc04"
+    },
+    {
+      "file": "bench_mount_nut.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "0e251524fd78ebfb341baee535beb66b33c576dce7abead802b9c64d5bfd2762"
+    },
+    {
+      "file": "bench_mount_plate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "82ae1e6fb525757f2992fd0cbbffb518fca5fc067295ce3c8232cde7207e5561"
+    },
+    {
+      "file": "bend_subassembly.step",
+      "solids": 53,
+      "valid": true,
+      "sha256": "36fd5bf6c35d44f5ce7fb41907d9110c3adac7508da9faa365c03e4bc61b4214"
+    },
+    {
+      "file": "elbow_extension_spring.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "d83037ac4ecc990a2304d8b24756c0e60e77cb168af0fa04037344509935ad0d"
+    },
+    {
+      "file": "elbow_fixed_anchor_nut_strips.step",
+      "solids": 2,
+      "valid": true,
+      "sha256": "93cc0cf77353f004073104aebe459cdca5e2b20e0784be782896251ac8d395e3"
+    },
+    {
+      "file": "elbow_moving_anchor_nut_plate.step",
+      "solids": 2,
+      "valid": true,
+      "sha256": "c38d9568c631cf778834e130e34de9ac464cf4e8fb8e1ed32d20c2ff7776d59b"
+    },
+    {
+      "file": "elbow_spring_fixed_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "c2d5778fd0669afe3278efb003730fa1ae872c132f126c0d286deb1a02574c06"
+    },
+    {
+      "file": "elbow_spring_moving_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "7925366b8203b3437b6b766c2aef5143339ae2924a809c93c301246b47d3fc12"
+    },
+    {
+      "file": "finger_pad.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "3ee2212515454dabcaccddf858c157ab32a647a99d7e14faf49eec3c0b24a781"
+    },
+    {
+      "file": "fixed_subassembly.step",
+      "solids": 62,
+      "valid": true,
+      "sha256": "aed7f709192243e82755c267635f3710c7f6fcbe37ef0715935d73f127d05154"
+    },
+    {
+      "file": "fore_clamp_side_shims.step",
+      "solids": 2,
+      "valid": true,
+      "sha256": "5468c62fecdfbe33c848ce39bb5b6428012711591ee3038b47300aa27deec7a4"
+    },
+    {
+      "file": "fore_link_tube.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "00930b65a76c304ad25c7835a7e585ed06f66820d697f4d46a47f4ba6523b1a2"
+    },
+    {
+      "file": "fore_nut_strip.step",
+      "solids": 2,
+      "valid": true,
+      "sha256": "c3f18d74067d9c9d5f42bad25dae8c1797da7a82996a0114a155e2dec1a09b8b"
+    },
+    {
+      "file": "fore_roll_housing_clamp.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "a8db81f84a2ae1c68c53ae07b3770f32b9bee83e1527ee924ae1b02e65ac14f3"
+    },
+    {
+      "file": "fore_root_ear.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "9c525c02095c870a176462685408a6009cce5a192f6b6be3a53c52bedd3fc262"
+    },
+    {
+      "file": "fore_subassembly.step",
+      "solids": 63,
+      "valid": true,
+      "sha256": "c67da24a509574a7b6108331bc670fb14649371c2f22cb68118915c093c4c382"
+    },
+    {
+      "file": "gripper_bridge.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "ed4f170203b9e39fbd2019630593ba670fde4ea251af8f3f2fa1a8ea4756a934"
+    },
+    {
+      "file": "gripper_cable_clamp_base.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "81530ef4d16d9888e781aa0eae5d2e1d1bc7694250afd8552fcc94778fd172ce"
+    },
+    {
+      "file": "gripper_cable_clamp_cap.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "a4cc8a1d031749ab8fe1e89111dfbea860dd53f254941800c00c60f8d508491e"
+    },
+    {
+      "file": "gripper_cable_clamp_liner.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "17f78d893323ccc01a29aeda0642ff4a89a16b74c0abcb97f0633b88392f977d"
+    },
+    {
+      "file": "gripper_cable_clamp_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "e2a6b819206e75271df31e601d04e1b018fa78204c4240f89e3cdc68eb3b42da"
+    },
+    {
+      "file": "gripper_pinion_m0p3_z20.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "7d417334dacbaf40eae6468280ed6e5def97c8fc4b7082cfd569e06d834b1330"
+    },
+    {
+      "file": "gripper_rack_m0p3.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "c6f10c4f0dae7e0f4002590cdc14d23793ef7118ff22ddb9eb72869aa72b2eca"
+    },
+    {
+      "file": "idle_bearing_inner_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "39f9fffae865836debbb7d3f749a33aa20d67795d6a6d1dd8cdeceb3aaf4b420"
+    },
+    {
+      "file": "idle_bearing_outer_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "f60056ea274e307189629267848f510dcccf4097d94d14102277f51d802fb0ed"
+    },
+    {
+      "file": "J1_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "d799b5be0c73da53cbfbd3f5c80c82f7c05589e553a30a4e525fd1281c61c7c2"
+    },
+    {
+      "file": "J1_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "8a10d727e44c9c1ac51ec56ddcb0c6cd8b1013cb57d10f0b0b35b2d802ac687f"
+    },
+    {
+      "file": "J1_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "6159059cc2a2d6fc3c79b634e0096357093774556e2983b1a103519639bb25f2"
+    },
+    {
+      "file": "J1_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "daec2e40b6e8303aac28e97a6002879f9a80f61a977d01a07a32687b2cc69bbb"
+    },
+    {
+      "file": "J2_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "bbee24dfdbbe32f71010c3aad801dd8af41eca982d15356d0092ed95c7349566"
+    },
+    {
+      "file": "J2_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "eac5197d65e1e8c12a8355fa48cfa1182d07c97e26aa2b2e51bc0d5c651a7c4b"
+    },
+    {
+      "file": "J2_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "b5aca96e6c766e74902be1d10a540ee5f0ac47e2e0c0db136bbda0e60f84aa4c"
+    },
+    {
+      "file": "J2_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "fcae2d6e5088dd341003e34a2c49990b74ef938a72871f5add58b3fb8380d2ab"
+    },
+    {
+      "file": "J3_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "bd722c75bced9aa7efa1d6c4ecccfe567b92cc3d864ba43032ab0995ad9670d5"
+    },
+    {
+      "file": "J3_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "1ef5e89c4a369077e0382ffa5dbc4c12a0dafe2f4979beb142ad517279b6d04c"
+    },
+    {
+      "file": "J3_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "87fae30e0bf7101f22720c0f2bc5f75eee72c1a2d38fdab7755ad54717b56ae5"
+    },
+    {
+      "file": "J3_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "8aa8e56972e399ff484b0cb43dd71c2ce65ddcaf12510f2ed50f0c1c521763d3"
+    },
+    {
+      "file": "J4_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "6be788a144566e19ac37ec8c42d8b8a3f1ff8c6a73d8c0df4550fdd74d694081"
+    },
+    {
+      "file": "J4_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "84712d4ef5c7a0cc1b8595320d952b2753dd4ea3bf7baf3688fb8ba65f28fbb2"
+    },
+    {
+      "file": "J4_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "d6cd86924dc1a2518c51137f7d358bc808d0eb5765316cf3aedafe76ee2274dc"
+    },
+    {
+      "file": "J4_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "c61b9ed0ed7709699b7b7223c39a6b42b35c2c6eaf37d044c9186c22a15d9844"
+    },
+    {
+      "file": "J5_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "c1923eb435ce4a11ec984a0c0d9af827d8a777574edc55a30b31b9f03e9be004"
+    },
+    {
+      "file": "J5_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "ebb160dcefb5f05f7b3d34701d6f3ddd6c44f16dc6ef0ac488cba4c470a22b7b"
+    },
+    {
+      "file": "J5_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "aa55ae584011434f0e8b12d582864625036a16f56c702d66ae175567fa9a32e2"
+    },
+    {
+      "file": "J5_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "216044edfa9450a5adea4b25040557df724a2f369b372e9aa542a06a210be2e6"
+    },
+    {
+      "file": "J6_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "d0c807226482e5c3627b03183929c30ee67ef7e1c6532acd47333bc0b05b3e0f"
+    },
+    {
+      "file": "J6_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "9496b5672f431954c0dbcf86dd79723ae0dc0812496c533f72fa46d5a13e18a8"
+    },
+    {
+      "file": "J6_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "8a19de1012e7ba398e5199b23d9036929dd141bc7d701c052ce6c775dd926cec"
+    },
+    {
+      "file": "J6_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "33b6229578c64ebb1651a4b0407967eb7e191952f76602468410e7666e406ff6"
+    },
+    {
+      "file": "jaw_guide_bushing.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "c95a629378ab319e40176aad1659e054f85127923d2352ba2d6b00479358ca9a"
+    },
+    {
+      "file": "jaw_subassembly.step",
+      "solids": 5,
+      "valid": true,
+      "sha256": "486ab6e13784819331d64efb68de5b3e09385ab999dcb8412b25feb3c6298848"
+    },
+    {
+      "file": "large_bearing_housing.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "b6d050186f21eb52b04057e355c0605e0709b48a962933d918fb1a8c32c16900"
+    },
+    {
+      "file": "large_brake_back_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "829eccf98e3d183aa7f9294f78bc81e3b59cf81c8b3f4c46978aab5da2711dfe"
+    },
+    {
+      "file": "large_brake_front_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "5afcd83f38d8f978d93ed04cacc557ba876afbae29c5dea71e8758c151f32840"
+    },
+    {
+      "file": "large_brake_guard_strut.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "b81571dfd80a4628ccd114fd01598dc6d5ec30f265863b3c7bc9ec9535209953"
+    },
+    {
+      "file": "large_brake_keyed_hub.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "330fed0e1546131ace27dec08e01355e46f82154ccd6aad892c29938583781ef"
+    },
+    {
+      "file": "large_brake_shaft_key.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "d1092d4832f8996c84e893e1eeb086602226030fcc7c4c478f529d820309f569"
+    },
+    {
+      "file": "large_brake_vendor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "142c04e8c1ceedeee6d0a9c35acbfe645655803bd06f33e4019b15ef62d800fe"
+    },
+    {
+      "file": "large_DIN471_installed_retainer.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "31533b74dc458aa0689558e63da8052438cb0cecd83229b71b72d0d6327156e6"
+    },
+    {
+      "file": "large_folded_carrier_deck.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "87bcede5612471da31117580b82517454ba6f826b1d43a445f3e226cd9083363"
+    },
+    {
+      "file": "large_folded_drive_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "4b786d5379e45116eb263b1cdda08870fd65b58eabf1753390acca60e6d9a5c2"
+    },
+    {
+      "file": "large_folded_driven_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "80ebefd171637ad7da633be6d3f409d5a10e10e2135f17867146e99b154be9c2"
+    },
+    {
+      "file": "large_folded_front_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "caf721586d037b0af270c88f9bf14c09594f86c0e096aff5263e48c6a3cef426"
+    },
+    {
+      "file": "large_folded_housing_rails.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "f27b86d21d09ef96e312ce1224f72a1b10d9c7c90b4feb34fb056c14d201366c"
+    },
+    {
+      "file": "large_folded_input_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "3c7d8d599cd44a05ae9c8eaced11116f15986ac318da0c457a3ac6e8e248c96e"
+    },
+    {
+      "file": "large_folded_input_support_bearing.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "dfd4dcedff3d2d30ac8f06b379c6dbcc51595d22005c11b571c977e3dd8821b8"
+    },
+    {
+      "file": "large_folded_tension_block.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "1ec7bab375c6bfdbbb9dae6e56931be4a69de5e459adc3d03da8bd4f1636e1fc"
+    },
+    {
+      "file": "large_folded_tension_screw.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "53b96f914239f5eb1beceabd72b3dc1599c2c6d60d20937309d84437b2b1457a"
+    },
+    {
+      "file": "large_folded_timing_belt.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "e70aa28c3e165b4e2daa356cbefe316e9fcf546c64e2508ff26950be26aa35da"
+    },
+    {
+      "file": "large_front_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "3a698de678071f87b1015aafefe61aa4e364fd8c23432a88aa2099401c1d9c0c"
+    },
+    {
+      "file": "large_index_sensor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "29d0211b0f95a570b89cba67331b015dc42df929d897814a462c8f2d2528fdf5"
+    },
+    {
+      "file": "large_inner_race_spacer.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "239442c0cdd75d35e80cfb930031f820a41828d0dbbf8088fa845717d16327df"
+    },
+    {
+      "file": "large_integral_steel_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "a8e118b401ab326dce38c50e964703893defc8771661453ff31c39f87eacadfc"
+    },
+    {
+      "file": "large_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "5d087d01c1a870176b16db0ec8b498a6b2983ade3caf63784fef45960bab77ba"
+    },
+    {
+      "file": "large_rear_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "911c84486ace1f81aa25e1048e094ef3fec9c9cdbe63ced32e6ffc4e58d2cf37"
+    },
+    {
+      "file": "large_selective_inner_race_shim.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "821dea4ff8a44614b43cf8e5a7bfa4b9ba6e0b6a0bd692cdb12480599533a29c"
+    },
+    {
+      "file": "large_stop_pin.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "8d15733342714aaa49af6c3b5433337205d5105928dc06f3164218e9debfbb79"
+    },
+    {
+      "file": "left_jaw_carriage.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "08205515d9718cf97ab7f9b4f711ebebd7f60bc1759cbe328e544a611196981c"
+    },
+    {
+      "file": "left_jaw_subassembly.step",
+      "solids": 5,
+      "valid": true,
+      "sha256": "4c9bd3ab36892fa40a5867aef23975f3918b1f6531e7d35b95e540b09d207f15"
+    },
+    {
+      "file": "pedestal_sleeve.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "319d33d66fc50ac87eefeaca367e63f16f03b0b56928925c66c30556dfc9141a"
+    },
+    {
+      "file": "pinion_front_bushing.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "463f7101425a0f27e7895141b28adbef15125e181a5d7aa9f1779ca660ba0444"
+    },
+    {
+      "file": "right_jaw_carriage.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "6a7d071630822449a8b26c378335e39ffba16aa789463e9a62c70ec87fc4a758"
+    },
+    {
+      "file": "roll_subassembly.step",
+      "solids": 55,
+      "valid": true,
+      "sha256": "cad0e0fc21593879844e6238eaa8d970d1648c6b380a22fa444de93f3e5c20ee"
+    },
+    {
+      "file": "shoulder_extension_spring.step",
+      "solids": 3,
+      "valid": true,
+      "sha256": "28e42022b418e7d4c4a0f0928bd5c4ee5867c193e2f26964cbcf6ecc2787b5f9"
+    },
+    {
+      "file": "shoulder_spring_fixed_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "dfbd90c2871e13f297b41d6923981096df601edd3e2fcde1ef7372c51ebea6af"
+    },
+    {
+      "file": "shoulder_spring_moving_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "03d0e85142d47910a2dde16951ebe0ce6ac4d58b276b142b39a3557808b0a2f5"
+    },
+    {
+      "file": "shoulder_spring_nut_plate.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "a69ae9a9b039b06978ff03eebee5a748f49614931a420106377d7ce1d1fda05c"
+    },
+    {
+      "file": "small_bearing_housing.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "8dca84e3921e7c30b5c0b4916d0bb247b9e8cb060ea5655638a027e4c13252e3"
+    },
+    {
+      "file": "small_brake_back_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "6e5c92519bfcc4203ba402a5eaab92ea97a5562dfa4a7d5f758e0d554fe259f6"
+    },
+    {
+      "file": "small_brake_front_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "cce4900088e6a99107bb97fce09dfcd81f2c2b893850908db47d1adfb6c6b15a"
+    },
+    {
+      "file": "small_brake_guard_strut.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "ceb1441793de4810d8d2edb29cbc3389900255230af1e3abbfdc72c32d2dbc75"
+    },
+    {
+      "file": "small_brake_keyed_hub.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "09d90683eacfcee050a97ff72101fa62293ac1a63d01c6b29f23d6f021f5c8ad"
+    },
+    {
+      "file": "small_brake_shaft_key.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "cb22ac7248057f122275b7da9a43b9e518029c29a98b681e29dca07daab1b4c1"
+    },
+    {
+      "file": "small_brake_vendor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "3877248d43f9459ba884df1520250dac909cb4541c5ed8db4e94024fae370a37"
+    },
+    {
+      "file": "small_DIN471_installed_retainer.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "03cbb11ff1ee88103b838f2fda1064c89148f7891c9b945ba1df02bb161fa665"
+    },
+    {
+      "file": "small_folded_carrier_deck.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "195453c3a850a424a87c98d7ceb9922d6a7eb3d100c1641e3f150f9f2d80969d"
+    },
+    {
+      "file": "small_folded_drive_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "ed207ffa45fd2f6003522240ada8e1c9d1eed2a0cf092b34392bc492c53ef69f"
+    },
+    {
+      "file": "small_folded_driven_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "8ee08787b44ccda9c03f83fae370d7e097658a9a5842df77b87355d95faf7410"
+    },
+    {
+      "file": "small_folded_front_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "a7d772c9e388c27be3e3b4b5e5c8d8bb72ead222f37bcc638eedd31fb006f393"
+    },
+    {
+      "file": "small_folded_housing_rails.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "afe755388bd5dc502bb93891d01e1a4f52661dac0f3c2a7073a19faeee8a4197"
+    },
+    {
+      "file": "small_folded_input_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "4b09578ae92105a73c7c9dcf31ec7758bbfd774dd8adcfb4f0b2fcde89989fb0"
+    },
+    {
+      "file": "small_folded_input_support_bearing.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "3c4979e18631d50bd6c617d5646537a09cf50ee4a3bd7466fe1efc066952573f"
+    },
+    {
+      "file": "small_folded_tension_block.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "dd2cb12f588babf3ea0366d8110a49864027d44aa54b96f1e9a7e486f968a43c"
+    },
+    {
+      "file": "small_folded_tension_screw.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "4bbe1a5cd98af79b029fc9d7ea4ff8dd4065f748cd52e9ba27b0289c421a535a"
+    },
+    {
+      "file": "small_folded_timing_belt.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "43732d1df0fd6c31f95b95b9cffc45d2bb91fad8a253f99844f788ccc83e2052"
+    },
+    {
+      "file": "small_front_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "e4649f3302ef8c97338047c8c1961202792e8aa60a21b8b2208263158eab7e39"
+    },
+    {
+      "file": "small_index_sensor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "7dbfba3503cf23eb6a0a75bfb3d5fe757ca5ae53854556670d1559b159f3316c"
+    },
+    {
+      "file": "small_inner_race_spacer.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "e17b1466ebbcb9e238fd12a121fd05efc09515e0422e3c05ccd362175e334edd"
+    },
+    {
+      "file": "small_integral_steel_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "d1f0226b08daa062793dbda0f5a729e3d39843c040e6de4292c7e73b5d0ba530"
+    },
+    {
+      "file": "small_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "4563a57dffb7b30f51242528125bf809a895fd02d925c36275a45a136c3c256a"
+    },
+    {
+      "file": "small_rear_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "f6171441ea074ae2cbaa83eeed8ec8ae86e54f4e5d722c42989f6f03d0ad6b1f"
+    },
+    {
+      "file": "small_selective_inner_race_shim.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "4e7c695415aaf80374a5b918cacc518fd2204cd1f347d2ee4bfbecee664d6d2e"
+    },
+    {
+      "file": "small_stop_pin.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "b762d099aeb8a42ce4c06dcc40182f20b32440a0db50dc92cb29b718e0011d0a"
+    },
+    {
+      "file": "spring_eye_pin.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "312c75d48d802ff3a0734ce0529098f379f83a81da69e378cf2c6af67bce9f91"
+    },
+    {
+      "file": "tool_subassembly.step",
+      "solids": 20,
+      "valid": true,
+      "sha256": "734f623f3a85513521f39aaafcc823b49afec5a66813f6a7b23f5115bca9e19c"
+    },
+    {
+      "file": "turret_subassembly.step",
+      "solids": 56,
+      "valid": true,
+      "sha256": "18f1dc6524357935247189304b7a2ddf133b970dfece884010cf5bf2f4520251"
+    },
+    {
+      "file": "turret_yoke.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "e4d1f6ac47efd713411582c5d27c4d7c4506aa8578bd6079deafd5d45de6c6b0"
+    },
+    {
+      "file": "upper_elbow_housing_clamp.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "983bc4e4534cbe9cbf9de20d6ffa701a2627749b6acd10a0d678becf8d8c4383"
+    },
+    {
+      "file": "upper_link_tube.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "b46e4b5fe231ff9e9797b710abbaee8307fe22febcc947f0b8a2f14c662ad590"
+    },
+    {
+      "file": "upper_nut_strip.step",
+      "solids": 4,
+      "valid": true,
+      "sha256": "3cb8ba71b3d85a6db14b54a3387eb950ad0af8c60cfa792d73b1267b12e98013"
+    },
+    {
+      "file": "upper_root_ear.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "84ff6bda2494759521f3b4ef98c712e46f1c6db1d10a960d0948286c252edad7"
+    },
+    {
+      "file": "upper_subassembly.step",
+      "solids": 68,
+      "valid": true,
+      "sha256": "071a13e0dd59be785ba7f01cabc08041cd53e76e6ef8cc748fe1593897efedcb"
+    },
+    {
+      "file": "wrist_bend_cradle.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "02589ee80415e48cc18a42afe26bff3aff20a51f146f4f2b3a2ad37888bf131f"
+    },
+    {
+      "file": "wrist_idle_trunnion.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "4f7c1e93ad7ff92c5ba3cb5a25102293186800a989545e7e8106136074eccc5a"
+    },
+    {
+      "file": "wrist_roll_fork.step",
+      "solids": 1,
+      "valid": true,
+      "sha256": "e388e224740d6c68db6b1f0e02097efe048f73c41fe53fc64e8dd707d34ac207"
+    }
+  ],
+  "step_file_count": 127,
+  "stop_checks": 8,
+  "stop_checks_passed": true,
+  "source_stop_validator_sha256": "2b53b23c1e506be4a3d64d60fba99acdceb050293bb76cef5fa6a0527cb25483",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "scope": "Actual exported native STEP readback and unchanged source nominal corrected-stop checks; not tolerance-stack, all-motion, impact-strength or hardware qualification",
+  "native_build_hash_encoding": "Raw native-build.json file bytes, distinct from canonical JSON digest in the physics provenance."
+}

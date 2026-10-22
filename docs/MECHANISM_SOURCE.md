@@ -1,5 +1,11 @@
 # Authoring a mechanical source
 
+This page describes the retained bounded component-document API used by Studio.
+The default native route accepts authored engineering projects with reusable
+CAD, physical-tree, contact, actuation and replay services. See
+[Shared engineering construction](CONSTRUCTIVE_MECHANISMS.md) and the
+[ARX project](../examples/engineering/arx_belt/project.py) for that protocol.
+
 CYBR GEO lowers one `cybrgeo-mechanism/2` JSON document through a shared component
 registry. That source supplies geometry, connected interfaces, joints, drives,
 physical assumptions, and the simulation scene. `compact_arm`, `belt_arm`, and

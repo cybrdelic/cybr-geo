@@ -4,9 +4,9 @@ from pathlib import Path
 import hashlib,importlib,importlib.util,json
 from .core import Assembly,project_root,save_cache,load_cache,validate
 
-DEFAULT_RECIPE='compact_arm'
+DEFAULT_RECIPE='arx_belt'
 CONSTRUCTED=('compact_arm','belt_arm','inspection_head')
-BUILTINS=CONSTRUCTED+('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+BUILTINS=(DEFAULT_RECIPE,)+CONSTRUCTED+('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
 
 def is_mechanism_source(name):
     if name in CONSTRUCTED:
@@ -16,6 +16,16 @@ def is_mechanism_source(name):
     return False
 
 def factory(name):
+    from .engineering_source import is_engineering_project
+    if is_engineering_project(name):
+        from .physical_replay import pose
+        def build_project():
+            from .engineering_pipeline import generate_project
+            assembly, report = generate_project(name)
+            if not report['passed']:
+                raise RuntimeError('Authored engineering project failed its declared task requirements; inspect engineering.json')
+            return assembly
+        return build_project,pose
     if name in CONSTRUCTED:
         from .constructed import build,pose
         return lambda:build(name),pose
@@ -64,6 +74,10 @@ def factory(name):
 
 def fingerprint(name):
     root=project_root();h=hashlib.sha256(name.encode())
+    from .engineering_source import is_engineering_project,load_project
+    if is_engineering_project(name):
+        _, source_files=load_project(name)
+        h.update(json.dumps(source_files,sort_keys=True).encode())
     for package in (Path(__file__).parent,Path(__file__).parent.parent/'cybrgeo'):
         for p in sorted(package.rglob('*.py')):
             h.update(str(p.relative_to(package.parent)).encode());h.update(p.read_bytes())
@@ -81,7 +95,7 @@ def fingerprint(name):
     if name.endswith('.json'):
         path=Path(name).resolve();raw=path.read_bytes();h.update(raw)
         spec=json.loads(raw)
-        if spec.get('schema') in ('cybrgeo-mechanism/1','cybrgeo-mechanism/2'):return h.hexdigest()
+        if spec.get('schema') in ('cybrgeo-mechanism/1','cybrgeo-mechanism/2','cybrgeo-engineering-project/1'):return h.hexdigest()
         source=path.parent/spec['source'];h.update(source.read_bytes())
         # External glTF buffers/images also affect geometry/provenance invalidation.
         if source.suffix.lower()=='.gltf':
@@ -104,7 +118,8 @@ def cache_directory(name):
 
 def load(name, rebuild=False, analytic=False):
     fn,motion=factory(name);cache=cache_directory(name);sig=fingerprint(name)
-    constructed=is_mechanism_source(name)
+    from .engineering_source import is_engineering_project
+    constructed=is_mechanism_source(name) or is_engineering_project(name)
     valid=(cache/'manifest.json').exists() and (cache/'validation.json').exists() and (cache/'fingerprint.txt').exists() and (cache/'fingerprint.txt').read_text()==sig
     if valid and constructed:
         try:

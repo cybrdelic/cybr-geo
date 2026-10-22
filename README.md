@@ -4,19 +4,20 @@
 
 One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with an in-house C++ photographic path tracer and a separate Mitsuba/OIDN rendering backend.
 
-**One engineering source drives mechanical construction.** A mechanism document
-declares components, mating dimensions, physical materials, tolerance stacks,
-actuators, loads and contact geometry. A reusable component compiler lowers it to
-the existing assembly API; native CAD, browser CAD, MuJoCo and exported geometry
-consume that same model. Examples are documents, not separate implementations.
+**One reusable engineering architecture, with ARX and IRIS as examples.** Native
+construction, physical materials, CAD mass/inertia, mating geometry, contacts,
+electrical drives, springs, brakes and MuJoCo feed the existing assembly and
+rendering API. The default ARX belt example directly reuses its published source
+and transfers an independent puck through simulated contact. Examples supply
+designs and tasks; construction, control and replay services are shared.
 [Architecture and evidence](docs/CONSTRUCTIVE_MECHANISMS.md) ·
 [Author a mechanism](docs/MECHANISM_SOURCE.md).
 
-![One example compiled by the shared pipeline: actual MuJoCo replay](docs/pr-assets/engineering/simulated-motion.gif)
+![ARX through the shared engineering pipeline: recorded MuJoCo motion](docs/pr-assets/arx-engineering/motion.gif)
 
-*An original component example, rendered from its CAD and recorded MuJoCo states.
-The current run passed its declared motion and operating limits; hardware is
-unqualified. [Evidence and limitations](docs/CONSTRUCTIVE_MECHANISMS.md#recorded-evidence).*
+*Fresh native CAD posed by integrated body states. Puck motion comes from contact,
+not an attachment or animation path. [Evidence and limits](docs/pr-assets/arx-engineering/README.md).
+IRIS remains a source-derived geometric study; hardware is unqualified.*
 
 ![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
 
@@ -37,7 +38,9 @@ unqualified. [Evidence and limitations](docs/CONSTRUCTIVE_MECHANISMS.md#recorded
 
 ## Run it
 
-Linux or WSL2, Python **3.11–3.13**. On Ubuntu, install the native tools once:
+Use the [Windows, Linux and macOS setup guide](docs/PLATFORMS.md) for platform
+prerequisites and supported backends. Linux CI covers Python **3.11-3.13**;
+the Windows x64 and Apple Silicon matrix uses **3.12**. On Ubuntu:
 
 ```bash
 sudo apt-get update
@@ -51,21 +54,25 @@ python -m pip install --no-deps --no-build-isolation -e .
 lab mechanism --step --media
 ```
 
-`lab mechanism` compiles the included example document and runs MuJoCo plus
-continuous motion-clearance analysis before publishing its bundle in
-**`outputs/mechanisms/compact_arm/`**. Outputs include editable source, analytic
-STEP, GLB, BOM, model mass properties, actuator results, simulation traces and
-actual mesh PNG/GIF views. Prescribed and simulated motion are labeled separately.
-Actuator ratings and material properties remain explicit design assumptions.
+`lab mechanism` builds the actual ARX belt example through shared services and
+runs its ten-second causal contact task. **`outputs/arx_belt/`** contains native
+and placed STEP, GLB, material/mass records, editable physical source, motor
+results, simulation traces and actual rendered PNG/GIF views. Allow several
+minutes for initial construction. Ratings and material properties remain
+explicit assumptions; complete ARX motion-envelope and hardware qualification
+are not established by this run.
 
-This first run needs no reference archive, display server, downloaded HDRI or
-denoiser. `lab preview --step` remains the native photographic preview command,
-now also defaulting to `compact_arm`; its output is `outputs/compact_arm/preview/`.
+This first run needs no reference archive, downloaded HDRI or denoiser. Rendering
+needs a supported graphics context. `lab preview --step` chooses the native
+path tracer when its toolchain works, or the actual VTK geometry renderer when
+that toolchain is unavailable. It defaults to `arx_belt` and writes
+`outputs/arx_belt/preview/`; its receipt records the selected backend.
 Use `lab preview example_flange` for the previous quick static example.
 
 ```bash
+lab mechanism arx_belt --step --media
+lab animate arx_belt --seconds 10
 lab mechanism examples/constructed/compact_arm.json --step --media
-lab animate examples/constructed/compact_arm.json --seconds 8
 lab preview nitinol_fiber_actuator --spp 64
 lab preview examples/custom_flange.py --step
 lab build nitinol_fiber_actuator --step --stl
@@ -80,8 +87,9 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | System | Implementation |
 | --- | --- |
 | Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
-| Mechanical source and components | [Canonical document](src/mechanism_lab/mechanism.py), [component registry](src/mechanism_lab/component_catalog.py), [compiler](src/mechanism_lab/construction.py) |
-| Engineering execution | [Shared pipeline](src/mechanism_lab/engineering_pipeline.py), [MuJoCo](src/mechanism_lab/dynamics.py), [continuous path clearance](src/mechanism_lab/motion_envelope.py), [Studio](studio/README.md) |
+| Engineering source | [Project protocol](src/mechanism_lab/engineering_source.py), [native construction](src/mechanism_lab/native_construction.py), [CSG DAG](src/mechanism_lab/shape_dag.py), [physical tree](src/mechanism_lab/physical_model.py) |
+| Causal engineering execution | [Shared pipeline](src/mechanism_lab/engineering_pipeline.py), [electromechanical kernels](src/mechanism_lab/actuation.py), [MuJoCo runtime](src/mechanism_lab/causal_runtime.py), [recorded replay](src/mechanism_lab/physical_replay.py) |
+| Component document compatibility | [Component compiler](src/mechanism_lab/construction.py), [continuous path clearance](src/mechanism_lab/motion_envelope.py), [Studio](studio/README.md) |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |
 | Native photography | [Thin-lens BVH/GGX/MIS tracer](src/mechanism_lab/native/photoreal.cpp), [Python adapter](src/mechanism_lab/photoreal.py) |
@@ -104,6 +112,6 @@ make test            # complete suite; see prerequisite notes below
 
 ## Scope and license
 
-These are parametric geometry, rendering and kinematic studies. Physical load, fatigue, production fits and manufacturing qualification are separate work. Vendor CAD is identified where used; conceptual internals and original geometry retain their provenance. [Sources](docs/MOTOR_SOURCES.md) · [Compatibility](docs/COMPATIBILITY.md) · [Publication inventory](docs/PUBLICATION_INVENTORY.md) · [Architecture](docs/ARCHITECTURE.md).
+The shared core supports native CAD, rendering, kinematic studies and explicitly scoped MuJoCo dynamics. Physical load capacity, fatigue, production fits and hardware qualification remain separate work. Vendor CAD is identified where used; conceptual internals and original geometry retain their provenance. [Sources](docs/MOTOR_SOURCES.md) · [Compatibility](docs/COMPATIBILITY.md) · [Publication inventory](docs/PUBLICATION_INVENTORY.md) · [Architecture](docs/ARCHITECTURE.md).
 
 GPL-2.0-only for project code. Third-party assets retain their own rights. Created by [Alejandro Figueroa / cybrdelic](https://github.com/cybrdelic).

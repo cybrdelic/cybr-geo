@@ -1,0 +1,158 @@
+{
+  "schema": "cybrgeo-exact-source-spring-parity/1",
+  "source_repository": "https://github.com/cybrdelic/cybr-arx6-compact",
+  "source_commit": "0003382bd6a2e96f3bed065003efec35001982f7",
+  "source_file": "source/build_meshes.py",
+  "source_sha256": "1b2e4f087634f8ff41ad450195a2a35ef3ef6445d1bc25efbad9c797f7fb2e50",
+  "design_file": "assets/design.json",
+  "design_sha256": "48b3dcf993f78a9e1f386c8458644bb5829d627c895b88e58e616ae14aa565a0",
+  "source_function_lines": [
+    10,
+    27
+  ],
+  "execution": "AST-extracted exact build function only; source top-level imports, file writes and iteration never executed",
+  "cadquery_version": "2.8.0",
+  "parts": [
+    {
+      "id": 263,
+      "name": "CB2_torsion_spring",
+      "body": "turret",
+      "valid": true,
+      "solid_count": 2,
+      "volume_mm3": 18777.547518409418,
+      "bounds_mm": [
+        [
+          -27.500004535091637,
+          152.49999546490835,
+          33.0
+        ],
+        [
+          27.500004535091662,
+          207.50000453509168,
+          92.00000009999998
+        ]
+      ],
+      "authored_bounds_mm": [
+        [
+          -27.5,
+          152.5,
+          33.0
+        ],
+        [
+          27.5,
+          207.5,
+          74.0
+        ]
+      ],
+      "shared_reported_volume_mm3": 18777.5475184,
+      "volume_difference_from_shared_mm3": 9.418727131560445e-09,
+      "solid_details": [
+        {
+          "valid": true,
+          "volume_mm3": 18549.552933011375,
+          "bounds_mm": [
+            [
+              -27.500004535091637,
+              152.49999546490835,
+              50.99999989999993
+            ],
+            [
+              27.500004535091662,
+              207.50000453509168,
+              92.00000009999998
+            ]
+          ]
+        },
+        {
+          "valid": true,
+          "volume_mm3": 227.76546738526002,
+          "bounds_mm": [
+            [
+              22.5,
+              169.0,
+              33.0
+            ],
+            [
+              27.5,
+              180.6,
+              38.0
+            ]
+          ]
+        }
+      ],
+      "elapsed_s": 4.9060000000172295
+    },
+    {
+      "id": 269,
+      "name": "CB3_torsion_spring",
+      "body": "upper",
+      "valid": true,
+      "solid_count": 2,
+      "volume_mm3": 5021.352834691703,
+      "bounds_mm": [
+        [
+          -22.000003648070816,
+          257.99999635192916,
+          -67.00000010062224
+        ],
+        [
+          22.000003648070802,
+          302.0000036480708,
+          -33.0
+        ]
+      ],
+      "authored_bounds_mm": [
+        [
+          -22.0,
+          258.0,
+          -67.0
+        ],
+        [
+          22.0,
+          302.0,
+          -33.0
+        ]
+      ],
+      "shared_reported_volume_mm3": 5021.35283469,
+      "volume_difference_from_shared_mm3": 1.7025740817189217e-09,
+      "solid_details": [
+        {
+          "valid": true,
+          "volume_mm3": 4875.5807608767,
+          "bounds_mm": [
+            [
+              -22.000003648070816,
+              257.99999635192916,
+              -67.00000010062224
+            ],
+            [
+              22.000003648070802,
+              302.0000036480708,
+              -47.99999989999993
+            ]
+          ]
+        },
+        {
+          "valid": true,
+          "volume_mm3": 145.76989912656651,
+          "bounds_mm": [
+            [
+              -22.0,
+              269.0,
+              -37.0
+            ],
+            [
+              -18.0,
+              280.6,
+              -33.0
+            ]
+          ]
+        }
+      ],
+      "elapsed_s": 3.60999999998603
+    }
+  ],
+  "elapsed_s": 8.51600000000326,
+  "source_files_unchanged": true,
+  "scope": "Source-native parity only; no geometry repairs, tessellation or repo edits."
+}
