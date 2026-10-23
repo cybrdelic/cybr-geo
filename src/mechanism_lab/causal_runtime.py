@@ -173,11 +173,14 @@ class CausalSimulation:
         self.joint_monitor = {}
         joint_names = self._object_names(mj.mjtObj.mjOBJ_JOINT, self.model.njnt, 'joint')
         for joint in range(self.model.njnt):
-            kind = self.model.jnt_type[joint]
-            if kind not in (mj.mjtJoint.mjJNT_HINGE, mj.mjtJoint.mjJNT_SLIDE):
+            # Tuple membership asks the enum to compare first. Some MuJoCo
+            # platform bindings reject NumPy integer scalars in that direction,
+            # even when scalar == enum succeeds. Compare Python ints explicitly.
+            kind = int(self.model.jnt_type[joint])
+            if kind not in (int(mj.mjtJoint.mjJNT_HINGE), int(mj.mjtJoint.mjJNT_SLIDE)):
                 continue
             name = joint_names[joint]
-            hinge = kind == mj.mjtJoint.mjJNT_HINGE
+            hinge = kind == int(mj.mjtJoint.mjJNT_HINGE)
             self.scalar_joints[name] = (int(self.model.jnt_qposadr[joint]), int(self.model.jnt_dofadr[joint]))
             self.joint_monitor[name] = dict(joint_id=joint, type='hinge' if hinge else 'slide',
                 position_unit='rad' if hinge else 'm', speed_unit='rad/s' if hinge else 'm/s',

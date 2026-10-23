@@ -184,18 +184,27 @@ def original_native_build():
     return namespace['build']
 
 
-@pytest.mark.parametrize('part_id,z_range', [
-    ('263', (33., 92.)),
-    ('269', (-67., -33.)),
-])
-def test_actual_springs_preserve_independently_measured_source_defects(part_id, z_range, original_native_build):
+@pytest.mark.parametrize('part_id', ['263', '269'])
+def test_actual_springs_preserve_independently_measured_source_defects(part_id, original_native_build, record_property):
     # The independent, unchanged source and shared DAG run on the same kernel.
-    # OCP 7.8/7.9 sweep integration differs, so a previous Windows measurement
-    # is evidence for that run, not a portable mathematical volume constant.
+    # Their native bound measurements differ across installed platform builds:
+    # both gave part 269 lower Z=-67 mm on Windows, but -82 mm on macOS.
+    # Archived Windows bounds and volumes describe that run, not portable
+    # constants. Bound differences alone do not establish geometric deformation.
+    # Keep strict same-kernel source equivalence and the disconnected-solid
+    # defect; do not force either source result to its authored bounds.
     design, _ = load_source()
     row = next(p for p in design['parts'] if str(p['id']) == part_id)
     reference = original_native_build(copy.deepcopy(row['shape']))
     shape = ShapeEvaluator(geometry_dag(design, source=SOURCE)).evaluate(part_id)
+    bb, source_bb = np.asarray(bounds(shape)), np.asarray(bounds(reference))
+    authored_z = np.asarray(row['bounds_mm'])[:, 2]
+    record_property('part_id', part_id)
+    record_property('actual_z_bounds_mm', json.dumps(bb[:, 2].tolist()))
+    record_property('source_z_bounds_mm', json.dumps(source_bb[:, 2].tolist()))
+    record_property('authored_z_bounds_mm', json.dumps(authored_z.tolist()))
+    record_property('actual_minus_authored_z_bounds_mm', json.dumps((bb[:, 2] - authored_z).tolist()))
+    record_property('source_minus_authored_z_bounds_mm', json.dumps((source_bb[:, 2] - authored_z).tolist()))
     assert shape.isValid() and reference.isValid()
     assert len(shape.Solids()) == len(reference.Solids()) == 2
     assert shape.Volume() == pytest.approx(reference.Volume(), rel=1e-8)
@@ -206,7 +215,6 @@ def test_actual_springs_preserve_independently_measured_source_defects(part_id, 
         assert actual_solid.Volume() == pytest.approx(source_solid.Volume(), rel=1e-8)
         assert actual_solid.Center().toTuple() == pytest.approx(source_solid.Center().toTuple(), abs=1e-5)
         assert np.asarray(bounds(actual_solid)) == pytest.approx(np.asarray(bounds(source_solid)), abs=1e-5)
-    bb = bounds(shape)
-    assert (bb[0][2], bb[1][2]) == pytest.approx(z_range, abs=1e-5)
     if part_id == '263':
+        assert (bb[0][2], bb[1][2]) == pytest.approx((33., 92.), abs=1e-5)
         assert bb[1][2] - row['bounds_mm'][1][2] == pytest.approx(18., abs=1e-5)
