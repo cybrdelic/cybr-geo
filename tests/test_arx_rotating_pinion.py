@@ -42,6 +42,21 @@ def _compiled_pair():
     return mj, source_model, derived_model, derived, attachment
 
 
+def test_constructed_mesh_response_time_is_resolved_by_default_integration_step():
+    source = PhysicalModel.from_xml(SOURCE_MODEL.read_text(encoding='utf-8'))
+    derived = PhysicalModel.from_xml(SOURCE_MODEL.read_text(encoding='utf-8'))
+    transfer = attach_rotating_pinion(
+        derived, rack_travel_from_source(SPEC, model_root=derived.root))
+    source_step = float(source.root.find('option').get('timestep'))
+    derived_step = float(derived.root.find('option').get('timestep'))
+    assert derived_step < source_step
+    assert derived.provenance['rotating_pinion']['source_integration_step_s'] == source_step
+    for name in ('jaw_left_pinion_mesh', 'jaw_right_pinion_mesh'):
+        mesh = derived.root.find(f".//equality/joint[@name='{name}']")
+        assert float(mesh.get('solref').split()[0]) > 2*derived_step
+    assert transfer['pitch_radius_m'] == pytest.approx(.003)
+
+
 def test_derived_pinion_is_real_hinge_with_source_pitch_and_unchanged_home_geometry():
     mj, source, revised, physical, record = _compiled_pair()
     assert record['pitch_radius_m'] == pytest.approx(.003)
@@ -54,6 +69,9 @@ def test_derived_pinion_is_real_hinge_with_source_pitch_and_unchanged_home_geome
     assert revised.actuator_gear[actuator, 0] == pytest.approx(1.)
     assert revised.neq == source.neq + 1
     assert 'rack_pinion_angle' not in physical.xml()
+    # Check the compiled solver as well as the source tree above.
+    for name in ('jaw_left_pinion_mesh', 'jaw_right_pinion_mesh'):
+        assert revised.eq_solref[revised.equality(name).id, 0] > 2*revised.opt.timestep
     assert revised.qpos0[revised.joint('jaw_left').qposadr[0]] == pytest.approx(.038)
     assert revised.qpos0[revised.joint('jaw_right').qposadr[0]] == pytest.approx(.038)
     source_data, revised_data = mj.MjData(source), mj.MjData(revised)

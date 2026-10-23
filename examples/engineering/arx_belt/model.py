@@ -120,14 +120,29 @@ def attach_rotating_pinion(physical, travel):
     if original is None or motor.get('tendon') != 'rack_pinion_angle':
         raise ValueError('Source jaw equality or motor transmission changed')
     equality.remove(original)
+    # MuJoCo's refsafe floor raises a positive solref time constant below
+    # 2*dt. Choose the integration step from this constructed mesh rather
+    # than authoring a separate fault-suite-only numerical override. The
+    # 20% margin keeps the requested stiffness effective at the source's
+    # original step and leaves the 0.1 mm dynamic coupling budget unchanged.
+    mesh_time_constant_s = .0005
+    option = root.find('option')
+    if option is None:
+        raise ValueError('Rotating pinion requires a source integration option')
+    source_step_s = float(option.get('timestep', 'nan'))
+    if not math.isfinite(source_step_s) or source_step_s <= 0:
+        raise ValueError('Source integration step must be finite and positive')
+    integration_step_s = min(source_step_s, mesh_time_constant_s/(2*1.2))
+    option.set('timestep', f'{integration_step_s:.15g}')
     # Solver equality softness must stay within the explicit 0.1 mm dynamic
-    # coupling budget below. The stronger numerical parameters are not gear
-    # flank material properties, manufacturing backlash or tested capacity.
+    # coupling budget below. These numerical parameters are not gear flank
+    # material properties, manufacturing backlash or tested capacity.
     for name in ('jaw_left', 'jaw_right'):
         ET.SubElement(equality, 'joint', name=f'{name}_pinion_mesh',
                       joint1=name, joint2='gripper_pinion',
                       polycoef=f'0 {pitch:.15g} 0 0 0',
-                      solref='.0005 1', solimp='.9999 .99999 .000001')
+                      solref=f'{mesh_time_constant_s:.15g} 1',
+                      solimp='.9999 .99999 .000001')
     root.find('tendon').remove(tendon)
     del motor.attrib['tendon']
     motor.set('joint', 'gripper_pinion')
@@ -144,6 +159,9 @@ def attach_rotating_pinion(physical, travel):
         retained_rail_friction_N_each=rail_friction,
         transferred_pinion_friction_Nm=reflected_pinion_friction,
         source_motor_no_load_torque_Nm=motor_no_load_torque,
+        source_integration_step_s=source_step_s,
+        derived_integration_step_s=integration_step_s,
+        mesh_time_constant_s=mesh_time_constant_s,
         transmission_transfer='Preserve source motor rotor kinetic energy with I=sum(m)*pitch_radius**2 = motor_rotor_inertia*gear_ratio**2 and dissipative power with torque=(sum(F)-2*rail_friction)*pitch_radius = no_load_current*torque_per_current; native CAD jaw and pinion inertias remain separate',
         scope='Ideal pitch coupling; rolling tooth contact, backlash, brake and shaft fit are unresolved')
     return dict(home_jaw_opening_m=home_gap, pitch_radius_m=pitch,
