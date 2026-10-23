@@ -157,6 +157,32 @@ def test_qualified_initial_pose_matches_actual_mujoco_startup_keyframe():
                                       parts, alias) == rotated
 
 
+def test_qualified_static_hardware_keeps_native_mass_without_fake_solver_inertia():
+    from mechanism_lab.physical_model import PhysicalModel
+
+    row = dict(mass_kg=1., com_m=[0., 0., 0.],
+               inertia_tensor_kg_m2=[[.1, 0., 0.], [0., .1, 0.], [0., 0., .1]])
+    model = PhysicalModel.from_xml('''<mujoco><worldbody>
+        <body name="base"/><body name="arm"><joint name="pivot" type="hinge"/>
+        <inertial mass="1" pos="0 0 0" diaginertia=".1 .1 .1"/>
+        </body></worldbody></mujoco>''')
+    native = {'fixed': row, 'moving': row}
+    aliases = {'fixed': 'base', 'moving': 'arm'}
+    model.mass_records = {'arm': deepcopy(row)}
+    _require_physical_mass_binding(model, native, aliases)
+    model.mass_records.clear()
+    with pytest.raises(QualificationError, match='Moving physical body arm'):
+        _require_physical_mass_binding(model, native, aliases)
+    model.mass_records = {'arm': deepcopy(row)}
+    ET.SubElement(model.bodies['base'], 'inertial', mass='1', pos='0 0 0', diaginertia='.1 .1 .1')
+    with pytest.raises(QualificationError, match='unbound inertial'):
+        _require_physical_mass_binding(model, native, aliases)
+    model.bodies['base'].remove(model.bodies['base'].find('inertial'))
+    ET.SubElement(model.bodies['base'], 'joint', name='unexpected', type='hinge')
+    with pytest.raises(QualificationError, match='Moving physical body base'):
+        _require_physical_mass_binding(model, native, aliases)
+
+
 def _retained_contact_plan():
     plan = _plan()
     plan['interfaces']['pin_fit'] = dict(role='tested_retention_contact',

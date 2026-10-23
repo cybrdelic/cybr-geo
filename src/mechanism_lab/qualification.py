@@ -1334,14 +1334,43 @@ def _recheck_qualified_native_steps(native, placements, interfaces, receipt, pla
     return mass
 
 
-def _require_physical_mass_binding(model, native_mass):
-    """Require the actual solver inertials to match every qualified CAD body."""
+def _physical_body_is_static(model, name):
+    """A body with no joint in its world ancestry has no dynamic solver mass."""
+    body = model.bodies.get(name)
+    if body is None:
+        raise QualificationError(f'Qualified CAD body has no mapped physical body: {name}')
+    parents = {child: parent for parent in model.root.iter() for child in parent}
+    cursor = body
+    while cursor.tag != 'worldbody':
+        if cursor.find('joint') is not None or cursor.find('freejoint') is not None:
+            return False
+        cursor = parents.get(cursor)
+        if cursor is None:
+            raise QualificationError(f'Physical body {name} is outside the world tree')
+    return True
+
+
+def _require_physical_mass_binding(model, native_mass, body_mapping=None):
+    """Bind every moving CAD inertia; keep true fixed hardware source-bound.
+
+    A static body's exact STEP mass is still recomputed, but it is not a
+    fictitious MuJoCo inertia. A missing record is accepted only when the
+    named physical body has no joint anywhere in its world ancestry.
+    """
     from .physical_model import inertia_tensor
     records = getattr(model, 'mass_records', None)
-    if not isinstance(records, dict) or set(records) != set(native_mass):
+    mapping = _qualified_body_mapping(body_mapping, native_mass)
+    if not isinstance(records, dict) or not set(records) <= set(mapping.values()):
         raise QualificationError('Physical model mass inventory differs from qualified native CAD bodies')
     for body, native in native_mass.items():
-        mass, center, tensor = inertia_tensor(records[body])
+        physical_name = mapping[body]
+        if physical_name not in records:
+            if _physical_body_is_static(model, physical_name):
+                if model.bodies[physical_name].find('inertial') is not None:
+                    raise QualificationError(f'Static physical body {physical_name} has an unbound inertial')
+                continue
+            raise QualificationError(f'Moving physical body {physical_name} lacks its qualified CAD inertia')
+        mass, center, tensor = inertia_tensor(records[physical_name])
         if (not _numeric_geometry_matches(mass, native['mass_kg'])
                 or not _numeric_geometry_matches(center.tolist(), native['com_m'])
                 or not _numeric_geometry_matches(tensor.tolist(), native['inertia_tensor_kg_m2'])):
@@ -1449,7 +1478,7 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
                                                body_mapping)
     native_mass = _recheck_qualified_native_steps(native, placements, interfaces,
         receipt, plan.document, record, spring_record, startup_poses=startup_poses)
-    _require_physical_mass_binding(physical_model, native_mass)
+    _require_physical_mass_binding(physical_model, native_mass, body_mapping)
     _require_current_causal_runtime(simulation['runtime_implementation'])
     modeled_interface_demands = {}
     _require_connector_demand_binding(plan, physical_model, simulation,

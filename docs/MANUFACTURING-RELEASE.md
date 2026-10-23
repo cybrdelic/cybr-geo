@@ -107,7 +107,10 @@ Release independently reimports those STEP files and compares exact part-pair
 gaps, material densities, component masses, body aggregates and solver
 inertials. It also derives the initial poses from the bound MuJoCo source and
 startup keyframe, rejecting a construction pose that does not match the
-simulated assembly. A diagnostic constructor cannot write the reserved construction
+simulated assembly. Moving CAD bodies require matching solver mass/inertia;
+fixed hardware retains its verified native mass without a fictitious dynamic
+inertia, and its mapped physical body must have no joint in its world ancestry.
+A diagnostic constructor cannot write the reserved construction
 receipt through its public API.
 
 ## External physical evidence
