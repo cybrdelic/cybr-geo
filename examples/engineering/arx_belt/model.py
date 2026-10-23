@@ -16,6 +16,7 @@ from mechanism_lab.contact_geometry import tabletop_tiles
 
 from .contacts import build as build_contacts
 from .rack_contract import arx_rack_report, rack_travel_from_source
+from .spring_anchor_contract import verify_arx_anchor_receipt, verify_arx_spring_joint_frames
 
 DATA = Path(__file__).with_name('data')
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
@@ -46,6 +47,12 @@ def compile_model(spec=None, *, native_directory=None):
         if recorded != arx_rack_report(travel):
             raise ValueError('Native rack construction disagrees with the compiled physical slide and tendon')
         physical.provenance['gripper_rack_travel'] = recorded
+        anchors = load('spring-anchor-load-path.json', records)
+        anchor_plan = verify_arx_anchor_receipt(
+            spec, transmission, anchors, load('placed-native-parts.json', records),
+            load('cad_parts.json', records))
+        verify_arx_spring_joint_frames(physical.root, anchor_plan)
+        physical.provenance['spring_anchor_load_path_plan_sha256'] = anchor_plan['plan_sha256']
     physical.root.set('model', 'ARX6_P5_compact_belt_drives')
     physical.bind_inertias(props, {name: name for name in ('turret', 'upper', 'fore', 'roll', 'bend', 'tool')})
     for name in ('jaw_left', 'jaw_right'):

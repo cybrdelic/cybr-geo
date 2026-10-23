@@ -18,9 +18,13 @@ import cadquery as cq
 import numpy as np
 
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification, transform_shape, shape_mass_properties
+from mechanism_lab.spring_anchor import verify_native_anchor
 
 from .rack_contract import (PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM,
     arx_rack_report, rack_travel_from_source)
+from .spring_anchor_contract import (EYE_PIN_DIAMETER_MM, EYE_PIN_LENGTH_MM,
+    EYE_PIN_END_RELIEF_MM, CLEVIS_BORE_DIAMETER_MM,
+    arx_spring_anchor_plan)
 
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
 SOURCE_GENERATOR_SHA256 = 'ae3b03b11f533c59a3507d18d93f9b0f7df7a804a8e52ced44b1d3f577d55e37'
@@ -479,7 +483,7 @@ def build(spec, output):
     parent=drill(parent,[(x,89,z) for x in [-25,25] for z in [20,35]],(0,1,0),5.5,L=10)
     for z in [55,65,79,89]:
         cheek=cq.Workplane('XY').box(18,30,4).translate((-65,100,z))
-        cheek=drill(cheek,[(-65,104,z)],(0,0,1),4.2,L=6)
+        cheek=drill(cheek,[(-65,104,z)],(0,0,1),CLEVIS_BORE_DIAMETER_MM,L=6)
         parent=parent.union(cheek)
     addpart('shoulder_spring_fixed_clevis',parent)
     child=cq.Workplane('XY').box(58,28,5).translate((0,70,24.5))
@@ -487,9 +491,10 @@ def build(spec, output):
     child=child.union(cq.Workplane('XY').box(16,10,67).translate((0,70,56)))
     for z in [60,84]:
         child=child.cut(cq.Workplane('XY').box(24,20,6).translate((0,76,z)))
-        child=drill(child,[(0,70,z)],(0,0,1),4.2,L=16)
+        child=drill(child,[(0,70,z)],(0,0,1),CLEVIS_BORE_DIAMETER_MM,
+                    L=EYE_PIN_LENGTH_MM+2*EYE_PIN_END_RELIEF_MM)
     addpart('shoulder_spring_moving_clevis',child)
-    addpart('spring_eye_pin',cyl(2,-8,8),'steel','4 mm retained pin; washers/cotters and bearing stress to be qualified')
+    addpart('spring_eye_pin',cyl(EYE_PIN_DIAMETER_MM/2,-EYE_PIN_LENGTH_MM/2,EYE_PIN_LENGTH_MM/2),'steel','4 mm retained pin; washers/cotters and bearing stress to be qualified')
     strip=cq.Workplane('XY').box(55,28,4).translate((0,70,18))
     strip=drill(strip,[(x,y,18) for x in [-20,20] for y in [62,78]],(0,0,1),4.2,L=8)
     addpart('shoulder_spring_nut_plate',strip,'steel')
@@ -518,12 +523,13 @@ def build(spec, output):
     elbow_fixed=elbow_fixed.union(cq.Workplane('XY').box(16,10,59).translate((-30,190,-54.5)))
     for z in [-55,-79]:
         elbow_fixed=elbow_fixed.cut(cq.Workplane('XY').box(24,20,6).translate((-30,196,z)))
-        elbow_fixed=drill(elbow_fixed,[(-30,190,z)],(0,0,1),4.2,L=16)
+        elbow_fixed=drill(elbow_fixed,[(-30,190,z)],(0,0,1),CLEVIS_BORE_DIAMETER_MM,
+                          L=EYE_PIN_LENGTH_MM+2*EYE_PIN_END_RELIEF_MM)
     addpart('elbow_spring_fixed_clevis',elbow_fixed)
     fixednut=None
     for x in [-20,20]:
         a=cq.Workplane('XY').box(12,32,6).translate((x,190,-17))
-        a=drill(a,[(x,y,-17) for y in [182,198]],(0,0,1),4.2,L=10)
+        a=drill(a,[(x,y,-17) for y in [182,198]],(0,0,1),CLEVIS_BORE_DIAMETER_MM,L=10)
         fixednut=a if fixednut is None else fixednut.union(a)
     addpart('elbow_fixed_anchor_nut_strips',fixednut,'steel')
     # Forked back lever attaches to the existing root-ear flange at its true holes.
@@ -534,12 +540,13 @@ def build(spec, output):
     elbow_child=elbow_child.union(cq.Workplane('XY').box(16,10,54).translate((0,-45,-57)))
     for z in [-55,-79]:
         elbow_child=elbow_child.cut(cq.Workplane('XY').box(24,20,6).translate((0,-39,z)))
-        elbow_child=drill(elbow_child,[(0,-45,z)],(0,0,1),4.2,L=16)
+        elbow_child=drill(elbow_child,[(0,-45,z)],(0,0,1),CLEVIS_BORE_DIAMETER_MM,
+                          L=EYE_PIN_LENGTH_MM+2*EYE_PIN_END_RELIEF_MM)
     addpart('elbow_spring_moving_clevis',elbow_child)
     nut=None
     for xx in [-20,20]:
         nn=cq.Workplane('XY').box(12,32,6).translate((xx,53,-25))
-        nn=drill(nn,[(xx,y,-25) for y in [48,58]],(0,0,1),4.2,L=10)
+        nn=drill(nn,[(xx,y,-25) for y in [48,58]],(0,0,1),CLEVIS_BORE_DIAMETER_MM,L=10)
         nut=nn if nut is None else nut.union(nn)
     addpart('elbow_moving_anchor_nut_plate',nut,'steel','Short lever bolts into negative-wall nut strips at existing forearm tube holes; not floating at the joint')
     # CSG_DYNAMIC_SPRING_BEGIN
@@ -818,33 +825,70 @@ def build(spec, output):
 
     ppart('tool','gripper_cable_clamp_mount')
     for name in ['base','cap','liner']:ppart('tool','gripper_cable_clamp_'+name,(0,191,-23))
-    ppart('turret','shoulder_spring_fixed_clevis')
-    ppart('upper','shoulder_spring_moving_clevis')
+    anchor_plan = arx_spring_anchor_plan(SPEC, TRANSMISSIONS)
+    anchor_groups = {group['name']: group for group in anchor_plan['groups']}
+    anchor_bindings = []
+    clevis_placements = {}
+    def place_spring_clevis(body, part):
+        before = len(construction.placed_records)
+        ppart(body, part)
+        if len(construction.placed_records) != before+1:
+            raise ValueError('Spring clevis did not create exactly one native placement')
+        placed = construction.placed_records[-1]
+        if placed['body'] != body or (body, part) in clevis_placements:
+            raise ValueError('Spring clevis placement has the wrong rigid body or duplicate identity')
+        clevis_placements[(body, part)] = placed['name']
+
+    def install_spring_anchors(group_name):
+        for anchor in anchor_groups[group_name]['anchors']:
+            body, position = anchor['body'], anchor['body_local_anchor_mm']
+            clevis_part = anchor['clevis_part']
+            clevis_label = clevis_placements.get((body, clevis_part))
+            if clevis_label is None:
+                raise ValueError('Spring anchor has no placed clevis on its rigid body')
+            before = len(construction.placed_records)
+            ppart(body, anchor['pin_part'], position)
+            if len(construction.placed_records) != before+1:
+                raise ValueError('Spring anchor pin did not create exactly one native placement')
+            placed = construction.placed_records[-1]
+            if placed['body'] != body:
+                raise ValueError('Spring anchor pin was placed on the wrong rigid body')
+            measured = verify_native_anchor(
+                construction.placed_shapes[(body, placed['name'])],
+                construction.placed_shapes[(body, clevis_label)], position,
+                pin_diameter_mm=EYE_PIN_DIAMETER_MM,
+                pin_length_mm=EYE_PIN_LENGTH_MM,
+                nominal_bore_diameter_mm=CLEVIS_BORE_DIAMETER_MM)
+            anchor_bindings.append(dict(anchor=anchor['name'], body=body,
+                pin_native_part=placed['name'], clevis_native_part=clevis_part,
+                clevis_placed_part=clevis_label,
+                required_capacity_N=anchor['required_capacity_N'], **measured))
+
+    place_spring_clevis('turret','shoulder_spring_fixed_clevis')
+    place_spring_clevis('upper','shoulder_spring_moving_clevis')
     ppart('upper','shoulder_spring_nut_plate')
-    for z in [60,84]:
-        ppart('turret','spring_eye_pin',(-65,104,z))
-        ppart('upper','spring_eye_pin',(0,70,z))
+    install_spring_anchors('shoulder')
     ms=META['shoulder_extension_spring']['mass_kg']
-    for z in [.060,.084]:
-        for b,c in [('turret',[-.065,.104,z]),('upper',[0,.070,z])]:
-            BODIES[b].append({'name':'spring_mass_allocation','mass_kg':ms/2,'com_m':c,
-                'inertia_at_com_kg_m2':(np.eye(3)*ms/2*.009**2/2).tolist(),
-                'provenance':'Half spring mass at each actual anchor; flexible-body mass approximation'})
+    for anchor in anchor_groups['shoulder']['anchors']:
+        body = anchor['body']
+        center = [value/1000 for value in anchor['body_local_anchor_mm']]
+        BODIES[body].append({'name':'spring_mass_allocation','mass_kg':ms/2,'com_m':center,
+            'inertia_at_com_kg_m2':(np.eye(3)*ms/2*.009**2/2).tolist(),
+            'provenance':'Half spring mass at each actual anchor; flexible-body mass approximation'})
 
 
-    ppart('upper','elbow_spring_fixed_clevis')
+    place_spring_clevis('upper','elbow_spring_fixed_clevis')
     ppart('upper','elbow_fixed_anchor_nut_strips')
-    ppart('fore','elbow_spring_moving_clevis')
+    place_spring_clevis('fore','elbow_spring_moving_clevis')
     ppart('fore','elbow_moving_anchor_nut_plate')
-    for z in [-55,-79]:
-        ppart('upper','spring_eye_pin',(-30,190,z))
-        ppart('fore','spring_eye_pin',(0,-45,z))
+    install_spring_anchors('elbow')
     ms=META['elbow_extension_spring']['mass_kg']
-    for z in [-.055,-.079]:
-        for b,c in [('upper',[-.030,.190,z]),('fore',[0,-.045,z])]:
-            BODIES[b].append({'name':'elbow_spring_mass_allocation','mass_kg':ms/2,'com_m':c,
-                'inertia_at_com_kg_m2':(np.eye(3)*ms/2*.0075**2/2).tolist(),
-                'provenance':'Half spring mass at each actual elbow anchor; flexible-body mass approximation'})
+    for anchor in anchor_groups['elbow']['anchors']:
+        body = anchor['body']
+        center = [value/1000 for value in anchor['body_local_anchor_mm']]
+        BODIES[body].append({'name':'elbow_spring_mass_allocation','mass_kg':ms/2,'com_m':center,
+            'inertia_at_com_kg_m2':(np.eye(3)*ms/2*.0075**2/2).tolist(),
+            'provenance':'Half spring mass at each actual elbow anchor; flexible-body mass approximation'})
 
     # Wire/encoder/fastener reserve is explicit; not treated as measured hardware.
     reserve={'turret':(.10,[0,.09,-.04]),'upper':(.08,[0,.14,0]),'fore':(.06,[0,.122,0]),'roll':(.025,[0,0,-.025]),'bend':(.025,[0,.08,0]),'tool':(.06,[0,.195,0])}
@@ -857,6 +901,10 @@ def build(spec, output):
             'packaging_envelopes.json': primitive_records,
             'folded-transmissions.json': TRANSMISSIONS,
             'gripper-rack-travel.json': arx_rack_report(rack_travel),
+            'spring-anchor-load-path.json': dict(schema='cybrgeo-native-spring-anchor-load-path/1',
+                plan=anchor_plan, native_anchor_bindings=anchor_bindings,
+                tested_pin_clevis_capacity_available=False,
+                scope='Eight source-derived native pin placements in actual clevis bores; ideal peak force is demand only, not pin/hook/clevis capacity'),
             'p5_collision_proxies.json': {
                 'records': P5_PROXIES,
                 'joint_extra_armature_kg_m2': [r['extra_joint_armature_kg_m2'] for r in TRANSMISSIONS],

@@ -36,6 +36,7 @@ flowchart LR
 | `linkages.py` | Bored rigid links constructed from material pin axes; the same frames close passive planar loops in MuJoCo |
 | `contact_geometry.py` | Material-region proxies, annular regions, transformed primitives and perforated tabletops |
 | `actuation.py` | Source-derived voltage/current/back-EMF, gearbox/belt demand limits, thermal/energy accounting, springs, brakes and faults |
+| `spring_anchor.py` | Ideal full-joint-range force demand per separate spring anchor and placed native pin/bore binding; does not infer tested strength |
 | `causal_runtime.py` | Named-joint forces applied to MuJoCo, independent free bodies, contacts, every-step extrema and state receipts |
 | `reference_clock.py` | Source/physical phase mapping with mandatory boundary screening, derivative scaling and implementation identity |
 | `physical_replay.py` | Native local geometry transformed only by recorded body states; explicit units, identity and cache restoration |
@@ -86,6 +87,13 @@ the example does not imply a supplier-selected or hardware-qualified machine.
 ARX's actual handed jaw now uses `NativeConstruction.place_assembly`: recursive
 component locations, physical materials, STEP, display mesh and full inertia
 come from the same located solids. ARX and IRIS both call `native_replay`.
+ARX derives its eight spring-pin locations and ideal peak anchor demands from
+the same source spring and joint frames used by its simulation. Construction
+checks the placed 4 mm pins against the placed clevis bores; compilation reads
+the named native receipt back before it accepts the physical model. A native
+readback exposed six pin-end contacts, so their clevis bore cuts now extend
+past the pin ends. The resulting 0.1 mm gap is nominal CAD geometry, not a
+manufacturing tolerance or a pin, hook, or clevis load rating.
 Scene-only puck and nest geometry is derived from the accepted ARX physical
 source. Shared `NativeInterfaceRequirements.clearance` checks declared minimum
 gaps before build acceptance, with separately reported kernel allowances; these
@@ -120,9 +128,10 @@ well as geometry. Recorded replay holds the prior pose between samples. Generic
 animated GLB interpolation is a visualization, not extra solver evidence.
 
 Fresh project construction also writes `native-source-binding.json`, binding
-the native receipt to every project Python file, `project.json` and all `data/`
-inputs. Reuse requires that binding; historical builds without it must be built
-again, and cannot be relabeled from current files. This is conservative: even a
+the native receipt to every authored project Python/JSON file and all `data/`
+inputs, including IRIS's root `source-geometry.json`. Reuse requires that
+binding; historical builds without it must be built again and cannot be relabeled
+from current files. This is conservative: even a
 controller-only edit invalidates native reuse. The binding also records an
 explicit set of shared CAD, mass, core/material and contact helper hashes,
 CadQuery/OpenCascade/NumPy versions and the Python/platform identity. It does
@@ -203,8 +212,10 @@ full manufacturing source is not reconstructed from its renders or reports.
 
 The preserved original comparison produced **118 unique parts and 375 placements**. **127 STEP
 exports reopened as valid solids**; the source's **52 nominal BREP interface
-checks** and **eight stop checks** passed. All eight body mass, CoM and full
-inertia records matched the unmodified generator under the same CAD kernel.
+checks** and **eight stop checks** passed at that source-comparison revision.
+All eight body mass, CoM and full inertia records matched the unmodified
+generator under the same CAD kernel then. Later clevis bore changes require
+fresh mass and dynamics readback; the old comparison does not transfer.
 Archived CadQuery 2.7/OpenCascade 7.8 records differ slightly from the local
 2.8/7.9 spring geometry; the historical difference is retained.
 

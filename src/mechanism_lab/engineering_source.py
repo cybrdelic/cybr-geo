@@ -220,7 +220,7 @@ _CONSTRUCTION_SERVICES = (
     'native_construction.py', 'shape_dag.py', 'core.py', 'geometry.py',
     'advanced_geometry.py', 'physical_model.py', 'contact_geometry.py',
     'engineering_source.py', 'linkages.py', 'planar_linkage.py',
-    'fit_construction.py', 'rack_travel.py',
+    'fit_construction.py', 'rack_travel.py', 'spring_anchor.py', 'actuation.py',
     'native_replay.py',
 )
 

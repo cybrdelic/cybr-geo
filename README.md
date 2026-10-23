@@ -181,10 +181,11 @@ also map each named solver connector to a planned interface; release compares
 its complete modeled reaction history with that interface's declared demand.
 
 [Shared ARX, IRIS and four-bar films](docs/pr-assets/shared-engineering/README.md)
-show the same construction, simulation and replay services at the pinned
-engineering source revision. They demonstrate recorded motion and native CAD;
-the release gate above still blocks hardware qualification without physical
-evidence.
+show the same construction, simulation and replay services at pinned commit
+`451e86f`. They demonstrate recorded motion and native CAD at that revision;
+subsequent source changes require new captures before the films can evidence
+the current geometry. The release gate above still blocks hardware
+qualification without physical evidence.
 
 `lab replay` renders accepted engineering traces at 1920x1080, 24 fps and 2x
 supersampling. It records actual shared-code execution, input and output hashes,

@@ -126,6 +126,8 @@ jobs:
                          'tests/test_engineering_distribution.py',
                          'tests/test_engineering_media.py',
                          'tests/test_engineering_native_source_binding.py',
+                         'tests/test_engineering_source_snapshot.py',
+                         'tests/test_spring_anchor_contract.py',
                          'tests/test_qualification.py',
                          'tests/test_preview.py']
               command += sorted(str(path) for path in pathlib.Path('tests').glob('test_fourbar*.py'))
