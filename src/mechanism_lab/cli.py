@@ -67,6 +67,8 @@ def parser():
     q.add_argument('--size',type=resolution,default=(960,720))
     q.add_argument('--seconds',type=positive_float,help='Simulation duration; defaults to the authored project cycle (legacy mechanisms: 10 seconds)')
     q.add_argument('--fps',type=positive_int,default=12)
+    from .engineering_media import add_arguments as replay_arguments
+    replay_arguments(sub.add_parser('replay',help='Render accepted native CAD and saved integrated motion with source-bound media receipts'))
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
     q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=positive_int,default=V9.still_spp);q.add_argument('--depth',type=positive_int,default=V9.still_depth);q.add_argument('--threads',type=positive_int,default=4)
@@ -116,6 +118,10 @@ def doctor():
 
 def run(args):
     if args.root:os.environ['MECHANISM_LAB_ROOT']=str(args.root.expanduser().resolve())
+    if args.command=='replay':
+        from .engineering_media import run_arguments
+        run_arguments(args)
+        return 0
     from .core import project_root,validate
     from .registry import load,BUILTINS,is_mechanism_source
     if args.command=='list':print('\n'.join(BUILTINS));return 0

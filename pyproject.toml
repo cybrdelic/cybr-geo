@@ -39,6 +39,8 @@ mechanism_lab = ["native/*.cpp", "native/*.h", "mechanisms/*.json"]
 "share/cybr-geo/examples/engineering/iris09" = ["examples/engineering/iris09/*.py", "examples/engineering/iris09/*.json", "examples/engineering/iris09/*.md", "examples/engineering/iris09/*.glsl"]
 "share/cybr-geo/examples/engineering/iris09/data" = ["examples/engineering/iris09/data/*.json", "examples/engineering/iris09/data/*.json.gz", "examples/engineering/iris09/data/*.xml"]
 "share/cybr-geo/examples/engineering/iris09/evidence" = ["examples/engineering/iris09/evidence/*.json", "examples/engineering/iris09/evidence/*.png"]
+"share/cybr-geo/examples/engineering/fourbar_lift" = ["examples/engineering/fourbar_lift/*.py", "examples/engineering/fourbar_lift/*.json", "examples/engineering/fourbar_lift/*.md"]
+"share/cybr-geo/examples/engineering/fourbar_lift/data" = ["examples/engineering/fourbar_lift/data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "tests_legacy"]

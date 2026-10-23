@@ -14,6 +14,8 @@ The dynamic ARX client targets the pinned P5 belt source. The latest inspected
 Refined/P6B source also feeds shared native-part, joint and gear construction;
 its static geometry and print prototypes retain separate evidence from the
 belt dynamics.
+The new [four-bar lift](examples/engineering/fourbar_lift/README.md) uses the same
+services to lift a CAD-derived load through passive links driven by one motor.
 [Architecture and evidence](docs/CONSTRUCTIVE_MECHANISMS.md) ·
 [Author a mechanism](docs/CONSTRUCTIVE_MECHANISMS.md#author-another-project).
 
@@ -83,6 +85,10 @@ Use `lab preview example_flange` for the previous quick static example.
 ```bash
 lab mechanism arx_belt --step --media
 lab mechanism iris09 --step --media
+lab mechanism fourbar_lift --step --out outputs/fourbar_lift
+lab replay arx_belt --run outputs/arx_belt --out outputs/arx-film
+lab replay iris09 --run outputs/iris09 --out outputs/iris-film --elevation 67 --no-floor
+lab replay fourbar_lift --run outputs/fourbar_lift --out outputs/fourbar-film
 lab animate arx_belt --seconds 17.4
 lab mechanism examples/constructed/compact_arm.json --step --media
 lab preview nitinol_fiber_actuator --spp 64
@@ -91,6 +97,11 @@ lab build nitinol_fiber_actuator --step --stl
 lab animate nitinol_fiber_actuator --seconds 6
 lab blueprint nitinol_fiber_actuator
 ```
+
+`lab replay` renders accepted engineering traces at 1920x1080, 24 fps and 2x
+supersampling. It records actual shared-code execution, input and output hashes,
+graphics backend and frame sampling in `media.json`. It uses saved integrated
+states; it does not synthesize motion between samples.
 
 For the full photographic workflow, `lab render`, `lab video` and `lab film` use V9 by default. That backend uses Mitsuba, OIDN and downloaded CC0 studio assets; see [rendering setup](docs/SHARED_PHOTOGRAPHY.md). Select `--renderer photoreal` for the in-house native tracer or `--renderer pbr` for the raster preview. [More commands and reference preparation](docs/GETTING_STARTED.md).
 

@@ -90,6 +90,7 @@ The user explicitly authorized adapting this reviewed source on 2026-10-22.
 | Original source | Reuse |
 | --- | --- |
 | `revisions/p5-refined/source/cad_core.py`, `refine_cad.py` | Inspected CSG/body-local replacement semantics, explicit material densities, native property reconciliation |
+| `revisions/p5-refined/source/verify_geometry.py` | Shared named-component spatial inertia replacement and reconciliation with the actual corrected Refined body-property records; source fixture SHA256 `f0dbdd6cbb2d69b5a114f65e88ecd65a89d207ac46a6532c4c0e294f7f253ae1` |
 | Refined design, selected BREP files, tessellation/refinement and capture records | Hash-bound data consumed by the shared `PartGeometryResolver`; the static client applies each complete local replacement exactly once |
 | `revisions/p6b-print-first/source/build_structural_prototypes.py` | Shared rounded box-tube and lap-splice construction; actual Refined joint-end inputs retained by the client |
 | `revisions/p6b-print-first/source/build_printed_gear_trials.py` | Shared sampled involute pinion/rack builder, preserved source dimensions and declared root limitations |
@@ -97,8 +98,9 @@ The user explicitly authorized adapting this reviewed source on 2026-10-22.
 
 Original builder fixtures and their hashes accompany parity tests. Packaged
 source manifests retain upstream file identities. Physical materials remain
-separate from render finishes, and inherited assembly masses and captured
-motion are not relabeled as validation of changed geometry.
+separate from render finishes. Current selected native properties and the
+source-derived corrected body records are computed and compared explicitly;
+the inherited captured motion is not relabeled as a dynamics rerun for them.
 
 The six print-first articles are structural and coarse gear/rack prototypes,
 not a completed printed arm. Reducer envelopes do not supply printed internals.

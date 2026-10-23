@@ -48,7 +48,7 @@ repository-specific absolute path is required.
 
 On every matrix platform, the full default has an 1800-second total budget for
 construction, simulation, aggregate STEP export and separate-process readback.
-CI requires the passing engineering report, all 118 native parts and 375
+CI requires the passing engineering report, all 118 native parts and 380
 placements, current project/shared-source and runtime binding, matching native
 artifact hashes, and valid positive-volume solids reopened from aggregate STEP.
 It also reopens the GLB and matches its 385 scene components against the STEP

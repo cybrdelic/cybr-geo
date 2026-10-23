@@ -7,6 +7,7 @@ mass accounting, contacts, motors, faults, simulation and replay live in
 ```bash
 lab mechanism arx_belt --step --media
 lab preview arx_belt --step
+lab replay arx_belt --run outputs/arx_belt --out outputs/arx-film
 python tools/run_arx_causal.py --native outputs/arx_belt/native --case friction_loss --output outputs/arx-friction-loss
 python -m examples.engineering.arx_belt.verify_geometry --trace outputs/arx_belt/simulation/trace.json.gz --native outputs/arx_belt/native --out outputs/arx-replay --render
 python tools/check_arx_faults.py --native outputs/arx_belt/native --output outputs/arx-faults --workers 3
@@ -19,7 +20,12 @@ drive configuration. `task.py` retains a source-default motion oracle; `project.
 applies the authored orientation and timing policy in `data/default-task.json`,
 binds it through GEO's shared phase clock and
 registers the project and its contact-placement outcome. `geometry.py` binds
-actual native parts to recorded physical bodies for existing exports/renderers.
+the project to shared `native_replay` for existing exports/renderers. Both handed
+jaws are native placements: `place_assembly` integrates and exports the same
+located component solids, with no separate replay reconstruction or mirrored
+mass fallback. Only the free puck and four model-bound nest solids are scene
+additions. `lab replay` saves full-resolution PNG/MP4 with consumer/source and
+actual frame-selection receipts.
 
 Every default generation rebuilds geometry and its mass properties. Explicit
 `--reuse-native` requires the source binding issued by a successful fresh

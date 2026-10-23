@@ -123,6 +123,36 @@ silent material fallback. The inherited assembly mass records remain separate
 and unchanged; the reported geometric mass delta does not update their mass
 overrides, inertias or dynamics.
 
+`current-native-body-properties.json` additionally evaluates every selected
+part and aggregates current body-local CoM and full inertia through GEO's
+shared native mass integrator. It reports both homogeneous source-density
+properties and an explicit source-mass-override view. In the latter, purchased
+component masses scale the current envelope's uniform-density tensor; this
+does not recover supplier internals or measured inertia. Captured world poses
+and display finishes do not affect either property calculation.
+
+The source provides no physical density or mass override for its six encoder
+PCBs. Those records remain unresolved, and their affected body aggregates are
+marked as partial subtotals that cannot supply complete solver bodies. The
+client does not fill missing mass from the archived aggregate or silently use
+aluminum density. Current selected native properties, explicit incomplete
+material inputs, and unchanged archived dynamics are separate facts. The
+report preserves disconnected source solids and records numerical comparisons
+only where a complete current mass inventory is available. It does not run a
+new compact dynamics model or establish structural/load capacity.
+
+The actual Refined `verify_geometry.py` also supplies a useful correction path:
+subtract each changed original component's spatial inertia from its archived
+body and add the selected refined component. GEO now executes that operation
+through shared `replace_mass_components` and publishes
+`native-corrected-archival-body-properties.json`. All nine source body records
+are compared with the separately hash-pinned upstream
+`refined-mass-properties.json`; all 123 changed parts must map to exactly one
+body and must retain their original explicit mass policy. These body properties
+are corrected to current native geometry. Unchanged component assumptions,
+including inputs unavailable for the all-part reintegration, remain inherited.
+Neither property path is presented as a rerun of the archived dynamics.
+
 The original comparison follows the source's single-solid `.clean()` step
 before integration; the imported replacements are not modified. Native
 property bounds use analytic BREP surfaces, independent of cached display
@@ -208,5 +238,5 @@ and these limits remain with the example; GEO's existing license is preserved.
 Focused checks:
 
 ```powershell
-python -m pytest tests/test_arx_compact_geometry.py tests/test_arx_refined_geometry.py tests/test_part_geometry.py tests/test_shape_dag.py tests/test_manufacturing_joints.py tests/test_manufacturing_gears.py
+python -m pytest tests/test_arx_compact_geometry.py tests/test_arx_refined_geometry.py tests/test_arx_refined_body_properties.py tests/test_part_geometry.py tests/test_shape_dag.py tests/test_manufacturing_joints.py tests/test_manufacturing_gears.py
 ```

@@ -106,18 +106,22 @@ jobs:
                          '--junitxml', str(output / 'tests.xml'),
                          'tests/test_actuation.py', 'tests/test_contact_geometry.py',
                          'tests/test_native_construction.py', 'tests/test_shape_dag.py',
+                         'tests/test_native_assembly_placement.py', 'tests/test_native_clearance.py',
                          'tests/test_causal_runtime.py', 'tests/test_causal_counterfactual.py',
                          'tests/test_reference_clock.py',
                          'tests/test_arx_project.py', 'tests/test_arx_reference.py', 'tests/test_arx_faults.py',
                          'tests/test_arx_compact_geometry.py',
                          'tests/test_part_geometry.py', 'tests/test_arx_refined_geometry.py',
+                         'tests/test_arx_refined_body_properties.py',
                          'tests/test_manufacturing_gears.py', 'tests/test_manufacturing_joints.py',
                          'tests/test_physical_model.py', 'tests/test_linkages.py',
                          'tests/test_physical_replay.py', 'tests/test_native_replay.py',
                          'tests/test_iris09_leaf_mechanism.py', 'tests/test_iris09_mechanism.py',
                          'tests/test_engineering_distribution.py',
+                         'tests/test_engineering_media.py',
                          'tests/test_engineering_native_source_binding.py',
                          'tests/test_preview.py']
+              command += sorted(str(path) for path in pathlib.Path('tests').glob('test_fourbar*.py'))
               command += sorted(str(path) for path in pathlib.Path('studio/tests').glob('test_*.py'))
               try:
                   with (output / 'tests.log').open('w', encoding='utf-8') as log:

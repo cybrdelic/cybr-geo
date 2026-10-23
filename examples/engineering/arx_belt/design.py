@@ -797,13 +797,16 @@ def build(spec, output):
     leftjaw.add(PARTS['gripper_rack_m0p3'].mirror('YZ').translate((50*math.pi*.3/2-2,198.5,-3)),name='lower_rack')
     for z in [-10,10]:leftjaw.add(trans_shape(PARTS['jaw_guide_bushing'],(-5.8,193,z),(1,0,0)),name='guide_bushing_'+str(z))
     construction.save_auxiliary_assembly('left_jaw', leftjaw)
-    construction.add_assembly_mass('jaw_opposed', leftjaw, {
+    construction.place_assembly('jaw_opposed', leftjaw, {
         'left_jaw/carriage': META['left_jaw_carriage']['material'],
         'left_jaw/pad': META['finger_pad']['material'],
         'left_jaw/lower_rack': META['gripper_rack_m0p3']['material'],
         **{'left_jaw/guide_bushing_'+str(z): META['jaw_guide_bushing']['material'] for z in [-10,10]},
-    }, offset_mm=(0,-219.2,0),
-        provenance='Actual authored opposed jaw component CAD density; source Y-219.2 mm joint-local frame. Additional record; original eight body records preserved')
+    }, offset_mm=(0,-219.2,0), component_names={
+        'left_jaw/carriage': 'left_jaw_carriage', 'left_jaw/pad': 'finger_pad',
+        'left_jaw/lower_rack': 'lower_rack',
+        **{'left_jaw/guide_bushing_'+str(z): 'guide_bushing_'+str(z) for z in [-10,10]},
+    }, provenance='Actual authored opposed jaw component CAD density; source Y-219.2 mm joint-local frame. CAD placements and inertia share the same located solids')
 
 
     ppart('tool','gripper_cable_clamp_mount')

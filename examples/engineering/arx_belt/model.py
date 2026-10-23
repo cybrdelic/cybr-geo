@@ -3,7 +3,8 @@
 Direct adaptation of build_p5_model.py and controller.mjs configuration at
 aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2. Geometry is authored in design.py;
 generic mass, contact, rigid-body and motor machinery lives in mechanism_lab.
-The original three failed ordinary scenarios remain qualification limits.
+The original three ordinary failures remain preserved historical diagnostics;
+the maintained task policy has separate source-bound fault evidence.
 """
 from copy import deepcopy
 import json

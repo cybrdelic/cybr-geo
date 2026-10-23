@@ -46,7 +46,7 @@ def verify(output):
     assert report["source_files"] == identity
     assert report["native_build_sha256"] == digest(receipt)
     assert report["native_source_binding_sha256"] == digest(binding)
-    assert (receipt["parts"], receipt["placements"]) == (118, 375), "Incomplete native default"
+    assert (receipt["parts"], receipt["placements"]) == (118, 380), "Incomplete native default"
     for key in ("parts", "placements"):
         assert report["native"][key] == receipt[key]
     assert report["native"]["verified_artifacts"] == len(receipt["files_sha256"])
@@ -70,13 +70,31 @@ def verify(output):
     step = output / "arx_belt.step"
     coverage = json.loads(step.with_suffix(".coverage.json").read_text())
     names = coverage["analytic_components"]
-    # 375 native placements plus the opposed jaw, puck and four nest components.
+    # 380 native placements include both actual handed jaws; only the free
+    # puck and four run-bound nest components are additional scene geometry.
     assert len(names) == len(set(names)) == 385, "Incomplete aggregate CAD coverage"
     assert not coverage["mesh_only_components_not_in_STEP"], "Default STEP omitted scene components"
     placements = json.loads((native / "placed-native-parts.json").read_text())["records"]
     native_names = {row["body"] + "__" + row["name"] for row in placements}
     assert len(placements) == len(native_names) == receipt["placements"]
     assert native_names <= set(names), "Aggregate coverage omitted native placements"
+    from mechanism_lab.native_construction import shape_mass_properties, aggregate_mass_properties
+    import numpy as np
+    handed = [row for row in placements if row['body'] == 'jaw_opposed']
+    assert {row['name'] for row in handed} == {'left_jaw_carriage', 'finger_pad', 'lower_rack',
+                                              'guide_bushing_-10', 'guide_bushing_10'}
+    masses = json.loads((native/'mass_properties.json').read_text())
+    assert physical_source['mass_records']['jaw_right'] == masses['jaw_opposed']
+    rebuilt = []
+    for row in handed:
+        solid = cq.importers.importStep(str(native/row['step_file'])).val()
+        mass, center, tensor = shape_mass_properties(solid, receipt['material_densities_kg_m3'][row['material']])
+        rebuilt.append(dict(name=row['name'], mass_kg=mass, com_m=center.tolist(),
+                            inertia_at_com_kg_m2=tensor.tolist()))
+    reconstructed = aggregate_mass_properties(rebuilt)
+    expected = masses['jaw_opposed']
+    for key in ('mass_kg', 'com_m', 'inertia_tensor_kg_m2'):
+        assert np.allclose(reconstructed[key], expected[key], rtol=2e-7, atol=1e-12), 'Handed jaw STEP/mass mismatch: '+key
     print("Reopening aggregate STEP with OpenCascade", flush=True)
     solids = cq.importers.importStep(str(step)).solids().vals()
     assert len(solids) >= len(names), "Aggregate STEP omitted analytic components"
@@ -90,6 +108,9 @@ def verify(output):
         passed=True, default_name=report["name"], native_parts=receipt["parts"],
         native_placements=receipt["placements"], verified_artifacts=len(receipt["files_sha256"]),
         nominal_interface_checks=len(interfaces["checks"]),
+        handed_jaw=dict(native_components=len(handed), physical_body='jaw_right',
+            native_mass_body='jaw_opposed', independently_reintegrated_from_placed_STEP=True,
+            physical_densities_kg_m3=receipt['material_densities_kg_m3']),
         aggregate_analytic_components=len(names),
         project_source_files=len(identity), construction_dependencies=binding["construction_dependencies"],
         native_source_binding_sha256=digest(binding), native_build_sha256=digest(receipt),

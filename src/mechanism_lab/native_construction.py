@@ -148,6 +148,73 @@ def aggregate_mass_properties(records, status='Explicit component mass records; 
                 components=records, status=status)
 
 
+def replace_mass_components(body, replacements, *, status='Native component replacements in a retained body mass model'):
+    """Replace named component spatial inertias while retaining other inputs.
+
+    Adapted from ARX compact Refined ``source/verify_geometry.py`` at
+    85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf (SHA256
+    f0dbdd6cbb2d69b5a114f65e88ecd65a89d207ac46a6532c4c0e294f7f253ae1).
+    Components use the aggregate_mass_properties convention. Each replacement
+    has ``before`` and ``after`` records with the same unique inventory name.
+    An archival string inventory cannot verify its component-level physics;
+    callers must retain that source assumption, not claim a full fresh build.
+    """
+    from .physical_model import digest
+    result = deepcopy(body)
+    inventory = result.get('components')
+    if not isinstance(inventory, list) or not inventory:
+        raise ValueError('Body replacement requires an explicit component inventory')
+    names = [row.get('name') if isinstance(row, dict) else row for row in inventory]
+    if any(not isinstance(name, str) or not name for name in names) or len(set(names)) != len(names):
+        raise ValueError('Body component inventory must contain unique names')
+    if not isinstance(replacements, (list, tuple)):
+        raise ValueError('Component replacements must be an explicit sequence')
+    mass = _positive(result['mass_kg'], 'Body mass')
+    center = np.asarray(result['com_m'], float)
+    if center.shape != (3,) or not np.isfinite(center).all():
+        raise ValueError('Body mass requires a finite center')
+    tensor = validate_inertia(result['inertia_tensor_kg_m2'])
+
+    def shift(value):
+        return float(value @ value)*np.eye(3) - np.outer(value, value)
+
+    first_moment = mass*center
+    origin_tensor = tensor + mass*shift(center)
+    seen = set()
+    for replacement in replacements:
+        if not isinstance(replacement, dict) or set(replacement) != {'before', 'after'}:
+            raise ValueError('Replacement requires exactly before and after component records')
+        before, after = replacement['before'], replacement['after']
+        if not isinstance(before, dict) or not isinstance(after, dict):
+            raise ValueError('Replacement requires component objects')
+        name = before.get('name')
+        if name != after.get('name') or name not in names or name in seen:
+            raise ValueError('Replacement names must match one unique existing component')
+        seen.add(name)
+        original = inventory[names.index(name)]
+        if isinstance(original, dict):
+            for field in ('mass_kg', 'com_m', 'inertia_at_com_kg_m2'):
+                if digest(original.get(field)) != digest(before.get(field)):
+                    raise ValueError('Replacement before properties differ from the component inventory')
+            inventory[names.index(name)] = deepcopy(after)
+        for component, sign in ((before, -1), (after, 1)):
+            aggregate_mass_properties([component])
+            weight = component['mass_kg']
+            com = np.asarray(component['com_m'], float)
+            mass += sign*weight
+            first_moment += sign*weight*com
+            origin_tensor += sign*(np.asarray(component['inertia_at_com_kg_m2']) + weight*shift(com))
+    mass = _positive(mass, 'Replaced body mass')
+    center = first_moment/mass
+    tensor = validate_inertia(origin_tensor - mass*shift(center))
+    result.update(mass_kg=mass, com_m=center.tolist(), inertia_tensor_kg_m2=tensor.tolist(),
+        fullinertia_mujoco_kg_m2=[tensor[0, 0], tensor[1, 1], tensor[2, 2], tensor[0, 1], tensor[0, 2], tensor[1, 2]],
+        status=status, replacement_source_body_sha256=digest(body),
+        component_replacements=deepcopy(list(replacements)),
+        component_replacement_scope='Only declared native replacements are recomputed; unreplaced body assumptions are retained')
+    return result
+
+
 class NativeInterfaceRequirements:
     """Measured nominal native-solid fit requirements for a construction.
 
@@ -176,6 +243,32 @@ class NativeInterfaceRequirements:
         row = dict(name=name, intersection_volume_mm3=volume, minimum_distance_mm=distance,
                    volume_tolerance_mm3=tolerance, **{'pass':volume <= tolerance})
         self.checks.append(row)
+        return row
+
+    def clearance(self, name, first, second, *, minimum_distance_mm,
+                  kernel_allowance_mm=0., allowed_volume_mm3=1e-5):
+        """Require a nominal gap as well as the declared volume allowance.
+
+        Both distances use millimetres. ``kernel_allowance_mm`` is an explicit
+        allowance for numerical CAD distance evaluation, not manufacturing
+        variation or permission to omit a dimensional tolerance stack. The
+        same two supplied shapes are used for intersection and gap evaluation;
+        any enclosing motion envelope remains the caller's declared scope.
+        """
+        for value, label in ((minimum_distance_mm, 'Required native clearance'),
+                             (kernel_allowance_mm, 'CAD distance allowance')):
+            if (isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(value) or value < 0):
+                raise ValueError(f'{label} must be finite and nonnegative')
+        row = self.noninterference(name, first, second,
+                                   allowed_volume_mm3=allowed_volume_mm3)
+        gap_passed = row['minimum_distance_mm'] + kernel_allowance_mm >= minimum_distance_mm
+        row.update(required_minimum_distance_mm=minimum_distance_mm,
+                   # Preserve the existing manufacturing-client receipt key.
+                   required_minimum_clearance_mm=minimum_distance_mm,
+                   distance_kernel_allowance_mm=kernel_allowance_mm,
+                   clearance_passed=gap_passed)
+        row['pass'] = row['pass'] and gap_passed
         return row
 
     def report(self):
@@ -236,9 +329,12 @@ class NativeConstruction:
         self._export(shape, self.cad_directory / (name+'.stl'), tolerance=.1, angularTolerance=.15)
         return shape
 
-    def place(self, body, label, shape, material='aluminum', mass=None, note='CAD density'):
+    def place(self, body, label, shape, material='aluminum', mass=None, note='CAD density', *,
+              linear_tolerance_mm=.18, angular_tolerance_rad=.22):
         import cadquery as cq
         body, label = _name(body), _name(label)
+        linear_tolerance_mm = _positive(linear_tolerance_mm, 'Linear tessellation tolerance')
+        angular_tolerance_rad = _positive(angular_tolerance_rad, 'Angular tessellation tolerance')
         if (body, label) in self.placed_shapes:
             raise ValueError(f'Duplicate native placement: {body}/{label}')
         self.body_records.setdefault(body, [])
@@ -249,7 +345,7 @@ class NativeConstruction:
         self._export(shape, self.placed_directory / filename)
         self.placed_shapes[(body, label)] = shape
         self.placed_records.append(dict(body=body, name=label, material=material, step_file='cad/placed/'+filename))
-        vertices, triangles = _shape(shape).tessellate(.18, .22)
+        vertices, triangles = _shape(shape).tessellate(linear_tolerance_mm, angular_tolerance_rad)
         self.meshes.append(dict(body=body, name=label, material=material,
                                 vertices_mm=[[round(c, 5) for c in vertex.toTuple()] for vertex in vertices],
                                 triangles=[list(triangle) for triangle in triangles]))
@@ -265,6 +361,54 @@ class NativeConstruction:
         aggregate_mass_properties([record])
         self.body_records.setdefault(_name(body), []).append(deepcopy(record))
 
+    def _assembly_components(self, assembly, materials, offset_mm):
+        offset = np.asarray(offset_mm, float)
+        if offset.shape != (3,) or not np.isfinite(offset).all():
+            raise ValueError('Assembly placement needs a finite body-frame offset')
+        components = list(assembly)
+        if not components or set(materials) != {name for _, name, _, _ in components}:
+            raise ValueError('Assembly requires one explicit material for every component path')
+        result = []
+        for shape, name, location, _ in components:
+            material = materials[name]
+            if material not in self.densities:
+                raise ValueError('Assembly component has no declared physical density: ' + name)
+            placed = shape.moved(location).translate(tuple(offset))
+            if not placed.isValid() or not placed.Solids() or placed.Volume() <= 0:
+                raise ValueError('Assembly component requires valid positive-volume CAD: ' + name)
+            result.append((placed, name, material))
+        return result
+
+    def place_assembly(self, body, assembly, materials, *, offset_mm=(0, 0, 0),
+                       component_names=None, provenance='Native assembly component CAD density',
+                       linear_tolerance_mm=.15, angular_tolerance_rad=.20):
+        """Register located components once for CAD, meshes and physical mass.
+
+        Recursive CadQuery locations and the explicit body-frame offset are
+        applied to each actual component before both integration and export.
+        ``component_names`` optionally maps every exact assembly path to a
+        portable placement name. This never substitutes a mirrored display or
+        a separate approximate inertia for the authored handed geometry.
+        """
+        body = _name(body)
+        if not isinstance(provenance, str) or not provenance:
+            raise ValueError('Assembly placement requires physical provenance')
+        linear_tolerance_mm = _positive(linear_tolerance_mm, 'Linear tessellation tolerance')
+        angular_tolerance_rad = _positive(angular_tolerance_rad, 'Angular tessellation tolerance')
+        components = self._assembly_components(assembly, materials, offset_mm)
+        paths = {name for _, name, _ in components}
+        labels = ({name: name.replace('/', '__') for name in paths}
+                  if component_names is None else dict(component_names))
+        if set(labels) != paths:
+            raise ValueError('Assembly placement names must cover every component path exactly')
+        labels = {name: _name(label) for name, label in labels.items()}
+        if len(set(labels.values())) != len(labels) or any((body, label) in self.placed_shapes for label in labels.values()):
+            raise ValueError('Duplicate native assembly placement identity')
+        for shape, name, material in components:
+            self.place(body, labels[name], shape, material, note=provenance,
+                       linear_tolerance_mm=linear_tolerance_mm, angular_tolerance_rad=angular_tolerance_rad)
+        return {name: labels[name] for _, name, _ in components}
+
     def add_assembly_mass(self, body, assembly, materials, *, offset_mm=(0, 0, 0), provenance='Native assembly component CAD density'):
         """Integrate the actual located components of a separately authored body.
 
@@ -274,16 +418,11 @@ class NativeConstruction:
         records only and does not duplicate display placements or CAD exports.
         """
         body = _name(body)
-        offset = np.asarray(offset_mm, float)
-        if offset.shape != (3,) or not np.isfinite(offset).all() or not provenance:
+        if not provenance:
             raise ValueError('Assembly mass needs a finite body-frame offset and provenance')
-        components = list(assembly)
-        if not components or set(materials) != {name for _, name, _, _ in components}:
-            raise ValueError('Assembly mass requires one explicit material for every component path')
+        components = self._assembly_components(assembly, materials, offset_mm)
         records = []
-        for shape, name, location, _ in components:
-            material = materials[name]
-            placed = shape.moved(location).translate(tuple(offset))
+        for placed, name, material in components:
             mass, center, tensor = shape_mass_properties(placed, self.densities[material])
             records.append(dict(name=name, material=material, mass_kg=mass, com_m=center.tolist(),
                 inertia_at_com_kg_m2=tensor.tolist(), provenance=provenance))
@@ -327,6 +466,7 @@ class NativeConstruction:
         hashes = {str(path.relative_to(self.output)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in self._files}
         self.write_json('native-build.json', dict(schema='cybrgeo-native-build/1', provenance=self.provenance,
                         units='CAD mm; mass kg; body-local CoM m; inertia kg m2',
+                        material_densities_kg_m3=dict(self.densities),
                         parts=len(self.parts), placements=len(self.placed_records), body_ids=list(properties),
                         files_sha256=hashes, scope='Native geometry and explicit mass accounting; no dynamics or hardware qualification'))
         return NativeBuild(self.output, self.parts, self.placed_shapes, self.assemblies, properties,

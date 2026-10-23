@@ -304,17 +304,14 @@ class SplitLapSplice:
         return parts
 
     def interface_requirements(self, parts, *, allowed_volume_mm3=.01, kernel_allowance_mm=1e-6):
-        _number(kernel_allowance_mm, 'CAD distance allowance', nonnegative=True)
         requirements = NativeInterfaceRequirements(dict(source=SOURCE, specification=self.to_source()))
         for a, b, distance in (('proximal', 'distal', self.gap_mm),
                                 ('proximal', 'coupler', self.radial_clearance_mm),
                                 ('distal', 'coupler', self.radial_clearance_mm)):
-            row = requirements.noninterference(a+'_vs_'+b, parts[a], parts[b],
-                                              allowed_volume_mm3=allowed_volume_mm3)
-            row.update(required_minimum_clearance_mm=distance,
-                       distance_kernel_allowance_mm=kernel_allowance_mm,
-                       clearance_passed=row['minimum_distance_mm']+kernel_allowance_mm >= distance)
-            row['pass'] = row['pass'] and row['clearance_passed']
+            requirements.clearance(a+'_vs_'+b, parts[a], parts[b],
+                                   minimum_distance_mm=distance,
+                                   kernel_allowance_mm=kernel_allowance_mm,
+                                   allowed_volume_mm3=allowed_volume_mm3)
         return requirements
 
     def to_source(self):

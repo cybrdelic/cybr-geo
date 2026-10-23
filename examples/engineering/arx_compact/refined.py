@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path, PurePosixPath
 import time
 
@@ -160,6 +161,109 @@ def original_properties(resolver, key, *, density_kg_m3):
     return native_properties(solids[0].clean(), density_kg_m3=density_kg_m3)
 
 
+def current_body_properties(design, source, overrides, directory, inherited_masses):
+    """Aggregate the selected native solids in their actual body-local frames.
+
+    Two views retain the distinction between geometry-density properties and
+    source-declared envelope masses. An override scales the native shape's
+    uniform-density tensor through the shared mass integrator; it is not a
+    recovered supplier tensor. Missing physical materials stay unresolved,
+    rather than inheriting a display finish or an archived body residual.
+    """
+    from mechanism_lab.native_construction import aggregate_mass_properties, shape_mass_properties
+
+    identity = require_current_construction()
+    parts = {str(row['id']): row for row in design['parts']}
+    resolver = PartGeometryResolver(geometry_dag(design, source=source), parts,
+        overrides=overrides, asset_root=directory, source=source)
+    groups = {}
+    rows = []
+    for key, record in parts.items():
+        body = record['body']
+        if not isinstance(body, str) or not body:
+            raise ValueError('Native properties require an explicit body identity')
+        group = groups.setdefault(body, dict(part_ids=[], missing_material_part_ids=[],
+            disconnected_part_ids=[], density=[], declared=[]))
+        group['part_ids'].append(record['id'])
+        shape = resolver.resolve(key)
+        solid_count = len(shape.Solids())
+        if not shape.isValid() or not solid_count or not math.isfinite(shape.Volume()) or shape.Volume() <= 0:
+            raise ValueError('Current body properties require valid positive-volume native parts: ' + key)
+        if solid_count != 1:
+            group['disconnected_part_ids'].append(record['id'])
+        override = record.get('mass_override_kg')
+        if override is not None and (isinstance(override, bool)
+                or not isinstance(override, (int, float))
+                or not math.isfinite(override) or override <= 0):
+            raise ValueError('Source mass override must be null or finite positive kilograms: ' + key)
+        row = dict(id=record['id'], name=record['name'], body=body,
+            material=record['material'], source_status=record.get('status'),
+            source_mass_override_kg=override, geometry_source=resolver.describe(key),
+            frame='source body-local', valid=True, solid_count=solid_count)
+        if record['material'] not in DENSITIES:
+            group['missing_material_part_ids'].append(record['id'])
+            row.update(resolved=False, reason='No explicit source physical density for material ' + record['material'],
+                       density_properties=None, declared_mass_properties=None)
+            rows.append(row)
+            continue
+        density = DENSITIES[record['material']]
+        density_properties = native_properties(shape, density_kg_m3=density)
+        mass = density_properties['mass_kg']
+        center = np.asarray(density_properties['com_mm']) * .001
+        tensor = np.asarray(density_properties['inertia_kg_m2'])
+        component = dict(name=record['name'], part_id=record['id'], material=record['material'],
+            mass_kg=mass, com_m=center.tolist(), inertia_at_com_kg_m2=tensor.tolist(),
+            provenance='Current selected native geometry at explicit source homogeneous density')
+        group['density'].append(component)
+        declared = dict(component)
+        if override is not None:
+            mass, center, tensor = shape_mass_properties(shape, density, override)
+            declared.update(mass_kg=mass, com_m=center.tolist(), inertia_at_com_kg_m2=tensor.tolist(),
+                provenance='Source-declared mass; uniform selected-native-envelope tensor scaling; not supplier inertia')
+        group['declared'].append(declared)
+        row.update(resolved=True, density_properties=density_properties,
+            declared_mass_properties=dict(mass_kg=mass, com_m=center.tolist(),
+                inertia_at_com_kg_m2=tensor.tolist(), override_applied=override is not None,
+                policy='explicit source mass with uniform-envelope inertia' if override is not None else 'source homogeneous density'))
+        rows.append(row)
+
+    bodies = {}
+    for body, group in groups.items():
+        complete = not group['missing_material_part_ids']
+        density = aggregate_mass_properties(group['density'], 'Current source-density native components') if group['density'] else None
+        declared = aggregate_mass_properties(group['declared'], 'Current native components with explicit source envelope-mass overrides') if group['declared'] else None
+        archive = inherited_masses.get(body)
+        comparison = dict(archive_present=archive is not None, complete_current_mass_inputs=complete,
+            comparable=bool(archive is not None and complete and declared is not None))
+        if comparison['comparable']:
+            comparison.update(mass_delta_kg=declared['mass_kg'] - archive['mass_kg'],
+                com_delta_m=(np.asarray(declared['com_m']) - np.asarray(archive['com_m'])).tolist(),
+                inertia_tensor_delta_kg_m2=(np.asarray(declared['inertia_tensor_kg_m2'])
+                    - np.asarray(archive['inertia_tensor_kg_m2'])).tolist(),
+                scope='Numerical difference only; archive inventory/model assumptions may differ')
+        bodies[body] = dict(part_ids=group['part_ids'], missing_material_part_ids=group['missing_material_part_ids'],
+            disconnected_part_ids=group['disconnected_part_ids'], mass_inputs_complete=complete,
+            records_are_partial_subtotals=not complete, source_density=density,
+            declared_envelope_masses=declared, archival_comparison=comparison)
+    require_current_construction(identity)
+    return dict(schema='cybrgeo-current-native-body-properties/1', source=source,
+        construction_code_sha256=identity, geometry_resolution=resolver.report(),
+        frame='Original source body-local millimetres integrated to kg, m and kg m2; no capture/world transform applied',
+        aggregation='Shared native_construction.shape_mass_properties and aggregate_mass_properties; parallel-axis sum about body CoM',
+        physical_density_kg_m3=dict(DENSITIES),
+        mass_override_policy='Retain declared source mass; scale current native uniform-envelope inertia. No inferred supplier internals.',
+        part_count=len(rows), resolved_parts=sum(row['resolved'] for row in rows),
+        unresolved_part_ids=[row['id'] for row in rows if not row['resolved']],
+        mass_inputs_complete=all(row['resolved'] for row in rows),
+        source_mass_override_count=sum(row['source_mass_override_kg'] is not None for row in rows),
+        parts=rows, bodies=bodies, inherited_mass_properties_sha256=digest(inherited_masses),
+        inherited_mass_properties_modified=False, dynamics_rerun=False,
+        limitations=['Missing material inputs make affected body records partial subtotals, unusable as complete solver bodies.',
+            'Native properties are current computed values; archived body records and captured dynamics remain separate and unchanged.',
+            'Declared rigid-body allocation and purchased-envelope mass distributions have not been independently qualified.',
+            'Disconnected source solids remain explicit; no fit, continuous clearance, strength, thermal or hardware qualification follows.'])
+
+
 def reconcile(design, source, overrides, changes, inherited_masses, directory):
     identity = require_current_construction()
     """Recompute changed geometry; never overwrite inherited assembly masses."""
@@ -207,6 +311,78 @@ def reconcile(design, source, overrides, changes, inherited_masses, directory):
             'No new fit, clearance, load, thermal, fatigue, manufacturing or hardware qualification.'])
 
 
+def corrected_archival_bodies(design, reconciliation, source_corrected):
+    """Apply actual Refined native deltas without discarding archive assumptions.
+
+    This is the source verify_geometry.py correction through GEO's shared
+    component replacement service, using freshly measured native part values.
+    The separate all-part inventory reports missing inputs for a full rebuild.
+    """
+    from mechanism_lab.native_construction import replace_mass_components
+    identity = require_current_construction()
+    if not reconciliation['passed']:
+        raise ValueError('Body correction requires passing measured native part reconciliation')
+    old = reconciliation['inherited_mass_properties']
+    if set(source_corrected) != set(old):
+        raise ValueError('Corrected source body inventory differs from the original archive')
+    parts = {row['name']: row for row in design['parts']}
+    if len(parts) != len(design['parts']):
+        raise ValueError('Source body correction requires unique part names')
+    consumed = set()
+    bodies, comparisons = {}, {}
+    for body, base in old.items():
+        replacements = []
+        for row in reconciliation['parts']:
+            name = row['name']
+            if name not in base['components']:
+                continue
+            if (name in consumed or parts[name]['body'] != body
+                    or parts[name].get('mass_override_kg') is not None):
+                raise ValueError('Corrected native part has ambiguous body or purchased-mass binding: ' + name)
+            consumed.add(name)
+            values = {}
+            for field, measured in (('before', 'original_measured'), ('after', 'refined_measured')):
+                value = row[measured]
+                values[field] = dict(name=name, mass_kg=value['mass_kg'],
+                    com_m=(np.asarray(value['com_mm'])*.001).tolist(),
+                    inertia_at_com_kg_m2=value['inertia_kg_m2'],
+                    provenance='Measured source-native ' + measured + '; part record ' + str(row['id']))
+            replacements.append(values)
+        actual = replace_mass_components(base, replacements,
+            status='Actual Refined native component deltas applied to retained archived body assumptions')
+        expected = source_corrected[body]
+        if actual['components'] != expected['components']:
+            raise ValueError('Corrected source component inventory differs for body ' + body)
+        residuals = {}
+        for field, atol in (('mass_kg', TOLERANCES['mass_kg']), ('com_m', TOLERANCES['com_mm']*.001),
+                            ('inertia_tensor_kg_m2', TOLERANCES['inertia_kg_m2'])):
+            a, b = np.asarray(actual[field], float), np.asarray(expected[field], float)
+            if a.shape != b.shape or not np.isfinite(b).all():
+                raise ValueError('Invalid corrected source property: ' + field)
+            residuals[field] = dict(maximum_absolute_error=float(np.max(np.abs(a-b))),
+                absolute_tolerance=atol, relative_tolerance=TOLERANCES['relative'],
+                passed=bool(np.allclose(a, b, atol=atol, rtol=TOLERANCES['relative'])))
+        bodies[body] = actual
+        comparisons[body] = dict(replaced_components=[row['before']['name'] for row in replacements],
+            residuals=residuals, passed=all(row['passed'] for row in residuals.values()))
+    if consumed != {row['name'] for row in reconciliation['parts']}:
+        raise ValueError('Every changed native part must occur in exactly one archived body')
+    require_current_construction(identity)
+    source = reconciliation['source']
+    return dict(schema='cybrgeo-native-corrected-archival-body-properties/1',
+        source=source, construction_code_sha256=identity,
+        algorithm_source=source['operation_sources']['revisions/p5-refined/source/verify_geometry.py'],
+        original_mass_properties_sha256=digest(old), source_corrected_properties_sha256=digest(source_corrected),
+        native_reconciliation_sha256=digest(reconciliation),
+        passed=all(row['passed'] for row in comparisons.values()),
+        replaced_parts=len(consumed), bodies=bodies, source_comparisons=comparisons,
+        original_archived_properties_modified=False, retained_unmodified_component_assumptions=True,
+        all_parts_reintegrated=False, dynamics_rerun=False,
+        scope='Current native part spatial-inertia corrections to the actual source body model, verified against published corrected records',
+        limitations=['Unreplaced component mass/distribution assumptions remain inherited; this is not the all-part native-density rebuild.',
+            'Corrected body properties do not revalidate archived capture dynamics, control loads, contacts or hardware.'])
+
+
 def build(output, *, source_directory=DATA, frame_index=300):
     identity = require_current_construction()
     manifest, payloads = load_bundle(source_directory)
@@ -214,12 +390,27 @@ def build(output, *, source_directory=DATA, frame_index=300):
     assembly, report = build_records(output, design, pose, source=source,
         body_aliases=PINNED_BODY_ALIASES, brep_overrides=overrides, asset_root=source_directory)
     reconciliation = reconcile(design, source, overrides, changes, inherited, source_directory)
+    current_properties = current_body_properties(design, source, overrides, source_directory, inherited)
+    corrected = corrected_archival_bodies(design, reconciliation, json.loads(payloads['refined-mass-properties.json']))
     output = Path(output)
     reconciliation['geometry_artifacts'] = report['artifacts']
     reconciliation['geometry_study_sha256'] = hashlib.sha256((output / 'geometry-study.json').read_bytes()).hexdigest()
     require_current_construction(identity)
+    (output / 'current-native-body-properties.json').write_text(json.dumps(current_properties, indent=2) + '\n', encoding='utf-8')
+    reconciliation['current_native_body_properties'] = dict(
+        file='current-native-body-properties.json',
+        sha256=hashlib.sha256((output / 'current-native-body-properties.json').read_bytes()).hexdigest(),
+        resolved_parts=current_properties['resolved_parts'],
+        unresolved_part_ids=current_properties['unresolved_part_ids'],
+        mass_inputs_complete=current_properties['mass_inputs_complete'])
+    (output / 'native-corrected-archival-body-properties.json').write_text(json.dumps(corrected, indent=2) + '\n', encoding='utf-8')
+    reconciliation['native_corrected_archival_body_properties'] = dict(
+        file='native-corrected-archival-body-properties.json',
+        sha256=hashlib.sha256((output / 'native-corrected-archival-body-properties.json').read_bytes()).hexdigest(),
+        passed=corrected['passed'], replaced_parts=corrected['replaced_parts'],
+        source_corrected_file_sha256=manifest['files']['refined-mass-properties.json']['sha256'])
     (output / 'property-reconciliation.json').write_text(json.dumps(reconciliation, indent=2) + '\n', encoding='utf-8')
-    if not reconciliation['passed']:
+    if not reconciliation['passed'] or not corrected['passed']:
         raise ValueError('Refined native property reconciliation failed; inspect property-reconciliation.json')
     require_current_construction(identity)
     return assembly, report, reconciliation

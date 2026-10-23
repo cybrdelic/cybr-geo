@@ -102,7 +102,7 @@ def test_wheel_installs_exact_example_sources_and_loads_outside_checkout(tmp_pat
         if source.is_file() and source.suffix in ('.py', '.json', '.gz', '.xml', '.md', '.mjs', '.glsl', '.png', '.brep'):
             relative = SHARE / source.relative_to(staging / 'examples/engineering')
             assert relative.as_posix() in expected, f'Authored example file missing from wheel: {relative}'
-    for name in ('arx_belt', 'iris09'):
+    for name in ('arx_belt', 'iris09', 'fourbar_lift'):
         assert any(path.startswith(f'{SHARE.as_posix()}/{name}/') for path in expected)
     compact_data = f'{SHARE.as_posix()}/arx_compact/data/'
     for filename in ('print-first-spec.json', 'print-first-inputs.json',

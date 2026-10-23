@@ -40,6 +40,7 @@ flowchart LR
 | `reference_clock.py` | Source/physical phase mapping with mandatory boundary screening, derivative scaling and implementation identity |
 | `physical_replay.py` | Native local geometry transformed only by recorded body states; explicit units, identity and cache restoration |
 | `native_replay.py` | Reusable native STEP/mesh replay, with matching physical mass mappings and source/model/recorded-state identities |
+| `engineering_media.py` | Accepted-run PNG/MP4 consumer with source/native/runtime checks, exact recorded state selection, actual raster rendering and encoding receipts |
 | `engineering_source.py`, `engineering_pipeline.py` | One project protocol connecting these services and retaining source/native/model/control/reference identities |
 
 Examples supply geometry, topology, parameters and tasks. They do not own another
@@ -62,6 +63,10 @@ Install the environment in the main README, then:
 lab mechanism --step --media
 lab mechanism arx_belt --step --media
 lab mechanism iris09 --step --media
+lab mechanism fourbar_lift --step --out outputs/fourbar_lift
+lab replay arx_belt --run outputs/arx_belt --out outputs/arx-film
+lab replay iris09 --run outputs/iris09 --out outputs/iris-film
+lab replay fourbar_lift --run outputs/fourbar_lift --out outputs/fourbar-film
 lab preview --step
 lab build arx_belt --step
 lab animate arx_belt --seconds 17.4
@@ -71,6 +76,27 @@ The default builds native CAD, binds new mass/inertia and transmission records,
 runs a 17.4-second causal contact transfer, then exports recorded motion. It needs
 no benchmark checkout, archived film, network download or image generation.
 Allow several minutes for the initial CAD construction and simulation.
+
+The `fourbar_lift` client constructs a crank, passive coupler and loaded rocker
+with real bored pins, bushings and retaining geometry. One declared electrical
+drive lifts its CAD-derived steel mass against gravity through the shared
+`PinnedLink` constraint. Its ideal bearings and assumed motor are explicit;
+the example does not imply a supplier-selected or hardware-qualified machine.
+
+ARX's actual handed jaw now uses `NativeConstruction.place_assembly`: recursive
+component locations, physical materials, STEP, display mesh and full inertia
+come from the same located solids. ARX and IRIS both call `native_replay`.
+Scene-only puck and nest geometry is derived from the accepted ARX physical
+source. Shared `NativeInterfaceRequirements.clearance` checks declared minimum
+gaps before build acceptance, with separately reported kernel allowances; these
+allowances are numerical budgets, not manufacturing tolerances.
+
+`lab replay` consumes an accepted run without generating another trajectory.
+Defaults are 1920x1080, 24 fps and 2x raster supersampling. Every video tick holds
+the preceding actual recorded state and includes the final state. The receipt
+records this sampling and terminal hold, native/source/runtime identities,
+consumer path, actual graphics backend and encoded-file hashes. Rendering does
+not interpolate motions through geometry or replace them with archived films.
 
 `outputs/arx_belt/` contains `native/`, `design-source.json`,
 `physical-source.json`, `model.xml`, `control-source.json`,
@@ -175,12 +201,18 @@ BREP replacements and six print-first test articles. They do not inherit the
 belt controller or its validation results. Missing P6A controller, thermal and
 full manufacturing source is not reconstructed from its renders or reports.
 
-Fresh construction produced **118 unique parts and 375 placements**. **127 STEP
+The preserved original comparison produced **118 unique parts and 375 placements**. **127 STEP
 exports reopened as valid solids**; the source's **52 nominal BREP interface
 checks** and **eight stop checks** passed. All eight body mass, CoM and full
 inertia records matched the unmodified generator under the same CAD kernel.
 Archived CadQuery 2.7/OpenCascade 7.8 records differ slightly from the local
 2.8/7.9 spring geometry; the historical difference is retained.
+
+The consolidated current constructor adds the five actual handed-jaw components
+to native placements, yielding 380. They previously entered replay as separately
+constructed scene geometry. The physical jaw already had independently integrated
+mass; the consolidation makes CAD display/export consume that same source and
+adds an independent placed-STEP mass/COM/full-inertia readback.
 
 The contact builder reproduces **2,095 source proxies and 315 tabletop tiles**.
 Motor/fault kernels are compared numerically with actual JavaScript source.

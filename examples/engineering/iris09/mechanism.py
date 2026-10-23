@@ -284,14 +284,12 @@ def build(spec, output):
     # lip, at every planar angle. Lower pin/keeper material lies below it.
     moving_envelope = _cylinder(h+spec['leaf_crank_length_mm']+spec['rod_width_mm'],
                                stack['rod_bottom_mm'], stack['moving_upper_envelope_mm'])
-    row = requirements.noninterference('moving_pin_envelope_to_lower_rotor_lip', moving_envelope, lower_lip)
-    row['required_minimum_distance_mm'] = spec['axial_stack']['moving_pin_to_fixed_lip_clearance_mm']
-    row['pass'] = row['pass'] and row['minimum_distance_mm'] >= row['required_minimum_distance_mm']-1e-8
+    row = requirements.clearance('moving_pin_envelope_to_lower_rotor_lip', moving_envelope, lower_lip,
+        minimum_distance_mm=spec['axial_stack']['moving_pin_to_fixed_lip_clearance_mm'], kernel_allowance_mm=1e-8)
     row['scope'] = 'Continuous planar axial envelope; not a whole-assembly continuous clearance proof'
     keeper_envelope = _cylinder(h+spec['leaf_crank_length_mm']+1.6, *stack['output_keeper_mm'])
-    row = requirements.noninterference('output_keeper_envelope_to_radial_bearing', keeper_envelope, radial_bearing)
-    row['required_minimum_distance_mm'] = spec['axial_stack']['keeper_to_radial_bearing_clearance_mm']
-    row['pass'] = row['pass'] and row['minimum_distance_mm'] >= row['required_minimum_distance_mm']-1e-8
+    row = requirements.clearance('output_keeper_envelope_to_radial_bearing', keeper_envelope, radial_bearing,
+        minimum_distance_mm=spec['axial_stack']['keeper_to_radial_bearing_clearance_mm'], kernel_allowance_mm=1e-8)
     row['scope'] = 'Continuous planar keeper envelope against radial bearing only; support posts require separate clearance assessment'
     for index, link in enumerate(info['links']):
         pin = _cylinder(spec['pin_diameter_mm']/2, -.6, .6)
@@ -300,17 +298,15 @@ def build(spec, output):
         lower = _split_keeper(.82, 1.6, *(z-spec['rod_height_mm'] for z in stack['input_keeper_mm']))
         upper = _split_keeper(.82, 1.6, *(z-spec['rod_height_mm'] for z in stack['output_keeper_mm']), (link.length_mm, 0))
         for label, keeper in (('input', lower), ('output', upper)):
-            row = requirements.noninterference(f'rod_{index:02}_{label}_axial_keeper_clearance', link.native_shape(), keeper)
-            row['required_minimum_distance_mm'] = spec['axial_stack']['rod_keeper_clearance_mm']
-            row['pass'] = row['pass'] and row['minimum_distance_mm'] >= row['required_minimum_distance_mm']-1e-8
+            requirements.clearance(f'rod_{index:02}_{label}_axial_keeper_clearance', link.native_shape(), keeper,
+                minimum_distance_mm=spec['axial_stack']['rod_keeper_clearance_mm'], kernel_allowance_mm=1e-8)
         pivot = _cylinder(1., 21.8, 23.7, (h*math.cos(index*math.tau/info['count']), -h*math.sin(index*math.tau/info['count'])))
         requirements.noninterference(f'leaf_{index:02}_bearing_clearance', bearing, pivot)
         xy = (h*math.cos(index*math.tau/info['count']), -h*math.sin(index*math.tau/info['count']))
         for label, bottom, top in (('lower', 21.6, 21.8), ('upper', 23.7, 23.9)):
             collar = _split_keeper(.82, 1.8, bottom, top, xy)
-            row = requirements.noninterference(f'leaf_{index:02}_{label}_axial_collar_clearance', bearing, collar)
-            row['required_minimum_distance_mm'] = .19
-            row['pass'] = row['pass'] and row['minimum_distance_mm'] >= .19
+            requirements.clearance(f'leaf_{index:02}_{label}_axial_collar_clearance', bearing, collar,
+                minimum_distance_mm=.19)
     rotor_shape = next(shape for body, name, shape, _ in rows if name == 'annular_rotor_and_drive_pins')
     requirements.noninterference('rotor_radial_and_axial_bearing', design._rotate(rotor_shape, info['phi0']), fixed_drive)
     for body, name, shape, _ in rows:

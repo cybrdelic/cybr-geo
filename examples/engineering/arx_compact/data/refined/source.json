@@ -776,6 +776,18 @@
       "sha256": "034f4dce2c0d4d34ee07a055e44d1fb637334f5dad87bfe8c72e0ad8e5c76e4d",
       "git_blob_sha": "67c0bf94ea36aa0f0f3e7f8b0ef1ba8d7b2868fa",
       "bytes": 52649
+    },
+    "refined-mass-properties.json": {
+      "upstream_path": "revisions/p5-refined/assets/refined-mass-properties.json",
+      "sha256": "9dfc30a5118f6f860c291b2676145296673e684d6b0954773463027d20d36eb9",
+      "git_blob_sha": "f51d95968be91120ac64820a585b45f3e07eb190",
+      "bytes": 15028
+    },
+    "mass-property-deltas.json": {
+      "upstream_path": "revisions/p5-refined/reports/mass-property-deltas.json",
+      "sha256": "279b86bf1affeca4e08fadb2864db116a67c32360b8a3dd7c08430910f6bd141",
+      "git_blob_sha": "399b0aa3396db9b6fc6dd22e435ce5ed01c970af",
+      "bytes": 7034
     }
   },
   "operation_sources": {

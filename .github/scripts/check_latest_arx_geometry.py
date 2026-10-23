@@ -109,6 +109,138 @@ def exchange_properties(shape, density, default_properties, epsilon, error_budge
                 relative_error_acceptance_budget=error_budget)
 
 
+def verify_refined_body_reports(directory, report, design, source, payloads, code, records):
+    """Check physical-input receipts without promoting corrected archives to dynamics."""
+    import numpy as np
+    from examples.engineering.arx_compact import refined
+    from mechanism_lab.native_construction import aggregate_mass_properties, validate_inertia
+    from mechanism_lab.physical_model import digest
+
+    current_link = report['current_native_body_properties']
+    corrected_link = report['native_corrected_archival_body_properties']
+    current = read_json(artifact(directory, current_link['file'], current_link['sha256']))
+    corrected = read_json(artifact(directory, corrected_link['file'], corrected_link['sha256']))
+    require(current['schema'] == 'cybrgeo-current-native-body-properties/1'
+            and corrected['schema'] == 'cybrgeo-native-corrected-archival-body-properties/1',
+            'Unexpected Refined body-property schemas')
+    require(current['source'] == corrected['source'] == source
+            and current['construction_code_sha256'] == corrected['construction_code_sha256'] == code,
+            'Refined body properties have stale source or construction bindings')
+    require(current['geometry_resolution'] == report['geometry_resolution']
+            and current['physical_density_kg_m3'] == refined.DENSITIES,
+            'Refined body properties have different geometry or physical densities')
+    original = report['inherited_mass_properties']
+    require(current['inherited_mass_properties_sha256'] == digest(original)
+            and current['inherited_mass_properties_modified'] is False
+            and current['dynamics_rerun'] is False and corrected['dynamics_rerun'] is False,
+            'Refined body properties overwrite or promote archived evidence')
+    source_parts = {str(row['id']): row for row in design['parts']}
+    parts = {str(row['id']): row for row in current['parts']}
+    require(len(parts) == len(current['parts']) == current['part_count'] == len(source_parts)
+            and set(parts) == set(source_parts) == set(records), 'Incomplete current body inventory')
+    missing = [row['id'] for row in design['parts'] if row['material'] not in refined.DENSITIES]
+    require(current['unresolved_part_ids'] == current_link['unresolved_part_ids'] == missing
+            and current['resolved_parts'] == current_link['resolved_parts'] == len(parts) - len(missing)
+            and current['mass_inputs_complete'] is (not missing)
+            and current_link['mass_inputs_complete'] is (not missing)
+            and current['source_mass_override_count'] == sum(row.get('mass_override_kg') is not None
+                for row in design['parts']), 'Missing densities or mass overrides were obscured')
+    selected = {row['part']: row for row in current['geometry_resolution']['parts']}
+    for key, part in parts.items():
+        record = source_parts[key]
+        require(all(part[field] == record[field] for field in ('id', 'name', 'body', 'material'))
+                and part['source_status'] == record.get('status')
+                and part['source_mass_override_kg'] == record.get('mass_override_kg')
+                and part['geometry_source'] == selected[key]
+                and part['frame'] == 'source body-local'
+                and part['valid'] is True and part['solid_count'] == records[key]['solids'],
+                'Current native component binding differs: ' + key)
+        resolved = record['material'] in refined.DENSITIES
+        require(part['resolved'] is resolved, 'Missing physical material was silently resolved: ' + key)
+        if not resolved:
+            require(part['density_properties'] is None and part['declared_mass_properties'] is None,
+                    'Unresolved physical material acquired mass properties: ' + key)
+            continue
+        density, declared = part['density_properties'], part['declared_mass_properties']
+        require(density['density_kg_m3'] == refined.DENSITIES[record['material']]
+                and density['valid'] is True and density['solid_count'] == part['solid_count'],
+                'Current density/native topology differs: ' + key)
+        close(density['volume_mm3'], records[key]['volume_mm3'], 'Current body volume ' + key)
+        close(density['mass_kg'], density['volume_mm3'] * density['density_kg_m3'] * 1e-9,
+              'Current density mass ' + key, atol=1e-12)
+        override = record.get('mass_override_kg')
+        mass = override if override is not None else density['mass_kg']
+        require(declared['override_applied'] is (override is not None), 'Mass override policy differs: ' + key)
+        close(declared['mass_kg'], mass, 'Declared envelope mass ' + key, atol=1e-12)
+        close(declared['com_m'], np.asarray(density['com_mm']) * .001, 'Body-local component CoM ' + key)
+        close(declared['inertia_at_com_kg_m2'], np.asarray(density['inertia_kg_m2']) * mass / density['mass_kg'],
+              'Uniform envelope inertia scaling ' + key, atol=1e-12)
+        validate_inertia(density['inertia_kg_m2'])
+        validate_inertia(declared['inertia_at_com_kg_m2'])
+    require(set(current['bodies']) == {row['body'] for row in design['parts']}, 'Current body allocation differs')
+    for body, value in current['bodies'].items():
+        members = [row for row in current['parts'] if row['body'] == body]
+        unresolved = [row['id'] for row in members if not row['resolved']]
+        require(value['part_ids'] == [row['id'] for row in members]
+                and value['missing_material_part_ids'] == unresolved
+                and value['disconnected_part_ids'] == [row['id'] for row in members if row['solid_count'] != 1]
+                and value['mass_inputs_complete'] is (not unresolved)
+                and value['records_are_partial_subtotals'] is bool(unresolved),
+                'Current body completeness/allocation differs: ' + body)
+        for field in ('source_density', 'declared_envelope_masses'):
+            aggregate = value[field]
+            resolved = [row for row in members if row['resolved']]
+            if not resolved:
+                require(aggregate is None, 'Unknown-only body has an invented mass: ' + body)
+                continue
+            components = aggregate['components']
+            require(len(components) == len(resolved)
+                    and [row['part_id'] for row in components] == [row['id'] for row in resolved],
+                    'Current aggregate component membership differs: ' + body)
+            for component, part in zip(components, resolved):
+                props = part['density_properties'] if field == 'source_density' else part['declared_mass_properties']
+                require(component['name'] == part['name'] and component['material'] == part['material'],
+                        'Current aggregate component identity differs: ' + body)
+                center = np.asarray(props['com_mm']) * .001 if field == 'source_density' else props['com_m']
+                tensor = props['inertia_kg_m2'] if field == 'source_density' else props['inertia_at_com_kg_m2']
+                close(component['mass_kg'], props['mass_kg'], 'Aggregate component mass ' + body, atol=1e-12)
+                close(component['com_m'], center, 'Aggregate component CoM ' + body)
+                close(component['inertia_at_com_kg_m2'], tensor, 'Aggregate component inertia ' + body, atol=1e-12)
+            recomputed = aggregate_mass_properties(components, aggregate['status'])
+            for property_name in ('mass_kg', 'com_m', 'inertia_tensor_kg_m2', 'fullinertia_mujoco_kg_m2'):
+                close(aggregate[property_name], recomputed[property_name], 'Current aggregate ' + property_name,
+                      atol=1e-12)
+    source_corrected = json.loads(payloads['refined-mass-properties.json'])
+    unattached = {key: value for key, value in report.items() if key not in {
+        'geometry_artifacts', 'geometry_study_sha256', 'current_native_body_properties',
+        'native_corrected_archival_body_properties'}}
+    require(corrected['native_reconciliation_sha256'] == digest(unattached)
+            and corrected['original_mass_properties_sha256'] == digest(original)
+            and corrected['source_corrected_properties_sha256'] == digest(source_corrected)
+            and corrected_link['source_corrected_file_sha256'] == source['source_files']['refined-mass-properties.json']['sha256']
+            and corrected['algorithm_source'] == source['operation_sources']['revisions/p5-refined/source/verify_geometry.py'],
+            'Corrected body source/native reconciliation identity differs')
+    require(corrected['original_archived_properties_modified'] is False
+            and corrected['retained_unmodified_component_assumptions'] is True
+            and corrected['all_parts_reintegrated'] is False
+            and corrected['passed'] is True and corrected_link['passed'] is True,
+            'Corrected bodies overstate scope or fail source comparison')
+    require(set(corrected['bodies']) == set(corrected['source_comparisons']) == set(source_corrected) == set(original),
+            'Corrected body inventory differs')
+    recomputed = refined.corrected_archival_bodies(design, unattached, source_corrected)
+    require(corrected == recomputed, 'Corrected body receipt differs from measured native component replacements')
+    require(corrected['replaced_parts'] == corrected_link['replaced_parts'] == len(report['parts']),
+            'Corrected body replacement inventory differs')
+    return dict(current_native_body_properties_sha256=current_link['sha256'],
+        corrected_archival_body_properties_sha256=corrected_link['sha256'],
+        current_native_parts=len(parts), resolved_native_parts=current['resolved_parts'],
+        unresolved_physical_material_part_ids=missing, source_mass_override_count=current['source_mass_override_count'],
+        complete_native_bodies=[body for body, value in current['bodies'].items() if value['mass_inputs_complete']],
+        partial_native_bodies=[body for body, value in current['bodies'].items() if not value['mass_inputs_complete']],
+        corrected_source_bodies=len(corrected['bodies']), corrected_native_parts=corrected['replaced_parts'],
+        dynamics_rerun=False, scope='Bound native component receipts and full-tensor aggregation; corrected archive assumptions retained')
+
+
 def verify_refined(directory):
     import cadquery as cq
     import trimesh
@@ -173,6 +305,7 @@ def verify_refined(directory):
     changed = {str(row['id']): row for row in report['parts']}
     records = {str(row['id']): row for row in study['parts']}
     require(set(changed) == set(changes) and set(records) == set(selected), 'Refined part identities differ')
+    body_properties = verify_refined_body_reports(directory, report, design, source, payloads, refined_code, records)
     for relative, identity in study['artifacts'].items():
         path = artifact(directory, relative, identity['sha256'])
         require(path.stat().st_size == identity['bytes'], 'Refined artifact byte length differs')
@@ -255,6 +388,7 @@ def verify_refined(directory):
                 disconnected_parts=study['disconnected_parts'], authored_bound_overruns=study['authored_bound_overruns'],
                 native_readback=reopened, geometry_study_sha256=sha256(directory / 'geometry-study.json'),
                 property_reconciliation_sha256=sha256(directory / 'property-reconciliation.json'),
+                body_property_receipts=body_properties,
                 artifact_hashes=study['artifacts'], scope=SCOPE)
 
 

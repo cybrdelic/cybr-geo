@@ -6,7 +6,7 @@ from .core import Assembly,project_root,save_cache,load_cache,validate
 
 DEFAULT_RECIPE='arx_belt'
 CONSTRUCTED=('compact_arm','belt_arm','inspection_head')
-BUILTINS=(DEFAULT_RECIPE,)+CONSTRUCTED+('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+BUILTINS=(DEFAULT_RECIPE,'iris09','fourbar_lift')+CONSTRUCTED+('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
 
 def is_mechanism_source(name):
     if name in CONSTRUCTED:
