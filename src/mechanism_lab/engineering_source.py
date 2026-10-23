@@ -99,9 +99,10 @@ _SNAPSHOT_LOCK = threading.RLock()
 def _project_snapshot(path):
     """Bound the executable source closure to this project, never its workspace.
 
-    Authored Python (including nested modules), project.json and all data/**
-    files participate. Runtime outputs/caches are excluded. Other input assets
-    must live under data/ to participate in the accepted project identity.
+    Authored Python and JSON (including nested modules and source manifests)
+    and all data/** files participate. Runtime outputs/caches are excluded.
+    Other non-JSON input assets must live under data/ to participate in the
+    accepted project identity.
     """
     root = Path(path).resolve()
     snapshot = {}
@@ -116,7 +117,7 @@ def _project_snapshot(path):
         for name in sorted(filenames):
             file = Path(directory) / name
             relative = file.relative_to(root)
-            if not (relative.as_posix() == 'project.json' or file.suffix == '.py' or relative.parts[0] == 'data'):
+            if not (file.suffix in ('.py', '.json') or relative.parts[0] == 'data'):
                 continue
             if file.is_symlink() or not file.resolve().is_relative_to(root):
                 raise ValueError('Project source files must remain inside their declared project')

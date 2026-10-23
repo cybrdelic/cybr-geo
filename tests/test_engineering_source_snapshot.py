@@ -86,3 +86,14 @@ def test_source_identity_is_recursive_but_excludes_generated_outputs(tmp_path):
     (root/'data/outputs').mkdir()
     (root/'data/outputs/fixture.json').write_text('{}')
     assert 'data/outputs/fixture.json' in project_source_identity(root)
+
+
+def test_root_geometry_json_changes_invalidate_loaded_project(tmp_path):
+    root = fixture_project(tmp_path)
+    geometry = root/'source-geometry.json'
+    geometry.write_text('{"hinge_radius":1}')
+    _, identity = load_project(root)
+    assert identity['source-geometry.json'] == hashlib.sha256(geometry.read_bytes()).hexdigest()
+    geometry.write_text('{"hinge_radius":2}')
+    with pytest.raises(ValueError, match='source-geometry.json'):
+        assert_project_source_identity(root, identity)
