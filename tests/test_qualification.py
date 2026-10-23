@@ -282,6 +282,7 @@ def test_examples_cannot_release_without_preconstruction_policy(tmp_path):
     ('rack', 'output', 0., None),
     ('unmapped_connector', 'belt', 0., 'lack exact planned interface mapping'),
     ('missing_connector', 'belt', 0., 'inventory differs'),
+    ('zero_step_connector', 'belt', 0., 'Modeled connector demands require integration-step count'),
     ('incomplete_connector', 'belt', 0., 'reaction coverage is incomplete'),
     ('understated_connector', 'belt', 0., 'understates modeled connector force'),
     ('unrelated_connector', 'belt', 0., 'unrelated native interface bodies'),
@@ -367,6 +368,8 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
                       options={}, steps=2, metrics={'actuators': {'output': metrics},
                                                     'rack_motor': rack_metrics,
                                                     'constraints': constraints})
+    if case == 'zero_step_connector':
+        simulation['steps'] = 0
     (run/'physical-source.json').write_text(json.dumps(model), encoding='utf-8')
     (run/'control-source.json').write_text(json.dumps(control), encoding='utf-8')
     (run/'simulation'/'simulation.json').write_text(json.dumps(simulation), encoding='utf-8')
