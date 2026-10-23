@@ -341,6 +341,12 @@ class QualificationIntentPlan:
         document = resolved.document if isinstance(resolved, QualificationPlan) else resolved
         complete = QualificationPlan(document).document
         intent = self.document
+        design_issues = sorted(f"{item['kind']}:{item['subject']}"
+                               for item in intent['unresolved_requirements']
+                               if item['category'] == 'design')
+        if design_issues:
+            raise QualificationError('Source intent retains unresolved design requirements: '
+                                     + ', '.join(design_issues))
         if set(complete['parts']) != set(intent['parts']):
             raise QualificationError('Resolved plan changes the source-bound intent part inventory')
         for name, part in intent['parts'].items():
@@ -565,10 +571,14 @@ class QualifiedNativeConstruction(NativeConstruction):
     """
 
     def __init__(self, output, densities, body_ids=(), provenance=None, *, qualification_plan,
-                 initial_body_poses_mm, physical_body_mapping=None):
+                 initial_body_poses_mm, physical_body_mapping=None, qualification_intent=None):
         document = (qualification_plan.document if isinstance(qualification_plan, QualificationPlan)
                     else qualification_plan)
         self.qualification_plan = QualificationPlan(deepcopy(document))
+        if qualification_intent is not None:
+            source_intent = (qualification_intent if isinstance(qualification_intent, QualificationIntentPlan)
+                             else QualificationIntentPlan(deepcopy(qualification_intent)))
+            source_intent.require_resolved_by(self.qualification_plan)
         self.initial_body_poses_mm = _qualified_body_poses(
             initial_body_poses_mm, self.qualification_plan.document['parts'])
         self.physical_body_mapping = _qualified_body_mapping(
@@ -882,7 +892,7 @@ def _simulated_loads(metrics):
 
 
 def _require_connector_demand_binding(plan, physical_model, simulation,
-                                      modeled_interface_demands=None):
+                                      modeled_interface_demands=None, *, body_mapping=None):
     """Bound modeled connect/weld reactions by source-planned interface loads.
 
     Each source equality must be monitored on every integration step and mapped
@@ -936,6 +946,7 @@ def _require_connector_demand_binding(plan, physical_model, simulation,
     recorded = {name: row.get('type') for name, row in constraints.items()
                 if isinstance(row, dict) and row.get('type') in ('connect', 'weld')}
     mapping = plan.document.get('solver_connectors', {})
+    native_to_physical = _qualified_body_mapping(body_mapping, plan.document['parts'])
     if (set(recorded) != set(source_connectors)
             or any(recorded[name] != source_connectors[name]['kind'] for name in recorded)):
         raise QualificationError('Recorded connector inventory differs from the physical model')
@@ -945,7 +956,8 @@ def _require_connector_demand_binding(plan, physical_model, simulation,
         planned_parts = plan.document['interfaces'][interface_name]['parts']
         part_bodies = {part.split('__', 1)[0] for part in planned_parts}
         if (len(part_bodies) != 2
-                or part_bodies != source_connectors[source_name]['bodies']):
+                or {native_to_physical[body] for body in part_bodies}
+                   != source_connectors[source_name]['bodies']):
             raise QualificationError(
                 f'Physical connector {source_name} maps to unrelated native interface bodies')
     if not mapping:
@@ -971,7 +983,7 @@ def _require_connector_demand_binding(plan, physical_model, simulation,
 
 def _require_spring_anchor_demand_binding(plan, physical_model, control, simulation,
                                           native_record, placements,
-                                          modeled_interface_demands=None):
+                                          modeled_interface_demands=None, *, body_mapping=None):
     """Map every controlled spring end to an actual tested interface demand.
 
     The native receipt establishes which placed pin/clevis pair carries each
@@ -984,6 +996,7 @@ def _require_spring_anchor_demand_binding(plan, physical_model, control, simulat
 
     springs = control.get('springs', []) if isinstance(control, dict) else None
     paths = plan.document.get('spring_load_paths', {})
+    native_to_physical = _qualified_body_mapping(body_mapping, plan.document['parts'])
     if not isinstance(springs, list) or any(not isinstance(item, dict) for item in springs):
         raise QualificationError('Control source has an invalid spring inventory')
     if not springs:
@@ -1103,8 +1116,8 @@ def _require_spring_anchor_demand_binding(plan, physical_model, control, simulat
                 or group['source_spring_index'] != index
                 or group.get('control_joint') != joint_name
                 or group.get('source_parameters_sha256') != digest(config)
-                or ('parent_body' in group and group['parent_body'] != fixed_body)
-                or ('child_body' in group and group['child_body'] != moving_body)
+                or ('parent_body' in group and native_to_physical.get(group['parent_body']) != fixed_body)
+                or ('child_body' in group and native_to_physical.get(group['child_body']) != moving_body)
                 or group.get('demand') != demand):
             raise QualificationError(f'Spring {joint_name} native demand differs from control and physical range')
         if ('nominal_pin_diameter_mm' in native_plan
@@ -1154,7 +1167,7 @@ def _require_spring_anchor_demand_binding(plan, physical_model, control, simulat
                 raise QualificationError(f'Spring {joint_name} native anchor differs from its physical joint frame')
             pin, clevis = binding.get('pin_native_part'), binding.get('clevis_placed_part')
             pin_base, clevis_base = anchor.get('pin_part'), anchor.get('clevis_part')
-            if (body != expected_body or not isinstance(pin, str)
+            if (native_to_physical.get(body) != expected_body or not isinstance(pin, str)
                     or not isinstance(clevis, str) or binding.get('body') != body
                     or not isinstance(pin_base, str) or not isinstance(clevis_base, str)
                     or not (pin == pin_base or pin.startswith(pin_base+'_'))
@@ -1482,10 +1495,10 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     _require_current_causal_runtime(simulation['runtime_implementation'])
     modeled_interface_demands = {}
     _require_connector_demand_binding(plan, physical_model, simulation,
-                                      modeled_interface_demands)
+                                      modeled_interface_demands, body_mapping=body_mapping)
     _require_spring_anchor_demand_binding(plan, physical_model, control,
                                           simulation, spring_record, placements,
-                                          modeled_interface_demands)
+                                          modeled_interface_demands, body_mapping=body_mapping)
     simulated_loads = _simulated_loads(simulation.get('metrics'))
     if not simulated_loads or set(simulated_loads) != set(plan.document['loads']):
         raise QualificationError('Load cases must cover every active simulated actuator exactly')
