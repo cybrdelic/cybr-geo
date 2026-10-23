@@ -221,6 +221,7 @@ _CONSTRUCTION_SERVICES = (
     'advanced_geometry.py', 'physical_model.py', 'contact_geometry.py',
     'engineering_source.py', 'linkages.py', 'planar_linkage.py',
     'fit_construction.py', 'rack_travel.py', 'spring_anchor.py', 'actuation.py',
+    'load_path_routes.py',
     'native_replay.py',
 )
 
@@ -236,7 +237,7 @@ def construction_dependency_identity():
         packages={name: metadata.version(name) for name in ('cadquery', 'cadquery-ocp', 'numpy')},
         runtime=dict(python=platform.python_version(), implementation=platform.python_implementation(),
                      system=platform.system(), machine=platform.machine()),
-        scope='Explicit shared CAD, mass, material/core and contact helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured')
+        scope='Explicit shared CAD, mass, material/core, contact and service-route helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured')
 
 
 def verify_native_source_binding(directory, specification, source_files, *, receipt):
