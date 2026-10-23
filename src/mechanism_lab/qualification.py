@@ -882,6 +882,8 @@ def _require_spring_anchor_demand_binding(plan, physical_model, control, simulat
             interface = path['anchors'][name]
             if pair != set(plan.document['interfaces'][interface]['parts']):
                 raise QualificationError(f'Spring {joint_name} maps force to an unrelated native interface')
+            if _interface_role(plan.document['interfaces'][interface]) != _RETAINED_CONTACT_ROLE:
+                raise QualificationError(f'Spring {joint_name} anchor requires tested retention and play')
             if modeled_interface_demands is not None:
                 modeled_interface_demands[interface] = modeled_interface_demands.get(interface, 0.) + force
             elif force > plan.document['interfaces'][interface]['demand_N']:

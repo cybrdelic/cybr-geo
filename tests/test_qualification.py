@@ -88,8 +88,9 @@ def _spring_binding_fixture():
                                  ('moving', 'moving', [1000., 0., 0.])):
         interface = f'{role}_anchor'
         plan['interfaces'][interface] = dict(parts=[f'{body}__pin', f'{body}__clevis'],
-            nominal_clearance_mm=.5, first_tolerance_mm=.1, second_tolerance_mm=.1,
-            required_clearance_mm=.2, demand_N=4.2, design_capacity_N=5.)
+            role='tested_retention_contact', nominal_maximum_distance_mm=.1,
+            first_tolerance_mm=.1, second_tolerance_mm=.1,
+            maximum_service_play_mm=.31, demand_N=4.2, design_capacity_N=5.)
         anchors[f'member_0_{role}'] = interface
         native_anchors.append(dict(name=f'eye_{role}', source_spring_index=0,
             member_index=0, role=role, body=body, body_local_anchor_mm=position,
@@ -154,6 +155,7 @@ def test_spring_native_load_path_combines_with_connector_and_requires_service_ma
     ('unlimited_hinge', 'invalid physical force inputs'),
     ('limits_disabled', 'requires physical joint limits'),
     ('wrong_pair', 'unrelated native interface'),
+    ('clearance_without_retention', 'requires tested retention and play'),
     ('wrong_position', 'native pin or clevis is unbound'),
     ('wrong_plan_pin_diameter', 'native pin diameter differs'),
     ('wrong_plan_pin_length', 'native pin or clevis is unbound'),
@@ -196,6 +198,10 @@ def test_spring_release_rejects_unbound_or_understated_native_force(fault, expec
         simulation['options']['enforceLimits'] = False
     elif fault == 'wrong_pair':
         plan['interfaces']['fixed_anchor']['parts'] = ['fixed__pin', 'fixed__a']
+    elif fault == 'clearance_without_retention':
+        plan['interfaces']['fixed_anchor'] = dict(parts=['fixed__pin', 'fixed__clevis'],
+            nominal_clearance_mm=.5, first_tolerance_mm=.1, second_tolerance_mm=.1,
+            required_clearance_mm=.2, demand_N=4.2, design_capacity_N=5.)
     elif fault == 'wrong_position':
         native['native_anchor_bindings'][0]['body_local_anchor_mm'] = [0., 0., 0.]
     elif fault in ('wrong_plan_pin_diameter', 'wrong_plan_pin_length', 'wrong_plan_bore'):

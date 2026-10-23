@@ -46,7 +46,9 @@ conservatively. These are ideal solver reactions, not measured bearing forces
 or validated interface capacities.
 For each controlled tension spring, `spring_load_paths` maps its indexed source
 spring and both ends of every physical spring member to distinct placed
-pin/clevis interfaces. Its `joint` must match the physical ranged hinge;
+pin/clevis interfaces with `role: tested_retention_contact`; a clearance-only
+interface cannot establish capture of a loaded spring eye. Its `joint` must
+match the physical ranged hinge;
 the control's joint-frame anchor vectors and axial `member_offsets_m` must
 resolve to the placed pins under that hinge's child-body and joint transforms.
 Unsupported frames and extra child degrees of freedom fail closed. Release
