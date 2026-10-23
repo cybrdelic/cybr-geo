@@ -1,0 +1,209 @@
+{
+  "generated_at_utc": "2026-10-22T15:02:34.789613+00:00",
+  "source": "examples/constructed/compact_arm.json",
+  "source_sha256": "d655f957f3837c2f78a4df40ca180fd21f314639e4d79657b17822d4b6fbf3ba",
+  "model_sha256": "9c3a583ea7c74fc7796fbb6539a786abd582620449f05bdd836cb3e50cbb21bc",
+  "geometry_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+  "parts": 109,
+  "bundle_receipt_sha256": "74816f439042f3b3efeacdb7adaf5198965ef6f9fc6254d37931e4d295b1cf01",
+  "command": "lab mechanism --out outputs/engineering-current/compact_arm --step --media --seconds 8 --fps 8 --size 1100x650",
+  "engineering_passed": true,
+  "motion_authorization": {
+    "allowed": true,
+    "mode": "exact_certified_path_only",
+    "api": "mechanism_lab.motion_envelope.authorized_command",
+    "plan_sha256": "0a845c27c19e374ff407250f4315af43c0f57248ad10873654f3788e7d0f2db4",
+    "execute": "Only the canonical values returned by authorized_command; arbitrary independent commands remain unverified."
+  },
+  "qualification": {
+    "kinematics": "continuous CAD path and joint-error tube certified",
+    "dynamics": "actual MuJoCo run passed",
+    "dynamics_run_passed": true,
+    "hardware": "not qualified"
+  },
+  "scope": "One engineering source compiled to actual CAD, MuJoCo dynamics, and a continuous geometric clearance tube around its requested path. Every recorded integration state is checked; between-step containment and interpolated body-pose replay are not certified. Contact dynamics is limited to declared proxies. No hardware qualification.",
+  "clearance": {
+    "passed": true,
+    "part_pairs": 5886,
+    "statistics": {
+      "distance_queries": 749,
+      "intersection_queries": 104,
+      "invariant_contact_brep_volume": 104,
+      "visited_pair_intervals": 6270,
+      "brep_distance_interval_bound": 453,
+      "aabb_interval_bound": 5521
+    },
+    "joint_error_bounds": {
+      "J1_output": 0.0006711460245190056,
+      "J2_output": 0.000510634227663007,
+      "J3_output": 0.0004321765918823388,
+      "J4_output": 0.0006850590377532797,
+      "J5_output": 0.0006506141780561513,
+      "J6_output": 0.0014794712825567241,
+      "jaw_left_travel": 0.0011888255974918875,
+      "jaw_right_travel": 0.0010824074255957922
+    },
+    "drive_error_bounds": {},
+    "artifact_sha256": "8dcefaf0f5de9576e2e2a3b9c1ed4ab636fc23f3f0580c18043c12f9f1ec61e7"
+  },
+  "simulation_clearance": {
+    "passed": true,
+    "integration_states_checked": 4001,
+    "output_states_checked": 161,
+    "integration_states_outside_tube": 0,
+    "output_states_outside_tube": 0,
+    "requested_states_outside_path": 0,
+    "first_outside_times_s": [],
+    "first_off_path_request_times_s": [],
+    "tracking_and_residual_maxima_match_complete_trace": true,
+    "between_step_containment": "not_established",
+    "scope": "Every recorded integration state and output joint state is checked against the continuous geometric tube. This does not prove containment between integration states or of interpolated body-pose replay."
+  },
+  "simulation": {
+    "backend": "MuJoCo",
+    "backend_version": "3.16.0",
+    "seconds": 8.0,
+    "timestep_s": 0.002,
+    "integration_steps": 4000,
+    "tracking_passed": true,
+    "operating_limits_passed": true,
+    "maximum_contacts": 0,
+    "contact_policy": "explicit primitive proxies and environment only; all visual CAD mesh contacts disabled",
+    "metrics": {
+      "J1_output": {
+        "unit": "deg",
+        "max_tracking_error": 0.0006382343090657194,
+        "rms_tracking_error": 0.0004364322341083542,
+        "peak_applied_effort_SI": 0.018103763211837383,
+        "effort_limit_SI": 25.0,
+        "max_requested_speed": 3.2986722862692823,
+        "max_requested_acceleration": 2.5907711552859563,
+        "max_simulated_speed": 3.298178708822271,
+        "max_simulated_acceleration": 2.5916459452229965,
+        "saturation_fraction": 0.0
+      },
+      "J2_output": {
+        "unit": "deg",
+        "max_tracking_error": 0.0004853659311076256,
+        "rms_tracking_error": 0.0003275842964344638,
+        "peak_applied_effort_SI": 6.35940633723804,
+        "effort_limit_SI": 25.0,
+        "max_requested_speed": 3.2986722862692823,
+        "max_requested_acceleration": 2.5907711552859563,
+        "max_simulated_speed": 3.2983069591749348,
+        "max_simulated_acceleration": 2.612258113204948,
+        "saturation_fraction": 0.0
+      },
+      "J3_output": {
+        "unit": "deg",
+        "max_tracking_error": 0.00041064437322127495,
+        "rms_tracking_error": 0.0002736407836223088,
+        "peak_applied_effort_SI": 3.7558847628904415,
+        "effort_limit_SI": 25.0,
+        "max_requested_speed": 3.2986722862692823,
+        "max_requested_acceleration": 2.5907711552859563,
+        "max_simulated_speed": 3.298371290659728,
+        "max_simulated_acceleration": 2.6721365668698587,
+        "saturation_fraction": 0.0
+      },
+      "J4_output": {
+        "unit": "deg",
+        "max_tracking_error": 0.0006514847978602662,
+        "rms_tracking_error": 0.0004260242648626683,
+        "peak_applied_effort_SI": 0.01696251270700075,
+        "effort_limit_SI": 25.0,
+        "max_requested_speed": 3.2986722862692823,
+        "max_requested_acceleration": 2.5907711552859563,
+        "max_simulated_speed": 3.2982005106136048,
+        "max_simulated_acceleration": 3.830071220213109,
+        "saturation_fraction": 0.0
+      },
+      "J5_output": {
+        "unit": "deg",
+        "max_tracking_error": 0.0006186801695772868,
+        "rms_tracking_error": 0.0004254812666951571,
+        "peak_applied_effort_SI": 0.9316731480387531,
+        "effort_limit_SI": 25.0,
+        "max_requested_speed": 3.2986722862692823,
+        "max_requested_acceleration": 2.5907711552859563,
+        "max_simulated_speed": 3.298192143638235,
+        "max_simulated_acceleration": 2.669140911030877,
+        "saturation_fraction": 0.0
+      },
+      "J6_output": {
+        "unit": "deg",
+        "max_tracking_error": 0.0014080678881492608,
+        "rms_tracking_error": 0.0008977526911996541,
+        "peak_applied_effort_SI": 0.0008936508652684195,
+        "effort_limit_SI": 25.0,
+        "max_requested_speed": 3.2986722862692823,
+        "max_requested_acceleration": 2.5907711552859563,
+        "max_simulated_speed": 3.2997352077489017,
+        "max_simulated_acceleration": 3.852661789929487,
+        "saturation_fraction": 0.0
+      },
+      "jaw_left_travel": {
+        "unit": "mm",
+        "max_tracking_error": 0.0011312624738010757,
+        "rms_tracking_error": 0.000750800060495306,
+        "peak_applied_effort_SI": 0.11816789924553352,
+        "effort_limit_SI": 100.0,
+        "max_requested_speed": 2.748893571891069,
+        "max_requested_acceleration": 2.158975962738297,
+        "max_simulated_speed": 2.7497593599767876,
+        "max_simulated_acceleration": 6.774736905870749,
+        "saturation_fraction": 0.0
+      },
+      "jaw_right_travel": {
+        "unit": "mm",
+        "max_tracking_error": 0.0010299118339007543,
+        "rms_tracking_error": 0.0006950411476362943,
+        "peak_applied_effort_SI": 0.11835121335266631,
+        "effort_limit_SI": 100.0,
+        "max_requested_speed": 2.748893571891069,
+        "max_requested_acceleration": 2.158975962738297,
+        "max_simulated_speed": 2.749692650040956,
+        "max_simulated_acceleration": 6.677617617654965,
+        "saturation_fraction": 0.0
+      }
+    }
+  },
+  "simulation_artifact_sha256": "921e5ffd879c59577f8961ac18cb3dfc6397cf3712b930c8ecb9d6ec9512dadc",
+  "all_step_trace": {
+    "path": "integration-state-trace.json.gz",
+    "sha256": "1d3df16cea4000a5573e442f4cf319d8e54b97c756456a9073e944cda0ce301e",
+    "states": 4001,
+    "sampling": "every_integration_step_including_initial_and_final"
+  },
+  "artifact_readback_passed": true,
+  "media": {
+    "reference.png": {
+      "sha256": "8ce427f8c6832bcaec655f765ae91214c02285cdb6c38b0b10dad8ad9504f4be",
+      "source_artifact": "reference.png"
+    },
+    "simulated-motion.png": {
+      "sha256": "ae0b5a71a8d96d6626f79f2bd6d8f0bae2109c2a2153be8b614223560831a87a",
+      "source_artifact": "simulation/motion.png"
+    },
+    "simulated-motion.gif": {
+      "sha256": "9bea11b288ed907710f7901d208bec1a0c6f81c9935ffdd327395992fd1fa177",
+      "source_artifact": "simulation/motion.gif"
+    },
+    "prescribed-motion.gif": {
+      "sha256": "c9f3b3f0a779a9ceba127c61d15b0c535f3bbe8f2d4fa257e71f02f57264f12a",
+      "source_artifact": "motion.gif"
+    },
+    "tracking.svg": {
+      "sha256": "d1e1d52904e99267ecd74fbade186391b48a5228e37dd21cff69bc9d212c4040",
+      "source_artifact": "simulation-tracking.svg"
+    }
+  },
+  "verification": {
+    "mechanical_tests": 151,
+    "subtests": 13,
+    "browser_tests": 18,
+    "existing_core_tests_passed": 37,
+    "local_preview_test": "Blocked by absent g++ with OpenMP; published prior commit Quickstart passed native preview on Linux Python3.11-3.13"
+  },
+  "reference_scope": "Original reusable component example, not IRIS or ARX reproduction. Actual IRIS source inspected; actual ARX source not readable here yet."
+}

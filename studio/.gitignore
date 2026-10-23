@@ -1,0 +1,11 @@
+jobs/
+__pycache__/
+output/
+.env
+.local-auth/
+hosted/
+.sites-checkout/
+*.log
+web-auth/node_modules/
+cloud-template/
+public/

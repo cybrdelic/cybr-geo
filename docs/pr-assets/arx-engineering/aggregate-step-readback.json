@@ -1,0 +1,93 @@
+{
+  "schema": "cybrgeo-aggregate-step-readback/1",
+  "passed": true,
+  "scope": "Readback of actual exported aggregate CAD and same-run static GLB at simulation time zero; no CAD or physics regeneration.",
+  "artifacts": {
+    "arx_belt.step": {
+      "path": "outputs/engineering-arx-sourcebound/arx_belt.step",
+      "sha256": "ea5e8af07eafda20b5978339fa9a85de4faec298b98c3b8cece387c69c95ff8c",
+      "bytes": 27146606
+    },
+    "assembly.glb": {
+      "path": "outputs/engineering-arx-sourcebound/assembly.glb",
+      "sha256": "7489b98b52efaf07a75f971aa4dddc6fd8e07d512794eb955ae6a4f89a8d7aeb",
+      "bytes": 15155112
+    }
+  },
+  "step": {
+    "parser": "CadQuery importers.importStep / OpenCascade",
+    "units": "mm",
+    "axis": "Z-up",
+    "imported_root_shape_count": 1,
+    "solid_count": 392,
+    "invalid_solid_indices": [],
+    "all_solids_positive_volume": true,
+    "sum_of_solid_volumes_mm3": 5066917.239046412,
+    "bounds_mm": [
+      [
+        -178.46929684120545,
+        -179.31592779482875,
+        -92.5
+      ],
+      [
+        366.6,
+        272.62652378469573,
+        504.5306669671137
+      ]
+    ],
+    "extent_mm": [
+      545.0692968412054,
+      451.94245157952446,
+      597.0306669671137
+    ]
+  },
+  "glb": {
+    "version": 2,
+    "source_units": "m",
+    "source_axis": "Y-up",
+    "component_count": 385,
+    "vertex_count": 455842,
+    "bounds_converted_to_step_mm": [
+      [
+        -178.468215081844,
+        -179.31393704560622,
+        -92.5
+      ],
+      [
+        366.6000061035156,
+        272.6220994001329,
+        504.53066696903335
+      ]
+    ],
+    "extent_mm": [
+      545.0682211853596,
+      451.93603644573915,
+      597.0306669690333
+    ],
+    "evaluated_scene_node_transforms": true,
+    "analytic_coverage_component_names_match": true
+  },
+  "comparison": {
+    "max_absolute_bound_difference_mm": 0.004424384562810246,
+    "absolute_bound_differences_mm": [
+      [
+        0.001081759361454715,
+        0.0019907492225286205,
+        0.0
+      ],
+      [
+        6.1035156022626325e-06,
+        0.004424384562810246,
+        1.9196590983483475e-09
+      ]
+    ],
+    "allowed_tessellation_difference_mm": 0.5,
+    "declared_analytic_component_count": 385,
+    "mesh_only_omitted_count": 0
+  },
+  "limitations": [
+    "Shape validity and matching scene extents do not establish manufacturing qualification, stress limits, interference clearance, or hardware safety.",
+    "Summed solid volume is not a fused union volume; assembly components may touch or overlap."
+  ],
+  "errors": []
+}

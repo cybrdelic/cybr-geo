@@ -1,0 +1,227 @@
+{
+  "schema": "cybrgeo-iris-causal-controls/1",
+  "runner": {
+    "filename": "run_causal_controls.py",
+    "sha256": "f7e49b2d68e98ea9f4f5558b58d46bd5ab501cc9c6b7400cf7de5d9a15081da8",
+    "arguments": {
+      "run": "outputs\\engineering-iris09-core-final",
+      "native": "outputs\\engineering-iris09-core-final\\native",
+      "out": "outputs\\engineering-iris09-core-controls"
+    },
+    "scope": "Exact reproduction script bytes; separate from unchanged task reference identity"
+  },
+  "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+  "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+  "nominal_model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+  "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+  "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+  "nominal_trace_path": "outputs\\engineering-iris09-core-final\\simulation\\trace.json.gz",
+  "nominal_trace_sha256": "3abcbc1aab9681d37234fed7584b39bf4150afd2cecf8f67308aa135bf27377f",
+  "runtime_implementation": {
+    "schema": "cybrgeo-causal-runtime/1",
+    "source_files": {
+      "causal_runtime.py": "1c06bfd24ddd3606cc664bbf85b36536fa1f0cd6b5d020b083ed7d1f2302c1d1",
+      "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+    },
+    "packages": {
+      "numpy": "2.5.4",
+      "mujoco": "3.16.0"
+    },
+    "runtime": {
+      "python": "3.12.10",
+      "system": "Windows",
+      "machine": "AMD64"
+    },
+    "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+  },
+  "cases": {
+    "power_off": {
+      "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+      "passed": false,
+      "expected_control_outcome_passed": true,
+      "options": {
+        "power": false,
+        "heartbeat": true,
+        "enforceLimits": true,
+        "brakes": true,
+        "torqueScale": 1.0,
+        "gripScale": 1.0,
+        "springScale": 1.0,
+        "brakeScale": 1.0,
+        "brakeDelayScale": 1.0,
+        "frictionScale": 1.0
+      },
+      "duration_s": 8.0,
+      "steps": 40000,
+      "leaf_maximum_positions_rad": {
+        "leaf_00_hinge": 1.8499824236750517e-17,
+        "leaf_01_hinge": 3.625664621302086e-18,
+        "leaf_02_hinge": 0.0,
+        "leaf_03_hinge": 1.76140922504495e-16,
+        "leaf_04_hinge": 0.0,
+        "leaf_05_hinge": 9.984882499315546e-17,
+        "leaf_06_hinge": 0.0,
+        "leaf_07_hinge": 1.6890347655325298e-16,
+        "leaf_08_hinge": 0.0
+      },
+      "trace_path": "outputs\\engineering-iris09-core-controls\\power_off\\simulation\\trace.json.gz",
+      "trace_sha256": "85781a7fc6cda2d2ce39cd296b5f62ad37af8a4f9b3e98f07f645907a0d5427a",
+      "requirements": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "complete ring cycle",
+            "passed": true
+          },
+          {
+            "name": "loop closure at recorded states",
+            "passed": true,
+            "maximum_mm": 1.5732516979464566e-14,
+            "limit_mm": 0.05
+          },
+          {
+            "name": "all passive leaves reach aperture endpoint",
+            "passed": false,
+            "endpoint_error_rad": 0.9000000000000007,
+            "peak_leaf_excursion_rad": 2.4492935982947064e-16
+          },
+          {
+            "name": "every-step loop closure",
+            "passed": true,
+            "maximum_mm": 1.5899003276961254e-14,
+            "limit_mm": 0.05,
+            "full_coverage": true,
+            "covered_integration_steps": 40000
+          },
+          {
+            "name": "every-step passive leaf range",
+            "passed": true,
+            "full_coverage": true,
+            "constructed_range_rad": [
+              0.0,
+              0.9
+            ],
+            "numerical_allowance_rad": 1e-10
+          },
+          {
+            "name": "passive leaf synchrony",
+            "passed": true,
+            "maximum_difference_rad": 8.881784197001252e-16
+          },
+          {
+            "name": "single ring tracking",
+            "passed": false,
+            "maximum_error_rad": 0.28327195585996
+          },
+          {
+            "name": "no applied body wrenches",
+            "passed": true
+          },
+          {
+            "name": "no directly applied follower forces",
+            "passed": true
+          },
+          {
+            "name": "no unexpected controller fault",
+            "passed": false
+          }
+        ],
+        "scope": "Actual integrated ideal-pin linkage task; all integration-step native solver closure and joint extrema plus recorded post-state closure. This is not a continuous-time clearance proof or hardware qualification."
+      }
+    },
+    "disabled_first_closure": {
+      "model_sha256": "344095c42f92462a3b9a78f62eee2195d21a6d655a507b577028418790dc9e79",
+      "passed": false,
+      "expected_control_outcome_passed": true,
+      "options": {
+        "power": true,
+        "heartbeat": true,
+        "enforceLimits": true,
+        "brakes": true,
+        "torqueScale": 1.0,
+        "gripScale": 1.0,
+        "springScale": 1.0,
+        "brakeScale": 1.0,
+        "brakeDelayScale": 1.0,
+        "frictionScale": 1.0
+      },
+      "duration_s": 8.0,
+      "steps": 40000,
+      "leaf_maximum_positions_rad": {
+        "leaf_00_hinge": 0.0,
+        "leaf_01_hinge": 0.8998467229700207,
+        "leaf_02_hinge": 0.8998467229700204,
+        "leaf_03_hinge": 0.899846722970021,
+        "leaf_04_hinge": 0.8998467229700208,
+        "leaf_05_hinge": 0.8998467229700211,
+        "leaf_06_hinge": 0.899846722970021,
+        "leaf_07_hinge": 0.8998467229700209,
+        "leaf_08_hinge": 0.899846722970021
+      },
+      "trace_path": "outputs\\engineering-iris09-core-controls\\disabled_first_closure\\simulation\\trace.json.gz",
+      "trace_sha256": "ee8321e64b1bcf88b33dbed18679797c64cd24fcdadf0854fb76bf8a00863363",
+      "requirements": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "complete ring cycle",
+            "passed": true
+          },
+          {
+            "name": "loop closure at recorded states",
+            "passed": false,
+            "maximum_mm": 17.375591559417508,
+            "limit_mm": 0.05
+          },
+          {
+            "name": "all passive leaves reach aperture endpoint",
+            "passed": false,
+            "endpoint_error_rad": 0.9,
+            "peak_leaf_excursion_rad": 0.8998467229700211
+          },
+          {
+            "name": "every-step loop closure",
+            "passed": false,
+            "maximum_mm": 3.722314923361778e-07,
+            "limit_mm": 0.05,
+            "full_coverage": false,
+            "covered_integration_steps": 40000
+          },
+          {
+            "name": "every-step passive leaf range",
+            "passed": true,
+            "full_coverage": true,
+            "constructed_range_rad": [
+              0.0,
+              0.9
+            ],
+            "numerical_allowance_rad": 1e-10
+          },
+          {
+            "name": "passive leaf synchrony",
+            "passed": false,
+            "maximum_difference_rad": 0.8998467229700211
+          },
+          {
+            "name": "single ring tracking",
+            "passed": true,
+            "maximum_error_rad": 0.0005903018673687477
+          },
+          {
+            "name": "no applied body wrenches",
+            "passed": true
+          },
+          {
+            "name": "no directly applied follower forces",
+            "passed": true
+          },
+          {
+            "name": "no unexpected controller fault",
+            "passed": true
+          }
+        ],
+        "scope": "Actual integrated ideal-pin linkage task; all integration-step native solver closure and joint extrema plus recorded post-state closure. This is not a continuous-time clearance proof or hardware qualification."
+      }
+    }
+  }
+}

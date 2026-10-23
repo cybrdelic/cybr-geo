@@ -1,0 +1,109 @@
+name: ARX brake candidate diagnostic
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arx-brake-candidate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-brake-candidate:
+    name: Fresh CAD and loaded power-loss on Ubuntu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONFAULTHANDLER: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+      LP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-tested.txt
+      - name: Install native CAD and MuJoCo runtime libraries
+        run: |
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
+          sudo apt-get update -qq
+          sudo apt-get install -y g++ cmake ffmpeg xvfb libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
+      - name: Install pinned engineering dependencies
+        run: |
+          python -m pip install --only-binary=:all: -r requirements-tested.txt
+          python -m pip install --no-deps --no-build-isolation -e .
+          python -m pip check
+      - name: Rebuild candidate and test loaded motor-off behavior
+        shell: python
+        run: |
+          import hashlib, json, pathlib, subprocess, sys, time
+
+          output = pathlib.Path('outputs/portable-brake-candidate')
+          output.mkdir(parents=True, exist_ok=True)
+          log = output / 'command.log'
+          command = [sys.executable, '-u', '-m',
+                     'examples.engineering.arx_belt.verify_brake_candidate',
+                     '--output', str(output)]
+          status = dict(schema='cybrgeo-arx-brake-candidate-ci/1', command=command,
+                        timeout_s=3300, passed=False)
+          started = time.perf_counter()
+          try:
+              with log.open('w', encoding='utf-8') as stream:
+                  completed = subprocess.run(command, stdout=stream,
+                                             stderr=subprocess.STDOUT, timeout=3300)
+              status['returncode'] = completed.returncode
+              completed.check_returncode()
+              report = json.loads((output / 'candidate-verification.json').read_text(encoding='utf-8'))
+              assert report['schema'] == 'cybrgeo-arx-brake-candidate-diagnostic/1'
+              assert report['passed_software_diagnostic'] is True
+              assert report['manufacturing_qualified'] is False
+              assert report['posed_clearance']['passed'] is True
+              assert report['motor_off_loaded_puck']['passed'] is True
+              for filename, expected in report['traces_sha256'].items():
+                  assert hashlib.sha256((output / filename).read_bytes()).hexdigest() == expected
+              native = json.loads((output / 'native' / 'native-build.json').read_text(encoding='utf-8'))
+              assert native['schema'] == 'cybrgeo-native-build/1'
+              status['candidate_revision'] = report['candidate_revision']
+              status['native_build_sha256'] = report['native_build_sha256']
+              status['passed'] = True
+          except subprocess.TimeoutExpired:
+              status['timed_out'] = True
+              raise
+          finally:
+              status['elapsed_s'] = time.perf_counter() - started
+              (output / 'ci-status.json').write_text(json.dumps(status, indent=2) + '\n', encoding='utf-8')
+              if log.exists():
+                  print(log.read_text(encoding='utf-8', errors='replace')[-24000:])
+              print(json.dumps(status, indent=2))
+      - name: Render both passing recorded candidate traces through shared CAD replay
+        if: success()
+        run: |
+          xvfb-run -a python -m examples.engineering.arx_belt.capture_brake_candidate \
+            --run outputs/portable-brake-candidate \
+            --out outputs/portable-brake-candidate-media
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arx-brake-candidate-ubuntu
+          path: |
+            outputs/portable-brake-candidate/*.json
+            outputs/portable-brake-candidate/*.log
+            outputs/portable-brake-candidate/*.json.gz
+            outputs/portable-brake-candidate/native/*.json
+            outputs/portable-brake-candidate/native/cad/*.step
+            outputs/portable-brake-candidate/native/cad/*.stl
+            outputs/portable-brake-candidate/native/cad/placed/*.step
+            outputs/portable-brake-candidate-media/*.json
+            outputs/portable-brake-candidate-media/*.log
+            outputs/portable-brake-candidate-media/*.mp4
+          if-no-files-found: error
+          retention-days: 30

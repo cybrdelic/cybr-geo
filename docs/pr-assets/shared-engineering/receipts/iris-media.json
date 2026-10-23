@@ -1,0 +1,935 @@
+{
+  "schema": "cybrgeo-engineering-media/1",
+  "name": "iris09",
+  "source_checkout": {
+    "commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+    "tracked_changes": [],
+    "scope": "Checkout context; bound project, native and renderer hashes identify actual inputs"
+  },
+  "project_source_files": {
+    "design.py": "7a0c8bae330b4f51c38b5b8ccdcb600ea95dd4a43875e77e01a17617cb20d396",
+    "leaf_geometry.py": "1b6caaa6d2711acd036e23df9b56a6b49d729be4ef48839bda5ccb1fe8c25140",
+    "mechanism.py": "798728288c288deafc5610a8e41f8d33aa5fcd93630b4e4b9bf811cd66157174",
+    "project.json": "a1fa4fd19cebb2455fc66ffb8ce64e69944600a19e58d5965da1f8d2661d4600",
+    "project.py": "e5ad16787bc1b9ddc34d2f0ed1b083518ab370301bf1199d70d7f02277c78f4f",
+    "data/mechanism.json": "328fba30776c3c809a5d835876d762b47028cc9dc1a46318c58f8506da854156"
+  },
+  "input_files_sha256": {
+    "engineering.json": "9b4d5c83e55dbb56529541bf2ee408812256728600cd7097f405708ebac78e15",
+    "design-source.json": "9647ba85898484e5cebbd0a56c364595f66ee448023715ec0c0b4bcd9ff44d35",
+    "physical-source.json": "db001ae43b00f9ac671b6f2c5ea9645e9d677581cfd3a3a7198f1d11b71770e5",
+    "control-source.json": "6d36ef0edbc0df51ac5432bf5f44c2fc4c4c53eac2fc45bf1008846760e9f4c0",
+    "simulation/trace.json.gz": "28323d70eef242fdfc4340d41f1596c0229559f76612299f7c263d3b223f2347"
+  },
+  "renderer_source_files_sha256": {
+    "engineering_media.py": "ff5df38bc5bebb3d866499546b759d9fc6ded2e2bdd6cbd2dda404a2f68862a8",
+    "engineering_source.py": "c381d4e9251a66ef5faeaa8662a724b3cbf315bb43ac65a0eeee640dae86a96f",
+    "native_replay.py": "00bdcc7baa015cb9cf1b6aff68635ced3f12748f9322315ad58cc40562dc0784",
+    "physical_replay.py": "55a3cb855839457d3d55e3b403291303932ea56e532996891b0cfa159edbb8d4",
+    "render.py": "4bdc83e604958c5eef2541cddd9dda4ab01a94d589907cb030c248526e2066c8",
+    "media.py": "b636465e1884bd66dca2fde9211f3ab062838a29b8136018d6237b0bdb46ae14",
+    "cli.py": "492effd40e69b91719ca6ef94b9408a5dc3375ba894e7db7dff31e451b91c553",
+    "core.py": "75c52fdafd46ec533e77d42e8c4f02f292d6cc5215cc8a182f35ec41efce2af9",
+    "truth.py": "c32272178721c3427247f50fc690a93a9c746c1e54a5c6f79f7376b95d198a01"
+  },
+  "consumer_path": {
+    "project": "iris09",
+    "entrypoint": "mechanism_lab.engineering_media.render_run",
+    "replay_callback": "cybrgeo_project_cfe439525512b504d9dd6a245338b3c6cd64cf7217b208c5e2270c9b3961ff54.project.replay",
+    "observed_builder_calls": {
+      "native_replay.build_assembly": 1,
+      "physical_replay.build_assembly": 1
+    },
+    "active_pose_holder": "physical_replay.RecordedMotion",
+    "renderer": "render.Studio",
+    "proof": "Observed shared builder call/return; identical returned geometry/material buffers; verified and frozen recorded-state holder"
+  },
+  "model_sha256": "e3150c6532e1271212a06788bfbca4d372e0b35a032056319f98774583138e41",
+  "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+  "reference_sha256": "40424faa9bb4f67dd7556c494e30690874e2a0c22d5b1ad8206cdd75051bbf1c",
+  "runtime_implementation": {
+    "schema": "cybrgeo-causal-runtime/1",
+    "source_files": {
+      "causal_runtime.py": "be64d870c57bbbfa452a6cbba8fa8457b932cdbd88acb9f0685e24ec1429a4d7",
+      "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+    },
+    "packages": {
+      "numpy": "2.5.4",
+      "mujoco": "3.16.0"
+    },
+    "runtime": {
+      "python": "3.12.10",
+      "system": "Windows",
+      "machine": "AMD64"
+    },
+    "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+  },
+  "native_build_sha256": "6d08aa353f2fe8cc9bb5ac86df0cc2224e06488410d630d6d3942a3f41e0d605",
+  "native_source_binding_sha256": "458d22bbbf410a6a44cc8288dfaf1dbec6240728020641639d4e27a81d716608",
+  "replay_state_sha256": "83427a78b983dbfd43c7e22ee6ac14b4954633d1827f2d1420ec8d4bb58fa095",
+  "display_mesh_sha256": "70e04ffb0fb3f42a1815e0afbe1e4a3093de5c70b1ff23e39e6a1a38960748a2",
+  "replay_check": {
+    "passed": true,
+    "recorded_frames": 954,
+    "body_matrices_checked": 19080,
+    "max_matrix_component_error": 0.0,
+    "analytical_parts_valid": 68,
+    "scope": "Every recorded body matrix matches the trace; active replay uses the verified shared preceding-state holder. No continuous clearance claim."
+  },
+  "in_memory_surface_sha256": "f5bcaa6a3d232d5acd346d6231f555f870c747d5cd59b42b37ffae7c6b9fd3c5",
+  "native_source": {
+    "repository": "https://github.com/cybrdelic/cybr-iris09",
+    "commit": "6aac71594c211cc5934674b2113d9db8c5ec17c6",
+    "file": "IRIS-09.glsl",
+    "normalized_text_sha256": "455e1ba9b0740a6ab925f9c022eea5f217fd3bbfc08ffec3177fb3b1d925843b",
+    "checkout_bytes_sha256": "a0adeb7354f16e84d62c43af09d9c38b3e6542af9bad7730627536d01992145b",
+    "upstream_license": "No license grant supplied; adaptation requested by the source owner for CYBR GEO. No upstream license is inferred.",
+    "input_spec_sha256": "8eb5416acb68d354148af015b8740457038883d0875630a09fa571d3b0e7cde4",
+    "canonical_specification_sha256": "8eb5416acb68d354148af015b8740457038883d0875630a09fa571d3b0e7cde4",
+    "input_spec_hash_encoding": "physical_model.digest: sorted-key compact UTF-8 JSON; no numeric rounding",
+    "adapted_recipe_sha256": "798728288c288deafc5610a8e41f8d33aa5fcd93630b4e4b9bf811cd66157174",
+    "scope": "New rigid pinned-link mechanism derived from source optical geometry; no hardware qualification",
+    "assumptions": [
+      "New derived four-bar mechanism; the source has no inherited mechanical transmission or dynamics",
+      "One scene unit is assumed to be 50 mm; materials and motor values are engineering assumptions",
+      "Source foil thickness is 0.0325 mm; its manufacturing and tolerance stack are unqualified",
+      "Pinned joints use ideal axes with nominal CAD bores; bearing contact, flexibility, fatigue and wear are not modeled",
+      "Grooved split retainers have nominal CAD capture and clearance; elastic installation and retention strength are unqualified",
+      "Rotor capture lips retain 0.3 mm nominal thickness with an envelope-derived axial fit; their strength and deflection are unqualified",
+      "Joint limits are model travel guards, not a claim of physical stop hardware",
+      "Annular direct-drive DC torque port is a lumped actuator assumption with a fixed reaction housing, not a selected supplier motor",
+      "All nine follower leaves move through rod forces; only the annular rotor has a motor"
+    ],
+    "native_construction_sha256": "62fecc53a3c9d4a0e9381eb6b85b82057e4b2a6f53625dfe9c36173b7462eff2"
+  },
+  "part_count": 68,
+  "triangle_count": 673890,
+  "camera": {
+    "az": 235,
+    "el": 67.0,
+    "scale": 114.8074359235587,
+    "target": [
+      6.515213889512857,
+      3.317209480918976,
+      17.875000000000004
+    ],
+    "explode": 0.0,
+    "hide": [],
+    "section": null,
+    "title": "iris09",
+    "note": "Fresh native geometry at recorded integrated body poses",
+    "projection": "orthographic",
+    "focal_length_mm": 58.0,
+    "sensor_width_mm": 36.0,
+    "camera_distance_mm": null,
+    "f_stop": 11.0,
+    "focus_distance_mm": null,
+    "environment_strength": 0.24,
+    "background_strength": 1.0,
+    "light_size": 1.35,
+    "light_intensity": 1.0,
+    "floor_gap_mm": 0.0,
+    "floor_roughness": 0.82,
+    "floor": false,
+    "exposure": 1.0,
+    "studio_style": "product",
+    "floor_color": [
+      0.09,
+      0.095,
+      0.105
+    ],
+    "background_color": [
+      0.012,
+      0.016,
+      0.022
+    ],
+    "studio_target": null,
+    "studio_scale": null,
+    "studio_az": null,
+    "studio_el": null,
+    "floor_z_mm": null,
+    "tone_mapping": "neutral"
+  },
+  "stills": [
+    {
+      "path": "pose-00000.png",
+      "recorded_frame_index": 0,
+      "recorded_time_s": 0.0,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "6fc5777d986d5aac94348349afee4c028305294b8541f78634edf9d983d09d00",
+      "pixel_sha256_before_caption": "a4e229b3e360c6077459427f91af4da9778c853e4a16691c4c524b51ec864bc6"
+    },
+    {
+      "path": "pose-00477.png",
+      "recorded_frame_index": 477,
+      "recorded_time_s": 4.0068,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "be66d395b04df629f4a1f44da0c6136a036900065a14ad91aa20321781b9d3c1",
+      "pixel_sha256_before_caption": "0ebcc3432f5b10bc32d25074d0800a4b71bfe1518ff5a236d8dd29c8878f02cc"
+    },
+    {
+      "path": "pose-00953.png",
+      "recorded_frame_index": 953,
+      "recorded_time_s": 8.0,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "sha256": "0847c9dcb416bb09ddd716d7235b7c97dd23c236b47ce7db46bbf5c1f380fb15",
+      "pixel_sha256_before_caption": "7eeb6186b2113a864eac12f1096f33663279ef57b3ab99332e8fbac9258981f0"
+    }
+  ],
+  "still_renderer": {
+    "name": "vtk-pbr",
+    "renderer": "VTK PBR rasterizer",
+    "vtk_version": "9.6.2",
+    "render_window": "vtkWin32OpenGLRenderWindow",
+    "graphics_capabilities": "OpenGL vendor string:  Intel\nOpenGL renderer string:  Intel(R) UHD Graphics\nOpenGL version string:  4.5.0 - Build 31.0.101.4146\nOpenGL extensions:  \n  GL_3DFX_texture_compression_FXT1\n  GL_AMD_depth_clamp_separate\n  GL_AMD_vertex_shader_layer\n  GL_AMD_vertex_shader_viewport_index\n  GL_ARB_ES2_compatibility\n  GL_ARB_ES3_1_compatibility\n  GL_ARB_ES3_compatibility\n  GL_ARB_arrays_of_arrays\n  GL_ARB_base_instance\n  GL_ARB_bindless_texture\n  GL_ARB_blend_func_extended\n  GL_ARB_buffer_storage\n  GL_ARB_cl_event\n  GL_ARB_clear_buffer_object\n  GL_ARB_clear_texture\n  GL_ARB_clip_control\n  GL_ARB_color_buffer_float\n  GL_ARB_compressed_texture_pixel_storage\n  GL_ARB_compute_shader\n  GL_ARB_conditional_render_inverted\n  GL_ARB_conservative_depth\n  GL_ARB_copy_buffer\n  GL_ARB_copy_image\n  GL_ARB_cull_distance\n  GL_ARB_debug_output\n  GL_ARB_depth_buffer_float\n  GL_ARB_depth_clamp\n  GL_ARB_depth_texture\n  GL_ARB_derivative_control\n  GL_ARB_direct_state_access\n  GL_ARB_draw_buffers\n  GL_ARB_draw_buffers_blend\n  GL_ARB_draw_elements_base_vertex\n  GL_ARB_draw_indirect\n  GL_ARB_draw_instanced\n  GL_ARB_enhanced_layouts\n  GL_ARB_explicit_attrib_location\n  GL_ARB_explicit_uniform_location\n  GL_ARB_fragment_coord_conventions\n  GL_ARB_fragment_layer_viewport\n  GL_ARB_fragment_program\n  GL_ARB_fragment_program_shadow\n  GL_ARB_fragment_shader\n  GL_ARB_fragment_shader_interlock\n  GL_ARB_framebuffer_no_attachments\n  GL_ARB_framebuffer_object\n  GL_ARB_framebuffer_sRGB\n  GL_ARB_geometry_shader4\n  GL_ARB_get_program_binary\n  GL_ARB_get_texture_sub_image\n  GL_ARB_gl_spirv\n  GL_ARB_gpu_shader5\n  GL_ARB_gpu_shader_fp64\n  GL_ARB_half_float_pixel\n  GL_ARB_half_float_vertex\n  GL_ARB_indirect_parameters\n  GL_ARB_instanced_arrays\n  GL_ARB_internalformat_query\n  GL_ARB_internalformat_query2\n  GL_ARB_invalidate_subdata\n  GL_ARB_map_buffer_alignment\n  GL_ARB_map_buffer_range\n  GL_ARB_multi_bind\n  GL_ARB_multi_draw_indirect\n  GL_ARB_multisample\n  GL_ARB_multitexture\n  GL_ARB_occlusion_query\n  GL_ARB_occlusion_query2\n  GL_ARB_pipeline_statistics_query\n  GL_ARB_pixel_buffer_object\n  GL_ARB_point_parameters\n  GL_ARB_point_sprite\n  GL_ARB_polygon_offset_clamp\n  GL_ARB_post_depth_coverage\n  GL_ARB_program_interface_query\n  GL_ARB_provoking_vertex\n  GL_ARB_query_buffer_object\n  GL_ARB_robust_buffer_access_behavior\n  GL_ARB_robustness\n  GL_ARB_robustness_isolation\n  GL_ARB_sample_shading\n  GL_ARB_sampler_objects\n  GL_ARB_seamless_cube_map\n  GL_ARB_seamless_cubemap_per_texture\n  GL_ARB_separate_shader_objects\n  GL_ARB_shader_atomic_counter_ops\n  GL_ARB_shader_atomic_counters\n  GL_ARB_shader_bit_encoding\n  GL_ARB_shader_draw_parameters\n  GL_ARB_shader_group_vote\n  GL_ARB_shader_image_load_store\n  GL_ARB_shader_image_size\n  GL_ARB_shader_objects\n  GL_ARB_shader_precision\n  GL_ARB_shader_stencil_export\n  GL_ARB_shader_storage_buffer_object\n  GL_ARB_shader_subroutine\n  GL_ARB_shader_texture_image_samples\n  GL_ARB_shading_language_100\n  GL_ARB_shading_language_420pack\n  GL_ARB_shading_language_packing\n  GL_ARB_shadow\n  GL_ARB_spirv_extensions\n  GL_ARB_stencil_texturing\n  GL_ARB_sync\n  GL_ARB_tessellation_shader\n  GL_ARB_texture_barrier\n  GL_ARB_texture_border_clamp\n  GL_ARB_texture_buffer_object\n  GL_ARB_texture_buffer_object_rgb32\n  GL_ARB_texture_buffer_range\n  GL_ARB_texture_compression\n  GL_ARB_texture_compression_bptc\n  GL_ARB_texture_compression_rgtc\n  GL_ARB_texture_cube_map\n  GL_ARB_texture_cube_map_array\n  GL_ARB_texture_env_add\n  GL_ARB_texture_env_combine\n  GL_ARB_texture_env_crossbar\n  GL_ARB_texture_env_dot3\n  GL_ARB_texture_filter_anisotropic\n  GL_ARB_texture_float\n  GL_ARB_texture_gather\n  GL_ARB_texture_mirror_clamp_to_edge\n  GL_ARB_texture_mirrored_repeat\n  GL_ARB_texture_multisample\n  GL_ARB_texture_non_power_of_two\n  GL_ARB_texture_query_levels\n  GL_ARB_texture_query_lod\n  GL_ARB_texture_rectangle\n  GL_ARB_texture_rg\n  GL_ARB_texture_rgb10_a2ui\n  GL_ARB_texture_stencil8\n  GL_ARB_texture_storage\n  GL_ARB_texture_storage_multisample\n  GL_ARB_texture_swizzle\n  GL_ARB_texture_view\n  GL_ARB_timer_query\n  GL_ARB_transform_feedback2\n  GL_ARB_transform_feedback3\n  GL_ARB_transform_feedback_instanced\n  GL_ARB_transform_feedback_overflow_query\n  GL_ARB_transpose_matrix\n  GL_ARB_uniform_buffer_object\n  GL_ARB_vertex_array_bgra\n  GL_ARB_vertex_array_object\n  GL_ARB_vertex_attrib_64bit\n  GL_ARB_vertex_attrib_binding\n  GL_ARB_vertex_buffer_object\n  GL_ARB_vertex_program\n  GL_ARB_vertex_shader\n  GL_ARB_vertex_type_10f_11f_11f_rev\n  GL_ARB_vertex_type_2_10_10_10_rev\n  GL_ARB_viewport_array\n  GL_ARB_window_pos\n  GL_ATI_separate_stencil\n  GL_EXT_abgr\n  GL_EXT_bgra\n  GL_EXT_blend_color\n  GL_EXT_blend_equation_separate\n  GL_EXT_blend_func_separate\n  GL_EXT_blend_minmax\n  GL_EXT_blend_subtract\n  GL_EXT_clip_volume_hint\n  GL_EXT_compiled_vertex_array\n  GL_EXT_depth_bounds_test\n  GL_EXT_direct_state_access\n  GL_EXT_draw_buffers2\n  GL_EXT_draw_range_elements\n  GL_EXT_fog_coord\n  GL_EXT_framebuffer_blit\n  GL_EXT_framebuffer_multisample\n  GL_EXT_framebuffer_object\n  GL_EXT_geometry_shader4\n  GL_EXT_gpu_program_parameters\n  GL_EXT_gpu_shader4\n  GL_EXT_memory_object\n  GL_EXT_memory_object_win32\n  GL_EXT_multi_draw_arrays\n  GL_EXT_packed_depth_stencil\n  GL_EXT_packed_float\n  GL_EXT_packed_pixels\n  GL_EXT_polygon_offset_clamp\n  GL_EXT_rescale_normal\n  GL_EXT_secondary_color\n  GL_EXT_semaphore\n  GL_EXT_semaphore_win32\n  GL_EXT_separate_specular_color\n  GL_EXT_shader_framebuffer_fetch\n  GL_EXT_shader_integer_mix\n  GL_EXT_shadow_funcs\n  GL_EXT_stencil_two_side\n  GL_EXT_stencil_wrap\n  GL_EXT_texture3D\n  GL_EXT_texture_array\n  GL_EXT_texture_compression_s3tc\n  GL_EXT_texture_edge_clamp\n  GL_EXT_texture_env_add\n  GL_EXT_texture_env_combine\n  GL_EXT_texture_filter_anisotropic\n  GL_EXT_texture_integer\n  GL_EXT_texture_lod_bias\n  GL_EXT_texture_rectangle\n  GL_EXT_texture_sRGB\n  GL_EXT_texture_sRGB_decode\n  GL_EXT_texture_shared_exponent\n  GL_EXT_texture_snorm\n  GL_EXT_texture_storage\n  GL_EXT_texture_swizzle\n  GL_EXT_timer_query\n  GL_EXT_transform_feedback\n  GL_IBM_texture_mirrored_repeat\n  GL_INTEL_conservative_rasterization\n  GL_INTEL_fragment_shader_ordering\n  GL_INTEL_framebuffer_CMAA\n  GL_INTEL_map_texture\n  GL_INTEL_multi_rate_fragment_shader\n  GL_INTEL_performance_query\n  GL_KHR_blend_equation_advanced\n  GL_KHR_blend_equation_advanced_coherent\n  GL_KHR_context_flush_control\n  GL_KHR_debug\n  GL_KHR_no_error\n  GL_KHR_shader_subgroup\n  GL_KHR_shader_subgroup_arithmetic\n  GL_KHR_shader_subgroup_ballot\n  GL_KHR_shader_subgroup_basic\n  GL_KHR_shader_subgroup_clustered\n  GL_KHR_shader_subgroup_quad\n  GL_KHR_shader_subgroup_shuffle\n  GL_KHR_shader_subgroup_shuffle_relative\n  GL_KHR_shader_subgroup_vote\n  GL_KHR_texture_compression_astc_ldr\n  GL_NV_blend_square\n  GL_NV_conditional_render\n  GL_NV_primitive_restart\n  GL_NV_texgen_reflection\n  GL_OVR_multiview\n  GL_SGIS_generate_mipmap\n  GL_SGIS_texture_edge_clamp\n  GL_SGIS_texture_lod\n  GL_SUN_multi_draw_arrays\n  GL_WIN_swap_hint\n  WGL_EXT_swap_control\nPixelFormat Descriptor:\ndepth:  24\nclass:  TrueColor\nbuffer size:  32\nlevel:  0\nrenderType:  rgba\ndouble buffer:  True\nstereo:  False\nhardware acceleration:  True\nrgba:  redSize=8 greenSize=8blueSize=8alphaSize=8\naux buffers:  0\ndepth size:  24\nstencil size:  8\naccum:  redSize=16 greenSize=16blueSize=16alphaSize=16\n",
+    "supersample": 2,
+    "ambient_occlusion": [
+      {
+        "radius_model_units": 4.159622341422994,
+        "bias_model_units": 0.4991546809707592,
+        "kernel_size": 64,
+        "blur": true
+      }
+    ],
+    "generated_imagery": false,
+    "spp": null,
+    "scope": "Actual native mesh rasterization with source display materials and studio illumination; not path tracing"
+  },
+  "video": {
+    "path": "motion.mp4",
+    "sha256": "1adf478742c2e16752633e3e6b499136cbe4109b86e5d5ea6632ae19eb7b7cbd",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "fps": 24,
+    "frame_count": 193,
+    "source_duration_s": 8.0,
+    "video_duration_s": 8.041666666666666,
+    "terminal_hold_s": 0.041666666666666075,
+    "maximum_sample_hold_age_s": 0.00833333333333286,
+    "sampling": "Preceding recorded state at each real-time video tick; final state included; no interpolation",
+    "encoding": {
+      "codec": "libx264",
+      "crf": 17,
+      "preset": "medium",
+      "pixel_format": "yuv420p",
+      "version": "ffmpeg version 8.0.1-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+      "command": [
+        "ffmpeg",
+        "-y",
+        "-v",
+        "error",
+        "-threads",
+        "2",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "rgb24",
+        "-s",
+        "1920x1080",
+        "-r",
+        "24",
+        "-i",
+        "-",
+        "-an",
+        "-c:v",
+        "libx264",
+        "-threads",
+        "2",
+        "-preset",
+        "medium",
+        "-crf",
+        "17",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        "motion.partial.mp4"
+      ]
+    },
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1920,
+          "height": 1080,
+          "r_frame_rate": "24/1",
+          "nb_read_frames": "193"
+        }
+      ],
+      "format": {
+        "duration": "8.041667"
+      }
+    },
+    "renderer": {
+      "name": "vtk-pbr",
+      "renderer": "VTK PBR rasterizer",
+      "vtk_version": "9.6.2",
+      "render_window": "vtkWin32OpenGLRenderWindow",
+      "graphics_capabilities": "OpenGL vendor string:  Intel\nOpenGL renderer string:  Intel(R) UHD Graphics\nOpenGL version string:  4.5.0 - Build 31.0.101.4146\nOpenGL extensions:  \n  GL_3DFX_texture_compression_FXT1\n  GL_AMD_depth_clamp_separate\n  GL_AMD_vertex_shader_layer\n  GL_AMD_vertex_shader_viewport_index\n  GL_ARB_ES2_compatibility\n  GL_ARB_ES3_1_compatibility\n  GL_ARB_ES3_compatibility\n  GL_ARB_arrays_of_arrays\n  GL_ARB_base_instance\n  GL_ARB_bindless_texture\n  GL_ARB_blend_func_extended\n  GL_ARB_buffer_storage\n  GL_ARB_cl_event\n  GL_ARB_clear_buffer_object\n  GL_ARB_clear_texture\n  GL_ARB_clip_control\n  GL_ARB_color_buffer_float\n  GL_ARB_compressed_texture_pixel_storage\n  GL_ARB_compute_shader\n  GL_ARB_conditional_render_inverted\n  GL_ARB_conservative_depth\n  GL_ARB_copy_buffer\n  GL_ARB_copy_image\n  GL_ARB_cull_distance\n  GL_ARB_debug_output\n  GL_ARB_depth_buffer_float\n  GL_ARB_depth_clamp\n  GL_ARB_depth_texture\n  GL_ARB_derivative_control\n  GL_ARB_direct_state_access\n  GL_ARB_draw_buffers\n  GL_ARB_draw_buffers_blend\n  GL_ARB_draw_elements_base_vertex\n  GL_ARB_draw_indirect\n  GL_ARB_draw_instanced\n  GL_ARB_enhanced_layouts\n  GL_ARB_explicit_attrib_location\n  GL_ARB_explicit_uniform_location\n  GL_ARB_fragment_coord_conventions\n  GL_ARB_fragment_layer_viewport\n  GL_ARB_fragment_program\n  GL_ARB_fragment_program_shadow\n  GL_ARB_fragment_shader\n  GL_ARB_fragment_shader_interlock\n  GL_ARB_framebuffer_no_attachments\n  GL_ARB_framebuffer_object\n  GL_ARB_framebuffer_sRGB\n  GL_ARB_geometry_shader4\n  GL_ARB_get_program_binary\n  GL_ARB_get_texture_sub_image\n  GL_ARB_gl_spirv\n  GL_ARB_gpu_shader5\n  GL_ARB_gpu_shader_fp64\n  GL_ARB_half_float_pixel\n  GL_ARB_half_float_vertex\n  GL_ARB_indirect_parameters\n  GL_ARB_instanced_arrays\n  GL_ARB_internalformat_query\n  GL_ARB_internalformat_query2\n  GL_ARB_invalidate_subdata\n  GL_ARB_map_buffer_alignment\n  GL_ARB_map_buffer_range\n  GL_ARB_multi_bind\n  GL_ARB_multi_draw_indirect\n  GL_ARB_multisample\n  GL_ARB_multitexture\n  GL_ARB_occlusion_query\n  GL_ARB_occlusion_query2\n  GL_ARB_pipeline_statistics_query\n  GL_ARB_pixel_buffer_object\n  GL_ARB_point_parameters\n  GL_ARB_point_sprite\n  GL_ARB_polygon_offset_clamp\n  GL_ARB_post_depth_coverage\n  GL_ARB_program_interface_query\n  GL_ARB_provoking_vertex\n  GL_ARB_query_buffer_object\n  GL_ARB_robust_buffer_access_behavior\n  GL_ARB_robustness\n  GL_ARB_robustness_isolation\n  GL_ARB_sample_shading\n  GL_ARB_sampler_objects\n  GL_ARB_seamless_cube_map\n  GL_ARB_seamless_cubemap_per_texture\n  GL_ARB_separate_shader_objects\n  GL_ARB_shader_atomic_counter_ops\n  GL_ARB_shader_atomic_counters\n  GL_ARB_shader_bit_encoding\n  GL_ARB_shader_draw_parameters\n  GL_ARB_shader_group_vote\n  GL_ARB_shader_image_load_store\n  GL_ARB_shader_image_size\n  GL_ARB_shader_objects\n  GL_ARB_shader_precision\n  GL_ARB_shader_stencil_export\n  GL_ARB_shader_storage_buffer_object\n  GL_ARB_shader_subroutine\n  GL_ARB_shader_texture_image_samples\n  GL_ARB_shading_language_100\n  GL_ARB_shading_language_420pack\n  GL_ARB_shading_language_packing\n  GL_ARB_shadow\n  GL_ARB_spirv_extensions\n  GL_ARB_stencil_texturing\n  GL_ARB_sync\n  GL_ARB_tessellation_shader\n  GL_ARB_texture_barrier\n  GL_ARB_texture_border_clamp\n  GL_ARB_texture_buffer_object\n  GL_ARB_texture_buffer_object_rgb32\n  GL_ARB_texture_buffer_range\n  GL_ARB_texture_compression\n  GL_ARB_texture_compression_bptc\n  GL_ARB_texture_compression_rgtc\n  GL_ARB_texture_cube_map\n  GL_ARB_texture_cube_map_array\n  GL_ARB_texture_env_add\n  GL_ARB_texture_env_combine\n  GL_ARB_texture_env_crossbar\n  GL_ARB_texture_env_dot3\n  GL_ARB_texture_filter_anisotropic\n  GL_ARB_texture_float\n  GL_ARB_texture_gather\n  GL_ARB_texture_mirror_clamp_to_edge\n  GL_ARB_texture_mirrored_repeat\n  GL_ARB_texture_multisample\n  GL_ARB_texture_non_power_of_two\n  GL_ARB_texture_query_levels\n  GL_ARB_texture_query_lod\n  GL_ARB_texture_rectangle\n  GL_ARB_texture_rg\n  GL_ARB_texture_rgb10_a2ui\n  GL_ARB_texture_stencil8\n  GL_ARB_texture_storage\n  GL_ARB_texture_storage_multisample\n  GL_ARB_texture_swizzle\n  GL_ARB_texture_view\n  GL_ARB_timer_query\n  GL_ARB_transform_feedback2\n  GL_ARB_transform_feedback3\n  GL_ARB_transform_feedback_instanced\n  GL_ARB_transform_feedback_overflow_query\n  GL_ARB_transpose_matrix\n  GL_ARB_uniform_buffer_object\n  GL_ARB_vertex_array_bgra\n  GL_ARB_vertex_array_object\n  GL_ARB_vertex_attrib_64bit\n  GL_ARB_vertex_attrib_binding\n  GL_ARB_vertex_buffer_object\n  GL_ARB_vertex_program\n  GL_ARB_vertex_shader\n  GL_ARB_vertex_type_10f_11f_11f_rev\n  GL_ARB_vertex_type_2_10_10_10_rev\n  GL_ARB_viewport_array\n  GL_ARB_window_pos\n  GL_ATI_separate_stencil\n  GL_EXT_abgr\n  GL_EXT_bgra\n  GL_EXT_blend_color\n  GL_EXT_blend_equation_separate\n  GL_EXT_blend_func_separate\n  GL_EXT_blend_minmax\n  GL_EXT_blend_subtract\n  GL_EXT_clip_volume_hint\n  GL_EXT_compiled_vertex_array\n  GL_EXT_depth_bounds_test\n  GL_EXT_direct_state_access\n  GL_EXT_draw_buffers2\n  GL_EXT_draw_range_elements\n  GL_EXT_fog_coord\n  GL_EXT_framebuffer_blit\n  GL_EXT_framebuffer_multisample\n  GL_EXT_framebuffer_object\n  GL_EXT_geometry_shader4\n  GL_EXT_gpu_program_parameters\n  GL_EXT_gpu_shader4\n  GL_EXT_memory_object\n  GL_EXT_memory_object_win32\n  GL_EXT_multi_draw_arrays\n  GL_EXT_packed_depth_stencil\n  GL_EXT_packed_float\n  GL_EXT_packed_pixels\n  GL_EXT_polygon_offset_clamp\n  GL_EXT_rescale_normal\n  GL_EXT_secondary_color\n  GL_EXT_semaphore\n  GL_EXT_semaphore_win32\n  GL_EXT_separate_specular_color\n  GL_EXT_shader_framebuffer_fetch\n  GL_EXT_shader_integer_mix\n  GL_EXT_shadow_funcs\n  GL_EXT_stencil_two_side\n  GL_EXT_stencil_wrap\n  GL_EXT_texture3D\n  GL_EXT_texture_array\n  GL_EXT_texture_compression_s3tc\n  GL_EXT_texture_edge_clamp\n  GL_EXT_texture_env_add\n  GL_EXT_texture_env_combine\n  GL_EXT_texture_filter_anisotropic\n  GL_EXT_texture_integer\n  GL_EXT_texture_lod_bias\n  GL_EXT_texture_rectangle\n  GL_EXT_texture_sRGB\n  GL_EXT_texture_sRGB_decode\n  GL_EXT_texture_shared_exponent\n  GL_EXT_texture_snorm\n  GL_EXT_texture_storage\n  GL_EXT_texture_swizzle\n  GL_EXT_timer_query\n  GL_EXT_transform_feedback\n  GL_IBM_texture_mirrored_repeat\n  GL_INTEL_conservative_rasterization\n  GL_INTEL_fragment_shader_ordering\n  GL_INTEL_framebuffer_CMAA\n  GL_INTEL_map_texture\n  GL_INTEL_multi_rate_fragment_shader\n  GL_INTEL_performance_query\n  GL_KHR_blend_equation_advanced\n  GL_KHR_blend_equation_advanced_coherent\n  GL_KHR_context_flush_control\n  GL_KHR_debug\n  GL_KHR_no_error\n  GL_KHR_shader_subgroup\n  GL_KHR_shader_subgroup_arithmetic\n  GL_KHR_shader_subgroup_ballot\n  GL_KHR_shader_subgroup_basic\n  GL_KHR_shader_subgroup_clustered\n  GL_KHR_shader_subgroup_quad\n  GL_KHR_shader_subgroup_shuffle\n  GL_KHR_shader_subgroup_shuffle_relative\n  GL_KHR_shader_subgroup_vote\n  GL_KHR_texture_compression_astc_ldr\n  GL_NV_blend_square\n  GL_NV_conditional_render\n  GL_NV_primitive_restart\n  GL_NV_texgen_reflection\n  GL_OVR_multiview\n  GL_SGIS_generate_mipmap\n  GL_SGIS_texture_edge_clamp\n  GL_SGIS_texture_lod\n  GL_SUN_multi_draw_arrays\n  GL_WIN_swap_hint\n  WGL_EXT_swap_control\nPixelFormat Descriptor:\ndepth:  24\nclass:  TrueColor\nbuffer size:  32\nlevel:  0\nrenderType:  rgba\ndouble buffer:  True\nstereo:  False\nhardware acceleration:  True\nrgba:  redSize=8 greenSize=8blueSize=8alphaSize=8\naux buffers:  0\ndepth size:  24\nstencil size:  8\naccum:  redSize=16 greenSize=16blueSize=16alphaSize=16\n",
+      "supersample": 2,
+      "ambient_occlusion": [
+        {
+          "radius_model_units": 4.159622341422994,
+          "bias_model_units": 0.4991546809707592,
+          "kernel_size": 64,
+          "blur": true
+        }
+      ],
+      "generated_imagery": false,
+      "spp": null,
+      "scope": "Actual native mesh rasterization with source display materials and studio illumination; not path tracing"
+    }
+  },
+  "truth": {
+    "model": "iris09",
+    "requested_intent": "inspection",
+    "resolved_intent": "inspection",
+    "allow_estimates": false,
+    "passed": true,
+    "part_count": 68,
+    "tier_counts": {
+      "authoritative": 68
+    },
+    "blocked": [],
+    "uncertain": [],
+    "parts": [
+      {
+        "name": "rotor__annular_rotor_and_drive_pins",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__knob_mean_radius_approximation",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_00",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_00__leaf_shaft_crank",
+        "group": "leaf_00",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_00__output_pin_keeper",
+        "group": "leaf_00",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_00__lower_shaft_collar",
+        "group": "leaf_00",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_00__upper_shaft_collar",
+        "group": "leaf_00",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_00__bored_connecting_rod",
+        "group": "rod_00",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_01",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_01__leaf_shaft_crank",
+        "group": "leaf_01",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_01__output_pin_keeper",
+        "group": "leaf_01",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_01__lower_shaft_collar",
+        "group": "leaf_01",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_01__upper_shaft_collar",
+        "group": "leaf_01",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_01__bored_connecting_rod",
+        "group": "rod_01",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_02",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_02__leaf_shaft_crank",
+        "group": "leaf_02",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_02__output_pin_keeper",
+        "group": "leaf_02",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_02__lower_shaft_collar",
+        "group": "leaf_02",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_02__upper_shaft_collar",
+        "group": "leaf_02",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_02__bored_connecting_rod",
+        "group": "rod_02",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_03",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_03__leaf_shaft_crank",
+        "group": "leaf_03",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_03__output_pin_keeper",
+        "group": "leaf_03",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_03__lower_shaft_collar",
+        "group": "leaf_03",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_03__upper_shaft_collar",
+        "group": "leaf_03",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_03__bored_connecting_rod",
+        "group": "rod_03",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_04",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_04__leaf_shaft_crank",
+        "group": "leaf_04",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_04__output_pin_keeper",
+        "group": "leaf_04",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_04__lower_shaft_collar",
+        "group": "leaf_04",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_04__upper_shaft_collar",
+        "group": "leaf_04",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_04__bored_connecting_rod",
+        "group": "rod_04",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_05",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_05__leaf_shaft_crank",
+        "group": "leaf_05",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_05__output_pin_keeper",
+        "group": "leaf_05",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_05__lower_shaft_collar",
+        "group": "leaf_05",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_05__upper_shaft_collar",
+        "group": "leaf_05",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_05__bored_connecting_rod",
+        "group": "rod_05",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_06",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_06__leaf_shaft_crank",
+        "group": "leaf_06",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_06__output_pin_keeper",
+        "group": "leaf_06",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_06__lower_shaft_collar",
+        "group": "leaf_06",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_06__upper_shaft_collar",
+        "group": "leaf_06",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_06__bored_connecting_rod",
+        "group": "rod_06",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_07",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_07__leaf_shaft_crank",
+        "group": "leaf_07",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_07__output_pin_keeper",
+        "group": "leaf_07",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_07__lower_shaft_collar",
+        "group": "leaf_07",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_07__upper_shaft_collar",
+        "group": "leaf_07",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_07__bored_connecting_rod",
+        "group": "rod_07",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rotor__input_pin_keeper_08",
+        "group": "rotor",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_08__leaf_shaft_crank",
+        "group": "leaf_08",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_08__output_pin_keeper",
+        "group": "leaf_08",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_08__lower_shaft_collar",
+        "group": "leaf_08",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "leaf_08__upper_shaft_collar",
+        "group": "leaf_08",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "rod_08__bored_connecting_rod",
+        "group": "rod_08",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__housing_material_3",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__housing_material_2",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__housing_material_5",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__housing_material_1",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__screw_0",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__screw_1",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__screw_2",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__screw_3",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__screw_4",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__screw_5",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__lens_0",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      },
+      {
+        "name": "fixed__lens_1",
+        "group": "fixed",
+        "role": "Native body-local display mesh; collision geometry is separately authored",
+        "provenance": "imported-analytic-cad",
+        "tier": "authoritative",
+        "allowed": true
+      }
+    ],
+    "claim": "inspection output may contain estimates/unknowns and must not be presented as reference geometry"
+  },
+  "requirements": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "complete ring cycle",
+        "passed": true
+      },
+      {
+        "name": "loop closure at recorded states",
+        "passed": true,
+        "maximum_mm": 3.722851617216969e-07,
+        "limit_mm": 0.05
+      },
+      {
+        "name": "all passive leaves reach aperture endpoint",
+        "passed": true,
+        "endpoint_error_rad": 0.00020458384682242592,
+        "peak_leaf_excursion_rad": 0.8998339932779758
+      },
+      {
+        "name": "every-step loop closure",
+        "passed": true,
+        "maximum_mm": 3.722882204047887e-07,
+        "limit_mm": 0.05,
+        "full_coverage": true,
+        "covered_integration_steps": 40000
+      },
+      {
+        "name": "every-step passive leaf range",
+        "passed": true,
+        "full_coverage": true,
+        "constructed_range_rad": [
+          0.0,
+          0.9
+        ],
+        "numerical_allowance_rad": 1e-10
+      },
+      {
+        "name": "passive leaf synchrony",
+        "passed": true,
+        "maximum_difference_rad": 1.4432899320127035e-15
+      },
+      {
+        "name": "single ring tracking",
+        "passed": true,
+        "maximum_error_rad": 0.000633740686653006
+      },
+      {
+        "name": "no applied body wrenches",
+        "passed": true
+      },
+      {
+        "name": "no directly applied follower forces",
+        "passed": true
+      },
+      {
+        "name": "no unexpected controller fault",
+        "passed": true
+      }
+    ],
+    "scope": "Actual integrated ideal-pin linkage task; all integration-step native solver closure and joint extrema plus recorded post-state closure. This is not a continuous-time clearance proof or hardware qualification."
+  },
+  "qualification": {
+    "construction": "native authored geometry and explicit mass records",
+    "dynamics": "actual MuJoCo integration of declared electrical drives, mechanical constraints and contacts",
+    "clearance": "project-declared contact and native clearance scope; not a complete continuous B-rep motion envelope",
+    "hardware": "not qualified"
+  },
+  "limitations": [],
+  "elapsed_s": 180.20882960000017,
+  "scope": "Rerendered native geometry at accepted integrated model states. Recorded state holds are explicit. Images do not qualify manufacturing, continuous clearance, contact fidelity or hardware capacity.",
+  "files_sha256": {
+    "encoding.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frames.json": "afac53d3880d17d9989540797a62d00f44bf3d6bc589ded10b3cf082df659b95",
+    "motion.mp4": "1adf478742c2e16752633e3e6b499136cbe4109b86e5d5ea6632ae19eb7b7cbd",
+    "pose-00000.png": "6fc5777d986d5aac94348349afee4c028305294b8541f78634edf9d983d09d00",
+    "pose-00477.png": "be66d395b04df629f4a1f44da0c6136a036900065a14ad91aa20321781b9d3c1",
+    "pose-00953.png": "0847c9dcb416bb09ddd716d7235b7c97dd23c236b47ce7db46bbf5c1f380fb15",
+    "progress.json": "3863786c1971692b0bd9d20f76b7f518bbb135d4c26c572da58d86f85229d581"
+  }
+}

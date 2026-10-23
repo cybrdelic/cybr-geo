@@ -1,0 +1,24 @@
+{
+  "schema": "cybrgeo-geometry-client-run/1",
+  "output": "C:\\Users\\alexf\\AppData\\Local\\Temp\\cybr-geo-assembly-20261022\\repo\\outputs\\arx-compact-refined-accepted-final",
+  "parts": 278,
+  "construction_code_sha256": {
+    "src/mechanism_lab/part_geometry.py": "24b98ab48930319e475d22f8af440eb737618f237dec4767c74ebf264a406d22",
+    "src/mechanism_lab/shape_dag.py": "da11471bffb07c551c42d64cf1826ae4d928a0cb7ab4b06990474942226b8e65",
+    "src/mechanism_lab/native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7",
+    "examples/engineering/arx_compact/design.py": "33e61d045db05cfcc66bdf0a9c5af0b13da2332148a55b5cfd0aae670a813795",
+    "examples/engineering/arx_compact/refined.py": "9c8bf409496ea6429b2d32ff2e48466cb2008e61b89a0a271cea7390a342cf72"
+  },
+  "changed_parts": 123,
+  "captured_time_s": 2.5,
+  "geometry_density_mass_delta_kg": -0.004916670604505643,
+  "build_and_reconciliation_seconds": 151.34996609995142,
+  "render_seconds": 7.359957900014706,
+  "media_sha256": {
+    "reference.png": "95873dae9bc33228bebe9488ab5635cb01908c7f6aa3c85a8626460f2b0844bf"
+  },
+  "property_reconciliation_sha256": "b50c7b9b25e1459138f2c4c25955f13acb7a8ae46af09a979084c9f0330af84f",
+  "passed": true,
+  "dynamics_rerun": false,
+  "hardware_qualified": false
+}

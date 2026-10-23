@@ -1,0 +1,197 @@
+<mujoco model="ARX6_P2_mechanical_integration">
+  <compiler angle="radian" inertiafromgeom="false" autolimits="true" />
+  <option timestep="0.000416666666667" gravity="0 -9.80665 0" integrator="implicitfast" solver="Newton" cone="elliptic" iterations="80" tolerance="1e-10">
+    <flag energy="enable" multiccd="enable" autoreset="disable" filterparent="disable" />
+  </option>
+  <size memory="32M" />
+  <default>
+    <geom solref="0.002 1" solimp="0.95 0.99 0.0001" friction="0.35 0.002 0.0001" condim="4" margin="0" />
+  </default>
+  <worldbody>
+    <geom name="floor" type="plane" size="1 1 0.1" quat="0.7071067811865476 -0.7071067811865476 0 0" rgba=".16 .17 .18 1" />
+    <geom name="nest_A_base" type="cylinder" pos="0.29 0.0038 -0.124" quat="0.7071067811865476 -0.7071067811865476 0 0" size=".0366 .0036" rgba=".12 .12 .12 1" />
+    <geom name="nest_A_seat" type="cylinder" pos="0.29 0.0104 -0.124" quat="0.7071067811865476 -0.7071067811865476 0 0" size=".015 .0036" rgba=".6 .6 .6 1" />
+    <geom name="nest_B_base" type="cylinder" pos="0.33 0.0038 0.124" quat="0.7071067811865476 -0.7071067811865476 0 0" size=".0366 .0036" rgba=".12 .12 .12 1" />
+    <geom name="nest_B_seat" type="cylinder" pos="0.33 0.0104 0.124" quat="0.7071067811865476 -0.7071067811865476 0 0" size=".015 .0036" rgba=".6 .6 .6 1" />
+    <body name="turret" pos="0 0 0">
+      <inertial pos="-0.003652685096314 0.1136492740608 -0.1141645097054" mass="4.2573952004078714" fullinertia="0.06402839741765 0.0541259067566 0.01550510151642 -0.0003375063562784 0.002776626095474 0.01494901529274" />
+      <joint name="j1" type="hinge" axis="0 -1 0" range="-0.65 0.65" damping="0.03" frictionloss="0.06" armature="0.0108457671875" solreffriction=".001 1" solimpfriction=".999 .9999 .00001" />
+      <body name="upper" pos="0 0.144 0">
+        <inertial pos="-0.0008310058974529 0.2137147245883 0.0966563046021" mass="4.479617203830217" fullinertia="0.125851271229 0.07306338801099 0.05613332738455 0.0004018143093428 -0.0005396717420945 -0.04538541779065" />
+        <joint name="j2" type="hinge" axis="0 0 -1" range="-0.25 0.95" damping="0.06" frictionloss="0.1" armature="0.0353568725103" solreffriction=".001 1" solimpfriction=".999 .9999 .00001" />
+        <body name="fore" pos="0 0.28 0">
+          <inertial pos="7.290811290392e-06 0.07111812471109 0.03300427489412" mass="1.89794278900319" fullinertia="0.01539420344927 0.006059084522434 0.01004794869364 1.681648898949e-05 -1.36609788525e-05 0.004831268656882" />
+          <joint name="j3" type="hinge" axis="0 0 -1" range="0.95 2.1" damping="0.04" frictionloss="0.07" armature="0.0353568725103" solreffriction=".001 1" solimpfriction=".999 .9999 .00001" />
+          <body name="roll" pos="0 0.26 0">
+            <inertial pos="-4.11048465628e-07 -0.01308483710397 -0.08678574242129" mass="0.9745610087805203" fullinertia="0.007051828261334 0.006240562306715 0.001012564221387 -9.333337310266e-08 1.019270403186e-07 0.001121399869537" />
+            <joint name="j4" type="hinge" axis="0 1 0" range="-0.6 0.6" damping="0.006" frictionloss="0.012" armature="0.00792829469695" solreffriction=".001 1" solimpfriction=".999 .9999 .00001" />
+            <body name="bend" pos="0 0 0">
+              <inertial pos="-7.305924618597e-06 0.06925987783778 -0.008908217898217" mass="0.9595044648881442" fullinertia="0.004588902231653 0.0008822151372403 0.00397468933127 -4.51317839683e-07 -6.993606096493e-07 -0.0005693205264329" />
+              <joint name="j5" type="hinge" axis="0 0 -1" range="0.85 1.75" damping="0.006" frictionloss="0.012" armature="0.00792829469695" solreffriction=".001 1" solimpfriction=".999 .9999 .00001" />
+              <body name="tool" pos="0 0 0">
+                <inertial pos="-2.984726776662e-06 0.1747512554407 -0.001448541882188" mass="0.3104677419578493" fullinertia="0.0003056893898159 0.0001358693997105 0.0003861669302797 -4.760595385431e-08 1.374257785481e-09 1.134364668486e-05" />
+                <joint name="j6" type="hinge" axis="0 1 0" range="2.1 4.2" damping="0.004" frictionloss="0.008" armature="0.00792829469695" solreffriction=".001 1" solimpfriction=".999 .9999 .00001" />
+                <site name="tcp" pos="0 0.224 0" size=".002" />
+                <body name="jaw_left" pos="0 0.2192 0">
+                  <inertial pos="-0.00119149343045 -0.00941256158018 -8.41200017302e-20" mass="0.0262741311435" fullinertia="3.69482491561e-06 5.67480243621e-06 7.95262251476e-06 -6.42124610775e-07 3.72113342885e-23 -1.12825279543e-22" />
+                  <joint name="jaw_left" type="slide" axis="1 0 0" range=".010 .040" damping=".4" frictionloss="2.68704378109" armature="0.559674272222" />
+                  <geom name="pad_left" type="box" pos="0.0009 0 0" size=".0009 .012 .0092" rgba=".08 .08 .08 1" />
+                  <geom name="structure_jaw_carriage_jaw_left" type="box" pos="0.0058 -0.0262 0" size="0.004 0.0032 0.0138" rgba=".45 .45 .45 1" />
+                  <geom name="structure_jaw_finger_jaw_left" type="box" pos="0.0058 -0.0051 0" size="0.004 0.0179 0.01" rgba=".45 .45 .45 1" />
+                </body>
+                <body name="jaw_right" pos="0 0.2192 0">
+                  <inertial pos="0.00119149343045 -0.00941256158018 -8.41200017302e-20" mass="0.0262741311435" fullinertia="3.69482491561e-06 5.67480243621e-06 7.95262251476e-06 6.42124610775e-07 -3.72113342885e-23 -1.12825279543e-22" />
+                  <joint name="jaw_right" type="slide" axis="-1 0 0" range=".010 .040" damping=".4" frictionloss="2.68704378109" armature="0.559674272222" />
+                  <geom name="pad_right" type="box" pos="-0.0009 0 0" size=".0009 .012 .0092" rgba=".08 .08 .08 1" />
+                  <geom name="structure_jaw_carriage_jaw_right" type="box" pos="-0.0058 -0.0262 0" size="0.004 0.0032 0.0138" rgba=".45 .45 .45 1" />
+                  <geom name="structure_jaw_finger_jaw_right" type="box" pos="-0.0058 -0.0051 0" size="0.004 0.0179 0.01" rgba=".45 .45 .45 1" />
+                </body>
+                <geom name="structure_gripper_floor" type="box" pos="0 0.1876 0" size="0.053 0.002 0.016" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_end_-51" type="box" pos="-0.051 0.19905 0" size="0.002 0.00945 0.016" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_end_51" type="box" pos="0.051 0.19905 0" size="0.002 0.00945 0.016" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_front_wall" type="box" pos="0 0.19905 0.015" size="0.049 0.00945 0.001" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_rear_wall_side_-27.5375" type="box" pos="-0.0275375 0.19905 -0.015" size="0.0214625 0.00945 0.001" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_rear_wall_side_27.5375" type="box" pos="0.0275375 0.19905 -0.015" size="0.0214625 0.00945 0.001" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_rear_wall_bottom" type="box" pos="0 0.1930125 -0.015" size="0.006075 0.0034125 0.001" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_rear_wall_top" type="box" pos="0 0.2075375 -0.015" size="0.006075 0.0009625 0.001" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_front_bearing_post" type="box" pos="0 0.1963 0.0065" size="0.004 0.0107 0.0025" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor_clamp_side_-11.5375" type="box" pos="-0.0115375 0.20005 -0.012" size="0.0054625 0.00845 0.004" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor_clamp_side_11.5375" type="box" pos="0.0115375 0.20005 -0.012" size="0.0054625 0.00845 0.004" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor_clamp_bottom" type="box" pos="0 0.1940125 -0.012" size="0.006075 0.0024125 0.004" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor_clamp_top" type="box" pos="0 0.2075375 -0.012" size="0.006075 0.0009625 0.004" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor_clamp_leg_-14" type="box" pos="-0.014 0.1911 -0.012" size="0.003 0.0025 0.004" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor_clamp_leg_14" type="box" pos="0.014 0.1911 -0.012" size="0.003 0.0025 0.004" rgba=".45 .45 .45 1" />
+                <geom name="structure_gripper_motor" type="box" pos="0 0.2015 -0.024" size="0.006 0.005 0.016" rgba=".45 .45 .45 1" />
+                <geom name="P2_cable_mount" type="box" pos="0 0.191 -0.018" size="0.025 0.006 0.0015" />
+                <geom name="P2_cable_clamp" type="box" pos="0 0.191 -0.023" size="0.008 0.0035 0.0035" />
+              </body>
+              <geom name="package_J6_motor" type="cylinder" fromto="0 -0.038 0 0 0.0106 0" size="0.011" rgba=".3 .3 .3 1" />
+              <geom name="package_J6_gearhead" type="cylinder" fromto="0 0.0106 0 0 0.0496 0" size="0.011" rgba=".3 .3 .3 1" />
+              <geom name="package_J6_gear_mount_and_rear_flange" type="cylinder" fromto="0 0.0496 0 0 0.0576 0" size="0.025" rgba=".3 .3 .3 1" />
+              <geom name="package_J6_coupling_cage" type="cylinder" fromto="0 0.0576 0 0 0.0916 0" size="0.02" rgba=".3 .3 .3 1" />
+              <geom name="package_J6_front_flange_and_rear_cover" type="cylinder" fromto="0 0.0956 0 0 0.1456 0" size="0.0275" rgba=".3 .3 .3 1" />
+              <geom name="package_J6_bearing_housing" type="cylinder" fromto="0 0.1456 0 0 0.1776 0" size="0.018" rgba=".3 .3 .3 1" />
+              <geom name="structure_bend_ear_-26.5" type="box" pos="0 0 -0.0265" size="0.018 0.016 0.0025" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_ear_26.5" type="box" pos="0 0 0.0265" size="0.018 0.016 0.0025" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_support_rail_-28.5" type="box" pos="-0.0285 0.0838 0" size="0.003 0.0758 0.004" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_support_rail_28.5" type="box" pos="0.0285 0.0838 0" size="0.003 0.0758 0.004" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_clamp_side_-24.5" type="box" pos="-0.0245 0.1596 0" size="0.0055 0.006 0.018" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_clamp_side_24.5" type="box" pos="0.0245 0.1596 0" size="0.0055 0.006 0.018" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_clamp_cap_-24.5" type="box" pos="0 0.1596 -0.0245" size="0.018 0.006 0.0055" rgba=".45 .45 .45 1" />
+              <geom name="structure_bend_clamp_cap_24.5" type="box" pos="0 0.1596 0.0245" size="0.018 0.006 0.0055" rgba=".45 .45 .45 1" />
+              <geom name="P2_bend_bridge_0" type="box" pos="-0.0215 0.006 0" size="0.01 0.002 0.029" />
+              <geom name="P2_bend_bridge_1" type="box" pos="0.0215 0.006 0" size="0.01 0.002 0.029" />
+              <geom name="P2_bend_bridge_2" type="box" pos="0 0.006 -0.02025" size="0.0115 0.002 0.00875" />
+              <geom name="P2_bend_bridge_3" type="box" pos="0 0.006 0.02025" size="0.0115 0.002 0.00875" />
+            </body>
+            <geom name="package_J5_motor" type="cylinder" fromto="0 0 -0.2526 0 0 -0.204" size="0.011" rgba=".3 .3 .3 1" />
+            <geom name="package_J5_gearhead" type="cylinder" fromto="0 0 -0.204 0 0 -0.165" size="0.011" rgba=".3 .3 .3 1" />
+            <geom name="package_J5_gear_mount_and_rear_flange" type="cylinder" fromto="0 0 -0.165 0 0 -0.157" size="0.025" rgba=".3 .3 .3 1" />
+            <geom name="package_J5_coupling_cage" type="cylinder" fromto="0 0 -0.157 0 0 -0.123" size="0.02" rgba=".3 .3 .3 1" />
+            <geom name="package_J5_front_flange_and_rear_cover" type="cylinder" fromto="0 0 -0.119 0 0 -0.069" size="0.0275" rgba=".3 .3 .3 1" />
+            <geom name="package_J5_bearing_housing" type="cylinder" fromto="0 0 -0.069 0 0 -0.037" size="0.018" rgba=".3 .3 .3 1" />
+            <geom name="structure_roll_fork_bridge" type="box" pos="0 -0.037 0" size="0.021 0.003 0.038" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_-34_-18" type="box" pos="-0.018 -0.007 -0.034" size="0.003 0.027 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_-34_18" type="box" pos="0.018 -0.007 -0.034" size="0.003 0.027 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_top_-34" type="box" pos="0 0.0175 -0.034" size="0.015 0.0025 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_bottom_-34" type="box" pos="0 -0.0245 -0.034" size="0.015 0.0095 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_34_-18" type="box" pos="-0.018 -0.007 0.034" size="0.003 0.027 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_34_18" type="box" pos="0.018 -0.007 0.034" size="0.003 0.027 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_top_34" type="box" pos="0 0.0175 0.034" size="0.015 0.0025 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_cheek_bottom_34" type="box" pos="0 -0.0245 0.034" size="0.015 0.0095 0.004" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_clamp_bar_-21" type="box" pos="-0.021 0 -0.0425" size="0.003 0.004 0.0075" rgba=".45 .45 .45 1" />
+            <geom name="structure_roll_clamp_bar_21" type="box" pos="0.021 0 -0.0425" size="0.003 0.004 0.0075" rgba=".45 .45 .45 1" />
+          </body>
+          <geom name="package_J4_motor" type="cylinder" fromto="0 -0.0036 0 0 0.045 0" size="0.011" rgba=".3 .3 .3 1" />
+          <geom name="package_J4_gearhead" type="cylinder" fromto="0 0.045 0 0 0.084 0" size="0.011" rgba=".3 .3 .3 1" />
+          <geom name="package_J4_gear_mount_and_rear_flange" type="cylinder" fromto="0 0.084 0 0 0.092 0" size="0.025" rgba=".3 .3 .3 1" />
+          <geom name="package_J4_coupling_cage" type="cylinder" fromto="0 0.092 0 0 0.126 0" size="0.02" rgba=".3 .3 .3 1" />
+          <geom name="package_J4_front_flange_and_rear_cover" type="cylinder" fromto="0 0.13 0 0 0.18 0" size="0.0275" rgba=".3 .3 .3 1" />
+          <geom name="package_J4_bearing_housing" type="cylinder" fromto="0 0.18 0 0 0.212 0" size="0.018" rgba=".3 .3 .3 1" />
+          <geom name="structure_fore_tube" type="box" pos="0 0.123 0" size="0.03 0.081 0.03" rgba=".45 .45 .45 1" />
+          <geom name="structure_fore_root_flange" type="box" pos="0 0 0.0245" size="0.027 0.027 0.0025" rgba=".45 .45 .45 1" />
+          <geom name="structure_fore_root_neck" type="box" pos="0 0.0175 0.0245" size="0.03 0.0175 0.0025" rgba=".45 .45 .45 1" />
+          <geom name="structure_fore_root_step" type="box" pos="0 0.036 0.0285" size="0.03 0.006 0.0065" rgba=".45 .45 .45 1" />
+          <geom name="structure_fore_root_tab" type="box" pos="0 0.0535 0.0325" size="0.03 0.0115 0.0025" rgba=".45 .45 .45 1" />
+          <geom name="P2_elbow_moving_anchor" type="box" pos="0 0.085 -0.057" size="0.008 0.005 0.027" />
+        </body>
+        <geom name="package_J3_motor" type="cylinder" fromto="0 0.28 0.3501 0 0.28 0.294" size="0.02" rgba=".3 .3 .3 1" />
+        <geom name="package_J3_gearhead" type="cylinder" fromto="0 0.28 0.294 0 0.28 0.224" size="0.021" rgba=".3 .3 .3 1" />
+        <geom name="package_J3_gear_mount_and_rear_flange" type="cylinder" fromto="0 0.28 0.224 0 0.28 0.212" size="0.036" rgba=".3 .3 .3 1" />
+        <geom name="package_J3_coupling_cage" type="cylinder" fromto="0 0.28 0.212 0 0.28 0.155" size="0.032" rgba=".3 .3 .3 1" />
+        <geom name="package_J3_front_flange_and_rear_cover" type="cylinder" fromto="0 0.28 0.149 0 0.28 0.085" size="0.054" rgba=".3 .3 .3 1" />
+        <geom name="package_J3_bearing_housing" type="cylinder" fromto="0 0.28 0.085 0 0.28 0.035" size="0.027" rgba=".3 .3 .3 1" />
+        <geom name="structure_upper_tube" type="box" pos="0 0.14 0" size="0.03 0.098 0.022" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_root_tab" type="box" pos="0 0.032 -0.0245" size="0.03 0.032 0.0025" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_root_flange" type="box" pos="0 0 -0.0245" size="0.027 0.027 0.0025" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_elbow_mount_web" type="box" pos="0 0.23 0.062" size="0.036 0.02 0.007" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_elbow_mount_side_-31.5" type="box" pos="-0.0315 0.283 0.062" size="0.0045 0.033 0.007" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_elbow_mount_side_31.5" type="box" pos="0.0315 0.283 0.062" size="0.0045 0.033 0.007" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_elbow_mount_top" type="box" pos="0 0.3115 0.062" size="0.027 0.0045 0.007" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_mount_standoff_-20" type="box" pos="-0.02 0.224 0.0385" size="0.007 0.014 0.0165" rgba=".45 .45 .45 1" />
+        <geom name="structure_upper_mount_standoff_20" type="box" pos="0.02 0.224 0.0385" size="0.007 0.014 0.0165" rgba=".45 .45 .45 1" />
+        <geom name="P2_moving_clevis" type="box" pos="0 0.1 0.056" size="0.008 0.005 0.0335" />
+        <geom name="P2_elbow_anchor_foot" type="box" pos="0 0.2275 -0.025" size="0.03 0.0175 0.003" />
+        <geom name="P2_elbow_anchor_mast" type="box" pos="-0.04 0.293 -0.025" size="0.008 0.065 0.003" />
+        <geom name="P2_elbow_anchor_spine" type="box" pos="-0.04 0.35 -0.0545" size="0.008 0.005 0.0295" />
+      </body>
+      <geom name="package_J2_motor" type="cylinder" fromto="0 0.144 -0.3501 0 0.144 -0.294" size="0.02" rgba=".3 .3 .3 1" />
+      <geom name="package_J2_gearhead" type="cylinder" fromto="0 0.144 -0.294 0 0.144 -0.224" size="0.021" rgba=".3 .3 .3 1" />
+      <geom name="package_J2_gear_mount_and_rear_flange" type="cylinder" fromto="0 0.144 -0.224 0 0.144 -0.212" size="0.036" rgba=".3 .3 .3 1" />
+      <geom name="package_J2_coupling_cage" type="cylinder" fromto="0 0.144 -0.212 0 0.144 -0.155" size="0.032" rgba=".3 .3 .3 1" />
+      <geom name="package_J2_front_flange_and_rear_cover" type="cylinder" fromto="0 0.144 -0.149 0 0.144 -0.085" size="0.054" rgba=".3 .3 .3 1" />
+      <geom name="package_J2_bearing_housing" type="cylinder" fromto="0 0.144 -0.085 0 0.144 -0.035" size="0.027" rgba=".3 .3 .3 1" />
+      <geom name="structure_turret_foot" type="box" pos="0 0.082 -0.022" size="0.04 0.004 0.067" rgba=".45 .45 .45 1" />
+      <geom name="structure_turret_web" type="box" pos="0 0.104 -0.062" size="0.036 0.026 0.007" rgba=".45 .45 .45 1" />
+      <geom name="structure_turret_clamp_side_-31.5" type="box" pos="-0.0315 0.1535 -0.062" size="0.0045 0.0265 0.007" rgba=".45 .45 .45 1" />
+      <geom name="structure_turret_clamp_side_31.5" type="box" pos="0.0315 0.1535 -0.062" size="0.0045 0.0265 0.007" rgba=".45 .45 .45 1" />
+      <geom name="structure_turret_clamp_top" type="box" pos="0 0.1755 -0.062" size="0.027 0.0045 0.007" rgba=".45 .45 .45 1" />
+      <geom name="P2_fixed_clevis" type="box" pos="-0.0375 0.089 0.0555" size="0.0725 0.003 0.042" />
+    </body>
+    <body name="fixed_hardware">
+      <geom name="pedestal_collision" type="cylinder" quat="0.7071067811865476 -0.7071067811865476 0 0" pos="0 .038 0" size=".045 .026" rgba=".3 .3 .3 1" />
+      <geom name="package_J1_motor" type="cylinder" fromto="0 -0.2451 0 0 -0.189 0" size="0.02" rgba=".3 .3 .3 1" />
+      <geom name="package_J1_gearhead" type="cylinder" fromto="0 -0.189 0 0 -0.119 0" size="0.021" rgba=".3 .3 .3 1" />
+      <geom name="package_J1_gear_mount_and_rear_flange" type="cylinder" fromto="0 -0.119 0 0 -0.107 0" size="0.036" rgba=".3 .3 .3 1" />
+      <geom name="package_J1_coupling_cage" type="cylinder" fromto="0 -0.107 0 0 -0.05 0" size="0.032" rgba=".3 .3 .3 1" />
+      <geom name="package_J1_front_flange_and_rear_cover" type="cylinder" fromto="0 -0.044 0 0 0.02 0" size="0.054" rgba=".3 .3 .3 1" />
+      <geom name="package_J1_bearing_housing" type="cylinder" fromto="0 0.02 0 0 0.07 0" size="0.027" rgba=".3 .3 .3 1" />
+    </body>
+    <body name="puck" pos="0.29 0.028 -0.124">
+      <freejoint name="puck_free" />
+      <inertial pos="0 0 0" mass="0.0819390195909" diaginertia="1.30761018764e-05 1.54455051929e-05 1.30761018764e-05" />
+      <geom name="puck" type="cylinder" quat="0.7071067811865476 -0.7071067811865476 0 0" size="0.019 0.014" rgba=".7 .7 .72 1" />
+    </body>
+    <geom name="P2_base_mount_0" type="box" pos="-0.075 0.006 0" size="0.02 0.006 0.095" />
+    <geom name="P2_base_mount_1" type="box" pos="0.075 0.006 0" size="0.02 0.006 0.095" />
+    <geom name="P2_base_mount_2" type="box" pos="0 0.006 -0.075" size="0.055 0.006 0.02" />
+    <geom name="P2_base_mount_3" type="box" pos="0 0.006 0.075" size="0.055 0.006 0.02" />
+  </worldbody>
+  <contact>
+    <exclude body1="fixed_hardware" body2="turret" />
+    <exclude body1="jaw_left" body2="jaw_right" />
+    <pair geom1="pad_left" geom2="puck" condim="4" friction="0.65 0.65 0.002 0.0001 0.0001" solref="0.002 1" solimp="0.95 0.99 0.0001" />
+    <pair geom1="pad_right" geom2="puck" condim="4" friction="0.65 0.65 0.002 0.0001 0.0001" solref="0.002 1" solimp="0.95 0.99 0.0001" />
+  </contact>
+  <equality>
+    <joint name="opposed_rack_synchronization" joint1="jaw_left" joint2="jaw_right" polycoef="0 1 0 0 0" solref=".002 1" solimp=".99 .999 .00001" />
+  </equality>
+  <tendon>
+    <fixed name="rack_pinion_angle">
+      <joint joint="jaw_left" coef="166.666666667" />
+      <joint joint="jaw_right" coef="166.666666667" />
+    </fixed>
+  </tendon>
+  <actuator>
+    <motor name="motor1" joint="j1" gear="1" />
+    <motor name="motor2" joint="j2" gear="1" />
+    <motor name="motor3" joint="j3" gear="1" />
+    <motor name="motor4" joint="j4" gear="1" />
+    <motor name="motor5" joint="j5" gear="1" />
+    <motor name="motor6" joint="j6" gear="1" />
+    <motor name="gripper_motor" tendon="rack_pinion_angle" gear="1" />
+  </actuator>
+  <keyframe>
+    <key name="home" qpos="-0.40405914701 0.199926183848 1.41096837695 -0 1.53069809279 3.5456518006 0.038 0.038 0.29 0.028 -0.124 1 0 0 0" />
+  </keyframe>
+</mujoco>

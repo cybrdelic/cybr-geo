@@ -1,0 +1,41 @@
+{
+  "construction_dependencies": {
+    "packages": {
+      "cadquery": "2.8.0",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.5.4"
+    },
+    "runtime": {
+      "implementation": "CPython",
+      "machine": "AMD64",
+      "python": "3.12.10",
+      "system": "Windows"
+    },
+    "scope": "Explicit shared CAD, mass, material/core and contact helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured",
+    "source_files": {
+      "advanced_geometry.py": "de79f0e759705ac26dc1cb8bba41cd6a06b053e9235b35528847fa31540cb1c3",
+      "contact_geometry.py": "e84d003f81c158a323f688cd7fdf97fe354e697a6aad2c77d2891c1d0c3abf78",
+      "core.py": "75c52fdafd46ec533e77d42e8c4f02f292d6cc5215cc8a182f35ec41efce2af9",
+      "engineering_source.py": "c381d4e9251a66ef5faeaa8662a724b3cbf315bb43ac65a0eeee640dae86a96f",
+      "geometry.py": "b77b78a7421dbe127ab7c29f01b9c4c03fc068337ae8357429e161730c56e12c",
+      "linkages.py": "db14a2085c9bea50c13c955473b59d28f94ab6c33c3f4663b5c140574ab981a5",
+      "native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7",
+      "native_replay.py": "00bdcc7baa015cb9cf1b6aff68635ced3f12748f9322315ad58cc40562dc0784",
+      "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+      "shape_dag.py": "da11471bffb07c551c42d64cf1826ae4d928a0cb7ab4b06990474942226b8e65"
+    }
+  },
+  "native_build_file_sha256": "1f0eb77c6038bd8eb3e66400641f3521ec084476f29bdb7b77b85ee54e4009a3",
+  "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+  "schema": "cybrgeo-native-source-binding/1",
+  "source_files": {
+    "data/mechanism.json": "328fba30776c3c809a5d835876d762b47028cc9dc1a46318c58f8506da854156",
+    "design.py": "7a0c8bae330b4f51c38b5b8ccdcb600ea95dd4a43875e77e01a17617cb20d396",
+    "leaf_geometry.py": "1b6caaa6d2711acd036e23df9b56a6b49d729be4ef48839bda5ccb1fe8c25140",
+    "mechanism.py": "6c349ed8c88546d6da91a6b58acab18bd70b7b53f34939b579d1440c8577fd64",
+    "project.json": "a1fa4fd19cebb2455fc66ffb8ce64e69944600a19e58d5965da1f8d2661d4600",
+    "project.py": "e5ad16787bc1b9ddc34d2f0ed1b083518ab370301bf1199d70d7f02277c78f4f"
+  },
+  "source_sha256": "dca008865ec7d5c76b6f3e5b7805337801162763848973a7ef281e303279cec6",
+  "specification_sha256": "8eb5416acb68d354148af015b8740457038883d0875630a09fa571d3b0e7cde4"
+}

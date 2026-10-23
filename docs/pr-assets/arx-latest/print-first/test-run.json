@@ -1,0 +1,30 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "-c",
+    "import platform,pytest; platform.node=lambda:'local-validation-host'; raise SystemExit(pytest.main(['tests/test_manufacturing_joints.py', '-q', '--basetemp', 'outputs/joints-pytest-005', '--junitxml', 'outputs/joints-final-005.junit.xml']))"
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONPATH": "src"
+  },
+  "platform": "Windows",
+  "python": "3.12.10",
+  "cadquery": "2.8.0",
+  "pytest": "9.1.1",
+  "exit_code": 0,
+  "tests": 24,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 58.286,
+  "observed_result": "24 tests passed; one CadQuery deprecation warning",
+  "warning": "CadQuery Assembly.save FutureWarning: save will be removed in the next release",
+  "junit_sha256": "f0bd0c91f67c0209a41f8fecbc44652114c87f46e6fc00d4e08c98ce92f71261",
+  "test_source_sha256": "a785499b1a0eb10140d4bba490d72145af653500fed458fab653260a758dae27",
+  "temporary_source_input_mutation": "Fixture changes copied BREP paths after verified snapshot; construction still matches actual source geometry",
+  "hostname_policy": "Generic host label set before JUnit emission; test cases and outcomes unmodified",
+  "scope": "Fresh source/native construction run after pocket, source-binding and occupied-plate-envelope fixes; render executed separately"
+}

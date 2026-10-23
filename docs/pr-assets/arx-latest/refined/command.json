@@ -1,0 +1,6 @@
+{
+  "command": "python -u -m examples.engineering.arx_compact.refined --output outputs/arx-compact-refined-accepted-final --render",
+  "elapsed_seconds": 161.578726,
+  "schema": "cybrgeo-command-receipt/1",
+  "exit_code": 0
+}

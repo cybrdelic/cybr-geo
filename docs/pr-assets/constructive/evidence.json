@@ -1,0 +1,1319 @@
+{
+  "schema": "cybrgeo-native-evidence/1",
+  "recorded_date": "2026-10-22",
+  "scope": "Generated nominal CAD and prescribed motion; separate per-design evidence, no IRIS/ARX source comparison, dynamics or hardware qualification.",
+  "source_sha256": {
+    "src/mechanism_lab/construction.py": "518e4fd25bbf884f8c7073c9fb00d6f8fdffd1118991b86aff3a6eb365bd8ab3",
+    "src/mechanism_lab/constructed.py": "02261eb9bc229de5ad783d9521bf2c68c3dd2d5a471d3196c7ad29afd5233139",
+    "src/mechanism_lab/mechanism_bundle.py": "e6898920aa3b71f0596d05b6685a087beb0e57bbfcb1d64c80d908d6029f11b5",
+    "src/mechanism_lab/registry.py": "7069b6998781bb001c3671f97a9241e22d1c45a678fffd7c3804c3856893f534",
+    "src/mechanism_lab/exporters.py": "e834d35e381a6b306d65bc1ef53231b8cd963cc651be1c72f837cfd254ce6fd7",
+    "tools/audit_constructed.py": "f188d25b639b6761c69f3e8e7db406f4abdda528ba89a1d3bec042b18d9230c3",
+    "tools/verify_construction_bundle.py": "c5928af22111934400589e49e8ec22ec55c589637087ece883554b5bb78f1966"
+  },
+  "tests": {
+    "constructive_python_passed": 68,
+    "constructive_subtests_passed": 13,
+    "browser_node_passed": 11,
+    "legacy_core_and_animated_export_passed": 11,
+    "legacy_release_artifacts_skipped": 2,
+    "legacy_kinematics_passed": 7
+  },
+  "models": [
+    {
+      "architecture": "compact_arm",
+      "parts": 109,
+      "independent_controls": [
+        "J1_output",
+        "J2_output",
+        "J3_output",
+        "J4_output",
+        "J5_output",
+        "J6_output",
+        "jaw_left_travel",
+        "jaw_right_travel"
+      ],
+      "recipe_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+      "media": {
+        "renderer": "software triangle inspection of generated CAD tessellation",
+        "frames": 64,
+        "distinct_geometry_frames": 33,
+        "resolution": [
+          1100,
+          650
+        ],
+        "seconds": 8.0,
+        "fps": 8
+      },
+      "media_sha256": {
+        "compact_arm-reference.png": "25ec3c8c8f37db8e0f3aab97b5a45427183e0a65dda6acd5dc367f27d1f3d860",
+        "compact_arm-motion.png": "10bcfdd16d37451ab35bf98f806ae9a69f802a22126c2c72ae0deae195d78b39",
+        "compact_arm-motion.gif": "e148762ee8dfad6d7bbcc63e24992a4ca4afbbb4916bbb6de018d644135cb755"
+      },
+      "artifact_readback": {
+        "passed": true,
+        "errors": [],
+        "scope": "Artifact identity, reopened analytic STEP and GLB, sampled prescribed kinematics. No dynamics or hardware qualification.",
+        "bundle_receipt_sha256": "fda6d5ab7be31f3482e60b464cd6c204ac01d612f7fe041290294537dd1cb267",
+        "manifest": {
+          "files_verified": 124,
+          "all_sha256_match": true
+        },
+        "recipe": {
+          "architecture": "compact_arm",
+          "sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+          "matches_current_compiler": true
+        },
+        "static_glb": {
+          "named_mesh_nodes": 109,
+          "reopened_geometries": 109,
+          "bounds_m_y_up": [
+            [
+              -0.05,
+              0.0,
+              -0.058
+            ],
+            [
+              0.661,
+              0.193,
+              0.058
+            ]
+          ]
+        },
+        "step": {
+          "reopened_solids": 109,
+          "all_analytic_valid": true,
+          "minimum_solid_volume_mm3": 4.0534085053676145,
+          "total_solid_volume_mm3": 741506.5536146065,
+          "bounds_mm_z_up": [
+            [
+              -50.0,
+              -58.0,
+              0.0
+            ],
+            [
+              661.0,
+              58.0,
+              193.0
+            ]
+          ],
+          "maximum_step_glb_bound_error_mm": 0.0
+        },
+        "motion_glb": {
+          "parts": 109,
+          "channels": 185,
+          "stored_keyframes": 65,
+          "sampled_times_s": [
+            0.0,
+            0.5,
+            1.0,
+            1.5,
+            2.0,
+            2.5,
+            3.0,
+            3.5,
+            4.0,
+            4.5,
+            5.0,
+            5.5,
+            6.0,
+            6.5,
+            7.0,
+            7.5,
+            8.0
+          ],
+          "duration_s": 8.0,
+          "maximum_rotation_element_error": 1.1039832437109709e-08,
+          "maximum_translation_error_mm": 3.6248496115831585e-06,
+          "maximum_sampled_vertex_error_mm": 8.964337467887162e-06,
+          "scope": "Decoded artifact node transforms at the listed keyframes, including mm/Z-up to m/Y-up conversion. No continuous interpolation or collision proof."
+        }
+      },
+      "artifact_sha256": {
+        "assembly.step": "0b3f0d4b62cd0b4ae91f6a0a0f5f28ac1ae0b6ce54d79eba84e0b46091dadbba",
+        "assembly.glb": "476e62bf95e22413bd18c1da7708c381992861097a4f8fde2119e9416892a94e",
+        "motion.glb": "0c279c7e5e98f665c9db0790b5241283f87275caaaaabe2c514d313854aefa37",
+        "recipe.json": "a1d66cb33064318a67084d5d901060b2b53409382865ef73bf468fabe1d25d5c"
+      },
+      "audit": {
+        "passed": true,
+        "full_report_sha256": "3d23b4514665bfa9be2957c74c24d34b0c54e448fd1f92bc743847ab489b9387",
+        "volume_tolerance_mm3": 1e-05,
+        "samples": [
+          {
+            "time_seconds": 0.0,
+            "all_part_pairs": 5886,
+            "positive_aabb_candidates": 283,
+            "intersection_kernel_queries": 283,
+            "unchanged_relative_pose_reuses": 0,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 12
+          },
+          {
+            "time_seconds": 1.0,
+            "all_part_pairs": 5886,
+            "positive_aabb_candidates": 305,
+            "intersection_kernel_queries": 118,
+            "unchanged_relative_pose_reuses": 187,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 12
+          },
+          {
+            "time_seconds": 2.0,
+            "all_part_pairs": 5886,
+            "positive_aabb_candidates": 320,
+            "intersection_kernel_queries": 122,
+            "unchanged_relative_pose_reuses": 198,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 12
+          },
+          {
+            "time_seconds": 3.0,
+            "all_part_pairs": 5886,
+            "positive_aabb_candidates": 358,
+            "intersection_kernel_queries": 151,
+            "unchanged_relative_pose_reuses": 207,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 12
+          },
+          {
+            "time_seconds": 4.0,
+            "all_part_pairs": 5886,
+            "positive_aabb_candidates": 362,
+            "intersection_kernel_queries": 149,
+            "unchanged_relative_pose_reuses": 213,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 12
+          }
+        ],
+        "reference_interfaces": [
+          {
+            "id": "J1_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J6_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J6_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J6_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "tool_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "jaw_left_guidance",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_left_actuator",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_right_guidance",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_right_actuator",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          }
+        ],
+        "scope": "Actual analytic B-rep intersection volume and minimum surface distance at the listed prescribed poses only. No broad parent-pair exemption.",
+        "capture_probe_scope": "Virtual axial displacement of a captured part must intersect its named stop. This checks geometric retention, not clamp force, thread strength, or simulated contact.",
+        "limitations": [
+          "Sampled poses do not prove continuous-path or full joint-range collision freedom.",
+          "Minimum surface distance is not a tolerance stack, bearing fit, or proof of mating-surface contact.",
+          "No loads, contact dynamics, motor sizing, thermal behavior, fatigue, or hardware qualification."
+        ]
+      }
+    },
+    {
+      "architecture": "belt_arm",
+      "parts": 121,
+      "independent_controls": [
+        "J1_output",
+        "J2_motor",
+        "J3_motor",
+        "J4_output",
+        "J5_output",
+        "J6_output",
+        "jaw_left_travel",
+        "jaw_right_travel"
+      ],
+      "recipe_sha256": "704c2f31eb3512624bb94ccbbb4469194661c4f2013fed01deb70030e6e49fac",
+      "media": {
+        "renderer": "software triangle inspection of generated CAD tessellation",
+        "frames": 64,
+        "distinct_geometry_frames": 33,
+        "resolution": [
+          1100,
+          650
+        ],
+        "seconds": 8.0,
+        "fps": 8
+      },
+      "media_sha256": {
+        "belt_arm-reference.png": "b61beaa2ad0145550b69b112c4faa6ce5a0bf7bc73253bf28374a7b0e8014141",
+        "belt_arm-motion.png": "4cffdb7754810ad5f4b82f5c5bb9253f24c1b1854b86373e38559f016f9d0c31",
+        "belt_arm-motion.gif": "20535cfe0d0f86d115e69c8407f43e7818fa4f9d07147c4d0221be3dc6e30c60"
+      },
+      "artifact_readback": {
+        "passed": true,
+        "errors": [],
+        "scope": "Artifact identity, reopened analytic STEP and GLB, sampled prescribed kinematics. No dynamics or hardware qualification.",
+        "bundle_receipt_sha256": "7f6819d3ef19c2d603c8005c4d6a8565bbb157c55b4dbd443c5f2816023d249c",
+        "manifest": {
+          "files_verified": 136,
+          "all_sha256_match": true
+        },
+        "recipe": {
+          "architecture": "belt_arm",
+          "sha256": "704c2f31eb3512624bb94ccbbb4469194661c4f2013fed01deb70030e6e49fac",
+          "matches_current_compiler": true
+        },
+        "static_glb": {
+          "named_mesh_nodes": 121,
+          "reopened_geometries": 121,
+          "bounds_m_y_up": [
+            [
+              -0.05,
+              0.0,
+              -0.058
+            ],
+            [
+              0.661,
+              0.23898835754394532,
+              0.058
+            ]
+          ]
+        },
+        "step": {
+          "reopened_solids": 121,
+          "all_analytic_valid": true,
+          "minimum_solid_volume_mm3": 4.0534085053676145,
+          "total_solid_volume_mm3": 788155.347109199,
+          "bounds_mm_z_up": [
+            [
+              -50.0,
+              -58.0,
+              0.0
+            ],
+            [
+              661.0,
+              58.0,
+              239.0
+            ]
+          ],
+          "maximum_step_glb_bound_error_mm": 0.0116424560546875
+        },
+        "motion_glb": {
+          "parts": 121,
+          "channels": 212,
+          "stored_keyframes": 65,
+          "sampled_times_s": [
+            0.0,
+            0.5,
+            1.0,
+            1.5,
+            2.0,
+            2.5,
+            3.0,
+            3.5,
+            4.0,
+            4.5,
+            5.0,
+            5.5,
+            6.0,
+            6.5,
+            7.0,
+            7.5,
+            8.0
+          ],
+          "duration_s": 8.0,
+          "maximum_rotation_element_error": 1.1039832437109709e-08,
+          "maximum_translation_error_mm": 3.6248496115831585e-06,
+          "maximum_sampled_vertex_error_mm": 8.964337467887162e-06,
+          "scope": "Decoded artifact node transforms at the listed keyframes, including mm/Z-up to m/Y-up conversion. No continuous interpolation or collision proof."
+        }
+      },
+      "artifact_sha256": {
+        "assembly.step": "0e619866bb1409f3e2fd3958c45a6fdf3d1a37c0c50a39c999547ed674590177",
+        "assembly.glb": "33a88f5ba2c275e64cef9e588fd5edc39d9496cd2862fd26559bc0cf666cd353",
+        "motion.glb": "70b77a023879322fd404345a197a9d6043ae5af9ecda35ea43f66cf0aac2402a",
+        "recipe.json": "eca36e24569fab5980ed2b19a6f1343adb2a226d6bf5d2ecba5eab8387010d63"
+      },
+      "audit": {
+        "passed": true,
+        "full_report_sha256": "d21a7e0661d79df56c6837c286a65662ff6e42e08ffe491da9cc0312c0acfad7",
+        "volume_tolerance_mm3": 1e-05,
+        "samples": [
+          {
+            "time_seconds": 0.0,
+            "all_part_pairs": 7260,
+            "positive_aabb_candidates": 326,
+            "intersection_kernel_queries": 326,
+            "unchanged_relative_pose_reuses": 0,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 20
+          },
+          {
+            "time_seconds": 1.0,
+            "all_part_pairs": 7260,
+            "positive_aabb_candidates": 363,
+            "intersection_kernel_queries": 156,
+            "unchanged_relative_pose_reuses": 207,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 20
+          },
+          {
+            "time_seconds": 2.0,
+            "all_part_pairs": 7260,
+            "positive_aabb_candidates": 383,
+            "intersection_kernel_queries": 159,
+            "unchanged_relative_pose_reuses": 224,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 20
+          },
+          {
+            "time_seconds": 3.0,
+            "all_part_pairs": 7260,
+            "positive_aabb_candidates": 426,
+            "intersection_kernel_queries": 191,
+            "unchanged_relative_pose_reuses": 235,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 20
+          },
+          {
+            "time_seconds": 4.0,
+            "all_part_pairs": 7260,
+            "positive_aabb_candidates": 431,
+            "intersection_kernel_queries": 188,
+            "unchanged_relative_pose_reuses": 243,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 20
+          }
+        ],
+        "reference_interfaces": [
+          {
+            "id": "J1_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_driven_keyed_hub",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_driver_keyed_hub",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_driven_pulley_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_driver_pulley_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_belt_path",
+            "status": "measured",
+            "minimum_surface_distance_mm": 29.0
+          },
+          {
+            "id": "J2_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_driven_keyed_hub",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_driver_keyed_hub",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_driven_pulley_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_driver_pulley_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_belt_path",
+            "status": "measured",
+            "minimum_surface_distance_mm": 29.0
+          },
+          {
+            "id": "J3_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J4_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J4_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J5_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J5_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J6_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J6_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J6_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J6_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "tool_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "jaw_left_guidance",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_left_actuator",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_right_guidance",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_right_actuator",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          }
+        ],
+        "scope": "Actual analytic B-rep intersection volume and minimum surface distance at the listed prescribed poses only. No broad parent-pair exemption.",
+        "capture_probe_scope": "Virtual axial displacement of a captured part must intersect its named stop. This checks geometric retention, not clamp force, thread strength, or simulated contact.",
+        "limitations": [
+          "Sampled poses do not prove continuous-path or full joint-range collision freedom.",
+          "Minimum surface distance is not a tolerance stack, bearing fit, or proof of mating-surface contact.",
+          "No loads, contact dynamics, motor sizing, thermal behavior, fatigue, or hardware qualification."
+        ]
+      }
+    },
+    {
+      "architecture": "inspection_head",
+      "parts": 58,
+      "independent_controls": [
+        "J1_output",
+        "J2_output",
+        "J3_output",
+        "jaw_left_travel",
+        "jaw_right_travel"
+      ],
+      "recipe_sha256": "150b89ccc226a86d85e9fb36d846063134e3f3df578ca1037bb3da219b5b4132",
+      "media": {
+        "renderer": "software triangle inspection of generated CAD tessellation",
+        "frames": 64,
+        "distinct_geometry_frames": 33,
+        "resolution": [
+          1100,
+          650
+        ],
+        "seconds": 8.0,
+        "fps": 8
+      },
+      "media_sha256": {
+        "inspection_head-reference.png": "567abff5a55134a82988c5b4673e538fe78c8a51c764af0f1d6fb281ccda5847",
+        "inspection_head-motion.png": "d05c7ad91ad32a8ee7f5bd673c82bf52eeb02dcd916fdb7782f222d05c332220",
+        "inspection_head-motion.gif": "237a1527a9c624de80597279e86ff04216d55853d41eeb4b50019007230f69b1"
+      },
+      "artifact_readback": {
+        "passed": true,
+        "errors": [],
+        "scope": "Artifact identity, reopened analytic STEP and GLB, sampled prescribed kinematics. No dynamics or hardware qualification.",
+        "bundle_receipt_sha256": "a87fcd4c9492022c3082a3349db3f7abda1a47d93270a5f44dad419c692a3111",
+        "manifest": {
+          "files_verified": 73,
+          "all_sha256_match": true
+        },
+        "recipe": {
+          "architecture": "inspection_head",
+          "sha256": "150b89ccc226a86d85e9fb36d846063134e3f3df578ca1037bb3da219b5b4132",
+          "matches_current_compiler": true
+        },
+        "static_glb": {
+          "named_mesh_nodes": 58,
+          "reopened_geometries": 58,
+          "bounds_m_y_up": [
+            [
+              -0.05,
+              0.0,
+              -0.058
+            ],
+            [
+              0.316,
+              0.193,
+              0.058
+            ]
+          ]
+        },
+        "step": {
+          "reopened_solids": 58,
+          "all_analytic_valid": true,
+          "minimum_solid_volume_mm3": 4.053408505367675,
+          "total_solid_volume_mm3": 485916.89110318414,
+          "bounds_mm_z_up": [
+            [
+              -50.0,
+              -58.0,
+              0.0
+            ],
+            [
+              316.0,
+              58.0,
+              193.0
+            ]
+          ],
+          "maximum_step_glb_bound_error_mm": 0.0
+        },
+        "motion_glb": {
+          "parts": 58,
+          "channels": 83,
+          "stored_keyframes": 65,
+          "sampled_times_s": [
+            0.0,
+            0.5,
+            1.0,
+            1.5,
+            2.0,
+            2.5,
+            3.0,
+            3.5,
+            4.0,
+            4.5,
+            5.0,
+            5.5,
+            6.0,
+            6.5,
+            7.0,
+            7.5,
+            8.0
+          ],
+          "duration_s": 8.0,
+          "maximum_rotation_element_error": 6.443504937947431e-09,
+          "maximum_translation_error_mm": 1.1807437516608843e-06,
+          "maximum_sampled_vertex_error_mm": 2.079372592334039e-06,
+          "scope": "Decoded artifact node transforms at the listed keyframes, including mm/Z-up to m/Y-up conversion. No continuous interpolation or collision proof."
+        }
+      },
+      "artifact_sha256": {
+        "assembly.step": "c6a5acbe80e2397ee6cece32f663bc37160159d212b8d97ffa534805c849a448",
+        "assembly.glb": "5550bd422ad229b9f0f67e19b78d525197e2aeb2bfc353c73a340d792e52c181",
+        "motion.glb": "1988bd5136fc26e1214b2ca471637d2fdc5764239fba38601f38f7fc00392a75",
+        "recipe.json": "eac1474e12248de10d2a071c6a83923e02de27ccca89c403c420850d9f6ee29d"
+      },
+      "audit": {
+        "passed": true,
+        "full_report_sha256": "92bef84ddebe5d88579f5f8aa4371e6a30123c6c2f9f3fd59013271ac6911d8f",
+        "volume_tolerance_mm3": 1e-05,
+        "samples": [
+          {
+            "time_seconds": 0.0,
+            "all_part_pairs": 1653,
+            "positive_aabb_candidates": 147,
+            "intersection_kernel_queries": 147,
+            "unchanged_relative_pose_reuses": 0,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 6
+          },
+          {
+            "time_seconds": 1.0,
+            "all_part_pairs": 1653,
+            "positive_aabb_candidates": 158,
+            "intersection_kernel_queries": 62,
+            "unchanged_relative_pose_reuses": 96,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 6
+          },
+          {
+            "time_seconds": 2.0,
+            "all_part_pairs": 1653,
+            "positive_aabb_candidates": 165,
+            "intersection_kernel_queries": 63,
+            "unchanged_relative_pose_reuses": 102,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 6
+          },
+          {
+            "time_seconds": 3.0,
+            "all_part_pairs": 1653,
+            "positive_aabb_candidates": 178,
+            "intersection_kernel_queries": 72,
+            "unchanged_relative_pose_reuses": 106,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 6
+          },
+          {
+            "time_seconds": 4.0,
+            "all_part_pairs": 1653,
+            "positive_aabb_candidates": 179,
+            "intersection_kernel_queries": 72,
+            "unchanged_relative_pose_reuses": 107,
+            "unexpected_interferences": 0,
+            "query_errors": 0,
+            "successful_axial_capture_probes": 6
+          }
+        ],
+        "reference_interfaces": [
+          {
+            "id": "J1_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J1_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J1_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J2_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J2_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_rear_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_rear_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_front_bushing_journal",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_front_bushing_seat",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_rear_retention",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "J3_output_capture",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "J3_thrust",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "tool_keyed_flange",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.0
+          },
+          {
+            "id": "jaw_left_guidance",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_left_actuator",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_right_guidance",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          },
+          {
+            "id": "jaw_right_actuator",
+            "status": "measured",
+            "minimum_surface_distance_mm": 0.2
+          }
+        ],
+        "scope": "Actual analytic B-rep intersection volume and minimum surface distance at the listed prescribed poses only. No broad parent-pair exemption.",
+        "capture_probe_scope": "Virtual axial displacement of a captured part must intersect its named stop. This checks geometric retention, not clamp force, thread strength, or simulated contact.",
+        "limitations": [
+          "Sampled poses do not prove continuous-path or full joint-range collision freedom.",
+          "Minimum surface distance is not a tolerance stack, bearing fit, or proof of mating-surface contact.",
+          "No loads, contact dynamics, motor sizing, thermal behavior, fatigue, or hardware qualification."
+        ]
+      }
+    }
+  ],
+  "default_build_cached_animation": {
+    "passed": true,
+    "default_recipe": "compact_arm",
+    "recipe_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+    "parts": 109,
+    "cache_unchanged": true,
+    "decoded_cached_motion": {
+      "parts": 109,
+      "channels": 185,
+      "stored_keyframes": 65,
+      "sampled_times_s": [
+        0.0,
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5,
+        3.0,
+        3.5,
+        4.0,
+        4.5,
+        5.0,
+        5.5,
+        6.0,
+        6.5,
+        7.0,
+        7.5,
+        8.0
+      ],
+      "duration_s": 8.0,
+      "maximum_rotation_element_error": 1.1039832437109709e-08,
+      "maximum_translation_error_mm": 3.6248496115831585e-06,
+      "maximum_sampled_vertex_error_mm": 8.964337467887162e-06,
+      "scope": "Decoded artifact node transforms at the listed keyframes, including mm/Z-up to m/Y-up conversion. No continuous interpolation or collision proof."
+    },
+    "cache_files_sha256": {
+      "manifest.json": "0b87f30a36509b781ef0ef8fc620d12bd4f080653348900d84eb7a2f6378736d",
+      "meshes.npz": "25e94f6d0d9a1f653d3c862a548c6027713febee906d14f3d0eaa635199cb8c4",
+      "construction-cache.json": "1094309a0761ca08c68a8bb7084b57a437c842547766aced3d548803eeaf05fa",
+      "fingerprint.txt": "33124c0a29486330f886ab89b7f601d1e66d3fc165ccce107ae25dc9ebc99913"
+    }
+  }
+}

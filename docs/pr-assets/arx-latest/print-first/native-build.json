@@ -1,0 +1,91 @@
+{
+  "schema": "cybrgeo-native-build/1",
+  "provenance": {
+    "source": {
+      "repository": "https://github.com/cybrdelic/cybr-arx6-compact",
+      "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+      "path": "revisions/p6b-print-first/source/build_structural_prototypes.py",
+      "git_blob_sha1": "aef765032a8e1779078acd0ef763413686989719",
+      "sha256": "8e4c76d215d1f2c1e882f7756e6415ec5dd7bb1ab866b9c341aa0187b7065520"
+    },
+    "source_inputs": {
+      "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+      "repository": "cybrdelic/cybr-arx6-compact",
+      "inputs": [
+        {
+          "file": "print-first-fore.brep",
+          "bytes": 82319,
+          "source_path": "revisions/p6b-print-first/inputs/P5-fore-frame.brep",
+          "sha256": "8fcb58eef0407a46ab233fed71248d238e98a50c13c15091bcfd56e1e5e8c738",
+          "git_blob_sha1": "efaa3a6cb27059c2ad8e3639582e83386e73ce14"
+        },
+        {
+          "file": "print-first-upper.brep",
+          "bytes": 60898,
+          "source_path": "revisions/p6b-print-first/inputs/P5-upper-frame.brep",
+          "sha256": "d1bb7d6de4bc26f44bd18e6872facb034005f44877426089950dc44b552e59d6",
+          "git_blob_sha1": "a41c7702985558bf60f8c70f65092c14a8974799"
+        }
+      ]
+    },
+    "input_spec_sha256": "fdd92d8045dfb49c96bdb319cd90d62a8513c8660a7e480d5d7c58958c91cc56",
+    "canonical_specification_sha256": "fdd92d8045dfb49c96bdb319cd90d62a8513c8660a7e480d5d7c58958c91cc56",
+    "input_spec_hash_encoding": "physical_model.digest: sorted-key compact UTF-8 JSON; no numeric rounding",
+    "input_spec_file_sha256": "55277a265ebc91cf10c68f96575bfc2cf51da3affbb91a8e3446a0b71adaa15e",
+    "construction_code_sha256": {
+      "examples/engineering/arx_compact/print_first.py": "602fba0d9dbda16c3b37794c8b4af0f9b916dd83f51c965a0a0066d29d150a8a",
+      "src/mechanism_lab/manufacturing_joints.py": "06914c57a4bc23272babf671a383093b461c17461f22bb63738dfe7939724c0b",
+      "src/mechanism_lab/manufacturing_gears.py": "0cfd6dfcb890a6cc9544bceb947b44b98276b2bb1b055f76a6a64937e2298770",
+      "src/mechanism_lab/native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7"
+    },
+    "reusable_construction": "manufacturing_joints + manufacturing_gears + NativeConstruction",
+    "material_assumption": {
+      "name": "PETG",
+      "density_kg_m3": 1250,
+      "assumption": "Solid continuum; no infill, anisotropy, creep or strength model"
+    },
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification",
+    "native_construction_sha256": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7"
+  },
+  "units": "CAD mm; mass kg; body-local CoM m; inertia kg m2",
+  "parts": 6,
+  "placements": 6,
+  "body_ids": [
+    "upper-test-assembly",
+    "fore-frame-reinforced-article",
+    "gripper-pinion-tooth-trial-article",
+    "gripper-rack-tooth-trial-article"
+  ],
+  "files_sha256": {
+    "cad/upper-frame-proximal.step": "e58ec0537387d389933917f35d7950651bc412f303f99df51ba964c006767db5",
+    "cad/upper-frame-proximal.stl": "5dee8dc5130bdfe30bc00cd554a9379f88461b91c7fe86f5e758ccb3515d2d76",
+    "cad/placed/upper-test-assembly__upper-frame-proximal.step": "5d745c5f69e0ae0ec7b494e58390ebdb88928fdbfa0f7b7298d7fcd88e7f5d48",
+    "cad/upper-frame-distal.step": "9a612cf7c110c421392a8b8ebaf7125274eec063d9c540107a2324a1cb450eed",
+    "cad/upper-frame-distal.stl": "6373cff0501af40de4dbec1e22e6049579b84f33e76324975013ee422974a7a5",
+    "cad/placed/upper-test-assembly__upper-frame-distal.step": "3b601dac4a228ec03e6410e4aac4830b3a44a4e09f796f882b1e61a14af5dcff",
+    "cad/upper-frame-lap-coupler.step": "0e8d0e8ab8a1834b449cbb2744c7b11bd1ddef9325b6d4bb7cf70511d1bb355c",
+    "cad/upper-frame-lap-coupler.stl": "cf46ab5c278d4ce5ed178104946f526f415ecece07630febd88a9994c34dd523",
+    "cad/placed/upper-test-assembly__upper-frame-lap-coupler.step": "1fdcfc1c5a8d14531a2b89e8acd29d23db6bf0e2235139e52e83011cd93ec6bc",
+    "cad/fore-frame-reinforced.step": "2da3eafa663ea744f3e342c309b9eeeeef74e9802ab5723e1be1abe9342795fa",
+    "cad/fore-frame-reinforced.stl": "7b1f2902c4c7a0f6986e30707e2f049593b50b3f9beba644851bd656608afc3c",
+    "cad/placed/fore-frame-reinforced-article__fore-frame-reinforced.step": "5620a61d5a355bbba351efc42a9508efa296719cd5325e78d46c04b8f15f6add",
+    "cad/gripper-pinion-tooth-trial.step": "33fabefe611d678541e2047881be4d26328a4effce00be8133294506d1f63851",
+    "cad/gripper-pinion-tooth-trial.stl": "eb57a1322824a58c202a97587468e29a18ba49d3e688c255b78e6cb86f4fe401",
+    "cad/placed/gripper-pinion-tooth-trial-article__gripper-pinion-tooth-trial.step": "66321cb8d0d832d0ecbc8feff31cf0dd46f326382a1cdb2393cd94e1c97a3c56",
+    "cad/gripper-rack-tooth-trial.step": "a037123eab1e7b47545f27bcfa9aef12d86e78a12c7c7dddcc1c673ae126fdda",
+    "cad/gripper-rack-tooth-trial.stl": "68ca9e6662afc1433cf05019c16731c27f24eeb248177d1e8e7541c94e07964c",
+    "cad/placed/gripper-rack-tooth-trial-article__gripper-rack-tooth-trial.step": "7c365ac43901fe139a37d2da3069e3b6355f1284f7896d164ac096d44bb60d2a",
+    "native-interface-requirements.json": "9159a89db58e1ffe3089c67d3c42836c8efc5e3cc0a1a8c322a3111a36250690",
+    "cad/upper-test-assembly_subassembly.step": "6539281015ef423831ef842847cf03267a32ae32016eb7a0c09c80b80cd12729",
+    "cad/fore-frame-reinforced-article_subassembly.step": "a084c78c432e5e398636b1e26cd66d1f1800ef853e117ac82696c8241c40b8d6",
+    "cad/gripper-pinion-tooth-trial-article_subassembly.step": "5bc791011bb3612fd6c70ccd22a2db132828db1c1e0c5555ef70f257ec0d447b",
+    "cad/gripper-rack-tooth-trial-article_subassembly.step": "1fd457d3932ee00ce2ed433d454a0c0b93ebacf923d1584a91dce77d4c1ad997",
+    "mass_properties.json": "85726ccd1bd08190fb5c9952c9fbfe92c4fcd056981335fa72e06d030fef5d7c",
+    "cad_parts.json": "1b0167a9f179f52cfd4bb328cbecd5b9dc672751d4518f2a5986cd6c275ecd27",
+    "geometry-meshes.json": "1b1bd828de21d4d0d46efa5d865c2e57ef68697ae5a822c519c576cf4fd7781e",
+    "placed-native-parts.json": "b927d5be4715e60b5113c230e37db0b69735bc4c531f26ac1bc25c625bc213b0",
+    "print-first-plan.json": "e9aa155c08919ac5d807e2038a542f87d7fdf26d09c71108f4db2c9acc9af2d8",
+    "input-spec.json": "c5e1e50baf0cec0e8e431b44da21c0bdec244171c2563ec4ec9e2e184c6cf532"
+  },
+  "scope": "Native geometry and explicit mass accounting; no dynamics or hardware qualification"
+}

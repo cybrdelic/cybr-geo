@@ -1,0 +1,246 @@
+{
+  "body_changes": [
+    {
+      "body": "bend",
+      "original_mass_kg": 1.1392962061313914,
+      "refined_mass_kg": 1.138826208339124,
+      "delta_grams": -0.4699977922673071,
+      "positive_inertia_eigenvalues": [
+        0.0006552528597294903,
+        0.0016286162479782172,
+        0.0017634140823050979
+      ],
+      "changed_components": [
+        "J5_output_bolt_1",
+        "J5_output_bolt_2",
+        "J5_output_bolt_3",
+        "J5_output_bolt_4",
+        "J5_output_bolt_5",
+        "J5_output_bolt_6",
+        "J5_output_bolt_7",
+        "J5_output_bolt_8",
+        "J5_output_bolt_9",
+        "J5_output_bolt_10",
+        "J6_structural_heat_spreader_case",
+        "J6_rear_service_cover",
+        "J6_cover_M2p5_1",
+        "J6_cover_M2p5_2",
+        "J6_cover_M2p5_3",
+        "J6_cover_M2p5_4",
+        "wrist_bend_frame"
+      ]
+    },
+    {
+      "body": "jaw_left",
+      "original_mass_kg": 0.025721663482804805,
+      "refined_mass_kg": 0.025714434232804808,
+      "delta_grams": -0.007229249999997356,
+      "positive_inertia_eigenvalues": [
+        3.3883826586381974e-06,
+        5.8536437233877705e-06,
+        7.830224038629653e-06
+      ],
+      "changed_components": [
+        "right_jaw_carriage_0"
+      ]
+    },
+    {
+      "body": "fore",
+      "original_mass_kg": 1.3172346208254924,
+      "refined_mass_kg": 1.3163360174828627,
+      "delta_grams": -0.8986033426297002,
+      "positive_inertia_eigenvalues": [
+        0.0008766809252362549,
+        0.007420823976216028,
+        0.007694656464168522
+      ],
+      "changed_components": [
+        "J3_output_bolt_1",
+        "J3_output_bolt_2",
+        "J3_output_bolt_3",
+        "J3_output_bolt_4",
+        "J3_output_bolt_5",
+        "J3_output_bolt_6",
+        "J3_output_bolt_7",
+        "J3_output_bolt_8",
+        "J4_structural_heat_spreader_case",
+        "J4_rear_service_cover",
+        "J4_cover_M2p5_1",
+        "J4_cover_M2p5_2",
+        "J4_cover_M2p5_3",
+        "J4_cover_M2p5_4",
+        "fore_service_panel_-1",
+        "fore_panel_screw_-1_-19_96",
+        "fore_panel_screw_-1_-19_114",
+        "fore_panel_screw_-1_19_96",
+        "fore_panel_screw_-1_19_114",
+        "fore_service_panel_1",
+        "fore_panel_screw_1_-19_96",
+        "fore_panel_screw_1_-19_114",
+        "fore_panel_screw_1_19_96",
+        "fore_panel_screw_1_19_114",
+        "fore_structural_frame"
+      ]
+    },
+    {
+      "body": "turret",
+      "original_mass_kg": 1.8508068877157073,
+      "refined_mass_kg": 1.8500064325747,
+      "delta_grams": -0.8004551410072391,
+      "positive_inertia_eigenvalues": [
+        0.0019416275426631681,
+        0.005163593813547411,
+        0.005841177857525978
+      ],
+      "changed_components": [
+        "J1_output_bolt_1",
+        "J1_output_bolt_2",
+        "J1_output_bolt_3",
+        "J1_output_bolt_4",
+        "J1_output_bolt_5",
+        "J1_output_bolt_6",
+        "J1_output_bolt_7",
+        "J1_output_bolt_8",
+        "J2_structural_heat_spreader_case",
+        "J2_rear_service_cover",
+        "J2_cover_M2p5_1",
+        "J2_cover_M2p5_2",
+        "J2_cover_M2p5_3",
+        "J2_cover_M2p5_4",
+        "CB2_captured_spring_case",
+        "CB2_spring_cover",
+        "turret_U_yoke"
+      ]
+    },
+    {
+      "body": "tool",
+      "original_mass_kg": 0.2001617938700091,
+      "refined_mass_kg": 0.2000152241754527,
+      "delta_grams": -0.14656969455639768,
+      "positive_inertia_eigenvalues": [
+        6.182186280490282e-05,
+        0.0001338070847976678,
+        0.00014742455581446545
+      ],
+      "changed_components": [
+        "J6_output_bolt_1",
+        "J6_output_bolt_2",
+        "J6_output_bolt_3",
+        "J6_output_bolt_4",
+        "J6_output_bolt_5",
+        "J6_output_bolt_6",
+        "J6_output_bolt_7",
+        "J6_output_bolt_8",
+        "J6_output_bolt_9",
+        "J6_output_bolt_10",
+        "gripper_bridge_8"
+      ]
+    },
+    {
+      "body": "fixed",
+      "original_mass_kg": 2.8473303888404775,
+      "refined_mass_kg": 2.846338807168973,
+      "delta_grams": -0.9915816715047043,
+      "positive_inertia_eigenvalues": [
+        0.007871805316393943,
+        0.007897911392157031,
+        0.00904758641402663
+      ],
+      "changed_components": [
+        "J1_structural_heat_spreader_case",
+        "J1_rear_service_cover",
+        "J1_cover_M2p5_1",
+        "J1_cover_M2p5_2",
+        "J1_cover_M2p5_3",
+        "J1_cover_M2p5_4",
+        "base_weldment"
+      ]
+    },
+    {
+      "body": "upper",
+      "original_mass_kg": 2.1491370540786505,
+      "refined_mass_kg": 2.147988767790863,
+      "delta_grams": -1.1482862877874034,
+      "positive_inertia_eigenvalues": [
+        0.004084240073052191,
+        0.025073400767902605,
+        0.027837771423961655
+      ],
+      "changed_components": [
+        "J2_output_bolt_1",
+        "J2_output_bolt_2",
+        "J2_output_bolt_3",
+        "J2_output_bolt_4",
+        "J2_output_bolt_5",
+        "J2_output_bolt_6",
+        "J2_output_bolt_7",
+        "J2_output_bolt_8",
+        "J3_structural_heat_spreader_case",
+        "J3_rear_service_cover",
+        "J3_cover_M2p5_1",
+        "J3_cover_M2p5_2",
+        "J3_cover_M2p5_3",
+        "J3_cover_M2p5_4",
+        "upper_service_panel_-1",
+        "upper_panel_screw_-1_-19_96",
+        "upper_panel_screw_-1_-19_220",
+        "upper_panel_screw_-1_19_96",
+        "upper_panel_screw_-1_19_220",
+        "upper_service_panel_1",
+        "upper_panel_screw_1_-19_96",
+        "upper_panel_screw_1_-19_220",
+        "upper_panel_screw_1_19_96",
+        "upper_panel_screw_1_19_220",
+        "CB3_captured_spring_case",
+        "CB3_spring_cover",
+        "upper_structural_frame"
+      ]
+    },
+    {
+      "body": "roll",
+      "original_mass_kg": 1.0378602004965602,
+      "refined_mass_kg": 1.037413482323119,
+      "delta_grams": -0.44671817344132947,
+      "positive_inertia_eigenvalues": [
+        0.0005526458924854066,
+        0.0014794590071427567,
+        0.0015680230419189995
+      ],
+      "changed_components": [
+        "J4_output_bolt_1",
+        "J4_output_bolt_2",
+        "J4_output_bolt_3",
+        "J4_output_bolt_4",
+        "J4_output_bolt_5",
+        "J4_output_bolt_6",
+        "J4_output_bolt_7",
+        "J4_output_bolt_8",
+        "J4_output_bolt_9",
+        "J4_output_bolt_10",
+        "J5_structural_heat_spreader_case",
+        "J5_rear_service_cover",
+        "J5_cover_M2p5_1",
+        "J5_cover_M2p5_2",
+        "J5_cover_M2p5_3",
+        "J5_cover_M2p5_4",
+        "wrist_roll_yoke"
+      ]
+    },
+    {
+      "body": "jaw_right",
+      "original_mass_kg": 0.025720168582804744,
+      "refined_mass_kg": 0.025712939332804746,
+      "delta_grams": -0.007229249999997356,
+      "positive_inertia_eigenvalues": [
+        3.2306562196621946e-06,
+        7.001456255390377e-06,
+        8.82032359295026e-06
+      ],
+      "changed_components": [
+        "left_carriage"
+      ]
+    }
+  ],
+  "total_mass_delta_g": -4.916670603194076,
+  "scope": "Exact BREP delta correction to archived body inertias; dynamics not rerun"
+}

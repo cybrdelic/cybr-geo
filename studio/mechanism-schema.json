@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CYBR GEO constructive mechanism request",
+  "description": "Original nominal mechanism studies. Geometry and joints are compiled together; this is not a physical qualification or reference reconstruction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["architecture"],
+  "properties": {
+    "architecture": {"type": "string", "enum": ["compact_arm", "belt_arm", "inspection_head"]},
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scale": {"type": "number", "minimum": 0.5, "maximum": 2.0, "default": 1.0},
+        "radial_clearance_mm": {"type": "number", "minimum": 0.12, "maximum": 0.4, "default": 0.2},
+        "joint_limit_deg": {"type": "number", "minimum": 1, "maximum": 18, "default": 12},
+        "jaw_travel_mm": {"type": "number", "minimum": 2, "maximum": 14, "default": 10}
+      }
+    }
+  }
+}

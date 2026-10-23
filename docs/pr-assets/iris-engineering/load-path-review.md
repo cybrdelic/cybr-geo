@@ -1,0 +1,15 @@
+# Independent nominal load-path review
+
+The derived IRIS client has one annular motor torque port. Its rotor pins drive nine bored connecting rods, whose passive output pins drive the leaf cranks and shafts. The model contains nine loop-closure constraints and no directly actuated leaf hinges. The underlying optical source supplied the leaf/housing formulas, not this transmission or motor.
+
+The fixed reaction structure contains a radial/axial rotor bearing and three support posts connected to the source face ring. The separate leaf bearing flange joins the source brass retainer. `native/mechanism-layout.json` records positive native join volumes of 8.48230016469249 mm³ for the rotor-support posts and 557.3695876274451 mm³ for the leaf-bearing flange. Native solid counts remain 2→2 and 1→1 respectively; the face-ring material includes its pre-existing separate lower trim.
+
+The nominal assembly includes actual pin bores (0.025 mm radial clearance), axial shoulders, shaft grooves, and split retaining rings. Rod-to-retainer clearance is 0.2 mm. Leaf-bearing collars sit 0.2 mm from the flange faces. These are modeled physical dimensions; actual pin-bearing contact, retainer installation elasticity, wear, friction, and joint compliance are represented by ideal joints rather than solved from local contact surfaces.
+
+The first native pose audit exposed output-pin tips entering the lower rotor-bearing lip between the aperture endpoints. The repaired construction now derives the stack from the output pin/keeper upper extent: pin top 32.6 mm, lower lip 32.8–33.1 mm, rotor 33.3–38.0 mm, and upper lip 38.2–38.5 mm. The lip retains its 0.3 mm thickness and the 0.2 mm axial capture gaps. A separate conservative upper-Z envelope check proves this particular planar pin-to-lip separation throughout motion; it does not prove clearance for the rest of the articulated mechanism.
+
+The motor is a disclosed lumped direct-drive DC assumption, with an annular stator envelope and a fixed torque reaction. Windings, magnet selection, supplier motor fits, and electromagnetic validation are absent. The source mounting ears and through-holes are retained, but an installed base and qualified mounting fasteners are not part of this model.
+
+The source foil remains 0.0325 mm thick, canted by the source value 0.008. Earlier source-geometry analysis found approximately 0.01487 mm minimum nominal leaf-face gap. A rigid CAD model does not establish whether these gaps survive foil deflection, fabrication tolerances, preload, fatigue, thermal expansion, or assembly. The shaft-to-foil hub is a rigid material join; its manufacture and strength are unqualified.
+
+The full-assembly clearance receipt is separate: `native-clearance.json` binds actual native files to actual integrated poses. It reports sampled geometry only. The existing continuous foil/case and neighboring-shaft envelope proof applies only to the declared constructed leaf interval [0, 0.9] rad. Wider numerical joint travel guards are not a physical stop design or a certified clearance interval.

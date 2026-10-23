@@ -1,0 +1,855 @@
+{
+  "schema": "cybrgeo-source-bundle/1",
+  "repository": "https://github.com/cybrdelic/cybr-arx6-compact",
+  "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "files": {
+    "design.json": {
+      "upstream_path": "revisions/p5-refined/assets/design.json",
+      "sha256": "48b3dcf993f78a9e1f386c8458644bb5829d627c895b88e58e616ae14aa565a0",
+      "git_blob_sha": "794d250ec67fb2ee369472f899fbb8c4fd79dbad",
+      "bytes": 481133
+    },
+    "capture.json": {
+      "upstream_path": "revisions/p5-refined/assets/capture.json",
+      "sha256": "ba938e6a1e0a829c52435a5ef165e7364bf8cb072a604bb18ff0577edf6f1b33",
+      "git_blob_sha": "be873a31fb4ce885c8c06b93ab2f1059671093ae",
+      "bytes": 3240222
+    },
+    "mass-properties.json": {
+      "upstream_path": "revisions/p5-refined/assets/mass-properties.json",
+      "sha256": "6919a163453a977e80b97eca815a69152804b9f131408f6909611155669f190e",
+      "git_blob_sha": "698d1d95c30f566186ba4f6361335efdc3333ba0",
+      "bytes": 15058
+    },
+    "cad-refinement.json": {
+      "upstream_path": "revisions/p5-refined/reports/cad-refinement.json",
+      "sha256": "9144f4e572071c65d6e6daa894c2d8b08af2381e98b129b5459539acbad8e7e8",
+      "git_blob_sha": "10157ef751303ec8ab40c51b1bcab59e927d996a",
+      "bytes": 304476
+    },
+    "tessellation.json": {
+      "upstream_path": "revisions/p5-refined/reports/tessellation.json",
+      "sha256": "61f20edd495a5bc1d482bd93697760c0282f9ca2d982723e939cae61548e2ba0",
+      "git_blob_sha": "cbbc5a8c9b83af147067cef4a153159a09f71c41",
+      "bytes": 23011
+    },
+    "revalidation-tessellation.json": {
+      "upstream_path": "revisions/p5-refined/reports/revalidation-tessellation.json",
+      "sha256": "61f20edd495a5bc1d482bd93697760c0282f9ca2d982723e939cae61548e2ba0",
+      "git_blob_sha": "cbbc5a8c9b83af147067cef4a153159a09f71c41",
+      "bytes": 23011
+    },
+    "cad/002.brep": {
+      "upstream_path": "revisions/p5-refined/cad/002.brep",
+      "sha256": "b1e8a374578b7120e2a0a302f0252ea70e1a2a3c0d9fe00cfa9080369e4149eb",
+      "git_blob_sha": "7bff490b5b1cec9442a129b64fb2d2f7813dc06b",
+      "bytes": 65985
+    },
+    "cad/003.brep": {
+      "upstream_path": "revisions/p5-refined/cad/003.brep",
+      "sha256": "ac129e050c3dad8b7dd1ed938d9ee949e783267e276780471894b898f09b8b43",
+      "git_blob_sha": "929c1ec3c67741c12635626d9d67081a4f175338",
+      "bytes": 7213
+    },
+    "cad/018.brep": {
+      "upstream_path": "revisions/p5-refined/cad/018.brep",
+      "sha256": "d348ceaa0ae05082c7785d4b2e8394da38d6969cdc17995136eea1afa4c33bbb",
+      "git_blob_sha": "6f7819387dd5832ff28eb0fc3d7123d373670f44",
+      "bytes": 12432
+    },
+    "cad/019.brep": {
+      "upstream_path": "revisions/p5-refined/cad/019.brep",
+      "sha256": "1dd089978092fc0ace280967c0d7749ca29c092976019fc6e5962b136743cd81",
+      "git_blob_sha": "e0f263220a116d33b34a234131e50fd1bb03bb45",
+      "bytes": 12976
+    },
+    "cad/020.brep": {
+      "upstream_path": "revisions/p5-refined/cad/020.brep",
+      "sha256": "f4f656298c37fc11815a7caab383311c2884f19b8e3997044e948a58caa1b735",
+      "git_blob_sha": "4d08f3acab8b2b02ea7108a47429ba9216689551",
+      "bytes": 12524
+    },
+    "cad/021.brep": {
+      "upstream_path": "revisions/p5-refined/cad/021.brep",
+      "sha256": "6844570a8ca6a44d2f7e15a05f1e40cdc7d625277c83b57b277ad4ec6c7f9092",
+      "git_blob_sha": "317c95772ea99b3c31f66a17db44ec9a655204fa",
+      "bytes": 13057
+    },
+    "cad/022.brep": {
+      "upstream_path": "revisions/p5-refined/cad/022.brep",
+      "sha256": "f8ce39bc414ac3c7d9c7df97efb207d4f23912d0722eea4b8059f919889fce64",
+      "git_blob_sha": "eba389dcb030e2685241739c034bdc55bee2ff77",
+      "bytes": 12863
+    },
+    "cad/023.brep": {
+      "upstream_path": "revisions/p5-refined/cad/023.brep",
+      "sha256": "431c6d56d0594a76994e5065b1a587eac3989b3372c12dc1a11ddf58fb567a3a",
+      "git_blob_sha": "ffe8d73ae2fd731f2c72794523cd085e74af092a",
+      "bytes": 13054
+    },
+    "cad/024.brep": {
+      "upstream_path": "revisions/p5-refined/cad/024.brep",
+      "sha256": "0fe89d4e33adde69b9df917f68c2f5e10ed4eafa786ba2630568498736460b8c",
+      "git_blob_sha": "01325a9fd2a520ee61fff3a7de2dd9a97c818e28",
+      "bytes": 12603
+    },
+    "cad/025.brep": {
+      "upstream_path": "revisions/p5-refined/cad/025.brep",
+      "sha256": "25196fbdac3bb9544b96964654f509b83cc22525bf73c2f2bd99edd9be9a4ebb",
+      "git_blob_sha": "1656a281ad9d7c9238abe9ea33b399832985fde7",
+      "bytes": 13001
+    },
+    "cad/026.brep": {
+      "upstream_path": "revisions/p5-refined/cad/026.brep",
+      "sha256": "650da643e8ebc2ee5c1a9f72d3adedd1fc396e853df81b4f9c8a659e92ad7113",
+      "git_blob_sha": "27834211dcc100de4959c3387d5cfbcf5f317e20",
+      "bytes": 14973
+    },
+    "cad/027.brep": {
+      "upstream_path": "revisions/p5-refined/cad/027.brep",
+      "sha256": "cf2bace78db3bb0a7cb096bb63a8556344c9981a08ec1143561d947a5e101f01",
+      "git_blob_sha": "30b1e38fca23a614610fef825b96807089ce9b3c",
+      "bytes": 15041
+    },
+    "cad/028.brep": {
+      "upstream_path": "revisions/p5-refined/cad/028.brep",
+      "sha256": "244c5a25528f4fd38845a584b7e0419eba9853d0e2867431a6ef5d957c6618b9",
+      "git_blob_sha": "0a97cbbf74a125da87dcfd08451e8be9d8ef3210",
+      "bytes": 15148
+    },
+    "cad/029.brep": {
+      "upstream_path": "revisions/p5-refined/cad/029.brep",
+      "sha256": "19a11062bd75445307d6149a5d75b39b75270218cc596d4defe3bec227f02ebb",
+      "git_blob_sha": "8fa910f10461bdac3152074322ab27eba35fdeaf",
+      "bytes": 15128
+    },
+    "cad/032.brep": {
+      "upstream_path": "revisions/p5-refined/cad/032.brep",
+      "sha256": "d5775bb9bddc6261911add5f150a8410f869688f9ec51ebd04957167603f9655",
+      "git_blob_sha": "cf8b9747c4bae2b6c4729686ba1a7cac16e2f9e6",
+      "bytes": 66000
+    },
+    "cad/033.brep": {
+      "upstream_path": "revisions/p5-refined/cad/033.brep",
+      "sha256": "1ee132f0d39916f494a0f664bdc918a2a543b981a63250663f05de8a160d9324",
+      "git_blob_sha": "73bb3f0f990cb09120dbfd99e37103399f5afa39",
+      "bytes": 7209
+    },
+    "cad/052.brep": {
+      "upstream_path": "revisions/p5-refined/cad/052.brep",
+      "sha256": "2e41d7e5ea50d882765dfbbc50ed645c4d6104cefe8efc66911012a96694d931",
+      "git_blob_sha": "fd9a799e1dbd12cec6bced650f5f65002ce6afc5",
+      "bytes": 12658
+    },
+    "cad/053.brep": {
+      "upstream_path": "revisions/p5-refined/cad/053.brep",
+      "sha256": "82ce26baa7f9790c3d70f1b8cb72b8cc954d3d4461df97af544d5547b159e94c",
+      "git_blob_sha": "e3da220976aa5e2e0c39eacabe363b290b1aa94d",
+      "bytes": 13028
+    },
+    "cad/054.brep": {
+      "upstream_path": "revisions/p5-refined/cad/054.brep",
+      "sha256": "3a2cf3e53a68c1e5d8e94f94fdcfaa2c162e8d551acc7205e7fa232003927daa",
+      "git_blob_sha": "55a472a3cc28c87ba74f97a27fd7eecee2fddd03",
+      "bytes": 12576
+    },
+    "cad/055.brep": {
+      "upstream_path": "revisions/p5-refined/cad/055.brep",
+      "sha256": "3151e8fce76409448e5e54a6b6b182e29964ef2ebd0df7ddb3d81316c49cbd37",
+      "git_blob_sha": "ccb6a4edab5ed6cd7dc977678af2b549f4a39115",
+      "bytes": 13109
+    },
+    "cad/056.brep": {
+      "upstream_path": "revisions/p5-refined/cad/056.brep",
+      "sha256": "f9a4fc450d502baf128ed2b70443c770afac7d43039925248038c0c2799903e8",
+      "git_blob_sha": "a880b387660de91462418376b2b3425e203ada5f",
+      "bytes": 13089
+    },
+    "cad/057.brep": {
+      "upstream_path": "revisions/p5-refined/cad/057.brep",
+      "sha256": "52030a2fc83595158c94eb8be8543ccc04a38a5c47e7d72f940df6e731c3825d",
+      "git_blob_sha": "c15ddf961670604844674e119ced12b6307a740f",
+      "bytes": 13106
+    },
+    "cad/058.brep": {
+      "upstream_path": "revisions/p5-refined/cad/058.brep",
+      "sha256": "c819f2793a6820559dd0b49ca9b77dcc50589d472b65f40c0e7a8711a48e4303",
+      "git_blob_sha": "1662a4f9223c7f4ce66af7f0732b449cc8631f4e",
+      "bytes": 12655
+    },
+    "cad/059.brep": {
+      "upstream_path": "revisions/p5-refined/cad/059.brep",
+      "sha256": "36c43ec91236975c277bd6a250266885ec731f49044dd264cc3e351f5e8dc1e0",
+      "git_blob_sha": "c616062d3d9eb52258189e767154cb126aacc1e9",
+      "bytes": 13053
+    },
+    "cad/060.brep": {
+      "upstream_path": "revisions/p5-refined/cad/060.brep",
+      "sha256": "2c3475281f3bdd0b4612f58b8864b7af5c7bb36ad18f571578d4e813a93f5419",
+      "git_blob_sha": "149b2f40f9a17fe2dfe56ea0700186ad379956bd",
+      "bytes": 15084
+    },
+    "cad/061.brep": {
+      "upstream_path": "revisions/p5-refined/cad/061.brep",
+      "sha256": "eb85274d12ff058d82e5730ffb8b368e9456703b734fee51d454c1b8c1c26370",
+      "git_blob_sha": "c8a7ad34bdde05128420d93310675499f53a1cc3",
+      "bytes": 15201
+    },
+    "cad/062.brep": {
+      "upstream_path": "revisions/p5-refined/cad/062.brep",
+      "sha256": "8d5d8a855511d51ef997548cb2998d60a74bac16f99071e47c0d35ed46302b31",
+      "git_blob_sha": "40836d143ca3657154cc53f97cd7aed88b226312",
+      "bytes": 15197
+    },
+    "cad/063.brep": {
+      "upstream_path": "revisions/p5-refined/cad/063.brep",
+      "sha256": "58f9ba89e6c5e3116b888a95b2622bdfb0d8a09006457a46cc66cda633fbce69",
+      "git_blob_sha": "09fef3c20ba8fd602dbcb948ab9a46e1a70ea986",
+      "bytes": 15100
+    },
+    "cad/066.brep": {
+      "upstream_path": "revisions/p5-refined/cad/066.brep",
+      "sha256": "5b06e084df21f21d33cae754b7badd03535c426e18e6d3f053dce0598701ed49",
+      "git_blob_sha": "d6160ab72a151647df964c66c5b7f9a3b569033f",
+      "bytes": 65873
+    },
+    "cad/067.brep": {
+      "upstream_path": "revisions/p5-refined/cad/067.brep",
+      "sha256": "cb3f3791a0a20e460b8ec778f2b441e9730eb9084ee75b404b23c037ec69391e",
+      "git_blob_sha": "cb68d0ecbf00720c67aac94bdca01b7dc2afc675",
+      "bytes": 7213
+    },
+    "cad/086.brep": {
+      "upstream_path": "revisions/p5-refined/cad/086.brep",
+      "sha256": "45a31342b4602c89abfbaace111c0337bc049b04244ead2d573c58fa190d56df",
+      "git_blob_sha": "2eab39edb40703243aa4d1ed48c71d78d3d2f870",
+      "bytes": 12675
+    },
+    "cad/087.brep": {
+      "upstream_path": "revisions/p5-refined/cad/087.brep",
+      "sha256": "1055d17b662e99dd985055f6ac68b599f6e47e538db481f5a1cb960fa16d8ccb",
+      "git_blob_sha": "f7aa86a0053811ab0b27498d5115d458ac842fee",
+      "bytes": 13045
+    },
+    "cad/088.brep": {
+      "upstream_path": "revisions/p5-refined/cad/088.brep",
+      "sha256": "43e21b93bc1b7e1d65f02deaf0c837252172fdaabc404d73338a41d795eebbfa",
+      "git_blob_sha": "e3e6214135d9ad86242c8197f919dc62adee5192",
+      "bytes": 12557
+    },
+    "cad/089.brep": {
+      "upstream_path": "revisions/p5-refined/cad/089.brep",
+      "sha256": "1942ebcbc173ee6303b1aa96dac7eca3677bdd652620bf7493ebb3f0f8f9ec80",
+      "git_blob_sha": "a82e49fe5b1091920f7eb36169187bcc027e91fb",
+      "bytes": 13006
+    },
+    "cad/090.brep": {
+      "upstream_path": "revisions/p5-refined/cad/090.brep",
+      "sha256": "501a12c3df72b09b87fec9ea98ca77c1d47665eabd3ece6463a27d5884e223d8",
+      "git_blob_sha": "3ba6593970aaed96d1cbc6157622496543085b65",
+      "bytes": 12986
+    },
+    "cad/091.brep": {
+      "upstream_path": "revisions/p5-refined/cad/091.brep",
+      "sha256": "572a869d3d048e5834284fdd5a6cab7b5c95984cf507ad862aadafb67cbb63b5",
+      "git_blob_sha": "9abd8b6db1beaa07e7f15c1e87d71e572d9b94c5",
+      "bytes": 13003
+    },
+    "cad/092.brep": {
+      "upstream_path": "revisions/p5-refined/cad/092.brep",
+      "sha256": "347adb6021a40caf45a5e639cb502de132b318cd00b7c4b9e3e0f4d03d84fdc8",
+      "git_blob_sha": "8a25f93c3333f56babbb73305aca9b3c78834e26",
+      "bytes": 12608
+    },
+    "cad/093.brep": {
+      "upstream_path": "revisions/p5-refined/cad/093.brep",
+      "sha256": "b0260ce9dcaa850862ad9726684867a5f37026a5712bd172d3113f4491e74799",
+      "git_blob_sha": "108fc2f315a2f3552f745dd96808e2012b8d9a0b",
+      "bytes": 13070
+    },
+    "cad/094.brep": {
+      "upstream_path": "revisions/p5-refined/cad/094.brep",
+      "sha256": "e71d41037147712cbf94f900c25dd7ba9f9f3fea362c25095e8b1c0efb3fb538",
+      "git_blob_sha": "fb6ec65eb5ff6f366e0edd9c26444d9ec0639ea1",
+      "bytes": 15171
+    },
+    "cad/095.brep": {
+      "upstream_path": "revisions/p5-refined/cad/095.brep",
+      "sha256": "dcb37d14c69e543509acbb24c7b6e7e3945d1fa906bb104009f271e88f390c72",
+      "git_blob_sha": "7710dfcf64ce92243f2998cc75ea6d885f44e291",
+      "bytes": 15111
+    },
+    "cad/096.brep": {
+      "upstream_path": "revisions/p5-refined/cad/096.brep",
+      "sha256": "b1a65694b846455e17f833cac3e8572d7a49759eabc01e495e7cdbd774e4357a",
+      "git_blob_sha": "f322ff03f207980c4211ef0b76e95ad985a1dead",
+      "bytes": 15104
+    },
+    "cad/097.brep": {
+      "upstream_path": "revisions/p5-refined/cad/097.brep",
+      "sha256": "908dc39323c587763a51d47dcf1e3df8bd8dcbf83c40f46417b58e44841a9d58",
+      "git_blob_sha": "42a076a1269829f16c72ecb52b5c6c77eacc613e",
+      "bytes": 15111
+    },
+    "cad/100.brep": {
+      "upstream_path": "revisions/p5-refined/cad/100.brep",
+      "sha256": "2556a66d3486a807f4036ac8a8431cb6f2a491a4b3e69ef399b5b8c6f7c982f2",
+      "git_blob_sha": "05aa45adc53cd6de4d16e04c63a68cb8d420d325",
+      "bytes": 65287
+    },
+    "cad/101.brep": {
+      "upstream_path": "revisions/p5-refined/cad/101.brep",
+      "sha256": "83627c7fd4a9fefc96a62c84a4dbe0c099586e100f7fe05df21ec095dca0b539",
+      "git_blob_sha": "b308d30d108bd419e1682d54451d51bb630d772d",
+      "bytes": 6836
+    },
+    "cad/116.brep": {
+      "upstream_path": "revisions/p5-refined/cad/116.brep",
+      "sha256": "5aea7c478a99315a320f389ec5dd590fa3ae172b976410102b0bb6d3c80108e1",
+      "git_blob_sha": "b65efa2260f3d1517acaed58b8a3e8bb84ab6442",
+      "bytes": 12668
+    },
+    "cad/117.brep": {
+      "upstream_path": "revisions/p5-refined/cad/117.brep",
+      "sha256": "0b1f30f1629ab8e745ece4d068a659d91a3cca687102084007feb5ff13dfabe4",
+      "git_blob_sha": "a9f822580bf5feee34094a53977ec8e6ac23dfc2",
+      "bytes": 13096
+    },
+    "cad/118.brep": {
+      "upstream_path": "revisions/p5-refined/cad/118.brep",
+      "sha256": "c1b5e2df8278344e151b6a44ad1fe6e8ec17534c242d95f1094750df9a745830",
+      "git_blob_sha": "acf0fd19001beb507302f0d43d6f9c0fa48fe51d",
+      "bytes": 13157
+    },
+    "cad/119.brep": {
+      "upstream_path": "revisions/p5-refined/cad/119.brep",
+      "sha256": "c5133331669c6d5acb5b4176645e438b2dbebeb49176f27cd2c779451b323c2e",
+      "git_blob_sha": "bfee7bb14ef993fc7bdec45aa45f2ede8e301dd0",
+      "bytes": 13161
+    },
+    "cad/120.brep": {
+      "upstream_path": "revisions/p5-refined/cad/120.brep",
+      "sha256": "3a7e65cc75e2ec7daa494d32e260dde1dd1e595c59fd4b543545f9228223e3e6",
+      "git_blob_sha": "17435e6964cb91b864720f37d428c310acbc8599",
+      "bytes": 13202
+    },
+    "cad/121.brep": {
+      "upstream_path": "revisions/p5-refined/cad/121.brep",
+      "sha256": "5e9480ecf66a3358340315e3744084b18a6b5e190765a069df7bbfad742fdbff",
+      "git_blob_sha": "9733ab56eb16fd49c663169cc0e440a69e678391",
+      "bytes": 13128
+    },
+    "cad/122.brep": {
+      "upstream_path": "revisions/p5-refined/cad/122.brep",
+      "sha256": "12a1b021b2d259a28cc459d4aa53ee0b3e4f232b744379d5c8a8549812f1142f",
+      "git_blob_sha": "a7a9cbddc804ad01c576fec7f4a79be5578dd980",
+      "bytes": 13256
+    },
+    "cad/123.brep": {
+      "upstream_path": "revisions/p5-refined/cad/123.brep",
+      "sha256": "d0c6f5ae2133fa334eef8963076def60c63ddf0a9fa3aa8db234bce46d6a2319",
+      "git_blob_sha": "c24ddb6e318b41605274c9b8c04f3117c0746bce",
+      "bytes": 13264
+    },
+    "cad/124.brep": {
+      "upstream_path": "revisions/p5-refined/cad/124.brep",
+      "sha256": "beb373c6dc23152e94fc65527279852901065223ce9af13bcd51bb948ee2c222",
+      "git_blob_sha": "511a7bba945b8a713c1ea56160ce791cbbebd80d",
+      "bytes": 13151
+    },
+    "cad/125.brep": {
+      "upstream_path": "revisions/p5-refined/cad/125.brep",
+      "sha256": "02f7a54a7a93489257495a0080b54ec8951c575ea5cdce6b2a50707e17bdf5a1",
+      "git_blob_sha": "386221e2b1eb63b4ca56df047eb430322ed88141",
+      "bytes": 13164
+    },
+    "cad/126.brep": {
+      "upstream_path": "revisions/p5-refined/cad/126.brep",
+      "sha256": "cf9f785ac105d5c400b1b53eabe65025720636a8d1f74d96d30a6f22fbb734b1",
+      "git_blob_sha": "e340d66e94eb7c1d760c27d8ccfcb5f9c37f2373",
+      "bytes": 15016
+    },
+    "cad/127.brep": {
+      "upstream_path": "revisions/p5-refined/cad/127.brep",
+      "sha256": "366f0fb637ebb2de44c4ffa2f81877560bd16860e775f96f3f59c3db76773b4d",
+      "git_blob_sha": "82e64ce5cb247cc49baa67d892cdbb53208ae88a",
+      "bytes": 14972
+    },
+    "cad/128.brep": {
+      "upstream_path": "revisions/p5-refined/cad/128.brep",
+      "sha256": "b7de8ba0f3013311f562e6b14b2fa98bc3bbd0498eca896ab99cc9f5ee2b186d",
+      "git_blob_sha": "89e51387ccd9e41725719b5c281a1757fd0fd76e",
+      "bytes": 15064
+    },
+    "cad/129.brep": {
+      "upstream_path": "revisions/p5-refined/cad/129.brep",
+      "sha256": "d597ddecd807089c168fd5ff6de18b0f9e43b76b500898a6d39a45eac4cb0a0c",
+      "git_blob_sha": "50200f6186bcadcb2595079fd92299a975021b08",
+      "bytes": 15037
+    },
+    "cad/132.brep": {
+      "upstream_path": "revisions/p5-refined/cad/132.brep",
+      "sha256": "03a2ed022296e2ee9603635f9a400bf2e6379ed9bae7e237c9031bdf2205cb99",
+      "git_blob_sha": "cb72318e5b652dc794c5a70f72dace12bbac7a24",
+      "bytes": 65420
+    },
+    "cad/133.brep": {
+      "upstream_path": "revisions/p5-refined/cad/133.brep",
+      "sha256": "261ae4dc731f164368de580aae66101389c4c51deffdc8f6465765ef7842e27a",
+      "git_blob_sha": "34f21b706341d683f8ce9fe6c38c316d80f74dc0",
+      "bytes": 6882
+    },
+    "cad/152.brep": {
+      "upstream_path": "revisions/p5-refined/cad/152.brep",
+      "sha256": "a95ab148e2f9deac41b777f20fd172fbb4050466f35c3cdabd4a4e999f5625a1",
+      "git_blob_sha": "14d852e9470ca8dd0090fcce7a1bab81b89716d2",
+      "bytes": 12488
+    },
+    "cad/153.brep": {
+      "upstream_path": "revisions/p5-refined/cad/153.brep",
+      "sha256": "9644edcd0494f5dc6c081de93708cd68cdecb32c88f57cd6554adc440ebc7f4b",
+      "git_blob_sha": "1d5b4877b365867d79a25da80f13e69a1b0b0448",
+      "bytes": 12916
+    },
+    "cad/154.brep": {
+      "upstream_path": "revisions/p5-refined/cad/154.brep",
+      "sha256": "887db17128e5237054186502a4402bc9ff5fdc6810d492bf0d84c85ed3839f77",
+      "git_blob_sha": "a1c7179f27d6d70a5c4ab4ef4a777abae6c6bf07",
+      "bytes": 12976
+    },
+    "cad/155.brep": {
+      "upstream_path": "revisions/p5-refined/cad/155.brep",
+      "sha256": "c44fe503ba3202660a6a6026c1e974bb43415db977e1dcf48b24caf5494eefd6",
+      "git_blob_sha": "7d3695726614ec2cf17ed0d3d990784cd62ad77f",
+      "bytes": 12979
+    },
+    "cad/156.brep": {
+      "upstream_path": "revisions/p5-refined/cad/156.brep",
+      "sha256": "cd6350a2d22427241eb262541769c4bf587e69be50bff4e200d51922dd59d061",
+      "git_blob_sha": "739d3aab3060f622ca97cd9ed52f7cd308aeae58",
+      "bytes": 13022
+    },
+    "cad/157.brep": {
+      "upstream_path": "revisions/p5-refined/cad/157.brep",
+      "sha256": "b924e9c875893c5993ef0f9cb2f617426de41bd1df3fc33cb41b4d3b1db17f59",
+      "git_blob_sha": "80f2acf01b84b93a26aad1ce5ae6e9f1e9af60f8",
+      "bytes": 12948
+    },
+    "cad/158.brep": {
+      "upstream_path": "revisions/p5-refined/cad/158.brep",
+      "sha256": "d2903cfb99b3ec3bd30155cd5866db1881b7a624fd2e323c8d089754cd81476c",
+      "git_blob_sha": "bfecac4fcc9d1fb60cc8ba9913e6e1b6b1ba7ddf",
+      "bytes": 13076
+    },
+    "cad/159.brep": {
+      "upstream_path": "revisions/p5-refined/cad/159.brep",
+      "sha256": "25c1e511e0162839cbb667054d6473dd3e4d51539004557d9acfbf1418e595a8",
+      "git_blob_sha": "78a4b15cb50714a9f78e5f963e67219ef667f315",
+      "bytes": 13083
+    },
+    "cad/160.brep": {
+      "upstream_path": "revisions/p5-refined/cad/160.brep",
+      "sha256": "ffd5b27ef3850dd329223b47ba40721e0cccda9b2d41460c28e052770e64c102",
+      "git_blob_sha": "699aa078900d3a815b9c0774adaf6682e5b2399f",
+      "bytes": 12970
+    },
+    "cad/161.brep": {
+      "upstream_path": "revisions/p5-refined/cad/161.brep",
+      "sha256": "530aad205510de79006ad0dc08b2b958b8bba01a706865cd11b62dc5f17c234d",
+      "git_blob_sha": "e08d525275d2ca065be3a1f0d6e011b737c41dd4",
+      "bytes": 12984
+    },
+    "cad/162.brep": {
+      "upstream_path": "revisions/p5-refined/cad/162.brep",
+      "sha256": "f57b443fcf46823afcd63f05ea9545805510cec179cfb472471c1cc9e6dc737e",
+      "git_blob_sha": "beabae427ff9856a4e057893beb95da110b4a9b8",
+      "bytes": 15076
+    },
+    "cad/163.brep": {
+      "upstream_path": "revisions/p5-refined/cad/163.brep",
+      "sha256": "96599405b9551005cc7676d9382809cff829c281651aa141930d2d3f31c7f367",
+      "git_blob_sha": "652ca88505c152534b3f3fca6e9eb0c992c2ca31",
+      "bytes": 15032
+    },
+    "cad/164.brep": {
+      "upstream_path": "revisions/p5-refined/cad/164.brep",
+      "sha256": "564fb1372ce31956f23436bfd1432db0a8536299b49fff2d71a4ae80364f5dc9",
+      "git_blob_sha": "4d4a5b826a83209aadf3868d6dac4ffb8610e817",
+      "bytes": 15124
+    },
+    "cad/165.brep": {
+      "upstream_path": "revisions/p5-refined/cad/165.brep",
+      "sha256": "f915129f49c5a9ef5c7941179f0712fc5bc2355864be3311a33d5b1261b27a58",
+      "git_blob_sha": "0607d9af4d4dc95ea7facaeee244c2974eaf8714",
+      "bytes": 15097
+    },
+    "cad/168.brep": {
+      "upstream_path": "revisions/p5-refined/cad/168.brep",
+      "sha256": "0534f4c02a2da17382af3c239065b64ef932a78dbdce56e1202a0fdc5d1b8996",
+      "git_blob_sha": "8199160ad535c5197c3b283c5fac63ae6eb1eb41",
+      "bytes": 66320
+    },
+    "cad/169.brep": {
+      "upstream_path": "revisions/p5-refined/cad/169.brep",
+      "sha256": "7afc7df3fb66bf1d9d40ac1ad47e2e96cda56280b78dfe0cdbd5ceeca2a032dd",
+      "git_blob_sha": "3e57325fbdc511dde908c3d94488703661915475",
+      "bytes": 7212
+    },
+    "cad/188.brep": {
+      "upstream_path": "revisions/p5-refined/cad/188.brep",
+      "sha256": "f1d03115a0e7a9bdd4890bc919f8c890c411ee06b4133b76028bd3d9130fc4d0",
+      "git_blob_sha": "fef5fe34f7125c49d1061e2bf8590592b63d4584",
+      "bytes": 12796
+    },
+    "cad/189.brep": {
+      "upstream_path": "revisions/p5-refined/cad/189.brep",
+      "sha256": "0696a64622d8b4de4f44cf82aa34889475476afd59af3323cf4137a5eee0561c",
+      "git_blob_sha": "2f4a730170a3727ecafb8cb42d95266d380e8942",
+      "bytes": 13224
+    },
+    "cad/190.brep": {
+      "upstream_path": "revisions/p5-refined/cad/190.brep",
+      "sha256": "00c983b72697024c86602e77548ccae629f6beb2acfea47419554bb870b3f4c8",
+      "git_blob_sha": "19ed85e825fa4c6f564a911f407ad76f69ce595e",
+      "bytes": 13285
+    },
+    "cad/191.brep": {
+      "upstream_path": "revisions/p5-refined/cad/191.brep",
+      "sha256": "b05f912fc2d43657e62116b66e8d281a2ceb34414096f4049f0a9277c4b611c8",
+      "git_blob_sha": "241c8b02935ce6fe23322a6bcfa5376fd98b115e",
+      "bytes": 13289
+    },
+    "cad/192.brep": {
+      "upstream_path": "revisions/p5-refined/cad/192.brep",
+      "sha256": "9fd6951366fb901b42a221f185df7e28faca2aa5ed8ab724475eede8408410fc",
+      "git_blob_sha": "49d4c63b1da7f6653d57d24a9f0325953c02c982",
+      "bytes": 13330
+    },
+    "cad/193.brep": {
+      "upstream_path": "revisions/p5-refined/cad/193.brep",
+      "sha256": "9d440d5d1fef5c6cbc33f37879e69067759c28f2055d113f6f12d6177d5c2d7b",
+      "git_blob_sha": "9a72ed4401992654a7c126901d1a070cb9a381c7",
+      "bytes": 13256
+    },
+    "cad/194.brep": {
+      "upstream_path": "revisions/p5-refined/cad/194.brep",
+      "sha256": "dc28fb47c476ecc85b625a93cf5e5332c6fb7e994ebf4e70eb317b5b2ef5eca7",
+      "git_blob_sha": "1393dc473b2f01f50c56b90001ef400c9e668e95",
+      "bytes": 13384
+    },
+    "cad/195.brep": {
+      "upstream_path": "revisions/p5-refined/cad/195.brep",
+      "sha256": "de5c00ec2690eb21fc925cfcd1bc04ded5aa42a6e67440595f732afb8cfd164c",
+      "git_blob_sha": "bb4849dd0c3563e86321fccb4ff91c4da282e50a",
+      "bytes": 13392
+    },
+    "cad/196.brep": {
+      "upstream_path": "revisions/p5-refined/cad/196.brep",
+      "sha256": "f9ecf9347207fc501348e5897637e7e238e503a17592e64b2ff1d34a138a6c60",
+      "git_blob_sha": "55ca864c88856f29a8266ec8ebd0002d0c038a2c",
+      "bytes": 13279
+    },
+    "cad/197.brep": {
+      "upstream_path": "revisions/p5-refined/cad/197.brep",
+      "sha256": "eddad2ebd18e06dc15908c0a39ee0b8b7c8fefdc44d7dcfde90061919fabd980",
+      "git_blob_sha": "f46c8234193a4d61db2388f5b1f184f7c7c5b748",
+      "bytes": 13292
+    },
+    "cad/198.brep": {
+      "upstream_path": "revisions/p5-refined/cad/198.brep",
+      "sha256": "3bdefc0041bb608ca9306c25b30c6480ec4c0f53b12d552afb407fa73b75e90d",
+      "git_blob_sha": "dddc7a1359797524a9ac8f6161d27c8e188fb19c",
+      "bytes": 14855
+    },
+    "cad/199.brep": {
+      "upstream_path": "revisions/p5-refined/cad/199.brep",
+      "sha256": "620a250f8adb09010f067e31424ee4ead5f59a894404fd0f7f149b251db4549f",
+      "git_blob_sha": "99593718e32f77c88e321a183c3d861272a4c48d",
+      "bytes": 14794
+    },
+    "cad/200.brep": {
+      "upstream_path": "revisions/p5-refined/cad/200.brep",
+      "sha256": "00b796ccc777cf05c5e0244530b5638118d225fbf78abbfad8602a4bb2d9081b",
+      "git_blob_sha": "0e1a22d8eca5385563d72cd35e0859b62314fd3e",
+      "bytes": 14886
+    },
+    "cad/201.brep": {
+      "upstream_path": "revisions/p5-refined/cad/201.brep",
+      "sha256": "0d635ac274c163b5e5e0577a8ff12af83c47cdaf2a2f34947774560df8ea2e20",
+      "git_blob_sha": "b6dd1e9f245f34e15beb863bea6d77048bcff28b",
+      "bytes": 14812
+    },
+    "cad/210.brep": {
+      "upstream_path": "revisions/p5-refined/cad/210.brep",
+      "sha256": "c5645a01207975067263bf6226f415964cf02db91ee8b1b2123f8b925e8e894b",
+      "git_blob_sha": "bc9780d2acec0530d5ef2893670c71a08fa5babb",
+      "bytes": 26756
+    },
+    "cad/211.brep": {
+      "upstream_path": "revisions/p5-refined/cad/211.brep",
+      "sha256": "f678e74f4d9acfc165515c5fac9d45bafb1ea99a62fde9c3230016571c0e7510",
+      "git_blob_sha": "d99ef41d2dc436c4e2adcf28fd374a71726295e3",
+      "bytes": 12405
+    },
+    "cad/212.brep": {
+      "upstream_path": "revisions/p5-refined/cad/212.brep",
+      "sha256": "69e2806e078962c2b4a0e59bcb0e5040b0be4de0488eb374eafda1349bdbbf49",
+      "git_blob_sha": "14bf565dac4866d4d58d14f3ae2f47cc623b7c82",
+      "bytes": 12487
+    },
+    "cad/213.brep": {
+      "upstream_path": "revisions/p5-refined/cad/213.brep",
+      "sha256": "31dc1ce2d232d3fcfe8aa480000ea5a1fd12bd19534165604f69f7531b49afe5",
+      "git_blob_sha": "d4894df7f2b891115652156516beb0ec93b8ff20",
+      "bytes": 12343
+    },
+    "cad/214.brep": {
+      "upstream_path": "revisions/p5-refined/cad/214.brep",
+      "sha256": "cbd8e7bbc8b8fb7c2d60ca975cdab85da1451dd25b00de42ee79e1f1e8428820",
+      "git_blob_sha": "69288c3385d04c9e9155a3474a23f5dda91562c9",
+      "bytes": 12427
+    },
+    "cad/215.brep": {
+      "upstream_path": "revisions/p5-refined/cad/215.brep",
+      "sha256": "5ae22dd90a30bdc01eb9f8560a6a29d01c7eb274b89eaab869ba19c95f57ccc6",
+      "git_blob_sha": "8be05433b69124c4b0afbb0dda8061adde83083b",
+      "bytes": 26626
+    },
+    "cad/216.brep": {
+      "upstream_path": "revisions/p5-refined/cad/216.brep",
+      "sha256": "f0e30e5156273b31065611e40d451bea9829d89b702128d276035c0689051330",
+      "git_blob_sha": "8ebcae4822fd9f1e44dbd0ca52f6a52e08c7e722",
+      "bytes": 12325
+    },
+    "cad/217.brep": {
+      "upstream_path": "revisions/p5-refined/cad/217.brep",
+      "sha256": "88ae23d2a6cea65352f1e0b59a8864d7cd1219c072c294f990945138d8561c47",
+      "git_blob_sha": "9620eb3b5207ca755f423abaea112d82aa739daf",
+      "bytes": 12409
+    },
+    "cad/218.brep": {
+      "upstream_path": "revisions/p5-refined/cad/218.brep",
+      "sha256": "1c4db3ce1a71093c95989c959d2581c760548f3c6ecddf7c824d8e20c06e4407",
+      "git_blob_sha": "32d96b8078f9d1dffad445f72f1f17f67a5d06ea",
+      "bytes": 12267
+    },
+    "cad/219.brep": {
+      "upstream_path": "revisions/p5-refined/cad/219.brep",
+      "sha256": "61c8b29fae269fa6cfc084702216052012db3fe74a2a06ae7d03ba80f9cadcdd",
+      "git_blob_sha": "366a8a789c73a2bb6b078e0a719bad89c026f32f",
+      "bytes": 12349
+    },
+    "cad/220.brep": {
+      "upstream_path": "revisions/p5-refined/cad/220.brep",
+      "sha256": "df83197cb0da62329fdce095083b6e75f18f7d5f93e385bf46844fd308372c50",
+      "git_blob_sha": "a0106533149dc00f8b366c13321862b1d8ba22a0",
+      "bytes": 26297
+    },
+    "cad/221.brep": {
+      "upstream_path": "revisions/p5-refined/cad/221.brep",
+      "sha256": "41bf55433b594cd8106ff054ae51f5f6ca52924690feb750b41c97062500dfe2",
+      "git_blob_sha": "2f3a256ce6637de6b3b60517cf64ea7f4476ceae",
+      "bytes": 12279
+    },
+    "cad/222.brep": {
+      "upstream_path": "revisions/p5-refined/cad/222.brep",
+      "sha256": "41c8a822d88b60ce0eef1731c2c4950674cfddaa8aac79b4f9edacc7f72b7414",
+      "git_blob_sha": "e42be9dd9c820b1d1194aa83220c591928f081db",
+      "bytes": 12354
+    },
+    "cad/223.brep": {
+      "upstream_path": "revisions/p5-refined/cad/223.brep",
+      "sha256": "7243d112cc98c8e42a1b1635d714ce6bfbadaeb26f524d0f0b2964649c958069",
+      "git_blob_sha": "b394eba6de3cba976d2eb889329cefbd617e9823",
+      "bytes": 12217
+    },
+    "cad/224.brep": {
+      "upstream_path": "revisions/p5-refined/cad/224.brep",
+      "sha256": "61f522af767f4001d849c10009f927a1f436b84690e7f91942f92a6450646174",
+      "git_blob_sha": "4a99a3b966ac5efdee5380948bf9b5bed19f6286",
+      "bytes": 12304
+    },
+    "cad/225.brep": {
+      "upstream_path": "revisions/p5-refined/cad/225.brep",
+      "sha256": "e88b1f3a787fcc59f31cbef688ea7e97fefb79b0cafd9fde65804e6111306785",
+      "git_blob_sha": "3e3127d20a0589ac74ccad16cb7e204c65329113",
+      "bytes": 26167
+    },
+    "cad/226.brep": {
+      "upstream_path": "revisions/p5-refined/cad/226.brep",
+      "sha256": "c9d4bd9daea37c20f1f994fed2c90d6cc9781804d3711e8ecc77c41875b0ed4b",
+      "git_blob_sha": "7ee72e333f100d95968e4c15e0d90199ad838e7a",
+      "bytes": 12199
+    },
+    "cad/227.brep": {
+      "upstream_path": "revisions/p5-refined/cad/227.brep",
+      "sha256": "ed04b5d1281e65b15891f6e173c3912f566cb40955d07810a7cf206d7fe88450",
+      "git_blob_sha": "ce562e79b265c752a0357c5e8d7087c5e5a50a7f",
+      "bytes": 12286
+    },
+    "cad/228.brep": {
+      "upstream_path": "revisions/p5-refined/cad/228.brep",
+      "sha256": "d926fa3fd762a9e5176bec344646c4341a55d3ec95b0481670fbb136a56a6d4a",
+      "git_blob_sha": "8b34a6d43b3283972698aba74fbad45d2cf1b33a",
+      "bytes": 12141
+    },
+    "cad/229.brep": {
+      "upstream_path": "revisions/p5-refined/cad/229.brep",
+      "sha256": "355ad8f07ab742a84f4191f649b05192746ed8cc4579dc2f314dc891339352ce",
+      "git_blob_sha": "0803fc4e01e89266c5c796577c8cf3db785af34a",
+      "bytes": 12216
+    },
+    "cad/235.brep": {
+      "upstream_path": "revisions/p5-refined/cad/235.brep",
+      "sha256": "43dff5959345d3decbc2375e8396d65408546bc1b0b1d9239f2f90445d88eac5",
+      "git_blob_sha": "d3a4666efe50a6a198a4ba67bd1c53bb33cc6937",
+      "bytes": 317322
+    },
+    "cad/241.brep": {
+      "upstream_path": "revisions/p5-refined/cad/241.brep",
+      "sha256": "2eb974d49b79e47760909359c107a35a51909b467351aae92501fdd97c9b1ac8",
+      "git_blob_sha": "e9f66d57930fcd3a0d40174dfa52009b06e4b96b",
+      "bytes": 26378
+    },
+    "cad/250.brep": {
+      "upstream_path": "revisions/p5-refined/cad/250.brep",
+      "sha256": "af8591a835f60072e5e6e75caea2a3becd3de6fcdd1802410b7753d99dbdf57e",
+      "git_blob_sha": "d6a823cf67381f0e2ea1f365cd42f9b68a0f89e6",
+      "bytes": 30277
+    },
+    "cad/260.brep": {
+      "upstream_path": "revisions/p5-refined/cad/260.brep",
+      "sha256": "b673b10158c0fb8d74f338b1eaa0f10a3b85f004bc629559045e78aabc5f7fbc",
+      "git_blob_sha": "0201e60ad6dd1dc809f6837b0475784e6754dc42",
+      "bytes": 4725
+    },
+    "cad/261.brep": {
+      "upstream_path": "revisions/p5-refined/cad/261.brep",
+      "sha256": "be7c9cf34399fc9016a9f619800f2687d6014e6aeb4eac3ea809f7382153d075",
+      "git_blob_sha": "10beaa3f7b12c6476f22aa1289958a0e5b9664f5",
+      "bytes": 3312
+    },
+    "cad/266.brep": {
+      "upstream_path": "revisions/p5-refined/cad/266.brep",
+      "sha256": "d31e45fab873ff0b5552e5e3cb84aa4dc5d75cc10631454c8520b17a9f02a6cd",
+      "git_blob_sha": "bdf7646338fb6dd4c7807f06a4cead3398b9a9c3",
+      "bytes": 4825
+    },
+    "cad/267.brep": {
+      "upstream_path": "revisions/p5-refined/cad/267.brep",
+      "sha256": "f164a033f08d9b39a417ea731d6b309eb801a6df818d145225e180e3e427d2de",
+      "git_blob_sha": "fae29c0d56ddbd627f2ceead5720cf410ef7653e",
+      "bytes": 3368
+    },
+    "cad/272.brep": {
+      "upstream_path": "revisions/p5-refined/cad/272.brep",
+      "sha256": "2983303d0014a4b5f4e75365eef1c94c58bcde83e37e984369872abf042c2dfc",
+      "git_blob_sha": "9741ae88348bff66ed54858d70b00ae89aa46bb6",
+      "bytes": 119189
+    },
+    "cad/273.brep": {
+      "upstream_path": "revisions/p5-refined/cad/273.brep",
+      "sha256": "ac132bfa1a2d00df2161b6b5174a4d73fdb22f2aae9686072e073c0be92a764f",
+      "git_blob_sha": "c4d3adc68c73f4f0b66023af4b7d25243edf2320",
+      "bytes": 40064
+    },
+    "cad/274.brep": {
+      "upstream_path": "revisions/p5-refined/cad/274.brep",
+      "sha256": "d1bb7d6de4bc26f44bd18e6872facb034005f44877426089950dc44b552e59d6",
+      "git_blob_sha": "a41c7702985558bf60f8c70f65092c14a8974799",
+      "bytes": 60898
+    },
+    "cad/275.brep": {
+      "upstream_path": "revisions/p5-refined/cad/275.brep",
+      "sha256": "8fcb58eef0407a46ab233fed71248d238e98a50c13c15091bcfd56e1e5e8c738",
+      "git_blob_sha": "efaa3a6cb27059c2ad8e3639582e83386e73ce14",
+      "bytes": 82319
+    },
+    "cad/276.brep": {
+      "upstream_path": "revisions/p5-refined/cad/276.brep",
+      "sha256": "4be320d1a4b5af499ff07ead903e10a55734bace9838ae008f89ca50e90492b0",
+      "git_blob_sha": "cbe23902f4ab91fd675ec12305f34193e11055c6",
+      "bytes": 48804
+    },
+    "cad/277.brep": {
+      "upstream_path": "revisions/p5-refined/cad/277.brep",
+      "sha256": "034f4dce2c0d4d34ee07a055e44d1fb637334f5dad87bfe8c72e0ad8e5c76e4d",
+      "git_blob_sha": "67c0bf94ea36aa0f0f3e7f8b0ef1ba8d7b2868fa",
+      "bytes": 52649
+    },
+    "refined-mass-properties.json": {
+      "upstream_path": "revisions/p5-refined/assets/refined-mass-properties.json",
+      "sha256": "9dfc30a5118f6f860c291b2676145296673e684d6b0954773463027d20d36eb9",
+      "git_blob_sha": "f51d95968be91120ac64820a585b45f3e07eb190",
+      "bytes": 15028
+    },
+    "mass-property-deltas.json": {
+      "upstream_path": "revisions/p5-refined/reports/mass-property-deltas.json",
+      "sha256": "279b86bf1affeca4e08fadb2864db116a67c32360b8a3dd7c08430910f6bd141",
+      "git_blob_sha": "399b0aa3396db9b6fc6dd22e435ce5ed01c970af",
+      "bytes": 7034
+    }
+  },
+  "operation_sources": {
+    "revisions/p5-refined/source/cad_core.py": {
+      "path": "revisions/p5-refined/source/cad_core.py",
+      "git_blob_sha": "0820a29fca5eb4ab81627177abbab2ab0b8d958c",
+      "encoding": "utf-8",
+      "bytes": 1606,
+      "sha256": "cc1f7ba79473da3e3fd0b467c77aa3a6405be8fabf2486b604ff665636c7e459"
+    },
+    "revisions/p5-refined/source/refine_cad.py": {
+      "path": "revisions/p5-refined/source/refine_cad.py",
+      "git_blob_sha": "6c114771b7e95de2da5f805a23c5a494250baf15",
+      "encoding": "utf-8",
+      "bytes": 7292,
+      "sha256": "97f77f4a042ed5437936272df5350a498d6f3dc9fd758c83918807aa4f484860"
+    },
+    "revisions/p5-refined/source/export_refined_native.py": {
+      "path": "revisions/p5-refined/source/export_refined_native.py",
+      "git_blob_sha": "2a322e83efc4e6b36efef6e000c5f3678fb3d97e",
+      "encoding": "utf-8",
+      "had_final_newline": true,
+      "bytes": 2585,
+      "sha256": "08749ba5e8444fbb4890646a05a0bd1730039fa0a5456fa3cda64966d8e4966e",
+      "verified": true
+    },
+    "revisions/p5-refined/source/revalidate_native.py": {
+      "path": "revisions/p5-refined/source/revalidate_native.py",
+      "git_blob_sha": "d1714cd60780a65d8c619731da7519f9288651a8",
+      "encoding": "utf-8",
+      "had_final_newline": true,
+      "bytes": 2606,
+      "sha256": "ff07e3dc5efd747165df3ed656d3c5e70221c4d4631a4b7baccdea1ecd84dd7a",
+      "verified": true
+    },
+    "revisions/p5-refined/source/frames.py": {
+      "path": "revisions/p5-refined/source/frames.py",
+      "git_blob_sha": "7a88633ba5713fc9f90e4c56c7f984ce26ca668d",
+      "encoding": "utf-8",
+      "had_final_newline": true,
+      "bytes": 1910,
+      "sha256": "67e920cd0511fbc5cf831e9e5ae555582d5edd2b5b3e0197ca651f516b365f11",
+      "verified": true
+    },
+    "revisions/p5-refined/source/verify_geometry.py": {
+      "path": "revisions/p5-refined/source/verify_geometry.py",
+      "git_blob_sha": "351f8b8ec501f1b926499ce20bd9fae8e0366fba",
+      "encoding": "utf-8",
+      "had_final_newline": true,
+      "bytes": 4474,
+      "sha256": "f0dbdd6cbb2d69b5a114f65e88ecd65a89d207ac46a6532c4c0e294f7f253ae1",
+      "verified": true
+    },
+    "revisions/p5-refined/source/check_envelopes.py": {
+      "path": "revisions/p5-refined/source/check_envelopes.py",
+      "git_blob_sha": "7967dae3f8647970a9f8b64e7825d53e5dc37cd9",
+      "encoding": "utf-8",
+      "had_final_newline": true,
+      "bytes": 1307,
+      "sha256": "0ab5e1f106ae4bea77669e74596d2c6401aa517c6f7bb466675cea698cef9b27",
+      "verified": true
+    }
+  },
+  "scope": "Actual Refined replacement BREP and inherited compact CAD/capture/mass data; no new dynamics or hardware qualification"
+}

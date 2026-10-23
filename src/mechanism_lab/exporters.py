@@ -32,6 +32,16 @@ def linear_to_srgb(x):
     x=np.clip(np.asarray(x),0,1)
     return np.where(x<=.0031308,12.92*x,1.055*np.power(x,1/2.4)-.055)
 
+
+def artifact_stem(assembly):
+    """Separate descriptive display labels from portable output filenames."""
+    from .importers import safe_name
+    name = (assembly.metadata.get('engineering_result') or {}).get('name', assembly.name)
+    stem = safe_name(name, fallback='assembly')
+    if stem.split('.')[0].upper() in {'CON', 'PRN', 'AUX', 'NUL', *('COM'+str(i) for i in range(1, 10)), *('LPT'+str(i) for i in range(1, 10))}:
+        stem = '_' + stem
+    return stem
+
 def scene(assembly, time_seconds=0,explode=0):
     s=trimesh.Scene();materials=[]
     for m in assembly.materials:
@@ -49,7 +59,7 @@ def export_glb(assembly,path,time_seconds=0,explode=0):
     scene(assembly,time_seconds,explode).export(path)
     return path
 
-def export_step(assembly,path,individual=True):
+def export_step(assembly,path,individual=True,mesh_filename=None):
     """Export only existing BReps; never pass tessellated substitutes off as analytic CAD."""
     import cadquery as cq
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
@@ -66,7 +76,7 @@ def export_step(assembly,path,individual=True):
     if not included:raise ValueError('No analytic BRep bodies; use GLB/STL for mesh-only geometry')
     cad.export(str(path),exportType='STEP',mode='default')
     report=dict(units='mm',axis='X-shaft/Z-up',analytic_components=included,mesh_only_components_not_in_STEP=omitted,
-                full_mesh_assembly=path.stem.replace('_analytic','')+'.glb',manufacturing_validated=False)
+                full_mesh_assembly=mesh_filename or path.stem.replace('_analytic','')+'.glb',manufacturing_validated=False)
     path.with_suffix('.coverage.json').write_text(json.dumps(report,indent=2)+'\n')
     return report
 
@@ -77,6 +87,9 @@ def export_stls(assembly,directory):
         mesh.apply_transform(assembly.pose(p,0,0))
         mesh.export(directory/(p.name+'.stl'))
     (directory/'UNITS.txt').write_text('All STL coordinates are millimetres in assembled world pose at time zero; shaft X, up Z. STL does not encode units.\n')
+    (directory/'DIAGNOSTIC-NOT-FOR-MANUFACTURE.json').write_text(json.dumps({
+        'schema':'cybrgeo-diagnostic-artifact/1','status':'diagnostic_mesh',
+        'manufacturing_release':False,'manufacturing_validated':False},indent=2)+'\n')
 
 def export_bom(assembly,directory):
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
@@ -142,7 +155,13 @@ def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion',sample_ti
     lookup={n.get('name'):i for i,n in enumerate(doc['nodes'])}
     roots=doc['scenes'][doc.get('scene',0)]['nodes']
     if len(roots)!=1 or doc['nodes'][roots[0]].get('mesh') is not None:
-        raise ValueError('Expected a single non-mesh world root')
+        # Recent trimesh versions omit an identity non-mesh world root and
+        # serialize each part as a scene root. Animated part TRS below is in
+        # native mm/Z-up, so restore an explicit shared conversion parent.
+        root_index=len(doc['nodes'])
+        doc['nodes'].append(dict(name='CYBR_GEO_world',children=list(roots)))
+        doc['scenes'][doc.get('scene',0)]['nodes']=[root_index]
+        roots=[root_index]
     root=doc['nodes'][roots[0]]
     for key in ('translation','rotation','scale'):root.pop(key,None)
     root['matrix']=NATIVE_TO_GLTF.T.reshape(-1).tolist()
@@ -168,7 +187,11 @@ def export_animated_glb(assembly,path,duration=8.,fps=24,mode='motion',sample_ti
     js=json.dumps(doc,separators=(',',':')).encode();js+=b' '*((-len(js))%4);data.extend(b'\0'*((-len(data))%4))
     body=struct.pack('<II',len(js),0x4E4F534A)+js+struct.pack('<II',len(data),0x004E4942)+data
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(struct.pack('<III',0x46546C67,2,12+len(body))+body)
+    source=assembly.metadata.get('motion_source','Prescribed rigid-body kinematics') if mode=='motion' else 'Prescribed exploded inspection'
+    note=('Interpolated replay of recorded MuJoCo body states. Contact coverage and physical assumptions belong to the simulation record; interpolation is not a continuous dynamics or clearance proof.'
+          if source=='MuJoCo integrated rigid-body dynamics' else
+          'Prescribed rigid-body inspection motion. No dynamics or hardware qualification is established by this export.')
     report=dict(file=path.name,duration=duration,samples=len(times),animated_channels=len(channels),rotation_roundtrip_error=residual,
-                note='Prescribed rigid-body kinematics. Not electromagnetic or contact-force simulation.')
+                motion_source=source,note=note)
     path.with_suffix('.animation.json').write_text(json.dumps(report,indent=2)+'\n')
     return report

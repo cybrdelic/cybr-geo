@@ -1,0 +1,9 @@
+{
+  "repository": "cybrdelic/cybr-arx6-compact",
+  "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "path": "revisions/p5-refined/source/verify_geometry.py",
+  "git_blob_sha": "351f8b8ec501f1b926499ce20bd9fae8e0366fba",
+  "sha256": "f0dbdd6cbb2d69b5a114f65e88ecd65a89d207ac46a6532c4c0e294f7f253ae1",
+  "bytes": 4474,
+  "scope": "Unmodified source fixture retained under NOTICE-SOURCES.md. Tests execute only its verified shift function and body-update loop AST; they do not import its generators or execute its file writes. The adapted arithmetic lives in shared native_construction.replace_mass_components. Current corrected bodies retain unchanged archive assumptions; dynamics and hardware qualification are separate."
+}

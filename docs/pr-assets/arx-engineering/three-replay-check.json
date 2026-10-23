@@ -1,0 +1,26 @@
+{
+  "schema": "cybrgeo-native-three-proof/1",
+  "passed": true,
+  "task_criteria_passed": true,
+  "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
+  "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+  "reference_sha256": "3ac5f913fdaad1293e494fb3df5a26ff7f6483c4d99ad83ff37c08b6af4e9516",
+  "trace_file_sha256": "83ab3efb974484d96ebfd440d4a4b617abde0e6f208869672f44eba9c73d1e5c",
+  "glb_sha256": "7489b98b52efaf07a75f971aa4dddc6fd8e07d512794eb955ae6a4f89a8d7aeb",
+  "part_count": 385,
+  "sampled_times_s": [
+    0,
+    2.5000000000019997,
+    5.0000000000039995,
+    7.500000000006,
+    10.000000000007999
+  ],
+  "compared_vertices": 5775,
+  "max_vertex_error_mm": 0.000014443737711644644,
+  "tolerance_mm": 0.0001,
+  "held_state_policy": true,
+  "forged_import_rejected": true,
+  "stale_model_rejected": true,
+  "failed_run_not_passing": true,
+  "scope": "Programmatic Three.js GLTFLoader and world-vertex parity against actual integrated SI body poses. No live browser or hardware verification."
+}

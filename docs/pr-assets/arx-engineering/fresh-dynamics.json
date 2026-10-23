@@ -1,0 +1,242 @@
+{
+  "schema": "cybrgeo-engineering-result/2",
+  "name": "arx_belt",
+  "passed": true,
+  "requirements": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "complete nominal transfer cycle recorded",
+        "passed": true,
+        "duration_s": 10.000000000007999,
+        "required_s": 10.0
+      },
+      {
+        "name": "contact-driven placement B",
+        "passed": true,
+        "error_m": 0.00025764829176943367,
+        "limit_m": 0.0015,
+        "time_s": 4.90000000000392
+      },
+      {
+        "name": "contact-driven placement A",
+        "passed": true,
+        "error_m": 0.0003098728598905802,
+        "limit_m": 0.0015,
+        "time_s": 9.90000000000792
+      },
+      {
+        "name": "no externally applied body wrench",
+        "passed": true,
+        "value": 0.0
+      },
+      {
+        "name": "no unexpected fault",
+        "passed": true,
+        "events": []
+      }
+    ],
+    "scope": "Nominal task outcomes only; known adverse cases remain failures. No hardware qualification.",
+    "known_original_failures": [
+      "power_loss_3.2",
+      "weak_spring_double_delay_3.2",
+      "weak_spring_double_delay_7.2"
+    ]
+  },
+  "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
+  "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+  "source_files": {
+    "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+    "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+    "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+    "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+    "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+    "project.py": "8090c7fcdc506c228e9f9a6c5e99cd595947bf0deffff8c4e6da35ff5b7b6ad0",
+    "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+    "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+    "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+    "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+    "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+    "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+    "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+    "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+    "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+  },
+  "native_build_sha256": "da72631e57904d6dfcd9ae6a53edf5d60ce7340845823ceb1d2c6307fee3a4ad",
+  "native": {
+    "parts": 118,
+    "placements": 375,
+    "verified_artifacts": 628,
+    "directory": "outputs/engineering-arx-sourcebound/native"
+  },
+  "simulation": {
+    "schema": "cybrgeo-causal-simulation/1",
+    "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
+    "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+    "options": {
+      "power": true,
+      "heartbeat": true,
+      "enforceLimits": true,
+      "brakes": true,
+      "torqueScale": 1.0,
+      "gripScale": 1.0,
+      "springScale": 1.0,
+      "brakeScale": 1.0,
+      "brakeDelayScale": 1.0,
+      "frictionScale": 1.0
+    },
+    "reference_sha256": "3ac5f913fdaad1293e494fb3df5a26ff7f6483c4d99ad83ff37c08b6af4e9516",
+    "reference_identity": "explicit source record",
+    "final_options": {
+      "power": true,
+      "heartbeat": true,
+      "enforceLimits": true,
+      "brakes": true,
+      "torqueScale": 1.0,
+      "gripScale": 1.0,
+      "springScale": 1.0,
+      "brakeScale": 1.0,
+      "brakeDelayScale": 1.0,
+      "frictionScale": 1.0
+    },
+    "mujoco_version": "3.16.0",
+    "timestep_s": 0.000416666666667,
+    "steps": 24000,
+    "start_time_s": 0.0,
+    "duration_s": 10.000000000007999,
+    "output_interval_s": 0.00833333333334,
+    "events": [],
+    "metrics": {
+      "max_tracking_error_rad": 0.0033716587982588475,
+      "max_applied_generalized_force": 11.695983499755197,
+      "max_external_body_force_N": 0.0,
+      "actuators": {
+        "motor1": {
+          "peak_current_A": 1.7196393129541412,
+          "peak_output_torque_Nm": 4.555674271660793,
+          "peak_motor_speed_rad_s": 102.98848173100518,
+          "peak_voltage_V": 9.932549672969058,
+          "over_continuous_current_s": 0.0,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.3183700828378769,
+          "final_temperature_C": 25.048012793323927,
+          "electrical_energy_J": 2.7471338136646475,
+          "copper_heat_J": 1.0075135258840138,
+          "mechanical_energy_J": 0.22903505205278812,
+          "gear_heat_J": 1.5105674851037554,
+          "belt_demand_limit_s": 0.0,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0
+        },
+        "motor2": {
+          "peak_current_A": 2.5456360790707966,
+          "peak_output_torque_Nm": 12.798933333298825,
+          "peak_motor_speed_rad_s": 81.0215769650336,
+          "peak_voltage_V": 7.243146240985508,
+          "over_continuous_current_s": 0.18750000000015088,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.9076171309778577,
+          "final_temperature_C": 25.22571442345635,
+          "electrical_energy_J": 12.368978197987735,
+          "copper_heat_J": 8.188262433064702,
+          "mechanical_energy_J": -0.16451298433219644,
+          "gear_heat_J": 4.345183985797776,
+          "belt_demand_limit_s": 0.11875000000009454,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0
+        },
+        "motor3": {
+          "peak_current_A": 0.7569895626589765,
+          "peak_output_torque_Nm": 4.11051189053205,
+          "peak_motor_speed_rad_s": 101.41838393019032,
+          "peak_voltage_V": 9.62438342713078,
+          "over_continuous_current_s": 0.0,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.33033940204838247,
+          "final_temperature_C": 25.041717942193635,
+          "electrical_energy_J": 4.39179030930948,
+          "copper_heat_J": 1.0846937582249543,
+          "mechanical_energy_J": 0.5557109028743449,
+          "gear_heat_J": 2.751378139586716,
+          "belt_demand_limit_s": 0.0,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0
+        },
+        "motor4": {
+          "peak_current_A": 0.6370593961428477,
+          "peak_output_torque_Nm": 1.5122117781556146,
+          "peak_motor_speed_rad_s": 203.93723650447873,
+          "peak_voltage_V": 14.779441390676645,
+          "over_continuous_current_s": 0.0,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.24630591228578894,
+          "final_temperature_C": 25.62590450757237,
+          "electrical_energy_J": 9.097465412057911,
+          "copper_heat_J": 7.947324917934794,
+          "mechanical_energy_J": 0.19728903722974225,
+          "gear_heat_J": 0.9528514218712384,
+          "belt_demand_limit_s": 0.0,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0
+        },
+        "motor5": {
+          "peak_current_A": 0.07632827473586723,
+          "peak_output_torque_Nm": 0.181183288027345,
+          "peak_motor_speed_rad_s": 214.8811175881827,
+          "peak_voltage_V": 7.656977040448176,
+          "over_continuous_current_s": 0.0,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.02132310887842804,
+          "final_temperature_C": 25.00463246447772,
+          "electrical_energy_J": 0.35584191822684513,
+          "copper_heat_J": 0.0595624213636576,
+          "mechanical_energy_J": 0.12433217425566301,
+          "gear_heat_J": 0.17194732062721757,
+          "belt_demand_limit_s": 0.0,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0
+        },
+        "motor6": {
+          "peak_current_A": 0.12005276805878003,
+          "peak_output_torque_Nm": 0.28497375748298903,
+          "peak_motor_speed_rad_s": 572.2646673068822,
+          "peak_voltage_V": 20.136235871411422,
+          "over_continuous_current_s": 0.0,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.020400359493607405,
+          "final_temperature_C": 25.00633991575413,
+          "electrical_energy_J": 0.37878595449321056,
+          "copper_heat_J": 0.05451888143840655,
+          "mechanical_energy_J": 0.05903386144064945,
+          "gear_heat_J": 0.2652332085914903,
+          "belt_demand_limit_s": 0.0,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0
+        }
+      },
+      "free_bodies": {
+        "puck": {
+          "body_id": 10,
+          "dof": 8,
+          "max_imposed_generalized_force": 0.0,
+          "max_applied_wrench_component": 0.0
+        }
+      },
+      "monitor_scope": "Actuator and free-body extrema cover every integration step since initialization"
+    },
+    "qualification": {
+      "dynamics": "actual integrated electromechanical/contact model",
+      "hardware": "not qualified"
+    }
+  },
+  "qualification": {
+    "construction": "native authored geometry and explicit mass records",
+    "dynamics": "actual MuJoCo integration with causal electrical, brake, spring and contact forces",
+    "clearance": "declared conservative contact geometry; not a complete continuous B-rep motion envelope",
+    "hardware": "not qualified"
+  },
+  "native_source_binding_sha256": "52f6276e636788093d0a9a050ae4b85c6effb699eb12fa143773cd6b98934531",
+  "original_report_file_sha256": "95d175039b45c7895ac833fbc8c6b67f68c4b60c006281477d6501ca75157d0e",
+  "trace_file_sha256": "83ab3efb974484d96ebfd440d4a4b617abde0e6f208869672f44eba9c73d1e5c",
+  "receipt_note": "Compact summary of the genuine fresh public generate_project run with full project and construction dependency binding. Exact native and source-binding receipt bytes are preserved alongside this summary; physical outcomes are compared with the prior fresh run in source-closure-comparison.json. Hardware remains unqualified."
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "cybrgeo-source-geometry-study/1",
+  "source": {
+    "repository": "https://github.com/cybrdelic/cybr-iris09",
+    "commit": "6aac71594c211cc5934674b2113d9db8c5ec17c6",
+    "file": "IRIS-09.glsl",
+    "normalized_text_sha256": "455e1ba9b0740a6ab925f9c022eea5f217fd3bbfc08ffec3177fb3b1d925843b",
+    "checkout_bytes_sha256": "a0adeb7354f16e84d62c43af09d9c38b3e6542af9bad7730627536d01992145b",
+    "upstream_license": "No license grant supplied; adaptation requested by the source owner for CYBR GEO. No upstream license is inferred."
+  },
+  "source_units": "Unspecified scene units; all lengths below retain source values",
+  "coordinate_mapping": "Source (x,y,z), Y up -> CAD (x,-z,y), Z up; multiply lengths by scene_unit_mm",
+  "leaf": {
+    "source_lines": "168-196, 358-391",
+    "count": 9,
+    "world_clip_radius": 0.99,
+    "hinge_radius": 0.86,
+    "vertical_thickness": 0.00065,
+    "cant": 0.008,
+    "height": 0.260,
+    "front_arc_center_xz_radius": [0.69, 0.17, 1.15],
+    "trailing_arc_center_xz_radius": [0.25, 1.20, 1.60],
+    "hinge_angle_radians": "0.45 + 0.45*cos(time_s*pi/10)",
+    "actuator_angle_radians": "-0.38 + 0.54*(1-cos(time_s*pi/10))"
+  },
+  "housing": {
+    "source_lines": "79-156",
+    "profile_columns": ["name", "radial_center", "source_y_center", "radial_half_width", "vertical_half_height", "corner_radius", "material_id"],
+    "rounded_radial_profiles": [
+      ["main_shell", 1.298, 0.255, 0.212, 0.255, 0.038, 1],
+      ["face_ring", 1.303, 0.513, 0.220, 0.031, 0.006, 2],
+      ["brass_retainer", 1.054, 0.472, 0.037, 0.060, 0.014, 3],
+      ["lower_trim", 1.500, 0.102, 0.036, 0.046, 0.013, 2],
+      ["upper_grip", 1.475, 0.385, 0.048, 0.043, 0.016, 1],
+      ["middle_grip", 1.485, 0.224, 0.031, 0.018, 0.007, 1],
+      ["inner_barrel", 1.019, 0.275, 0.025, 0.161, 0.008, 5],
+      ["objective_floor", 0.530, -0.077, 0.555, 0.023, 0.010, 5],
+      ["objective_barrel", 0.637, 0.084, 0.065, 0.139, 0.008, 5],
+      ["objective_top_step", 0.548, 0.211, 0.026, 0.015, 0.004, 5],
+      ["objective_step_1", 0.572, 0.054, 0.018, 0.013, 0.004, 5],
+      ["objective_step_2", 0.501, 0.026, 0.018, 0.008, 0.003, 5],
+      ["objective_step_3", 0.457, 0.003, 0.018, 0.008, 0.003, 5],
+      ["objective_step_4", 0.408, -0.022, 0.018, 0.013, 0.003, 5]
+    ],
+    "flutes": {"count": 120, "radial_center": 1.513, "height": 0.248, "half_size_source_xyz": [0.025, 0.095, 0.012], "corner_radius": 0.005},
+    "seam": {"radial_center": 1.462, "height": 0.546, "half_width": 0.0018, "half_height": 0.007, "corner_radius": 0.0010},
+    "spanner": {"angle": 0.31, "radial_center": 1.054, "height": 0.529, "half_size_source_xyz": [0.041, 0.015, 0.018], "corner_radius": 0.002},
+    "track": {"center_angle": 0.16, "angle_half_range": 0.61, "radius": 1.439, "half_width": 0.014, "height": 0.538, "half_height": 0.028},
+    "ears": {"count": 3, "center_radius": 1.40, "height": -0.012, "radius": 0.322, "half_height": 0.079, "corner_radius": 0.042, "bore_center_radius": 1.57, "bore_radius": 0.076},
+    "screws": {"count": 6, "center_radius": 1.348, "recess_radius": 0.062, "recess_height": 0.550, "recess_half_height": 0.028, "recess_corner": 0.006, "radius": 0.058, "height": 0.529, "half_height": 0.014, "corner_radius": 0.007, "slot_height": 0.544, "slot_half_size_source_xyz": [0.056, 0.014, 0.008], "slot_angle_base": 0.48, "slot_angle_multiplier": 1.7}
+  },
+  "handle": {
+    "source_lines": "145-155",
+    "arm_center_source_xyz": [1.526, 0.573, 0], "arm_half_size_source_xyz": [0.197, 0.015, 0.028], "arm_corner": 0.011,
+    "pivot_center_x_y": [1.439, 0.556], "pivot_radius": 0.012, "pivot_half_height": 0.041, "pivot_corner": 0.003,
+    "knob_center_x_y": [1.726, 0.600], "knob_mean_radius": 0.066, "knob_radius_amplitude": 0.0025, "knob_lobes": 28, "knob_half_height": 0.044, "knob_corner": 0.008,
+    "cap_height": 0.643, "cap_radius": 0.049, "cap_half_height": 0.005, "cap_corner": 0.003
+  },
+  "lenses": {
+    "source_lines": "454-473",
+    "sphere_radius_base_y_edge_radius": [[1.40, 0.052, 0.560], [2.05, -0.025, 0.390]]
+  }
+}

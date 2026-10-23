@@ -1,0 +1,377 @@
+{
+  "schema": "cybrgeo-consolidation-media-manifest/1",
+  "implementation_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+  "ordering": "Append completed writes in actual mutation order; never relabel pending outputs as saved.",
+  "entries": [
+    {
+      "project": "iris09",
+      "kind": "image",
+      "status": "saved",
+      "local_path": "outputs/media-iris-final-stills-20261023/pose-00000.png",
+      "bytes": 771568,
+      "sha256": "6fc5777d986d5aac94348349afee4c028305294b8541f78634edf9d983d09d00",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "recorded_time_s": 0.0,
+      "library_file_id": "libfile_797d73bffea88191baed216ccfedc296",
+      "source_receipt": {
+        "path": "outputs/media-iris-final-stills-20261023/media.json",
+        "bytes": 40447,
+        "sha256": "49bd8944c6401a347c5023110a9a76b370e24b380d9d7779ac437d942ee4dc26"
+      }
+    },
+    {
+      "project": "iris09",
+      "kind": "image",
+      "status": "saved",
+      "local_path": "outputs/media-iris-final-stills-20261023/pose-00477.png",
+      "bytes": 753500,
+      "sha256": "be66d395b04df629f4a1f44da0c6136a036900065a14ad91aa20321781b9d3c1",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "recorded_time_s": 4.0068,
+      "library_file_id": "libfile_7c351dc7e04c8191879f17a4574e02bb",
+      "source_receipt": {
+        "path": "outputs/media-iris-final-stills-20261023/media.json",
+        "bytes": 40447,
+        "sha256": "49bd8944c6401a347c5023110a9a76b370e24b380d9d7779ac437d942ee4dc26"
+      }
+    },
+    {
+      "project": "iris09",
+      "kind": "video",
+      "status": "saved",
+      "local_path": "outputs/media-iris-final-film-20261023/motion.mp4",
+      "bytes": 736973,
+      "sha256": "1adf478742c2e16752633e3e6b499136cbe4109b86e5d5ea6632ae19eb7b7cbd",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "fps": 24,
+      "frame_count": 193,
+      "source_duration_s": 8.0,
+      "video_duration_s": 8.041666666666666,
+      "terminal_hold_s": 0.041666666666666075,
+      "maximum_sample_hold_age_s": 0.00833333333333286,
+      "sampling": "Preceding recorded state at each real-time video tick; final state included; no interpolation",
+      "library_file_id": "libfile_3c6b8979b9988191b8e554ab83e2c860",
+      "source_receipt": {
+        "path": "outputs/media-iris-final-film-20261023/media.json",
+        "bytes": 50511,
+        "sha256": "6de935364bc7a89b1b2a6df693432a2bb08bf80d4b8fc9138f12419dca5dabd6"
+      }
+    },
+    {
+      "project": "arx_belt",
+      "kind": "image",
+      "status": "saved",
+      "local_path": "outputs/media-arx-final-film-20261023/pose-00000.png",
+      "bytes": 800265,
+      "sha256": "307e1623e573ef2184864fd440a7ae66a0ef26339bf056bd85a9255a4cf73a66",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "recorded_time_s": 0.0,
+      "library_file_id": "libfile_ebc47e465248819194525591301675cb",
+      "source_receipt": {
+        "path": "outputs/media-arx-final-film-20261023/media.json",
+        "bytes": 148464,
+        "sha256": "e74c6f97b66c3ddeb1c28a5259ed86323491f6e0d4136559a5378ddf5f13ca37"
+      }
+    },
+    {
+      "project": "arx_belt",
+      "kind": "image",
+      "status": "saved",
+      "local_path": "outputs/media-arx-final-film-20261023/pose-01044.png",
+      "bytes": 766056,
+      "sha256": "2773cb4fa5c36ef2357294e9b0598bef750a3060cc958f21434d89236df4a344",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "recorded_time_s": 8.700000000006959,
+      "library_file_id": "libfile_24cab34412e08191899348d9e04eb1cd",
+      "source_receipt": {
+        "path": "outputs/media-arx-final-film-20261023/media.json",
+        "bytes": 148464,
+        "sha256": "e74c6f97b66c3ddeb1c28a5259ed86323491f6e0d4136559a5378ddf5f13ca37"
+      }
+    },
+    {
+      "project": "arx_belt",
+      "kind": "video",
+      "status": "saved",
+      "local_path": "outputs/media-arx-final-film-20261023/motion.mp4",
+      "bytes": 3160591,
+      "sha256": "c070a239eb1fc081fc8ce599aa2c91dbc6d2705df68fb51aa2c8a79c7f1f409e",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "fps": 24,
+      "frame_count": 419,
+      "source_duration_s": 17.400000000013918,
+      "video_duration_s": 17.458333333333332,
+      "terminal_hold_s": 0.05833333331941404,
+      "maximum_sample_hold_age_s": 0.008333333333306665,
+      "sampling": "Preceding recorded state at each real-time video tick; final state included; no interpolation",
+      "library_file_id": "libfile_f03f47e12ae4819197135c97363065aa",
+      "source_receipt": {
+        "path": "outputs/media-arx-final-film-20261023/media.json",
+        "bytes": 148464,
+        "sha256": "e74c6f97b66c3ddeb1c28a5259ed86323491f6e0d4136559a5378ddf5f13ca37"
+      }
+    },
+    {
+      "project": "fourbar_lift",
+      "kind": "image",
+      "status": "saved",
+      "local_path": "outputs/media-fourbar-final-film-20261023/pose-00000.png",
+      "bytes": 451199,
+      "sha256": "b9a9e2310a3b3d951758b559cf199d7fa99b032b6bae099ebd5ab88abd094839",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "recorded_time_s": 0.0,
+      "library_file_id": "libfile_b581f89b0a648191912cdad19151dffa",
+      "source_receipt": {
+        "path": "outputs/media-fourbar-final-film-20261023/media.json",
+        "bytes": 33914,
+        "sha256": "5928921408f942cda51fd31b149a741376e4ac15476a798c6adbebb89db11a7d"
+      }
+    },
+    {
+      "project": "fourbar_lift",
+      "kind": "image",
+      "status": "saved",
+      "local_path": "outputs/media-fourbar-final-film-20261023/pose-00471.png",
+      "bytes": 456594,
+      "sha256": "1f8fbb8e7a17759cbb907dc8eb790ee2f4e90184c7615017aa912929885a8753",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "recorded_time_s": 4.0035,
+      "library_file_id": "libfile_ec6b7f6a8f8c819192174d6f8708c0a3",
+      "source_receipt": {
+        "path": "outputs/media-fourbar-final-film-20261023/media.json",
+        "bytes": 33914,
+        "sha256": "5928921408f942cda51fd31b149a741376e4ac15476a798c6adbebb89db11a7d"
+      }
+    },
+    {
+      "project": "fourbar_lift",
+      "kind": "video",
+      "status": "saved",
+      "local_path": "outputs/media-fourbar-final-film-20261023/motion.mp4",
+      "bytes": 593034,
+      "sha256": "4193d29784135c21f0905f23b6facebe7fce831e5f24b6fb7a908860f5c4e44e",
+      "source_commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "fps": 24,
+      "frame_count": 193,
+      "source_duration_s": 8.0,
+      "video_duration_s": 8.041666666666666,
+      "terminal_hold_s": 0.041666666666666075,
+      "maximum_sample_hold_age_s": 0.008333333333333304,
+      "sampling": "Preceding recorded state at each real-time video tick; final state included; no interpolation",
+      "library_file_id": "libfile_ea9f352f050c8191a689a0658ed603e0",
+      "source_receipt": {
+        "path": "outputs/media-fourbar-final-film-20261023/media.json",
+        "bytes": 33914,
+        "sha256": "5928921408f942cda51fd31b149a741376e4ac15476a798c6adbebb89db11a7d"
+      }
+    }
+  ],
+  "pending": [],
+  "library_local_metadata": {
+    "status": "failed_after_confirmed_remote_saves",
+    "reason": "Windows os.setxattr unavailable in unchanged Library identity helper",
+    "returned_ids_retained": true,
+    "duplicate_write_attempted": false
+  },
+  "iris_stills_consumer_proof": {
+    "source_checkout": {
+      "commit": "451e86fb204698eaa34d283621422aa042e5bebf",
+      "tracked_changes": [],
+      "scope": "Checkout context; bound project, native and renderer hashes identify actual inputs"
+    },
+    "consumer_path": {
+      "project": "iris09",
+      "entrypoint": "mechanism_lab.engineering_media.render_run",
+      "replay_callback": "cybrgeo_project_cfe439525512b504d9dd6a245338b3c6cd64cf7217b208c5e2270c9b3961ff54.project.replay",
+      "observed_builder_calls": {
+        "native_replay.build_assembly": 1,
+        "physical_replay.build_assembly": 1
+      },
+      "active_pose_holder": "physical_replay.RecordedMotion",
+      "renderer": "render.Studio",
+      "proof": "Observed shared builder call/return; identical returned geometry/material buffers; verified and frozen recorded-state holder"
+    },
+    "model_sha256": "e3150c6532e1271212a06788bfbca4d372e0b35a032056319f98774583138e41",
+    "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+    "reference_sha256": "40424faa9bb4f67dd7556c494e30690874e2a0c22d5b1ad8206cdd75051bbf1c",
+    "native_build_sha256": "6d08aa353f2fe8cc9bb5ac86df0cc2224e06488410d630d6d3942a3f41e0d605",
+    "native_source_binding_sha256": "458d22bbbf410a6a44cc8288dfaf1dbec6240728020641639d4e27a81d716608",
+    "replay_state_sha256": "83427a78b983dbfd43c7e22ee6ac14b4954633d1827f2d1420ec8d4bb58fa095",
+    "display_mesh_sha256": "70e04ffb0fb3f42a1815e0afbe1e4a3093de5c70b1ff23e39e6a1a38960748a2",
+    "replay_check": {
+      "passed": true,
+      "recorded_frames": 954,
+      "body_matrices_checked": 19080,
+      "max_matrix_component_error": 0.0,
+      "analytical_parts_valid": 68,
+      "scope": "Every recorded body matrix matches the trace; active replay uses the verified shared preceding-state holder. No continuous clearance claim."
+    },
+    "part_count": 68,
+    "triangle_count": 673890
+  },
+  "renderer": {
+    "name": "vtk-pbr",
+    "vtk_version": "9.6.2",
+    "supersample": 2,
+    "ambient_occlusion": [
+      {
+        "radius_model_units": 4.159622341422994,
+        "bias_model_units": 0.4991546809707592,
+        "kernel_size": 64,
+        "blur": true
+      }
+    ],
+    "generated_imagery": false,
+    "scope": "Actual native mesh rasterization with source display materials and studio illumination; not path tracing"
+  },
+  "scope": "All nine images/videos are confirmed Library saves from exact native CAD and recorded MuJoCo states at source commit 451e86f. They demonstrate diagnostic simulation behavior, not manufacturing or hardware qualification.",
+  "consumer_proofs": {
+    "iris09": {
+      "source_receipt": {
+        "path": "outputs/media-iris-final-film-20261023/media.json",
+        "bytes": 50511,
+        "sha256": "6de935364bc7a89b1b2a6df693432a2bb08bf80d4b8fc9138f12419dca5dabd6"
+      },
+      "consumer_path": {
+        "project": "iris09",
+        "entrypoint": "mechanism_lab.engineering_media.render_run",
+        "replay_callback": "cybrgeo_project_cfe439525512b504d9dd6a245338b3c6cd64cf7217b208c5e2270c9b3961ff54.project.replay",
+        "observed_builder_calls": {
+          "native_replay.build_assembly": 1,
+          "physical_replay.build_assembly": 1
+        },
+        "active_pose_holder": "physical_replay.RecordedMotion",
+        "renderer": "render.Studio",
+        "proof": "Observed shared builder call/return; identical returned geometry/material buffers; verified and frozen recorded-state holder"
+      },
+      "replay_check": {
+        "passed": true,
+        "recorded_frames": 954,
+        "body_matrices_checked": 19080,
+        "max_matrix_component_error": 0.0,
+        "analytical_parts_valid": 68,
+        "scope": "Every recorded body matrix matches the trace; active replay uses the verified shared preceding-state holder. No continuous clearance claim."
+      },
+      "part_count": 68,
+      "triangle_count": 673890,
+      "model_sha256": "e3150c6532e1271212a06788bfbca4d372e0b35a032056319f98774583138e41",
+      "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+      "reference_sha256": "40424faa9bb4f67dd7556c494e30690874e2a0c22d5b1ad8206cdd75051bbf1c",
+      "native_build_sha256": "6d08aa353f2fe8cc9bb5ac86df0cc2224e06488410d630d6d3942a3f41e0d605",
+      "native_source_binding_sha256": "458d22bbbf410a6a44cc8288dfaf1dbec6240728020641639d4e27a81d716608",
+      "replay_state_sha256": "83427a78b983dbfd43c7e22ee6ac14b4954633d1827f2d1420ec8d4bb58fa095",
+      "display_mesh_sha256": "70e04ffb0fb3f42a1815e0afbe1e4a3093de5c70b1ff23e39e6a1a38960748a2",
+      "hardware_qualification": "not qualified"
+    },
+    "arx_belt": {
+      "source_receipt": {
+        "path": "outputs/media-arx-final-film-20261023/media.json",
+        "bytes": 148464,
+        "sha256": "e74c6f97b66c3ddeb1c28a5259ed86323491f6e0d4136559a5378ddf5f13ca37"
+      },
+      "consumer_path": {
+        "project": "arx_belt",
+        "entrypoint": "mechanism_lab.engineering_media.render_run",
+        "replay_callback": "cybrgeo_project_91280a2401a9f7f6572304178ee7b91700878634606e51a298661e7c4b88089f.project.replay",
+        "observed_builder_calls": {
+          "native_replay.build_assembly": 1,
+          "physical_replay.build_assembly": 1
+        },
+        "active_pose_holder": "physical_replay.RecordedMotion",
+        "renderer": "render.Studio",
+        "proof": "Observed shared builder call/return; identical returned geometry/material buffers; verified and frozen recorded-state holder"
+      },
+      "replay_check": {
+        "passed": true,
+        "recorded_frames": 2089,
+        "body_matrices_checked": 22979,
+        "max_matrix_component_error": 0.0,
+        "analytical_parts_valid": 385,
+        "scope": "Every recorded body matrix matches the trace; active replay uses the verified shared preceding-state holder. No continuous clearance claim."
+      },
+      "part_count": 385,
+      "triangle_count": 451692,
+      "model_sha256": "a6b3b91dfde38f405efdbf1d5ad6d24b62e780fc5911ba57c4d27b57e0d672ba",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "0a1f8c349ab000f5a90fd293e7a3fff5e96ac7e35c7770a2ea1bb50a136f42c8",
+      "native_build_sha256": "ceec6d2c2413426b070acb2c2d735734bb7c8268a7ccd2ec84c7e2e1f1877b43",
+      "native_source_binding_sha256": "410e98f38e019ccdcdb3085c545ead37cfd1061f1dc1567bc5a8a5be30185b20",
+      "replay_state_sha256": "dab5d1b9734ec26d5f4391c238b1de9c0959643c1feb6392c1bcc2f6d1ebb7b8",
+      "display_mesh_sha256": "a5c7a468c281b5dfc9d5346a1d835e27fd59b284ff69c6a2c51a42c548dbec1a",
+      "hardware_qualification": "not qualified"
+    },
+    "fourbar_lift": {
+      "source_receipt": {
+        "path": "outputs/media-fourbar-final-film-20261023/media.json",
+        "bytes": 33914,
+        "sha256": "5928921408f942cda51fd31b149a741376e4ac15476a798c6adbebb89db11a7d"
+      },
+      "consumer_path": {
+        "project": "fourbar_lift",
+        "entrypoint": "mechanism_lab.engineering_media.render_run",
+        "replay_callback": "cybrgeo_project_8b3923a01f9df29c0b4049b54441e8446e0d9920f5628ab47d32b3349a39af30.project.replay",
+        "observed_builder_calls": {
+          "native_replay.build_assembly": 1,
+          "physical_replay.build_assembly": 1
+        },
+        "active_pose_holder": "physical_replay.RecordedMotion",
+        "renderer": "render.Studio",
+        "proof": "Observed shared builder call/return; identical returned geometry/material buffers; verified and frozen recorded-state holder"
+      },
+      "replay_check": {
+        "passed": true,
+        "recorded_frames": 943,
+        "body_matrices_checked": 3772,
+        "max_matrix_component_error": 0.0,
+        "analytical_parts_valid": 15,
+        "scope": "Every recorded body matrix matches the trace; active replay uses the verified shared preceding-state holder. No continuous clearance claim."
+      },
+      "part_count": 15,
+      "triangle_count": 20600,
+      "model_sha256": "f28e90335bd4007df1755305efdcdb7ee6f1a60af092aa1f2d29e0c89f6285ec",
+      "control_sha256": "840bac71cffb2c227b4bbd11a4f7a51ff2e0bbb0caadeaaf51c901118e31ed86",
+      "reference_sha256": "a05fc4fbb2d7a5ef42da2d1a521bf37a44e849ba3642f0cb61e98e1791bbbfa2",
+      "native_build_sha256": "d6beac3c202bf72fba6c5e656f8f8ffe090f971af7e001fac3502f4e8f37359c",
+      "native_source_binding_sha256": "b2eab3dd831d240439438bdc2d20a92be021cfdf56d529a7c58c9c3f023861e8",
+      "replay_state_sha256": "8d412a6c9d817d7e7895671f7543ad2ffc7d70221f4fbba1af8951da01fad996",
+      "display_mesh_sha256": "7324b58aab20b4002c8d146a053f5d958fcdba5e65d1631116bc252ebb76fc24",
+      "hardware_qualification": "not qualified"
+    }
+  }
+}

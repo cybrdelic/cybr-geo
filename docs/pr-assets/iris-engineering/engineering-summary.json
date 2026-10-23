@@ -1,0 +1,1514 @@
+{
+  "schema": "cybrgeo-curated-engineering-summary/1",
+  "source_run": "outputs/engineering-iris09-core-final",
+  "engineering_file_sha256": "9ae1e765c1b16b2cd5125b5814cd66ac94567033c21fa9af2d1edf5d3d29d807",
+  "passed": true,
+  "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+  "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+  "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+  "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+  "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+  "requirements": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "complete ring cycle",
+        "passed": true
+      },
+      {
+        "name": "loop closure at recorded states",
+        "passed": true,
+        "maximum_mm": 3.722851617216969e-07,
+        "limit_mm": 0.05
+      },
+      {
+        "name": "all passive leaves reach aperture endpoint",
+        "passed": true,
+        "endpoint_error_rad": 0.00020458384682242592,
+        "peak_leaf_excursion_rad": 0.8998339932779758
+      },
+      {
+        "name": "every-step loop closure",
+        "passed": true,
+        "maximum_mm": 3.722882204047887e-07,
+        "limit_mm": 0.05,
+        "full_coverage": true,
+        "covered_integration_steps": 40000
+      },
+      {
+        "name": "every-step passive leaf range",
+        "passed": true,
+        "full_coverage": true,
+        "constructed_range_rad": [
+          0.0,
+          0.9
+        ],
+        "numerical_allowance_rad": 1e-10
+      },
+      {
+        "name": "passive leaf synchrony",
+        "passed": true,
+        "maximum_difference_rad": 1.4432899320127035e-15
+      },
+      {
+        "name": "single ring tracking",
+        "passed": true,
+        "maximum_error_rad": 0.000633740686653006
+      },
+      {
+        "name": "no applied body wrenches",
+        "passed": true
+      },
+      {
+        "name": "no directly applied follower forces",
+        "passed": true
+      },
+      {
+        "name": "no unexpected controller fault",
+        "passed": true
+      }
+    ],
+    "scope": "Actual integrated ideal-pin linkage task; all integration-step native solver closure and joint extrema plus recorded post-state closure. This is not a continuous-time clearance proof or hardware qualification."
+  },
+  "simulation": {
+    "schema": "cybrgeo-causal-simulation/1",
+    "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+    "runtime_implementation": {
+      "schema": "cybrgeo-causal-runtime/1",
+      "source_files": {
+        "causal_runtime.py": "1c06bfd24ddd3606cc664bbf85b36536fa1f0cd6b5d020b083ed7d1f2302c1d1",
+        "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+      },
+      "packages": {
+        "numpy": "2.5.4",
+        "mujoco": "3.16.0"
+      },
+      "runtime": {
+        "python": "3.12.10",
+        "system": "Windows",
+        "machine": "AMD64"
+      },
+      "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+    },
+    "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+    "options": {
+      "power": true,
+      "heartbeat": true,
+      "enforceLimits": true,
+      "brakes": true,
+      "torqueScale": 1.0,
+      "gripScale": 1.0,
+      "springScale": 1.0,
+      "brakeScale": 1.0,
+      "brakeDelayScale": 1.0,
+      "frictionScale": 1.0
+    },
+    "reference_source": {
+      "source_files": {
+        "design.py": "7a0c8bae330b4f51c38b5b8ccdcb600ea95dd4a43875e77e01a17617cb20d396",
+        "leaf_geometry.py": "1b6caaa6d2711acd036e23df9b56a6b49d729be4ef48839bda5ccb1fe8c25140",
+        "mechanism.py": "6c349ed8c88546d6da91a6b58acab18bd70b7b53f34939b579d1440c8577fd64",
+        "project.json": "a1fa4fd19cebb2455fc66ffb8ce64e69944600a19e58d5965da1f8d2661d4600",
+        "project.py": "e5ad16787bc1b9ddc34d2f0ed1b083518ab370301bf1199d70d7f02277c78f4f",
+        "data/mechanism.json": "328fba30776c3c809a5d835876d762b47028cc9dc1a46318c58f8506da854156"
+      },
+      "task_parameters": {
+        "specification": {
+          "schema": "cybrgeo-iris-derived/1",
+          "scene_unit_mm": 50.0,
+          "hinge_range_rad": [
+            0.0,
+            0.9
+          ],
+          "rotor_pin_radius_mm": 60.0,
+          "leaf_crank_length_mm": 20.0,
+          "leaf_crank_angle_rad": 0.45,
+          "rod_length_mm": 20.0,
+          "rod_width_mm": 4.0,
+          "rod_thickness_mm": 1.0,
+          "pin_diameter_mm": 2.0,
+          "diametral_clearance_mm": 0.05,
+          "minimum_wall_mm": 0.7,
+          "rod_height_mm": 31.5,
+          "axial_stack": {
+            "rod_keeper_clearance_mm": 0.2,
+            "keeper_thickness_mm": 0.2,
+            "pin_tip_extension_mm": 0.2,
+            "moving_pin_to_fixed_lip_clearance_mm": 0.2,
+            "keeper_to_radial_bearing_clearance_mm": 0.1,
+            "capture_lip_thickness_mm": 0.3,
+            "rotor_capture_axial_clearance_mm": 0.2,
+            "pin_root_overlap_mm": 0.1,
+            "keeper_groove_clearance_mm": 0.02,
+            "rotor_top_mm": 38.0
+          },
+          "period_s": 8.0,
+          "timestep_s": 0.0002,
+          "closure_limit_mm": 0.05,
+          "leaf_tracking_limit_rad": 0.03,
+          "ring_tracking_limit_rad": 0.01,
+          "assumptions": [
+            "New derived four-bar mechanism; the source has no inherited mechanical transmission or dynamics",
+            "One scene unit is assumed to be 50 mm; materials and motor values are engineering assumptions",
+            "Source foil thickness is 0.0325 mm; its manufacturing and tolerance stack are unqualified",
+            "Pinned joints use ideal axes with nominal CAD bores; bearing contact, flexibility, fatigue and wear are not modeled",
+            "Grooved split retainers have nominal CAD capture and clearance; elastic installation and retention strength are unqualified",
+            "Rotor capture lips retain 0.3 mm nominal thickness with an envelope-derived axial fit; their strength and deflection are unqualified",
+            "Joint limits are model travel guards, not a claim of physical stop hardware",
+            "Annular direct-drive DC torque port is a lumped actuator assumption with a fixed reaction housing, not a selected supplier motor",
+            "All nine follower leaves move through rod forces; only the annular rotor has a motor"
+          ],
+          "motor": {
+            "gear_ratio": 1.0,
+            "gear_efficiency": 1.0,
+            "torque_constant_Nm_A": 0.05,
+            "back_emf_V_s_rad": 0.05,
+            "resistance_ohm": 6.0,
+            "inductance_H": 0.02,
+            "bus_voltage_V": 12.0,
+            "peak_current_A": 1.0,
+            "continuous_current_A": 0.5,
+            "gear_output_torque_limit_Nm": 0.05,
+            "gear_efficiency_transition_motor_rad_s": 3.0,
+            "thermal_resistance_K_W": 15.0,
+            "thermal_capacity_J_K": 20.0
+          },
+          "controller": {
+            "kp": 0.35,
+            "kd": 0.015,
+            "ki": 0.02,
+            "integrator_limit": 0.1
+          },
+          "source_geometry": {
+            "schema": "cybrgeo-source-geometry-study/1",
+            "source": {
+              "repository": "https://github.com/cybrdelic/cybr-iris09",
+              "commit": "6aac71594c211cc5934674b2113d9db8c5ec17c6",
+              "file": "IRIS-09.glsl",
+              "normalized_text_sha256": "455e1ba9b0740a6ab925f9c022eea5f217fd3bbfc08ffec3177fb3b1d925843b",
+              "checkout_bytes_sha256": "a0adeb7354f16e84d62c43af09d9c38b3e6542af9bad7730627536d01992145b",
+              "upstream_license": "No license grant supplied; adaptation requested by the source owner for CYBR GEO. No upstream license is inferred."
+            },
+            "source_units": "Unspecified scene units; all lengths below retain source values",
+            "coordinate_mapping": "Source (x,y,z), Y up -> CAD (x,-z,y), Z up; multiply lengths by scene_unit_mm",
+            "leaf": {
+              "source_lines": "168-196, 358-391",
+              "count": 9,
+              "world_clip_radius": 0.99,
+              "hinge_radius": 0.86,
+              "vertical_thickness": 0.00065,
+              "cant": 0.008,
+              "height": 0.26,
+              "front_arc_center_xz_radius": [
+                0.69,
+                0.17,
+                1.15
+              ],
+              "trailing_arc_center_xz_radius": [
+                0.25,
+                1.2,
+                1.6
+              ],
+              "hinge_angle_radians": "0.45 + 0.45*cos(time_s*pi/10)",
+              "actuator_angle_radians": "-0.38 + 0.54*(1-cos(time_s*pi/10))"
+            },
+            "housing": {
+              "source_lines": "79-156",
+              "profile_columns": [
+                "name",
+                "radial_center",
+                "source_y_center",
+                "radial_half_width",
+                "vertical_half_height",
+                "corner_radius",
+                "material_id"
+              ],
+              "rounded_radial_profiles": [
+                [
+                  "main_shell",
+                  1.298,
+                  0.255,
+                  0.212,
+                  0.255,
+                  0.038,
+                  1
+                ],
+                [
+                  "face_ring",
+                  1.303,
+                  0.513,
+                  0.22,
+                  0.031,
+                  0.006,
+                  2
+                ],
+                [
+                  "brass_retainer",
+                  1.054,
+                  0.472,
+                  0.037,
+                  0.06,
+                  0.014,
+                  3
+                ],
+                [
+                  "lower_trim",
+                  1.5,
+                  0.102,
+                  0.036,
+                  0.046,
+                  0.013,
+                  2
+                ],
+                [
+                  "upper_grip",
+                  1.475,
+                  0.385,
+                  0.048,
+                  0.043,
+                  0.016,
+                  1
+                ],
+                [
+                  "middle_grip",
+                  1.485,
+                  0.224,
+                  0.031,
+                  0.018,
+                  0.007,
+                  1
+                ],
+                [
+                  "inner_barrel",
+                  1.019,
+                  0.275,
+                  0.025,
+                  0.161,
+                  0.008,
+                  5
+                ],
+                [
+                  "objective_floor",
+                  0.53,
+                  -0.077,
+                  0.555,
+                  0.023,
+                  0.01,
+                  5
+                ],
+                [
+                  "objective_barrel",
+                  0.637,
+                  0.084,
+                  0.065,
+                  0.139,
+                  0.008,
+                  5
+                ],
+                [
+                  "objective_top_step",
+                  0.548,
+                  0.211,
+                  0.026,
+                  0.015,
+                  0.004,
+                  5
+                ],
+                [
+                  "objective_step_1",
+                  0.572,
+                  0.054,
+                  0.018,
+                  0.013,
+                  0.004,
+                  5
+                ],
+                [
+                  "objective_step_2",
+                  0.501,
+                  0.026,
+                  0.018,
+                  0.008,
+                  0.003,
+                  5
+                ],
+                [
+                  "objective_step_3",
+                  0.457,
+                  0.003,
+                  0.018,
+                  0.008,
+                  0.003,
+                  5
+                ],
+                [
+                  "objective_step_4",
+                  0.408,
+                  -0.022,
+                  0.018,
+                  0.013,
+                  0.003,
+                  5
+                ]
+              ],
+              "flutes": {
+                "count": 120,
+                "radial_center": 1.513,
+                "height": 0.248,
+                "half_size_source_xyz": [
+                  0.025,
+                  0.095,
+                  0.012
+                ],
+                "corner_radius": 0.005
+              },
+              "seam": {
+                "radial_center": 1.462,
+                "height": 0.546,
+                "half_width": 0.0018,
+                "half_height": 0.007,
+                "corner_radius": 0.001
+              },
+              "spanner": {
+                "angle": 0.31,
+                "radial_center": 1.054,
+                "height": 0.529,
+                "half_size_source_xyz": [
+                  0.041,
+                  0.015,
+                  0.018
+                ],
+                "corner_radius": 0.002
+              },
+              "track": {
+                "center_angle": 0.16,
+                "angle_half_range": 0.61,
+                "radius": 1.439,
+                "half_width": 0.014,
+                "height": 0.538,
+                "half_height": 0.028
+              },
+              "ears": {
+                "count": 3,
+                "center_radius": 1.4,
+                "height": -0.012,
+                "radius": 0.322,
+                "half_height": 0.079,
+                "corner_radius": 0.042,
+                "bore_center_radius": 1.57,
+                "bore_radius": 0.076
+              },
+              "screws": {
+                "count": 6,
+                "center_radius": 1.348,
+                "recess_radius": 0.062,
+                "recess_height": 0.55,
+                "recess_half_height": 0.028,
+                "recess_corner": 0.006,
+                "radius": 0.058,
+                "height": 0.529,
+                "half_height": 0.014,
+                "corner_radius": 0.007,
+                "slot_height": 0.544,
+                "slot_half_size_source_xyz": [
+                  0.056,
+                  0.014,
+                  0.008
+                ],
+                "slot_angle_base": 0.48,
+                "slot_angle_multiplier": 1.7
+              }
+            },
+            "handle": {
+              "source_lines": "145-155",
+              "arm_center_source_xyz": [
+                1.526,
+                0.573,
+                0
+              ],
+              "arm_half_size_source_xyz": [
+                0.197,
+                0.015,
+                0.028
+              ],
+              "arm_corner": 0.011,
+              "pivot_center_x_y": [
+                1.439,
+                0.556
+              ],
+              "pivot_radius": 0.012,
+              "pivot_half_height": 0.041,
+              "pivot_corner": 0.003,
+              "knob_center_x_y": [
+                1.726,
+                0.6
+              ],
+              "knob_mean_radius": 0.066,
+              "knob_radius_amplitude": 0.0025,
+              "knob_lobes": 28,
+              "knob_half_height": 0.044,
+              "knob_corner": 0.008,
+              "cap_height": 0.643,
+              "cap_radius": 0.049,
+              "cap_half_height": 0.005,
+              "cap_corner": 0.003
+            },
+            "lenses": {
+              "source_lines": "454-473",
+              "sphere_radius_base_y_edge_radius": [
+                [
+                  1.4,
+                  0.052,
+                  0.56
+                ],
+                [
+                  2.05,
+                  -0.025,
+                  0.39
+                ]
+              ]
+            }
+          }
+        },
+        "ring_delta_rad": -0.28327195585996,
+        "period_s": 8.0,
+        "body_ids": [
+          "fixed",
+          "rotor",
+          "leaf_00",
+          "rod_00",
+          "leaf_01",
+          "rod_01",
+          "leaf_02",
+          "rod_02",
+          "leaf_03",
+          "rod_03",
+          "leaf_04",
+          "rod_04",
+          "leaf_05",
+          "rod_05",
+          "leaf_06",
+          "rod_06",
+          "leaf_07",
+          "rod_07",
+          "leaf_08",
+          "rod_08"
+        ]
+      }
+    },
+    "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+    "reference_identity": "explicit source record",
+    "final_options": {
+      "power": true,
+      "heartbeat": true,
+      "enforceLimits": true,
+      "brakes": true,
+      "torqueScale": 1.0,
+      "gripScale": 1.0,
+      "springScale": 1.0,
+      "brakeScale": 1.0,
+      "brakeDelayScale": 1.0,
+      "frictionScale": 1.0
+    },
+    "mujoco_version": "3.16.0",
+    "timestep_s": 0.0002,
+    "steps": 40000,
+    "start_time_s": 0.0,
+    "duration_s": 8.0,
+    "output_interval_s": 0.008400000000000001,
+    "events": [],
+    "metrics": {
+      "max_tracking_error_rad": 0.000633740686653006,
+      "max_applied_generalized_force": 0.0,
+      "max_external_body_force_N": 0.0,
+      "actuators": {
+        "annular_motor": {
+          "peak_current_A": 0.004234973753979289,
+          "peak_output_torque_Nm": 0.00021174868769896447,
+          "peak_motor_speed_rad_s": 0.11138998673267365,
+          "peak_voltage_V": 0.0305677331968777,
+          "over_continuous_current_s": 0.0,
+          "over_continuous_gear_torque_s": 0.0,
+          "rms_current_A": 0.0032729038980981898,
+          "final_temperature_C": 25.000025349453196,
+          "electrical_energy_J": 0.0006135758864597578,
+          "copper_heat_J": 0.0005141711964569388,
+          "mechanical_energy_J": 9.939840717991623e-05,
+          "gear_heat_J": 0.0,
+          "belt_demand_limit_s": 0.0,
+          "gear_demand_limit_s": 0.0,
+          "voltage_saturation_s": 0.0,
+          "transmitted_torque_estimate": {
+            "joint": "ring_drive",
+            "unit": "Nm",
+            "minimum": {
+              "value": -0.00020001832051028245,
+              "time_s": 1.8468,
+              "interval_start_s": 1.8466,
+              "motor_output_torque_Nm": -0.00020001832051028245,
+              "armature_inertia_kg_m2": 0.0,
+              "acceleration_rad_s2": -0.010664460103615436
+            },
+            "maximum": {
+              "value": 0.00021174868769896447,
+              "time_s": 5.4424,
+              "interval_start_s": 5.442200000000001,
+              "motor_output_torque_Nm": 0.00021174868769896447,
+              "armature_inertia_kg_m2": 0.0,
+              "acceleration_rad_s2": 0.03733135550132438
+            },
+            "peak_absolute": {
+              "value": 0.00021174868769896447,
+              "time_s": 5.4424,
+              "interval_start_s": 5.442200000000001,
+              "motor_output_torque_Nm": 0.00021174868769896447,
+              "armature_inertia_kg_m2": 0.0,
+              "acceleration_rad_s2": 0.03733135550132438
+            },
+            "samples": 40000,
+            "method": "motor output minus reflected dof armature times velocity increment / timestep; ideal output torque estimate, not a measured gear or belt stress"
+          }
+        }
+      },
+      "free_bodies": {},
+      "joints": {
+        "ring_drive": {
+          "joint_id": 0,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": "annular_motor",
+          "samples": 40001,
+          "minimum_position": {
+            "value": -0.2832247158258568,
+            "time_s": 4.042
+          },
+          "maximum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "peak_absolute_speed": {
+            "value": 0.11138998673267365,
+            "time_s": 6.0026
+          }
+        },
+        "rod_00_hinge": {
+          "joint_id": 1,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.07144590236212747,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.05834423591624265,
+            "time_s": 4.9566
+          }
+        },
+        "rod_01_hinge": {
+          "joint_id": 2,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.0714459023621274,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.05834423591614053,
+            "time_s": 4.9566
+          }
+        },
+        "rod_02_hinge": {
+          "joint_id": 3,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": -7.988686725657168e-18,
+            "time_s": 0.0002
+          },
+          "maximum_position": {
+            "value": 0.07144590236212706,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.058344235916256953,
+            "time_s": 4.9566
+          }
+        },
+        "rod_03_hinge": {
+          "joint_id": 4,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.07144590236212782,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.05834423591635777,
+            "time_s": 4.9566
+          }
+        },
+        "rod_04_hinge": {
+          "joint_id": 5,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.07144590236212701,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.05834423591618671,
+            "time_s": 4.9566
+          }
+        },
+        "rod_05_hinge": {
+          "joint_id": 6,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.07144590236212714,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.05834423591614516,
+            "time_s": 4.9566
+          }
+        },
+        "rod_06_hinge": {
+          "joint_id": 7,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": -1.1347208893227816e-17,
+            "time_s": 0.0002
+          },
+          "maximum_position": {
+            "value": 0.07144590236212679,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.05834423591630454,
+            "time_s": 4.9566
+          }
+        },
+        "rod_07_hinge": {
+          "joint_id": 8,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.07144590236212713,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.058344235916313374,
+            "time_s": 4.9566
+          }
+        },
+        "rod_08_hinge": {
+          "joint_id": 9,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.07144590236212707,
+            "time_s": 2.0612
+          },
+          "peak_absolute_speed": {
+            "value": 0.0583442359163249,
+            "time_s": 4.9566
+          }
+        },
+        "leaf_00_hinge": {
+          "joint_id": 10,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.8998340215066734,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.3511415003350762,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_01_hinge": {
+          "joint_id": 11,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.8998340215066732,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.35114150033508534,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_02_hinge": {
+          "joint_id": 12,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": -1.1287027709567537e-17,
+            "time_s": 0.0002
+          },
+          "maximum_position": {
+            "value": 0.8998340215066731,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.3511415003350568,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_03_hinge": {
+          "joint_id": 13,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.8998340215066737,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.3511415003350344,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_04_hinge": {
+          "joint_id": 14,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": -2.3210589573197026e-17,
+            "time_s": 0.0002
+          },
+          "maximum_position": {
+            "value": 0.8998340215066737,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.3511415003351892,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_05_hinge": {
+          "joint_id": 15,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.8998340215066736,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.3511415003351067,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_06_hinge": {
+          "joint_id": 16,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": -8.078773068414535e-18,
+            "time_s": 0.0002
+          },
+          "maximum_position": {
+            "value": 0.8998340215066736,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.35114150033513986,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_07_hinge": {
+          "joint_id": 17,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": 0.0,
+            "time_s": 0.0
+          },
+          "maximum_position": {
+            "value": 0.8998340215066736,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.3511415003350445,
+            "time_s": 5.8744000000000005
+          }
+        },
+        "leaf_08_hinge": {
+          "joint_id": 18,
+          "type": "hinge",
+          "position_unit": "rad",
+          "speed_unit": "rad/s",
+          "direct_motor_actuator": null,
+          "samples": 40001,
+          "minimum_position": {
+            "value": -2.3974676315344868e-17,
+            "time_s": 0.0002
+          },
+          "maximum_position": {
+            "value": 0.8998340215066735,
+            "time_s": 4.042
+          },
+          "peak_absolute_speed": {
+            "value": -0.35114150033514396,
+            "time_s": 5.8744000000000005
+          }
+        }
+      },
+      "constraints": {
+        "rod_00_closure": {
+          "equality_id": 0,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -3.601162285038484e-10,
+                "time_s": 5.8978,
+                "interval_start_s": 5.8978,
+                "interval_end_s": 5.898000000000001
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 1.359735640055204e-10,
+                "time_s": 5.2054,
+                "interval_start_s": 5.2054,
+                "interval_end_s": 5.2056000000000004
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.0816681711721685e-17,
+                "time_s": 0.19940000000000002,
+                "interval_start_s": 0.19940000000000002,
+                "interval_end_s": 0.1996
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882138115441e-10,
+                "time_s": 5.8342,
+                "interval_start_s": 5.8342,
+                "interval_end_s": 5.8344000000000005
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_01_closure": {
+          "equality_id": 1,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -2.9015892466510707e-10,
+                "time_s": 1.955,
+                "interval_start_s": 1.955,
+                "interval_end_s": 1.9552
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.112484298073426e-10,
+                "time_s": 5.6724000000000006,
+                "interval_start_s": 5.6724000000000006,
+                "interval_end_s": 5.6726
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -2.0816681711721685e-17,
+                "time_s": 0.1144,
+                "interval_start_s": 0.1144,
+                "interval_end_s": 0.11460000000000001
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882102385486e-10,
+                "time_s": 5.8342,
+                "interval_start_s": 5.8342,
+                "interval_end_s": 5.8344000000000005
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_02_closure": {
+          "equality_id": 2,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -1.6618579776195297e-10,
+                "time_s": 1.4862,
+                "interval_start_s": 1.4862,
+                "interval_end_s": 1.4864000000000002
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.7083488363398587e-10,
+                "time_s": 5.8558,
+                "interval_start_s": 5.8558,
+                "interval_end_s": 5.856
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.7755575615628914e-17,
+                "time_s": 1.0824,
+                "interval_start_s": 1.0824,
+                "interval_end_s": 1.0826
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882112888507e-10,
+                "time_s": 5.8346,
+                "interval_start_s": 5.8346,
+                "interval_end_s": 5.8348
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_03_closure": {
+          "equality_id": 3,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.7376134692502774e-10,
+                "time_s": 5.606800000000001,
+                "interval_start_s": 5.606800000000001,
+                "interval_end_s": 5.607
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.0679227908114726e-10,
+                "time_s": 2.012,
+                "interval_start_s": 2.012,
+                "interval_end_s": 2.0122
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.0816681711721685e-17,
+                "time_s": 0.091,
+                "interval_start_s": 0.091,
+                "interval_end_s": 0.0912
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.7228821349137794e-10,
+                "time_s": 5.8342,
+                "interval_start_s": 5.8342,
+                "interval_end_s": 5.8344000000000005
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_04_closure": {
+          "equality_id": 4,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.7110552131291996e-10,
+                "time_s": 5.8146,
+                "interval_start_s": 5.8146,
+                "interval_end_s": 5.8148
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.016030571649896e-10,
+                "time_s": 1.657,
+                "interval_start_s": 1.657,
+                "interval_end_s": 1.6572
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.7755575615628914e-17,
+                "time_s": 1.0824,
+                "interval_start_s": 1.0824,
+                "interval_end_s": 1.0826
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882106408258e-10,
+                "time_s": 5.8346,
+                "interval_start_s": 5.8346,
+                "interval_end_s": 5.8348
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_05_closure": {
+          "equality_id": 5,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.150780539251663e-10,
+                "time_s": 2.0592,
+                "interval_start_s": 2.0592,
+                "interval_end_s": 2.0594
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -2.3003826968293062e-10,
+                "time_s": 5.5204,
+                "interval_start_s": 5.5204,
+                "interval_end_s": 5.5206
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.7755575615628914e-17,
+                "time_s": 2.9902,
+                "interval_start_s": 2.9902,
+                "interval_end_s": 2.9904
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882166739973e-10,
+                "time_s": 5.8344000000000005,
+                "interval_start_s": 5.8344000000000005,
+                "interval_end_s": 5.8346
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_06_closure": {
+          "equality_id": 6,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.35839549278527e-10,
+                "time_s": 1.7868000000000002,
+                "interval_start_s": 1.7868000000000002,
+                "interval_end_s": 1.7870000000000001
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -3.609352608457961e-10,
+                "time_s": 5.772200000000001,
+                "interval_start_s": 5.772200000000001,
+                "interval_end_s": 5.7724
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.7755575615628914e-17,
+                "time_s": 0.091,
+                "interval_start_s": 0.091,
+                "interval_end_s": 0.0912
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.7228821294934127e-10,
+                "time_s": 5.8344000000000005,
+                "interval_start_s": 5.8344000000000005,
+                "interval_end_s": 5.8346
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_07_closure": {
+          "equality_id": 7,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -1.8269841542406517e-10,
+                "time_s": 5.397,
+                "interval_start_s": 5.397,
+                "interval_end_s": 5.397200000000001
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -3.393244157878783e-10,
+                "time_s": 5.9424,
+                "interval_start_s": 5.9424,
+                "interval_end_s": 5.9426000000000005
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.0816681711721685e-17,
+                "time_s": 0.0324,
+                "interval_start_s": 0.0324,
+                "interval_end_s": 0.032600000000000004
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882084026561e-10,
+                "time_s": 5.8344000000000005,
+                "interval_start_s": 5.8344000000000005,
+                "interval_end_s": 5.8346
+              },
+              "samples": 40000
+            }
+          }
+        },
+        "rod_08_closure": {
+          "equality_id": 8,
+          "type": "connect",
+          "sampled_steps": 40000,
+          "active_steps": 40000,
+          "inactive_steps": 0,
+          "missing_row_steps": 0,
+          "components": [
+            {
+              "index": 0,
+              "label": "anchor_delta_x",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -3.407179677283878e-10,
+                "time_s": 5.7256,
+                "interval_start_s": 5.7256,
+                "interval_end_s": 5.7258000000000004
+              },
+              "samples": 40000
+            },
+            {
+              "index": 1,
+              "label": "anchor_delta_y",
+              "unit": "m",
+              "peak_absolute": {
+                "value": -2.6604641406580143e-10,
+                "time_s": 1.8828,
+                "interval_start_s": 1.8828,
+                "interval_end_s": 1.883
+              },
+              "samples": 40000
+            },
+            {
+              "index": 2,
+              "label": "anchor_delta_z",
+              "unit": "m",
+              "peak_absolute": {
+                "value": 2.7755575615628914e-17,
+                "time_s": 1.5106000000000002,
+                "interval_start_s": 1.5106000000000002,
+                "interval_end_s": 1.5108000000000001
+              },
+              "samples": 40000
+            }
+          ],
+          "vector_norms": {
+            "anchor_delta": {
+              "unit": "m",
+              "peak_absolute": {
+                "value": 3.722882204047887e-10,
+                "time_s": 5.8344000000000005,
+                "interval_start_s": 5.8344000000000005,
+                "interval_end_s": 5.8346
+              },
+              "samples": 40000
+            }
+          }
+        }
+      },
+      "contacts": {
+        "samples": 40000,
+        "initial_state_sampled": true,
+        "sampling": "Initial mj_forward plus each mj_step solver contact evaluation; pre-integration for Euler/implicit, last internal stage for RK4. No terminal post-state refresh.",
+        "pairs": []
+      },
+      "rack_motor": null,
+      "monitoring_interval": {
+        "start_time_s": 0.0,
+        "end_time_s": 8.0,
+        "integration_steps": 40000
+      },
+      "constraint_sampling": "Native solver residuals from every mj_step; pre-integration for Euler/implicit, last internal stage for RK4. Missing rows are not zero residuals. No terminal post-state refresh.",
+      "monitor_scope": "Rotary/rack actuator, transmission, joint, constraint, contact and free-body extrema cover every integration step since initialization; joints and contacts also include the initial state"
+    },
+    "qualification": {
+      "dynamics": "actual integrated electromechanical/contact model",
+      "hardware": "not qualified"
+    }
+  },
+  "qualification": {
+    "construction": "native authored geometry and explicit mass records",
+    "dynamics": "actual MuJoCo integration of declared electrical drives, mechanical constraints and contacts",
+    "clearance": "project-declared contact and native clearance scope; not a complete continuous B-rep motion envelope",
+    "hardware": "not qualified"
+  },
+  "source_files": {
+    "design.py": "7a0c8bae330b4f51c38b5b8ccdcb600ea95dd4a43875e77e01a17617cb20d396",
+    "leaf_geometry.py": "1b6caaa6d2711acd036e23df9b56a6b49d729be4ef48839bda5ccb1fe8c25140",
+    "mechanism.py": "6c349ed8c88546d6da91a6b58acab18bd70b7b53f34939b579d1440c8577fd64",
+    "project.json": "a1fa4fd19cebb2455fc66ffb8ce64e69944600a19e58d5965da1f8d2661d4600",
+    "project.py": "e5ad16787bc1b9ddc34d2f0ed1b083518ab370301bf1199d70d7f02277c78f4f",
+    "data/mechanism.json": "328fba30776c3c809a5d835876d762b47028cc9dc1a46318c58f8506da854156"
+  }
+}

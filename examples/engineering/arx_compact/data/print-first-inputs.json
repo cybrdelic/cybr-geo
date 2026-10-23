@@ -1,0 +1,20 @@
+{
+  "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "repository": "cybrdelic/cybr-arx6-compact",
+  "inputs": [
+    {
+      "file": "print-first-fore.brep",
+      "bytes": 82319,
+      "source_path": "revisions/p6b-print-first/inputs/P5-fore-frame.brep",
+      "sha256": "8fcb58eef0407a46ab233fed71248d238e98a50c13c15091bcfd56e1e5e8c738",
+      "git_blob_sha1": "efaa3a6cb27059c2ad8e3639582e83386e73ce14"
+    },
+    {
+      "file": "print-first-upper.brep",
+      "bytes": 60898,
+      "source_path": "revisions/p6b-print-first/inputs/P5-upper-frame.brep",
+      "sha256": "d1bb7d6de4bc26f44bd18e6872facb034005f44877426089950dc44b552e59d6",
+      "git_blob_sha1": "a41c7702985558bf60f8c70f65092c14a8974799"
+    }
+  ]
+}

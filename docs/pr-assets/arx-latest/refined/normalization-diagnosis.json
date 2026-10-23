@@ -1,0 +1,233 @@
+{
+  "schema": "cybrgeo-source-normalization-diagnosis/1",
+  "source_commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "failed_report_sha256": "d197868fe7fa95d4b11a81ca2d6c55dd9844415d2fe4bd622de97e0572905470",
+  "accepted_report_sha256": "b50c7b9b25e1459138f2c4c25955f13acb7a8ae46af09a979084c9f0330af84f",
+  "failed_recipe_sha256": "eb8cda75e2c319752c096fbe56be3f27495c90b7b42f1f60a3421b9b609f3616",
+  "accepted_recipe_sha256": "9c8bf409496ea6429b2d32ff2e48466cb2008e61b89a0a271cea7390a342cf72",
+  "source_operation": "refine_cad.refine(): original = solid(build(p['shape'])).clean()",
+  "repair_scope": "Apply the source single-solid clean normalization only to original-property comparison; replacement BREP bytes and exported unselected geometry are unchanged.",
+  "tolerances_changed": false,
+  "property_tolerances": {
+    "relative": 2e-07,
+    "volume_mm3": 1e-05,
+    "mass_kg": 1e-10,
+    "com_mm": 1e-05,
+    "inertia_kg_m2": 1e-12,
+    "bounds_mm": 1e-05
+  },
+  "failures": [
+    {
+      "id": 100,
+      "failed_original_residuals": {
+        "volume_mm3": {
+          "maximum_absolute_error": 0.0005141675937920809,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "mass_kg": {
+          "maximum_absolute_error": 1.3882525129460532e-09,
+          "absolute_tolerance": 1e-10,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "com_mm": {
+          "maximum_absolute_error": 2.052022693987965e-06,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "inertia_kg_m2": {
+          "maximum_absolute_error": 2.348586711393985e-12,
+          "absolute_tolerance": 1e-12,
+          "relative_tolerance": 2e-07,
+          "passed": false
+        },
+        "bounds_mm": {
+          "maximum_absolute_error": 9.999999406318238e-08,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        }
+      },
+      "accepted_original_residuals": {
+        "volume_mm3": {
+          "maximum_absolute_error": 2.1100277081131935e-10,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "mass_kg": {
+          "maximum_absolute_error": 5.828670879282072e-16,
+          "absolute_tolerance": 1e-10,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "com_mm": {
+          "maximum_absolute_error": 2.5579538487363607e-13,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "inertia_kg_m2": {
+          "maximum_absolute_error": 6.2341624917916505e-19,
+          "absolute_tolerance": 1e-12,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "bounds_mm": {
+          "maximum_absolute_error": 0.0,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        }
+      },
+      "refined_geometry_passed_before": true,
+      "accepted_passed": true
+    },
+    {
+      "id": 132,
+      "failed_original_residuals": {
+        "volume_mm3": {
+          "maximum_absolute_error": 0.0005141675792401657,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "mass_kg": {
+          "maximum_absolute_error": 1.3882524713126898e-09,
+          "absolute_tolerance": 1e-10,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "com_mm": {
+          "maximum_absolute_error": 2.0520224097708706e-06,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "inertia_kg_m2": {
+          "maximum_absolute_error": 2.3485869282344196e-12,
+          "absolute_tolerance": 1e-12,
+          "relative_tolerance": 2e-07,
+          "passed": false
+        },
+        "bounds_mm": {
+          "maximum_absolute_error": 9.999999406318238e-08,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        }
+      },
+      "accepted_original_residuals": {
+        "volume_mm3": {
+          "maximum_absolute_error": 2.255546860396862e-10,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "mass_kg": {
+          "maximum_absolute_error": 6.106226635438361e-16,
+          "absolute_tolerance": 1e-10,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "com_mm": {
+          "maximum_absolute_error": 1.1368683772161603e-13,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "inertia_kg_m2": {
+          "maximum_absolute_error": 1.2197274440461925e-18,
+          "absolute_tolerance": 1e-12,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "bounds_mm": {
+          "maximum_absolute_error": 0.0,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        }
+      },
+      "refined_geometry_passed_before": true,
+      "accepted_passed": true
+    },
+    {
+      "id": 168,
+      "failed_original_residuals": {
+        "volume_mm3": {
+          "maximum_absolute_error": 0.0005141676374478266,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "mass_kg": {
+          "maximum_absolute_error": 1.3882526239683557e-09,
+          "absolute_tolerance": 1e-10,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "com_mm": {
+          "maximum_absolute_error": 2.052022693987965e-06,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "inertia_kg_m2": {
+          "maximum_absolute_error": 2.348586277713116e-12,
+          "absolute_tolerance": 1e-12,
+          "relative_tolerance": 2e-07,
+          "passed": false
+        },
+        "bounds_mm": {
+          "maximum_absolute_error": 1.0000000116860974e-07,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        }
+      },
+      "accepted_original_residuals": {
+        "volume_mm3": {
+          "maximum_absolute_error": 2.255546860396862e-10,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "mass_kg": {
+          "maximum_absolute_error": 6.106226635438361e-16,
+          "absolute_tolerance": 1e-10,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "com_mm": {
+          "maximum_absolute_error": 1.7053025658242404e-13,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "inertia_kg_m2": {
+          "maximum_absolute_error": 1.4907779871675686e-18,
+          "absolute_tolerance": 1e-12,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        },
+        "bounds_mm": {
+          "maximum_absolute_error": 0.0,
+          "absolute_tolerance": 1e-05,
+          "relative_tolerance": 2e-07,
+          "passed": true
+        }
+      },
+      "refined_geometry_passed_before": true,
+      "accepted_passed": true
+    }
+  ],
+  "interrupted_attempt": {
+    "directory": "outputs/arx-compact-refined-accepted",
+    "outcome": "No completed result; zero files after executor interruption. Prior process sessions were gone and no Python process remained before a fresh-directory retry."
+  },
+  "claims": "Static geometry/property reconciliation only; no dynamics or hardware qualification"
+}

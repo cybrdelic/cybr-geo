@@ -1,0 +1,48 @@
+{
+  "construction_dependencies": {
+    "packages": {
+      "cadquery": "2.8.0",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.5.4"
+    },
+    "runtime": {
+      "implementation": "CPython",
+      "machine": "AMD64",
+      "python": "3.12.10",
+      "system": "Windows"
+    },
+    "scope": "Explicit shared CAD, mass, material/core and contact helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured",
+    "source_files": {
+      "advanced_geometry.py": "de79f0e759705ac26dc1cb8bba41cd6a06b053e9235b35528847fa31540cb1c3",
+      "contact_geometry.py": "e84d003f81c158a323f688cd7fdf97fe354e697a6aad2c77d2891c1d0c3abf78",
+      "core.py": "75c52fdafd46ec533e77d42e8c4f02f292d6cc5215cc8a182f35ec41efce2af9",
+      "engineering_source.py": "1142edcc3e78e94233fb04a4cf401d10eadc158697e5749ea921fbb18337e858",
+      "geometry.py": "b77b78a7421dbe127ab7c29f01b9c4c03fc068337ae8357429e161730c56e12c",
+      "native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7",
+      "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+      "shape_dag.py": "da11471bffb07c551c42d64cf1826ae4d928a0cb7ab4b06990474942226b8e65"
+    }
+  },
+  "native_build_file_sha256": "38a59ded51b62b14093b6aa9901e9429d6013ee86c27572ec3fe1d3783ad58d9",
+  "native_build_sha256": "da72631e57904d6dfcd9ae6a53edf5d60ce7340845823ceb1d2c6307fee3a4ad",
+  "schema": "cybrgeo-native-source-binding/1",
+  "source_files": {
+    "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+    "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+    "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+    "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+    "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+    "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+    "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+    "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed",
+    "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+    "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+    "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+    "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+    "project.py": "8090c7fcdc506c228e9f9a6c5e99cd595947bf0deffff8c4e6da35ff5b7b6ad0",
+    "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+    "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69"
+  },
+  "source_sha256": "27820b4914c3598f702b60e11e8514fc66763e1f37d6bcf2d4a401c388dc0b6c",
+  "specification_sha256": "66217c3e02fee00cd6bdbb27ce2b01f33c84266f15a8b9cd472d705b3e946ffe"
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "cybrgeo-qualification-intent/1",
+  "parts": {
+    "fixed__backplate_and_bearing_supports": {"material": "aluminum", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__crank_bushing": {"material": "bronze", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__rocker_bushing": {"material": "bronze", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__motor_mount_screw_0": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__motor_mount_screw_1": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__motor_mount_screw_2": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__motor_mount_screw_3": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "fixed__declared_motor_reaction_housing": {"material": "aluminum", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "crank__crank_shaft_link_and_pin": {"material": "steel_blue", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "crank__rear_shaft_keeper": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "crank__coupler_pin_keeper": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "rocker__rocker_shaft_link_and_pin": {"material": "steel_orange", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "rocker__rear_shaft_keeper": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "rocker__coupler_pin_keeper": {"material": "steel", "process": null, "nominal_minimum_wall_mm": null, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null},
+    "coupler__bored_coupler": {"material": "steel", "process": null, "nominal_minimum_wall_mm": 3.0, "required_dimensional_tolerance_mm": null, "maximum_volume_mm3": null}
+  },
+  "interfaces": {
+    "crank_shaft_bushing": {"parts": ["crank__crank_shaft_link_and_pin", "fixed__crank_bushing"], "role": "clearance", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "rocker_shaft_bushing": {"parts": ["rocker__rocker_shaft_link_and_pin", "fixed__rocker_bushing"], "role": "clearance", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "crank_bushing_support": {"parts": ["fixed__crank_bushing", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "rocker_bushing_support": {"parts": ["fixed__rocker_bushing", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "input_pin_coupler_bore": {"parts": ["crank__crank_shaft_link_and_pin", "coupler__bored_coupler"], "role": "clearance", "required_service_gap_mm": 0.05, "first_variation_mm": 0.01, "second_variation_mm": 0.01, "force_demand_N": null},
+    "output_pin_coupler_bore": {"parts": ["rocker__rocker_shaft_link_and_pin", "coupler__bored_coupler"], "role": "clearance", "required_service_gap_mm": 0.05, "first_variation_mm": 0.01, "second_variation_mm": 0.01, "force_demand_N": null},
+    "crank_rear_keeper_capture": {"parts": ["crank__crank_shaft_link_and_pin", "crank__rear_shaft_keeper"], "role": "retained_contact", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "crank_pin_keeper_capture": {"parts": ["crank__crank_shaft_link_and_pin", "crank__coupler_pin_keeper"], "role": "retained_contact", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "rocker_rear_keeper_capture": {"parts": ["rocker__rocker_shaft_link_and_pin", "rocker__rear_shaft_keeper"], "role": "retained_contact", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "rocker_pin_keeper_capture": {"parts": ["rocker__rocker_shaft_link_and_pin", "rocker__coupler_pin_keeper"], "role": "retained_contact", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_housing_backplate": {"parts": ["fixed__declared_motor_reaction_housing", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_0_housing": {"parts": ["fixed__motor_mount_screw_0", "fixed__declared_motor_reaction_housing"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_1_housing": {"parts": ["fixed__motor_mount_screw_1", "fixed__declared_motor_reaction_housing"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_2_housing": {"parts": ["fixed__motor_mount_screw_2", "fixed__declared_motor_reaction_housing"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_3_housing": {"parts": ["fixed__motor_mount_screw_3", "fixed__declared_motor_reaction_housing"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_0_backplate": {"parts": ["fixed__motor_mount_screw_0", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_1_backplate": {"parts": ["fixed__motor_mount_screw_1", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_2_backplate": {"parts": ["fixed__motor_mount_screw_2", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null},
+    "motor_screw_3_backplate": {"parts": ["fixed__motor_mount_screw_3", "fixed__backplate_and_bearing_supports"], "role": "unresolved", "required_service_gap_mm": null, "first_variation_mm": null, "second_variation_mm": null, "force_demand_N": null}
+  },
+  "loads": {
+    "crank_motor": {"part": "crank__crank_shaft_link_and_pin", "source_demand_limit_Nm": 0.2}
+  },
+  "unresolved_requirements": [
+    {"category": "design", "kind": "bushing_retention", "subject": "crank_bushing_support", "reason": "The source has nominal radial clearance between bronze sleeve and support but no installed retention or torque-reaction transfer design."},
+    {"category": "design", "kind": "bushing_retention", "subject": "rocker_bushing_support", "reason": "The source has nominal radial clearance between bronze sleeve and support but no installed retention or bearing reaction transfer design."},
+    {"category": "design", "kind": "motor_joint", "subject": "motor_housing_backplate", "reason": "Screw envelopes and holes exist, but threads, clamp stack, shaft torque coupling and external fixture reaction are not fully constructed."},
+    {"category": "design", "kind": "keeper_installation", "subject": "crank_rear_keeper_capture", "reason": "Split keeper is shown in its final groove; its elastic installation and supported retention mode are not constructed."},
+    {"category": "design", "kind": "full_motion_clearance", "subject": "assembly", "reason": "Selected native moving-pair sweeps do not cover all cross-body parts or manufacturing variation."},
+    {"category": "external", "kind": "material_lot", "subject": "assembly", "reason": "Source supplies assumed CAD densities, not purchased steel, bronze or aluminum grades, lots, allowable stresses or temperature limits."},
+    {"category": "external", "kind": "fabrication_process", "subject": "assembly", "reason": "No chosen facility, process revision, achievable wall/feature size, dimensional capability or maximum part volume is measured."},
+    {"category": "external", "kind": "service_load_review", "subject": "assembly", "reason": "No independent service envelope allocates physical force demands to all named bushings, pins, keepers, motor fasteners and frame reactions; modeled ideal connector forces are diagnostic."},
+    {"category": "external", "kind": "serial_part_inspection", "subject": "assembly", "reason": "No fabricated serials, exact STEP-matched wall measurements or inspected dimensions exist."},
+    {"category": "external", "kind": "interface_tests", "subject": "assembly", "reason": "No same-unit, same-part-serial interface load, clearance, retention and assembled-play tests cover all declared physical interface pairs."},
+    {"category": "external", "kind": "joint_capacity", "subject": "input_pin_coupler_bore", "reason": "The 0.05 mm service gap and 0.01 mm per-side budgets are design targets; bearing load capacity, wear and retained play need measured tests."},
+    {"category": "external", "kind": "joint_capacity", "subject": "output_pin_coupler_bore", "reason": "The passive output joint has ideal constraint reactions but no measured pin, bore or keeper capacity."},
+    {"category": "external", "kind": "retention", "subject": "crank_rear_keeper_capture", "reason": "Nominal split-keeper geometry does not establish measured pullout strength or fatigue life."},
+    {"category": "external", "kind": "retention", "subject": "rocker_rear_keeper_capture", "reason": "Nominal split-keeper geometry does not establish measured pullout strength or fatigue life."},
+    {"category": "external", "kind": "source_motor", "subject": "crank_motor", "reason": "The 0.2 Nm source output limit is a commanded model bound, not a selected supplier drive or tested torque/temperature capacity."},
+    {"category": "external", "kind": "assembled_hardware", "subject": "assembly", "reason": "No witnessed fitted unit, measured backlash, full-motion test, thermal test or endurance cycles exist."}
+  ]
+}

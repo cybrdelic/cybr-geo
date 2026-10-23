@@ -12,7 +12,9 @@ concurrency:
 jobs:
   preview:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    # Includes the default native engineering build, fitted-interface checks,
+    # the mechanical regression suite, and the native rendered preview.
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -29,16 +31,35 @@ jobs:
           cache-dependency-path: requirements-tested.txt
       - name: Install documented environment
         run: |
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update -qq
           sudo apt-get install -y g++ cmake ffmpeg libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
           python -m pip install -r requirements-tested.txt
           python -m pip install --no-deps --no-build-isolation -e .
       - run: make test-core
+      - run: make test-mechanisms
       - name: Run documented CAD and native render preview
         run: lab preview --step --threads 2
+      - name: Require the native backend on the provisioned Linux toolchain
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          report = json.loads(Path('outputs/arx_belt/preview/preview.json').read_text())
+          assert report['backend'] == 'native-pathtrace', report
+          assert report['fallback_reason'] is None, report
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: quickstart-python-${{ matrix.python }}
-          path: outputs/example_flange/preview/
+          path: |
+            outputs/arx_belt/preview/
+            outputs/arx_belt/engineering.json
+            outputs/arx_belt/design-source.json
+            outputs/arx_belt/physical-source.json
+            outputs/arx_belt/control-source.json
+            outputs/arx_belt/model.xml
+            outputs/arx_belt/simulation/
+            outputs/arx_belt/native/native-build.json
+            outputs/arx_belt/native/reports/
           if-no-files-found: error

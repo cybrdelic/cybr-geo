@@ -3,6 +3,9 @@
 *.md text eol=lf
 *.yml text eol=lf
 *.json text eol=lf
+*.mjs text eol=lf
+*.html text eol=lf
+*.css text eol=lf
 *.toml text eol=lf
 *.glb binary
 *.npz binary
@@ -11,4 +14,29 @@
 *.gif binary
 *.mp4 binary
 *.pdf binary
+*.brep binary
 # Current assets are stored as normal Git blobs, not unresolved LFS pointers.
+# Pinned benchmark inputs and parity oracles retain their exact source bytes.
+examples/engineering/arx_belt/data/* -text whitespace=cr-at-eol
+examples/engineering/arx_compact/data/* -text whitespace=cr-at-eol
+examples/engineering/arx_compact/data/** -text whitespace=cr-at-eol
+tests/fixtures/arx_latest/** -text whitespace=cr-at-eol
+tests/fixtures/arx_actuation/* -text whitespace=cr-at-eol
+tests/fixtures/arx_compact/build_meshes.py -text whitespace=cr-at-eol
+examples/engineering/iris09/evidence/*.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/replay-check.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/three-replay-check.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/source-bound-native-build.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/source-bound-native-binding.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-engineering/step-coverage.json -text whitespace=cr-at-eol
+# Evidence manifests bind raw receipt bytes across platform checkouts.
+docs/pr-assets/arx-faults/*.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-faults/**/*.json -text whitespace=cr-at-eol
+docs/pr-assets/arx-faults/final/*.ps1 -text whitespace=cr-at-eol
+docs/pr-assets/arx-faults/final/** -text whitespace=cr-at-eol
+docs/pr-assets/arx-latest/** -text whitespace=cr-at-eol
+docs/pr-assets/iris-engineering/*.json -text whitespace=cr-at-eol
+docs/pr-assets/iris-engineering/clearance-audit.py -text whitespace=cr-at-eol,-blank-at-eof
+
+# Preserve the exact source oracle, including its final blank line.
+tests/fixtures/arx_actuation/source-reference.mjs -text whitespace=cr-at-eol,-blank-at-eof

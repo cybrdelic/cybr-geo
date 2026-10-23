@@ -1,0 +1,28 @@
+{
+  "scope": "Native source CAD generation and saved-artifact inspection only; no dynamics, clearance or hardware acceptance",
+  "source_commit": "0003382bd6a2e96f3bed065003efec35001982f7",
+  "source_records": 278,
+  "source_records_evaluated": 278,
+  "source_records_valid": 278,
+  "shared_dag_nodes": 1679,
+  "source_disconnected_records": [263, 269],
+  "authored_bounds_overrun_records": [263],
+  "cb2_local_max_z_mm": 92.0000001,
+  "cb2_authored_max_z_mm": 74.0,
+  "saved_glb_nodes": 278,
+  "saved_glb_geometries": 278,
+  "saved_step_valid": true,
+  "saved_step_solids": 280,
+  "source_local_volume_sum_mm3": 2810985.379701588,
+  "saved_world_step_integrated_volume_mm3": 2810975.0859714276,
+  "volume_comparison_note": "The world STEP volume integral differs from the sum of local source integrals by about 3.66 ppm. This is recorded rather than asserting exact round-trip mass or geometric equivalence. Both individual spring STEP integrals agree with their source values within 5e-6 mm3.",
+  "independent_source_spring_check": "spring-native-source-receipt.json",
+  "actual_renderer_receipt": "reference.render.json",
+  "image_review": "reference.png visually inspected after successful Windows VTK render",
+  "qualification": {
+    "kinematics": "static captured t=0 placement only",
+    "dynamics": "not simulated",
+    "hardware": "unqualified",
+    "engineering_acceptance": false
+  }
+}

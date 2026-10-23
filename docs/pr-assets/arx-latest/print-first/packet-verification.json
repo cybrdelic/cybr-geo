@@ -1,0 +1,12 @@
+{
+  "schema": "cybrgeo-evidence-packet-verification/1",
+  "passed": true,
+  "manifest_sha256": "e3fdb3491fa8465687b711c1ef56a0961c589cf92d13b54fd1f13f3f080a6b56",
+  "verified_files": 20,
+  "verified_bytes": 929343,
+  "copied_files_byte_equal": 16,
+  "included_native_receipt_references_verified": 5,
+  "native_cad_stl_bundled": false,
+  "tests": 24,
+  "scope": "Independent packet hash and copied-byte readback; native qualification scope remains unchanged"
+}

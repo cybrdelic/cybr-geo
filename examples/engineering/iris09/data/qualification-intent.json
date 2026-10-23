@@ -1,0 +1,1872 @@
+{
+  "schema": "cybrgeo-qualification-intent/1",
+  "parts": {
+    "rotor__annular_rotor_and_drive_pins": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__knob_mean_radius_approximation": {
+      "material": "aluminum",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_00": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_00__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_00__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_00__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_00__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_00__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_01": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_01__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_01__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_01__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_01__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_01__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_02": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_02__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_02__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_02__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_02__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_02__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_03": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_03__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_03__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_03__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_03__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_03__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_04": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_04__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_04__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_04__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_04__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_04__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_05": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_05__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_05__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_05__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_05__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_05__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_06": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_06__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_06__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_06__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_06__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_06__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_07": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_07__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_07__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_07__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_07__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_07__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rotor__input_pin_keeper_08": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_08__leaf_shaft_crank": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_08__output_pin_keeper": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_08__lower_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "leaf_08__upper_shaft_collar": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "rod_08__bored_connecting_rod": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": 0.7,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__housing_material_1": {
+      "material": "aluminum",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__housing_material_2": {
+      "material": "aluminum",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__housing_material_3": {
+      "material": "brass",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__housing_material_5": {
+      "material": "aluminum",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__lens_0": {
+      "material": "glass",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__lens_1": {
+      "material": "glass",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__screw_0": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__screw_1": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__screw_2": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__screw_3": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__screw_4": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    },
+    "fixed__screw_5": {
+      "material": "steel",
+      "process": null,
+      "nominal_minimum_wall_mm": null,
+      "required_dimensional_tolerance_mm": null,
+      "maximum_volume_mm3": null
+    }
+  },
+  "interfaces": {
+    "rod_00_input_pin_fit": {
+      "parts": [
+        "rod_00__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_00_output_pin_fit": {
+      "parts": [
+        "rod_00__bored_connecting_rod",
+        "leaf_00__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_00_input_keeper_axial": {
+      "parts": [
+        "rod_00__bored_connecting_rod",
+        "rotor__input_pin_keeper_00"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_00_output_keeper_axial": {
+      "parts": [
+        "rod_00__bored_connecting_rod",
+        "leaf_00__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_00_shaft_bearing": {
+      "parts": [
+        "leaf_00__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_00_lower_collar_axial": {
+      "parts": [
+        "leaf_00__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_00_upper_collar_axial": {
+      "parts": [
+        "leaf_00__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_00_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_00__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_00_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_00",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_00_output_pin_capture": {
+      "parts": [
+        "leaf_00__output_pin_keeper",
+        "leaf_00__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_00_lower_shaft_capture": {
+      "parts": [
+        "leaf_00__lower_shaft_collar",
+        "leaf_00__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_00_upper_shaft_capture": {
+      "parts": [
+        "leaf_00__upper_shaft_collar",
+        "leaf_00__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_01_input_pin_fit": {
+      "parts": [
+        "rod_01__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_01_output_pin_fit": {
+      "parts": [
+        "rod_01__bored_connecting_rod",
+        "leaf_01__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_01_input_keeper_axial": {
+      "parts": [
+        "rod_01__bored_connecting_rod",
+        "rotor__input_pin_keeper_01"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_01_output_keeper_axial": {
+      "parts": [
+        "rod_01__bored_connecting_rod",
+        "leaf_01__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_01_shaft_bearing": {
+      "parts": [
+        "leaf_01__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_01_lower_collar_axial": {
+      "parts": [
+        "leaf_01__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_01_upper_collar_axial": {
+      "parts": [
+        "leaf_01__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_01_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_01__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_01_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_01",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_01_output_pin_capture": {
+      "parts": [
+        "leaf_01__output_pin_keeper",
+        "leaf_01__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_01_lower_shaft_capture": {
+      "parts": [
+        "leaf_01__lower_shaft_collar",
+        "leaf_01__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_01_upper_shaft_capture": {
+      "parts": [
+        "leaf_01__upper_shaft_collar",
+        "leaf_01__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_02_input_pin_fit": {
+      "parts": [
+        "rod_02__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_02_output_pin_fit": {
+      "parts": [
+        "rod_02__bored_connecting_rod",
+        "leaf_02__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_02_input_keeper_axial": {
+      "parts": [
+        "rod_02__bored_connecting_rod",
+        "rotor__input_pin_keeper_02"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_02_output_keeper_axial": {
+      "parts": [
+        "rod_02__bored_connecting_rod",
+        "leaf_02__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_02_shaft_bearing": {
+      "parts": [
+        "leaf_02__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_02_lower_collar_axial": {
+      "parts": [
+        "leaf_02__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_02_upper_collar_axial": {
+      "parts": [
+        "leaf_02__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_02_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_02__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_02_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_02",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_02_output_pin_capture": {
+      "parts": [
+        "leaf_02__output_pin_keeper",
+        "leaf_02__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_02_lower_shaft_capture": {
+      "parts": [
+        "leaf_02__lower_shaft_collar",
+        "leaf_02__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_02_upper_shaft_capture": {
+      "parts": [
+        "leaf_02__upper_shaft_collar",
+        "leaf_02__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_03_input_pin_fit": {
+      "parts": [
+        "rod_03__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_03_output_pin_fit": {
+      "parts": [
+        "rod_03__bored_connecting_rod",
+        "leaf_03__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_03_input_keeper_axial": {
+      "parts": [
+        "rod_03__bored_connecting_rod",
+        "rotor__input_pin_keeper_03"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_03_output_keeper_axial": {
+      "parts": [
+        "rod_03__bored_connecting_rod",
+        "leaf_03__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_03_shaft_bearing": {
+      "parts": [
+        "leaf_03__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_03_lower_collar_axial": {
+      "parts": [
+        "leaf_03__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_03_upper_collar_axial": {
+      "parts": [
+        "leaf_03__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_03_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_03__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_03_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_03",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_03_output_pin_capture": {
+      "parts": [
+        "leaf_03__output_pin_keeper",
+        "leaf_03__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_03_lower_shaft_capture": {
+      "parts": [
+        "leaf_03__lower_shaft_collar",
+        "leaf_03__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_03_upper_shaft_capture": {
+      "parts": [
+        "leaf_03__upper_shaft_collar",
+        "leaf_03__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_04_input_pin_fit": {
+      "parts": [
+        "rod_04__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_04_output_pin_fit": {
+      "parts": [
+        "rod_04__bored_connecting_rod",
+        "leaf_04__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_04_input_keeper_axial": {
+      "parts": [
+        "rod_04__bored_connecting_rod",
+        "rotor__input_pin_keeper_04"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_04_output_keeper_axial": {
+      "parts": [
+        "rod_04__bored_connecting_rod",
+        "leaf_04__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_04_shaft_bearing": {
+      "parts": [
+        "leaf_04__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_04_lower_collar_axial": {
+      "parts": [
+        "leaf_04__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_04_upper_collar_axial": {
+      "parts": [
+        "leaf_04__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_04_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_04__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_04_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_04",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_04_output_pin_capture": {
+      "parts": [
+        "leaf_04__output_pin_keeper",
+        "leaf_04__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_04_lower_shaft_capture": {
+      "parts": [
+        "leaf_04__lower_shaft_collar",
+        "leaf_04__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_04_upper_shaft_capture": {
+      "parts": [
+        "leaf_04__upper_shaft_collar",
+        "leaf_04__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_05_input_pin_fit": {
+      "parts": [
+        "rod_05__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_05_output_pin_fit": {
+      "parts": [
+        "rod_05__bored_connecting_rod",
+        "leaf_05__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_05_input_keeper_axial": {
+      "parts": [
+        "rod_05__bored_connecting_rod",
+        "rotor__input_pin_keeper_05"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_05_output_keeper_axial": {
+      "parts": [
+        "rod_05__bored_connecting_rod",
+        "leaf_05__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_05_shaft_bearing": {
+      "parts": [
+        "leaf_05__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_05_lower_collar_axial": {
+      "parts": [
+        "leaf_05__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_05_upper_collar_axial": {
+      "parts": [
+        "leaf_05__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_05_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_05__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_05_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_05",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_05_output_pin_capture": {
+      "parts": [
+        "leaf_05__output_pin_keeper",
+        "leaf_05__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_05_lower_shaft_capture": {
+      "parts": [
+        "leaf_05__lower_shaft_collar",
+        "leaf_05__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_05_upper_shaft_capture": {
+      "parts": [
+        "leaf_05__upper_shaft_collar",
+        "leaf_05__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_06_input_pin_fit": {
+      "parts": [
+        "rod_06__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_06_output_pin_fit": {
+      "parts": [
+        "rod_06__bored_connecting_rod",
+        "leaf_06__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_06_input_keeper_axial": {
+      "parts": [
+        "rod_06__bored_connecting_rod",
+        "rotor__input_pin_keeper_06"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_06_output_keeper_axial": {
+      "parts": [
+        "rod_06__bored_connecting_rod",
+        "leaf_06__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_06_shaft_bearing": {
+      "parts": [
+        "leaf_06__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_06_lower_collar_axial": {
+      "parts": [
+        "leaf_06__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_06_upper_collar_axial": {
+      "parts": [
+        "leaf_06__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_06_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_06__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_06_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_06",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_06_output_pin_capture": {
+      "parts": [
+        "leaf_06__output_pin_keeper",
+        "leaf_06__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_06_lower_shaft_capture": {
+      "parts": [
+        "leaf_06__lower_shaft_collar",
+        "leaf_06__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_06_upper_shaft_capture": {
+      "parts": [
+        "leaf_06__upper_shaft_collar",
+        "leaf_06__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_07_input_pin_fit": {
+      "parts": [
+        "rod_07__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_07_output_pin_fit": {
+      "parts": [
+        "rod_07__bored_connecting_rod",
+        "leaf_07__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_07_input_keeper_axial": {
+      "parts": [
+        "rod_07__bored_connecting_rod",
+        "rotor__input_pin_keeper_07"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_07_output_keeper_axial": {
+      "parts": [
+        "rod_07__bored_connecting_rod",
+        "leaf_07__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_07_shaft_bearing": {
+      "parts": [
+        "leaf_07__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_07_lower_collar_axial": {
+      "parts": [
+        "leaf_07__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_07_upper_collar_axial": {
+      "parts": [
+        "leaf_07__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_07_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_07__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_07_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_07",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_07_output_pin_capture": {
+      "parts": [
+        "leaf_07__output_pin_keeper",
+        "leaf_07__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_07_lower_shaft_capture": {
+      "parts": [
+        "leaf_07__lower_shaft_collar",
+        "leaf_07__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_07_upper_shaft_capture": {
+      "parts": [
+        "leaf_07__upper_shaft_collar",
+        "leaf_07__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_08_input_pin_fit": {
+      "parts": [
+        "rod_08__bored_connecting_rod",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_08_output_pin_fit": {
+      "parts": [
+        "rod_08__bored_connecting_rod",
+        "leaf_08__leaf_shaft_crank"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_08_input_keeper_axial": {
+      "parts": [
+        "rod_08__bored_connecting_rod",
+        "rotor__input_pin_keeper_08"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_08_output_keeper_axial": {
+      "parts": [
+        "rod_08__bored_connecting_rod",
+        "leaf_08__output_pin_keeper"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.2,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_08_shaft_bearing": {
+      "parts": [
+        "leaf_08__leaf_shaft_crank",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.025,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_08_lower_collar_axial": {
+      "parts": [
+        "leaf_08__lower_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_08_upper_collar_axial": {
+      "parts": [
+        "leaf_08__upper_shaft_collar",
+        "fixed__housing_material_3"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.19,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "leaf_08_keeper_to_fixed_radial_bearing": {
+      "parts": [
+        "leaf_08__output_pin_keeper",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.1,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "rod_08_input_pin_capture": {
+      "parts": [
+        "rotor__input_pin_keeper_08",
+        "rotor__annular_rotor_and_drive_pins"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rod_08_output_pin_capture": {
+      "parts": [
+        "leaf_08__output_pin_keeper",
+        "leaf_08__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_08_lower_shaft_capture": {
+      "parts": [
+        "leaf_08__lower_shaft_collar",
+        "leaf_08__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "leaf_08_upper_shaft_capture": {
+      "parts": [
+        "leaf_08__upper_shaft_collar",
+        "leaf_08__leaf_shaft_crank"
+      ],
+      "role": "retained_contact",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "rotor_to_fixed_radial_sleeve": {
+      "parts": [
+        "rotor__annular_rotor_and_drive_pins",
+        "fixed__housing_material_2"
+      ],
+      "role": "clearance",
+      "required_service_gap_mm": 0.03,
+      "first_variation_mm": 0.005,
+      "second_variation_mm": 0.005,
+      "force_demand_N": null
+    },
+    "annular_motor_reaction": {
+      "parts": [
+        "rotor__annular_rotor_and_drive_pins",
+        "fixed__housing_material_2"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "fixed_bearing_to_housing": {
+      "parts": [
+        "fixed__housing_material_3",
+        "fixed__housing_material_2"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "housing_screw_0_retention": {
+      "parts": [
+        "fixed__screw_0",
+        "fixed__housing_material_1"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "housing_screw_1_retention": {
+      "parts": [
+        "fixed__screw_1",
+        "fixed__housing_material_1"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "housing_screw_2_retention": {
+      "parts": [
+        "fixed__screw_2",
+        "fixed__housing_material_1"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "housing_screw_3_retention": {
+      "parts": [
+        "fixed__screw_3",
+        "fixed__housing_material_1"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "housing_screw_4_retention": {
+      "parts": [
+        "fixed__screw_4",
+        "fixed__housing_material_1"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "housing_screw_5_retention": {
+      "parts": [
+        "fixed__screw_5",
+        "fixed__housing_material_1"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "lens_0_retention": {
+      "parts": [
+        "fixed__lens_0",
+        "fixed__housing_material_5"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    },
+    "lens_1_retention": {
+      "parts": [
+        "fixed__lens_1",
+        "fixed__housing_material_5"
+      ],
+      "role": "unresolved",
+      "required_service_gap_mm": null,
+      "first_variation_mm": null,
+      "second_variation_mm": null,
+      "force_demand_N": null
+    }
+  },
+  "loads": {
+    "annular_motor": {
+      "part": "rotor__annular_rotor_and_drive_pins",
+      "source_demand_limit_Nm": 0.05
+    }
+  },
+  "unresolved_requirements": [
+    {
+      "category": "design",
+      "kind": "full_motion_clearance",
+      "subject": "assembly",
+      "reason": "The current native interval audit covers six selected pairs, not all near-field leaves, pins, housing and optical faces over the full hinge range."
+    },
+    {
+      "category": "design",
+      "kind": "load_path_mapping",
+      "subject": "assembly",
+      "reason": "The exact torque reaction, bearing loads and all fixed housing/lens/screw support paths have not been resolved to tested physical interfaces."
+    },
+    {
+      "category": "design",
+      "kind": "leaf_barrel_fit",
+      "subject": "assembly",
+      "reason": "The leaf-to-inner-barrel pair lacks an authored service gap and variation stack and remains unresolved by axial broad phase."
+    },
+    {
+      "category": "design",
+      "kind": "actuator_mount",
+      "subject": "annular_motor",
+      "reason": "The motor stator/reaction housing is represented by a nominal torque port; physical mount, retention and heat path need a sourced design."
+    },
+    {
+      "category": "external",
+      "kind": "material_lot",
+      "subject": "assembly",
+      "reason": "Aluminum, steel, brass and glass densities are assumed; no purchased grades, lots, allowable strengths or temperature ratings are supplied."
+    },
+    {
+      "category": "external",
+      "kind": "process_capability",
+      "subject": "assembly",
+      "reason": "The 0.005 mm per-side fit variations and 0.7 mm rod wall are authored targets, not a facility or process capability report."
+    },
+    {
+      "category": "external",
+      "kind": "service_envelope",
+      "subject": "assembly",
+      "reason": "The source has no independently reviewed interface force demands, support reactions, foil stress/fatigue, service temperature or endurance requirement."
+    },
+    {
+      "category": "external",
+      "kind": "part_inspection",
+      "subject": "assembly",
+      "reason": "No exact-STEP fabricated part serials or measured wall and dimensional records exist."
+    },
+    {
+      "category": "external",
+      "kind": "interface_capacity",
+      "subject": "assembly",
+      "reason": "No tested bearing, pin, screw, keeper, collar, lens or fixed-housing interface capacity is supplied."
+    },
+    {
+      "category": "external",
+      "kind": "retention_under_load",
+      "subject": "assembly",
+      "reason": "Grooved split keeper and collar CAD capture does not establish elastic installation, retention strength or maximum play."
+    },
+    {
+      "category": "external",
+      "kind": "actuator_selection",
+      "subject": "annular_motor",
+      "reason": "The 0.05 Nm motor output limit is an assumed source model, not a selected and tested annular drive or thermal rating."
+    },
+    {
+      "category": "external",
+      "kind": "assembled_hardware",
+      "subject": "assembly",
+      "reason": "No witnessed full-assembly fit, motion, thermal, backlash and endurance tests or accountable signed evidence are available."
+    }
+  ]
+}

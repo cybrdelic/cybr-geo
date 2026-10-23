@@ -1,0 +1,38 @@
+{
+  "upper-frame-proximal": {
+    "material": "PETG",
+    "volume_mm3": 120260.11021528684,
+    "mass_kg": 0.15032513776910858,
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification"
+  },
+  "upper-frame-distal": {
+    "material": "PETG",
+    "volume_mm3": 117665.00495151269,
+    "mass_kg": 0.14708125618939089,
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification"
+  },
+  "upper-frame-lap-coupler": {
+    "material": "PETG",
+    "volume_mm3": 54116.66203834943,
+    "mass_kg": 0.06764582754793678,
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification"
+  },
+  "fore-frame-reinforced": {
+    "material": "PETG",
+    "volume_mm3": 121909.51946043815,
+    "mass_kg": 0.1523868993255477,
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification"
+  },
+  "gripper-pinion-tooth-trial": {
+    "material": "PETG",
+    "volume_mm3": 5073.961698404091,
+    "mass_kg": 0.006342452123005115,
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification"
+  },
+  "gripper-rack-tooth-trial": {
+    "material": "PETG",
+    "volume_mm3": 4239.1288930475475,
+    "mass_kg": 0.005298911116309434,
+    "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification"
+  }
+}
