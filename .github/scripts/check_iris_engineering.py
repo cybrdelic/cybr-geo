@@ -126,22 +126,47 @@ def verify(output, *, require_local_native=False):
     assert transmission["samples"] == expected_steps and transmission["unit"] == "Nm"
 
     interfaces = read_json(native / "native-interface-requirements.json")
-    assert interfaces["passed"] and len(interfaces["checks"]) == 102
+    assert interfaces["passed"] and len(interfaces["checks"]) == 105
+    by_name = {row["name"]: row for row in interfaces["checks"]}
+    assert len(by_name) == len(interfaces["checks"])
     assert all(row["pass"] for row in interfaces["checks"])
-    axial_envelope = next(row for row in interfaces["checks"]
-                          if row["name"] == "moving_pin_envelope_to_lower_rotor_lip")
+
+    def authored_face_fit(name, service_gap_mm, design):
+        row = by_name[name]
+        assert row["intersection_volume_mm3"] == 0
+        assert row["required_minimum_distance_mm"] == service_gap_mm
+        variations = dict(first_mm=design["first_declared_variation_mm"],
+                          second_mm=design["second_declared_variation_mm"])
+        assert row["declared_design_variations_mm"] == variations
+        # B-rep kernel allowance is numerical, never a production tolerance.
+        assert (row["minimum_distance_mm"] - sum(variations.values())
+                >= service_gap_mm + design["design_reserve_mm"] - 1e-8)
+        return row
+
+    axial_envelope = authored_face_fit("moving_pin_envelope_to_lower_rotor_lip",
+        spec["axial_stack"]["moving_pin_to_fixed_lip_clearance_mm"],
+        spec["axial_fit_design"]["moving_pin_to_fixed_lip"])
     assert axial_envelope["intersection_volume_mm3"] == 0
     assert axial_envelope["required_minimum_distance_mm"] == spec["axial_stack"]["moving_pin_to_fixed_lip_clearance_mm"]
     assert axial_envelope["required_minimum_distance_mm"] >= .2
     # Use the authored BRep comparison tolerance, not a stricter incidental
     # floating-point rounding requirement on another platform's CAD kernel.
     assert axial_envelope["minimum_distance_mm"] >= axial_envelope["required_minimum_distance_mm"] - 1e-8
-    keeper_envelope = next(row for row in interfaces["checks"]
-                           if row["name"] == "output_keeper_envelope_to_radial_bearing")
+    keeper_envelope = authored_face_fit("output_keeper_envelope_to_radial_bearing",
+        spec["axial_stack"]["keeper_to_radial_bearing_clearance_mm"],
+        spec["axial_fit_design"]["output_keeper_to_radial_bearing"])
     assert keeper_envelope["intersection_volume_mm3"] == 0
     assert keeper_envelope["required_minimum_distance_mm"] == spec["axial_stack"]["keeper_to_radial_bearing_clearance_mm"]
     assert keeper_envelope["required_minimum_distance_mm"] >= .1
     assert keeper_envelope["minimum_distance_mm"] >= keeper_envelope["required_minimum_distance_mm"] - 1e-8
+    radial_design = spec["rotor_radial_bearing_fit"]
+    authored_face_fit("rotor_to_fixed_radial_bearing",
+        radial_design["required_service_gap_mm"], radial_design)
+    for name in ("lower_lip_to_rotor_capture_axial",
+                 "rotor_to_upper_lip_capture_axial"):
+        authored_face_fit(name,
+            spec["axial_stack"]["rotor_capture_axial_clearance_mm"],
+            spec["axial_fit_design"]["rotor_capture"])
     layout = read_json(native / "mechanism-layout.json")
     assert len(layout["links"]) == count
     placements = read_json(native / "placed-native-parts.json")["records"]
