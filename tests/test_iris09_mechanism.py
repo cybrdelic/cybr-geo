@@ -131,22 +131,24 @@ def test_axial_stack_derives_pin_tip_clearance_and_rejects_unattached_edits(clie
     changed['rod_height_mm'] = 25.
     with pytest.raises(ValueError, match='support envelope'):
         module.layout(changed)
-    for thickness in (1.2, 1.4):
-        changed = deepcopy(spec)
-        changed['rod_thickness_mm'] = thickness
-        # This only proves the scalar mating layout can adapt. A changed
-        # native part/support needs a fresh full CAD interface build.
-        moved = module.axial_stack(changed)
-        assert moved['radial_bearing_mm'][0]-moved['output_keeper_mm'][1] == pytest.approx(.115)
-        assert moved['lower_lip_mm'][0] < 33.5
-    for group, key, value in ((None, 'rod_height_mm', 32.),
-                              ('axial_stack', 'keeper_thickness_mm', .4),
-                              ('axial_stack', 'rod_keeper_clearance_mm', .4)):
+    # These scalar edits stay inside the authored crank/handle support envelope.
+    # Changed native parts still require a fresh CAD interface build.
+    for group, key, value in ((None, 'rod_thickness_mm', 1.2),
+                              (None, 'rod_height_mm', 32.)):
         changed = deepcopy(spec)
         (changed[group] if group else changed)[key] = value
         moved = module.axial_stack(changed)
         assert moved['radial_bearing_mm'][0]-moved['output_keeper_mm'][1] == pytest.approx(.115)
         assert moved['lower_lip_mm'][0] < 33.5
+    # A 1.4 mm rod puts the pin root at 30.185 mm, below the 30.2 mm support
+    # floor. These wider keeper/clearance edits likewise exceed that envelope.
+    for group, key, value in ((None, 'rod_thickness_mm', 1.4),
+                              ('axial_stack', 'keeper_thickness_mm', .4),
+                              ('axial_stack', 'rod_keeper_clearance_mm', .4)):
+        changed = deepcopy(spec)
+        (changed[group] if group else changed)[key] = value
+        with pytest.raises(ValueError, match='support envelope'):
+            module.axial_stack(changed)
     changed = deepcopy(spec)
     changed['axial_fit_design']['moving_pin_to_fixed_lip']['design_reserve_mm'] = 2.
     with pytest.raises(ValueError, match='support posts'):
