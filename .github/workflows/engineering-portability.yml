@@ -129,6 +129,14 @@ jobs:
                          'tests/test_engineering_source_snapshot.py',
                          'tests/test_spring_anchor_contract.py',
                          'tests/test_qualification.py',
+                         'tests/test_qualification_intent.py',
+                         'tests/test_qualification_body_aliases.py',
+                         'tests/test_load_path_routes.py',
+                         'tests/test_iris_qualified_client.py',
+                         'tests/test_arx_qualified_route.py',
+                         'tests/test_arx_qualification_intent.py',
+                         'tests/test_arx_rotating_pinion.py',
+                         'tests/test_arx_retention_construction.py',
                          'tests/test_preview.py']
               command += sorted(str(path) for path in pathlib.Path('tests').glob('test_fourbar*.py'))
               command += sorted(str(path) for path in pathlib.Path('studio/tests').glob('test_*.py'))
