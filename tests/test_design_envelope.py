@@ -105,6 +105,10 @@ def test_shared_directed_face_fit_constructs_positive_axial_and_radial_reserve()
     with pytest.raises(ValueError, match='shaft/groove support envelope'):
         mechanism.validate(changed)
     changed = json.loads(json.dumps(spec))
+    changed['axial_stack']['shaft_collar_clearance_mm'] = .001
+    with pytest.raises(ValueError, match='grooves must remain outside'):
+        mechanism.validate(changed)
+    changed = json.loads(json.dumps(spec))
     changed['rotor_radial_bearing_fit']['design_reserve_mm'] = 3.
     with pytest.raises(ValueError, match='nominal wall'):
         mechanism.validate(changed)

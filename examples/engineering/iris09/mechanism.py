@@ -137,6 +137,8 @@ def axial_stack(spec):
     groove_clearance = cfg['keeper_groove_clearance_mm']
     collar_grooves = tuple((face[0]-groove_clearance, face[1]+groove_clearance)
                            for face in (lower_collar, upper_collar))
+    if collar_grooves[0][1] >= bearing_bottom or collar_grooves[1][0] <= bearing_top:
+        raise ValueError('Shaft collar grooves must remain outside both fixed bearing faces')
     # Grooves remain within the continuous shaft between its lower hub and
     # upper crank; simply widening a face fit must not sever those features.
     if collar_grooves[0][0] <= 13.1 or collar_grooves[1][1] >= 28.5:
