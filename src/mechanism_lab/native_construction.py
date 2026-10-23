@@ -251,7 +251,8 @@ class NativeInterfaceRequirements:
         return row
 
     def clearance(self, name, first, second, *, minimum_distance_mm,
-                  kernel_allowance_mm=0., allowed_volume_mm3=1e-5):
+                  kernel_allowance_mm=0., allowed_volume_mm3=1e-5,
+                  declared_design_variations_mm=None):
         """Require a nominal gap as well as the declared volume allowance.
 
         Both distances use millimetres. ``kernel_allowance_mm`` is an explicit
@@ -265,6 +266,18 @@ class NativeInterfaceRequirements:
             if (isinstance(value, bool) or not isinstance(value, (int, float))
                     or not math.isfinite(value) or value < 0):
                 raise ValueError(f'{label} must be finite and nonnegative')
+        variations = None
+        if declared_design_variations_mm is not None:
+            if (not isinstance(declared_design_variations_mm, dict)
+                    or set(declared_design_variations_mm) != {'first_mm', 'second_mm'}):
+                raise ValueError('Declared design variations need exactly first_mm and second_mm')
+            variations = {}
+            for key in ('first_mm', 'second_mm'):
+                value = declared_design_variations_mm[key]
+                if (isinstance(value, bool) or not isinstance(value, (int, float))
+                        or not math.isfinite(value) or value < 0):
+                    raise ValueError(f'{key} declared design variation must be finite and nonnegative')
+                variations[key] = float(value)
         row = self.noninterference(name, first, second,
                                    allowed_volume_mm3=allowed_volume_mm3)
         gap_passed = row['minimum_distance_mm'] + kernel_allowance_mm >= minimum_distance_mm
@@ -273,6 +286,10 @@ class NativeInterfaceRequirements:
                    required_minimum_clearance_mm=minimum_distance_mm,
                    distance_kernel_allowance_mm=kernel_allowance_mm,
                    clearance_passed=gap_passed)
+        if variations is not None:
+            # These authored targets are part of the native/source receipt.
+            # They do not prove fabrication process capability.
+            row['declared_design_variations_mm'] = variations
         row['pass'] = row['pass'] and gap_passed
         return row
 

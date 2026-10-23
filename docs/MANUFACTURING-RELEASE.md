@@ -27,6 +27,15 @@ case-insensitive-colliding names, extra `__` separators and Windows device
 names are rejected before STEP export.
 Interfaces specify two exact parts, nominal clearance, two dimensional
 allowances, required worst-case clearance, load demand and design capacity.
+When the physical model has named MuJoCo `connect` or `weld` equalities, the
+plan's `solver_connectors` object must map every such name to a declared
+interface whose two native part body prefixes match the equality's explicit
+`body1` and `body2` endpoints. Release rejects missing mappings or endpoints,
+incomplete every-step solver
+reaction records, and modeled peak anchor-force demand above the interface's
+declared `demand_N`. Several connectors mapped to one interface are summed
+conservatively. These are ideal solver reactions, not measured bearing forces
+or validated interface capacities.
 Loads specify a part, torque demand/capacity and service temperature. The
 assembly declares required endurance cycles, thermal test temperature and a
 maximum measured backlash. All values use the units named in the fields.
@@ -80,7 +89,10 @@ declared interfaces must appear in the reviewed paths. This verifies coverage
 and connectivity of the signed claim, not stress transfer or strength by
 software alone. The signed demands cannot be weakened in the construction plan.
 The plan must also cover every actuator's peak torque observed in the bound
-MuJoCo run. Simulation alone does not establish physical interface loads;
+MuJoCo run. Rotary drive requests that exceed the source belt or gear limit,
+and opposed-rack requests clipped by the source output limit, block release
+even if delivered peak torque is lower. Simulation alone does not establish
+physical interface loads;
 that mapping is an explicit responsibility of the trusted engineering review.
 
 Every material needs a grade/lot/density/stress/temperature report; every

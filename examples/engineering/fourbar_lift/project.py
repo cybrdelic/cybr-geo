@@ -2,8 +2,23 @@
 from mechanism_lab.core import Material
 from mechanism_lab.engineering_source import EngineeringProject
 from mechanism_lab.physical_replay import Y_UP_TO_Z_UP
+from mechanism_lab.physical_model import digest
+from mechanism_lab.planar_native_envelope import PlanarBody, PlanarNativePath
 
-from .mechanism import build, compile_model, reference, requirements, specification
+from .mechanism import build, compile_model, linkage, reference, requirements, specification
+import math
+
+
+def planar_path(spec, source_files):
+    """Bind the same crank-rocker construction to native motion screening."""
+    closed = linkage(spec)
+    bodies = dict(fixed=PlanarBody('ground'),
+        crank=PlanarBody('crank', closed),
+        rocker=PlanarBody('rocker', closed),
+        coupler=PlanarBody('coupler', closed, z_mm=spec['coupler_height_mm']))
+    return PlanarNativePath(bodies, spec['initial_crank_angle_rad'],
+        spec['initial_crank_angle_rad'] + math.tau,
+        source_identity=digest(dict(project_source_files=source_files, specification=spec)))
 
 
 def replay(directory, result):
@@ -25,4 +40,4 @@ def replay(directory, result):
 def create():
     spec = specification()
     return EngineeringProject('fourbar_lift', spec, build, compile_model, reference, replay,
-                              requirements, duration_s=spec['period_s'])
+                              requirements, duration_s=spec['period_s'], planar_path=planar_path)

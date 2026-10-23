@@ -13,6 +13,7 @@ from mechanism_lab.causal_runtime import CausalSimulation
 from mechanism_lab.core import Material
 from mechanism_lab.engineering_source import (
     EngineeringProject, construct_project_native, project_source_identity,
+    verify_native_build,
 )
 from mechanism_lab.native_construction import NativeConstruction
 from mechanism_lab.native_replay import build_assembly
@@ -130,6 +131,27 @@ def test_report_cannot_relabel_different_simulation_metrics(accepted):
     accepted['report']['simulation']['metrics']['max_external_body_force_N'] = 99
     save(accepted['root'] / 'engineering.json', accepted['report'])
     with pytest.raises(ValueError, match='trace summary'):
+        load(accepted)
+
+
+def test_source_bound_design_envelope_cannot_be_relabelled_for_replay(accepted):
+    from mechanism_lab.engineering_pipeline import _native_design_screens
+
+    root = accepted['root']
+    source = accepted['source']
+    control = json.loads((root / 'control-source.json').read_text())
+    receipt = verify_native_build(root / 'native', accepted['project'].specification,
+        source_files=project_source_identity(source))
+    screen = _native_design_screens(root / 'native', receipt,
+        project_source_identity(source), control, accepted['trace'])
+    accepted['report']['design_envelope'] = screen
+    accepted['report']['design_envelope_sha256'] = digest(screen)
+    save(root / 'engineering.json', accepted['report'])
+    save(root / 'design-envelope.json', screen)
+    assert load(accepted).report['design_envelope'] == screen
+    screen['drives']['motor']['observed_simulated_peak_Nm'] = 0.
+    save(root / 'design-envelope.json', screen)
+    with pytest.raises(ValueError, match='design budget'):
         load(accepted)
 
 

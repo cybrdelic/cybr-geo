@@ -50,6 +50,16 @@ def verify(output):
     for key in ("parts", "placements"):
         assert report["native"][key] == receipt[key]
     assert report["native"]["verified_artifacts"] == len(receipt["files_sha256"])
+    import importlib.util
+    client_file = Path(__file__).resolve().parents[2] / 'examples' / 'analysis' / 'arx_belt_gripper_envelope.py'
+    client_spec = importlib.util.spec_from_file_location('arx_belt_gripper_envelope', client_file)
+    client_module = importlib.util.module_from_spec(client_spec)
+    client_spec.loader.exec_module(client_module)
+    gripper = client_module.certify(native)
+    assert gripper['passed'] and gripper['selected_part_count'] == 6
+    assert gripper['noncontact_cross_body_pair_count'] == 12
+    assert gripper['unexamined_native_part_count'] == receipt['placements'] - 6
+    write_json(output / 'arx-gripper-envelope.json', gripper)
     interfaces = json.loads((native / "native-interface-requirements.json").read_text())
     assert interfaces["passed"] and len(interfaces["checks"]) == 52
     assert all(check["pass"] for check in interfaces["checks"])
@@ -65,7 +75,32 @@ def verify(output):
     assert provenance["native_source_binding_sha256"] == digest(binding)
     assert provenance["design_source_files"] == identity
     assert simulation["control_sha256"] == report["control_sha256"]
-    assert report["control_sha256"] == digest(json.loads((output / "control-source.json").read_text()))
+    control = json.loads((output / "control-source.json").read_text())
+    assert report["control_sha256"] == digest(control)
+    design_screen = json.loads((output / 'design-envelope.json').read_text())
+    assert report['design_envelope'] == design_screen
+    assert report['design_envelope_sha256'] == digest(design_screen)
+    assert not design_screen['manufacturing_qualified']
+    for name, motor in design_screen['drives'].items():
+        observed = simulation['metrics']['actuators'][name]
+        assert motor['complete_demand_telemetry'], name
+        assert motor['demand_limit_durations_s'] == {
+            limit: observed[f'{limit}_demand_limit_s'] for limit in ('belt', 'gear')}
+        assert motor['demanded_torque_was_limited'] == any(
+            observed[f'{limit}_demand_limit_s'] > 0 for limit in ('belt', 'gear'))
+        assert not motor['demanded_torque_was_limited'], name
+        assert motor['model_screen_passed'] is True, name
+    constraints = simulation['metrics']['constraints']
+    modeled_connectors = {name for name, row in constraints.items()
+                          if row['type'] in ('connect', 'weld')}
+    connector_screen = design_screen['connector_demands']
+    assert set(connector_screen['connectors']) == modeled_connectors
+    assert all(row['complete_solver_coverage'] for row in connector_screen['connectors'].values())
+    rack = simulation['metrics']['rack_motor']
+    assert rack['samples'] == simulation['steps']
+    assert rack['source_output_torque_limit_Nm'] == control['rack']['output_torque_limit_Nm']
+    assert rack['output_demand_limit_s'] == 0.
+    assert rack['peak_requested_output_torque_Nm'] < rack['source_output_torque_limit_Nm']
 
     step = output / "arx_belt.step"
     coverage = json.loads(step.with_suffix(".coverage.json").read_text())
@@ -111,6 +146,10 @@ def verify(output):
         passed=True, default_name=report["name"], native_parts=receipt["parts"],
         native_placements=receipt["placements"], verified_artifacts=len(receipt["files_sha256"]),
         nominal_interface_checks=len(interfaces["checks"]),
+        scoped_gripper_envelope=dict(selected_parts=gripper['selected_part_count'],
+            noncontact_pairs=gripper['noncontact_cross_body_pair_count'],
+            unexamined_native_parts=gripper['unexamined_native_part_count'],
+            receipt_sha256=sha256(output / 'arx-gripper-envelope.json')),
         handed_jaw=dict(native_components=len(handed), physical_body='jaw_right',
             native_mass_body='jaw_opposed', independently_reintegrated_from_placed_STEP=True,
             physical_densities_kg_m3=receipt['material_densities_kg_m3']),
@@ -119,6 +158,12 @@ def verify(output):
         native_source_binding_sha256=digest(binding), native_build_sha256=digest(receipt),
         model_sha256=report["model_sha256"], control_sha256=report["control_sha256"],
         simulated_seconds=simulation["duration_s"], simulated_steps=simulation["steps"],
+        model_drive_screens={name: dict(status=row['status'],
+            demanded_torque_was_limited=row['demanded_torque_was_limited'])
+            for name, row in design_screen['drives'].items()},
+        rack_source_model=dict(output_demand_limit_s=rack['output_demand_limit_s'],
+            peak_requested_output_torque_Nm=rack['peak_requested_output_torque_Nm'],
+            source_output_torque_limit_Nm=rack['source_output_torque_limit_Nm']),
         step=dict(file=step.name, sha256=sha256(step), bytes=step.stat().st_size,
                   valid_solids=len(solids), minimum_volume_mm3=min(volumes),
                   sum_solid_volumes_mm3=math.fsum(volumes)),

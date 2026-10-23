@@ -224,6 +224,8 @@ def load_run(source, run_directory, *, native_directory=None):
     native = Path(native_directory).resolve() if native_directory else root / 'native'
     filenames = ('engineering.json', 'design-source.json', 'physical-source.json',
                  'control-source.json', 'simulation/trace.json.gz')
+    if (root / 'design-envelope.json').exists():
+        filenames += ('design-envelope.json',)
     payloads = {name: (root / name).read_bytes() for name in filenames}
     values = {name: json.loads(gzip.decompress(data) if name.endswith('.gz') else data)
               for name, data in payloads.items()}
@@ -260,6 +262,18 @@ def load_run(source, run_directory, *, native_directory=None):
     binding = verify_native_source_binding(native, project.specification, sources, receipt=receipt)
     if digest(receipt) != report.get('native_build_sha256') or digest(binding) != report.get('native_source_binding_sha256'):
         raise ValueError('Native build/source binding differs from the accepted run')
+    # New design budgets are derived from the verified source, native B-rep
+    # receipt and actual integrated torque telemetry. A stale or edited budget
+    # cannot be replayed as current engineering evidence. Older accepted runs
+    # without this optional diagnostic retain their previous replay contract.
+    if ('design_envelope' in report or 'design-envelope.json' in values):
+        from .engineering_pipeline import _native_design_screens
+        expected = _native_design_screens(native, receipt, sources,
+            values['control-source.json'], trace, project=project)
+        if (values.get('design-envelope.json') != expected
+                or report.get('design_envelope') != expected
+                or report.get('design_envelope_sha256') != digest(expected)):
+            raise ValueError('Native design budget differs from its source-bound run')
     assembly, observed = _shared_replay(project, native, trace)
     for key in ('model_sha256', 'control_sha256', 'native_build_sha256', 'native_source_binding_sha256'):
         if assembly.metadata.get(key) != report.get(key):

@@ -15,7 +15,9 @@ import xml.etree.ElementTree as ET
 import cadquery as cq
 import numpy as np
 
+from mechanism_lab.fit_construction import PinBoreFit
 from mechanism_lab.linkages import PinnedLink
+from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
 from mechanism_lab.physical_model import PhysicalModel, digest
 from . import design
@@ -29,13 +31,19 @@ MATERIALS = {1: 'aluminum', 2: 'aluminum', 3: 'brass', 4: 'steel', 5: 'aluminum'
 def specification():
     value = json.loads((HERE / 'data' / 'mechanism.json').read_text(encoding='utf-8'))
     value['source_geometry'] = deepcopy(design.SOURCE)
-    return value
+    return validate(value)
 
 
 def validate(spec):
     spec = deepcopy(spec)
     if spec.get('schema') != 'cybrgeo-iris-derived/1' or spec.get('source_geometry') != design.SOURCE:
         raise ValueError('IRIS mechanism requires the exact bound source geometry mapping')
+    fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    if ('diametral_clearance_mm' in spec and not math.isclose(
+            spec['diametral_clearance_mm'], fit.nominal_diametral_clearance_mm,
+            rel_tol=0, abs_tol=1e-12)):
+        raise ValueError('Derived pin bore clearance disagrees with its fit design source')
+    spec['diametral_clearance_mm'] = fit.nominal_diametral_clearance_mm
     if spec['scene_unit_mm'] != 50. or spec['hinge_range_rad'] != [0., .9]:
         raise ValueError('This derived housing layout is authored at 50 mm per scene unit over 0..0.9 rad')
     positive = ('rotor_pin_radius_mm', 'leaf_crank_length_mm', 'rod_length_mm', 'rod_width_mm',
@@ -49,26 +57,31 @@ def validate(spec):
     # authored layout. Changing these coupled dimensions needs a new design;
     # accepting arbitrary positive values would leave disconnected material.
     authored = dict(rotor_pin_radius_mm=60., leaf_crank_length_mm=20., leaf_crank_angle_rad=.45,
-        rod_length_mm=20., rod_width_mm=4., pin_diameter_mm=2., diametral_clearance_mm=.05,
+        rod_length_mm=20., rod_width_mm=4., pin_diameter_mm=2.,
         minimum_wall_mm=.7)
     for key, value in authored.items():
         if spec[key] != value:
             raise ValueError(f'{key} is fixed at {value} in this authored radial housing/shaft layout; redesign its mating geometry first')
+    if spec['rod_width_mm'] < fit.nominal_bore_diameter_mm + 2*spec['minimum_wall_mm']:
+        raise ValueError('Derived rod bores violate the required nominal wall')
+    # The source optical hinge range must admit one continuous pin-and-rod
+    # construction branch. A few sampled poses cannot establish this.
+    linkage(spec).angular_rate_bounds(-spec['hinge_range_rad'][1], -spec['hinge_range_rad'][0])
     axial_stack(spec)
     return spec
 
 
+def linkage(spec):
+    """The derived leaf-crank/rod/rotor closure in one leaf's radial frame."""
+    h = spec['source_geometry']['leaf']['hinge_radius'] * spec['scene_unit_mm']
+    return PlanarFourBar((h, 0.), (0., 0.), spec['leaf_crank_length_mm'],
+        spec['rod_length_mm'], spec['rotor_pin_radius_mm'],
+        input_phase_rad=spec['leaf_crank_angle_rad'], branch=-1)
+
+
 def ring_angle(q, spec):
     """Circle-intersection construction relation, not a follower controller."""
-    h = spec['source_geometry']['leaf']['hinge_radius'] * spec['scene_unit_mm']
-    b, beta, radius, length = (spec[key] for key in ('leaf_crank_length_mm', 'leaf_crank_angle_rad',
-                                                  'rotor_pin_radius_mm', 'rod_length_mm'))
-    x, y = h + b * math.cos(beta - q), b * math.sin(beta - q)
-    distance = math.hypot(x, y)
-    cosine = (distance * distance + radius * radius - length * length) / (2 * distance * radius)
-    if not -1 < cosine < 1:
-        raise ValueError('Specified linkage is unreachable or at a toggle')
-    return math.atan2(y, x) + math.acos(cosine)
+    return linkage(spec).solve(-q)['rocker_angle_rad']
 
 
 def axial_stack(spec):
@@ -152,6 +165,18 @@ def _annulus(inner, outer, bottom, top):
     return cq.Workplane('XY').circle(outer).circle(inner).extrude(top-bottom).val().translate((0, 0, bottom))
 
 
+def fixed_leaf_bearing(spec, count):
+    """Cut all fixed leaf-shaft bores at the same fit used by the moving rods."""
+    fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    bearing = _annulus(40., 52., 22., 23.5)
+    h = spec['source_geometry']['leaf']['hinge_radius'] * spec['scene_unit_mm']
+    for index in range(count):
+        angle = index*math.tau/count
+        bearing = bearing.cut(_cylinder(fit.nominal_bore_diameter_mm/2, 21.5, 24.,
+            (h*math.cos(angle), -h*math.sin(angle))))
+    return bearing
+
+
 def _strap(length, width, bottom, top, angle=0.):
     shape = cq.Workplane('XY').center(length/2, 0).slot2D(length+width, width).extrude(top-bottom).val()
     return shape.translate((0, 0, bottom)).rotate((0, 0, 0), (0, 0, 1), math.degrees(angle))
@@ -165,6 +190,7 @@ def _split_keeper(inner, outer, bottom, top, xy=(0, 0)):
 
 def moving_geometry(spec):
     """Body-local native solids and exact pin frames used by both backends."""
+    spec = validate(spec)
     info = layout(spec)
     blade, crop = build_leaf(spec['scene_unit_mm'], tuple(spec['hinge_range_rad']))
     # Neighbor shaft keepouts are provided by the shared geometric authoring
@@ -234,12 +260,11 @@ def build(spec, output):
     native = NativeConstruction(output, DENSITIES, provenance=source)
     # The new bearing flange is one nominal piece with the source retainer;
     # fixed source material is partitioned before adding it to mass accounting.
-    bearing = _annulus(40., 52., 22., 23.5)
+    bearing = fixed_leaf_bearing(spec, info['count'])
     h = spec['source_geometry']['leaf']['hinge_radius'] * spec['scene_unit_mm']
-    bore_radius = (spec['pin_diameter_mm'] + spec['diametral_clearance_mm'])/2
-    for index in range(info['count']):
-        a = index*math.tau/info['count']
-        bearing = bearing.cut(_cylinder(bore_radius, 21.5, 24., (h*math.cos(a), -h*math.sin(a))))
+    fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    pin_bore_variations = dict(first_mm=fit.bore_declared_radial_variation_mm,
+                               second_mm=fit.pin_declared_radial_variation_mm)
     stack = info['axial_stack']
     radial_bearing = _annulus(64.05, 66.8, *stack['radial_bearing_mm'])
     lower_lip = _annulus(63., 66.8, *stack['lower_lip_mm'])
@@ -293,15 +318,21 @@ def build(spec, output):
     row['scope'] = 'Continuous planar keeper envelope against radial bearing only; support posts require separate clearance assessment'
     for index, link in enumerate(info['links']):
         pin = _cylinder(spec['pin_diameter_mm']/2, -.6, .6)
-        requirements.noninterference(f'rod_{index:02}_input_pin_clearance', link.native_shape(), pin)
-        requirements.noninterference(f'rod_{index:02}_output_pin_clearance', link.native_shape(), pin.translate((link.length_mm, 0, 0)))
+        requirements.clearance(f'rod_{index:02}_input_pin_clearance', link.native_shape(), pin,
+            minimum_distance_mm=fit.required_service_radial_gap_mm, kernel_allowance_mm=1e-8,
+            declared_design_variations_mm=pin_bore_variations)
+        requirements.clearance(f'rod_{index:02}_output_pin_clearance', link.native_shape(), pin.translate((link.length_mm, 0, 0)),
+            minimum_distance_mm=fit.required_service_radial_gap_mm, kernel_allowance_mm=1e-8,
+            declared_design_variations_mm=pin_bore_variations)
         lower = _split_keeper(.82, 1.6, *(z-spec['rod_height_mm'] for z in stack['input_keeper_mm']))
         upper = _split_keeper(.82, 1.6, *(z-spec['rod_height_mm'] for z in stack['output_keeper_mm']), (link.length_mm, 0))
         for label, keeper in (('input', lower), ('output', upper)):
             requirements.clearance(f'rod_{index:02}_{label}_axial_keeper_clearance', link.native_shape(), keeper,
                 minimum_distance_mm=spec['axial_stack']['rod_keeper_clearance_mm'], kernel_allowance_mm=1e-8)
         pivot = _cylinder(1., 21.8, 23.7, (h*math.cos(index*math.tau/info['count']), -h*math.sin(index*math.tau/info['count'])))
-        requirements.noninterference(f'leaf_{index:02}_bearing_clearance', bearing, pivot)
+        requirements.clearance(f'leaf_{index:02}_bearing_clearance', bearing, pivot,
+            minimum_distance_mm=fit.required_service_radial_gap_mm, kernel_allowance_mm=1e-8,
+            declared_design_variations_mm=pin_bore_variations)
         xy = (h*math.cos(index*math.tau/info['count']), -h*math.sin(index*math.tau/info['count']))
         for label, bottom, top in (('lower', 21.6, 21.8), ('upper', 23.7, 23.9)):
             collar = _split_keeper(.82, 1.8, bottom, top, xy)
@@ -317,6 +348,7 @@ def build(spec, output):
         {'mechanism-layout.json': dict(frames={k:v.tolist() for k,v in info['frames'].items()},
             links=[link.source() for link in info['links']], phi0=info['phi0'], phi1=info['phi1'],
             leaf_geometry=leaf_report, fixed_support_attachments=attachments, axial_stack=stack,
+            pin_bore_fit_design=fit.report(),
             assumptions=spec['assumptions'])}, native_requirements=requirements)
 
 

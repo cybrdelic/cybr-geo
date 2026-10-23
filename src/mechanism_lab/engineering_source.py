@@ -29,6 +29,10 @@ class EngineeringProject:
     replay: Callable
     requirements: Callable
     duration_s: float = 10.
+    # Optional ideal planar construction source. The shared pipeline derives
+    # bounded kinematics and CAD-mass gravity budgets from it; ARX and other
+    # nonplanar designs keep their native physical source without a surrogate.
+    planar_path: Callable | None = None
 
 
 def project_directory(source):
@@ -214,7 +218,9 @@ NATIVE_SOURCE_BINDING = 'native-source-binding.json'
 _CONSTRUCTION_SERVICES = (
     'native_construction.py', 'shape_dag.py', 'core.py', 'geometry.py',
     'advanced_geometry.py', 'physical_model.py', 'contact_geometry.py',
-    'engineering_source.py', 'linkages.py', 'native_replay.py',
+    'engineering_source.py', 'linkages.py', 'planar_linkage.py',
+    'fit_construction.py',
+    'native_replay.py',
 )
 
 

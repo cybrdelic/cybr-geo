@@ -68,6 +68,14 @@ def generate_project(source, output=None, *, seconds=None, reuse_native=None, me
     result['physical_source'] = physical.to_source()
     outcomes = project.requirements(result, task_parameters)
     result['requirements'] = outcomes
+    # These design screens are derived from the same source-bound native build,
+    # electrical drive definition and integrated torque record as the assembly.
+    # An undeclared process variation remains unresolved; numerical CAD
+    # allowances must never be mistaken for fabrication tolerances.
+    design_screens = _native_design_screens(native, receipt, source_files, control, result,
+        project=project)
+    (root / 'design-envelope.json').write_text(json.dumps(design_screens, indent=2,
+        allow_nan=False) + '\n', encoding='utf-8')
     with gzip.open(root / 'simulation' / 'trace.json.gz', 'wt', encoding='utf-8') as stream:
         json.dump(result, stream, separators=(',', ':'), allow_nan=False)
     assembly = project.replay(native, result)
@@ -92,6 +100,7 @@ def generate_project(source, output=None, *, seconds=None, reuse_native=None, me
         passed=bool(outcomes['passed']), requirements=outcomes,
         model_sha256=digest(physical.to_source()), control_sha256=digest(control),
         source_files=source_files, native_build_sha256=digest(receipt), native_source_binding_sha256=digest(binding),
+        design_envelope_sha256=digest(design_screens), design_envelope=design_screens,
         native=dict(parts=receipt['parts'], placements=receipt['placements'],
                     verified_artifacts=len(receipt['files_sha256']), directory=str(native)),
         simulation={key: value for key, value in result.items()
@@ -111,6 +120,79 @@ def generate_project(source, output=None, *, seconds=None, reuse_native=None, me
         indent=2) + '\n', encoding='utf-8')
     assembly.metadata['engineering_result'] = report
     return assembly, report
+
+
+def _native_design_screens(native, receipt, source_files, control, simulation, *, project=None):
+    """Bind nominal fit and drive budgets to one actual native/physics run.
+
+    This is an engineering diagnostic, not a path to manufacturing release.
+    Only the qualified construction and externally signed evidence path can
+    authorize a release; missing variation or supplier data is explicit here.
+    """
+    from .design_envelope import (connector_force_screens, fit_budget_report,
+                                  motor_torque_screen)
+    from .physical_model import digest
+
+    native = Path(native)
+    relative = 'native-interface-requirements.json'
+    source_sha256 = digest(source_files)
+    expected = receipt.get('files_sha256', {}).get(relative)
+    if expected is None:
+        fit = dict(status='native_interface_requirements_not_declared',
+            manufacturing_fit_qualified=False)
+    else:
+        payload = (native / relative).read_bytes()
+        if hashlib.sha256(payload).hexdigest() != expected:
+            raise ValueError('Native interface report differs from its verified construction receipt')
+        fit = fit_budget_report(json.loads(payload), source_sha256=source_sha256)
+    actuators = simulation.get('metrics', {}).get('actuators', {})
+    drives = {}
+    for drive in control.get('drives', []):
+        name = drive['actuator']
+        if name in drives:
+            raise ValueError('Duplicate actuator in source-bound design screen')
+        telemetry = actuators.get(name, {})
+        drives[name] = motor_torque_screen(name, drive['motor'],
+            telemetry.get('peak_output_torque_Nm'),
+            demand_limit_durations_s={key: telemetry[key + '_demand_limit_s']
+                for key in ('belt', 'gear') if key + '_demand_limit_s' in telemetry},
+            source_sha256=source_sha256)
+    metrics = simulation.get('metrics', {})
+    connectors = connector_force_screens(metrics.get('constraints', {}),
+        simulation.get('steps', 0))
+    planar = None
+    if project is not None and project.planar_path is not None:
+        from .planar_native_envelope import PlanarNativePath
+        from .physical_model import PhysicalModel
+
+        path = project.planar_path(project.specification, source_files)
+        if not isinstance(path, PlanarNativePath):
+            raise ValueError('Project planar path must use the shared planar-native construction')
+        physical = PhysicalModel.from_source(simulation['physical_source'])
+        option = physical.root.find('option')
+        if option is None or not option.get('gravity'):
+            raise ValueError('Planar gravity screen requires explicit physical-model gravity')
+        gravity = [float(value) for value in option.get('gravity').split()]
+        budget = path.gravity_budget(native, receipt, gravity, (0., 0., 1.))
+        planar = dict(schema='cybrgeo-planar-design-screen/1',
+            source_sha256=path.source_sha256,
+            implementation_sha256=path.implementation_sha256,
+            input_interval_rad=[path.input_start_rad, path.input_end_rad],
+            full_interval_branch_bounds=list(path.angular_bounds.values()),
+            quasi_static_gravity=budget,
+            continuous_native_clearance_status='unresolved_without_pair_complete_BREP_certificate',
+            scope='Full-input ideal rigid branch and CAD-mass gravity only; actual MuJoCo trajectory and moving native-part clearance need separate bound evidence')
+    return dict(schema='cybrgeo-native-design-envelope/1',
+        source_files_sha256=source_sha256,
+        native_build_sha256=digest(receipt),
+        control_sha256=digest(control),
+        simulation_model_sha256=simulation.get('model_sha256'),
+        runtime_implementation_sha256=digest(simulation.get('runtime_implementation')),
+        nominal_fit=fit, drives=drives, connector_demands=connectors,
+        planar_kinematics=planar,
+        manufacturing_qualified=False,
+        scope='Verified nominal CAD fits and integrated source-model motor demands only; '
+              'unallocated process variation and unmeasured hardware capacity cannot pass manufacturing release')
 
 
 def compile_source(source='compact_arm', parameters=None):

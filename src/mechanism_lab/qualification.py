@@ -95,8 +95,10 @@ class QualificationPlan:
 
     def __post_init__(self):
         row = self.document
-        _keys(row, ('schema', 'parts', 'materials', 'processes', 'interfaces', 'loads',
-                    'assembly_requirements'), 'Qualification plan')
+        fields = {'schema', 'parts', 'materials', 'processes', 'interfaces', 'loads',
+                  'assembly_requirements'}
+        if set(row) not in (fields, fields | {'solver_connectors'}):
+            raise QualificationError('Qualification plan fields must include the construction contract and optional solver_connectors')
         if row['schema'] != 'cybrgeo-qualification-plan/1':
             raise QualificationError('Expected cybrgeo-qualification-plan/1')
         parts = _object(row['parts'], 'Parts')
@@ -163,6 +165,13 @@ class QualificationPlan:
                 raise QualificationError(f'Interface {name} tolerances understate participating part variation')
             if clearance - first - second < required or capacity < demand:
                 raise QualificationError(f'Interface {name} fails its tolerance or load requirement')
+        connectors = row.get('solver_connectors', {})
+        if not isinstance(connectors, dict):
+            raise QualificationError('Solver connectors must map source equality names to planned interfaces')
+        for name, interface_name in connectors.items():
+            _safe_id(name, 'Solver connector ID')
+            if interface_name not in interfaces:
+                raise QualificationError(f'Solver connector {name} lacks a planned physical interface')
         for name, load in loads.items():
             _safe_id(name, 'Load ID')
             _keys(load, ('part', 'demand_Nm', 'design_capacity_Nm', 'service_temperature_C'), f'Load {name}')
@@ -500,6 +509,67 @@ def _simulated_loads(metrics):
     return actuators
 
 
+def _require_connector_demand_binding(plan, physical_model, simulation):
+    """Bound modeled connect/weld reactions by source-planned interface loads.
+
+    Each source equality must be monitored on every integration step and mapped
+    to a physical interface. Summing peaks that share an interface is a safe
+    screening overbound, not a pin/bearing stress calculation or a hardware
+    capacity measurement. Physical capacity still requires signed test records.
+    """
+    from .design_envelope import connector_force_screens
+
+    root = getattr(physical_model, 'root', None)
+    source_connectors = {}
+    if root is not None:
+        for element in root.findall('./equality/*'):
+            if element.tag not in ('connect', 'weld'):
+                continue
+            name = element.get('name')
+            if not name or name in source_connectors:
+                raise QualificationError('Physical connect/weld constraints need unique source names')
+            body1, body2 = element.get('body1'), element.get('body2')
+            if not body1 or not body2 or body1 == body2:
+                raise QualificationError(f'Physical connector {name} requires two distinct named body endpoints')
+            source_connectors[name] = dict(kind=element.tag, bodies={body1, body2})
+    metrics = simulation.get('metrics', {})
+    constraints = metrics.get('constraints', {}) if isinstance(metrics, dict) else None
+    if not isinstance(constraints, dict):
+        raise QualificationError('Simulation lacks a connector reaction inventory')
+    recorded = {name: row.get('type') for name, row in constraints.items()
+                if isinstance(row, dict) and row.get('type') in ('connect', 'weld')}
+    mapping = plan.document.get('solver_connectors', {})
+    if (set(recorded) != set(source_connectors)
+            or any(recorded[name] != source_connectors[name]['kind'] for name in recorded)):
+        raise QualificationError('Recorded connector inventory differs from the physical model')
+    if set(mapping) != set(source_connectors):
+        raise QualificationError('Source connect/weld constraints lack exact planned interface mapping')
+    for source_name, interface_name in mapping.items():
+        planned_parts = plan.document['interfaces'][interface_name]['parts']
+        part_bodies = {part.split('__', 1)[0] for part in planned_parts}
+        if (len(part_bodies) != 2
+                or part_bodies != source_connectors[source_name]['bodies']):
+            raise QualificationError(
+                f'Physical connector {source_name} maps to unrelated native interface bodies')
+    if not mapping:
+        return
+    steps = simulation.get('steps')
+    if isinstance(steps, bool) or not isinstance(steps, int) or steps < 1:
+        raise QualificationError('Modeled connector demands require integration-step count')
+    try:
+        screen = connector_force_screens(constraints, steps)
+    except (ValueError, TypeError, AttributeError, KeyError) as error:
+        raise QualificationError('Connector reaction telemetry is invalid') from error
+    if not screen['complete_solver_coverage'] or set(screen['connectors']) != set(mapping):
+        raise QualificationError('Modeled connector reaction coverage is incomplete')
+    demands = {name: 0. for name in plan.document['interfaces']}
+    for name, row in screen['connectors'].items():
+        demands[mapping[name]] += row['peak_modeled_anchor_force_N']
+    for name, demand in demands.items():
+        if demand > plan.document['interfaces'][name]['demand_N']:
+            raise QualificationError(f'Interface {name} understates modeled connector force demand')
+
+
 def _require_current_causal_runtime(recorded):
     """Invalidate evidence when causal code or solver packages have changed.
 
@@ -701,6 +771,7 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
         if key in simulation and simulation[key] != value:
             raise QualificationError(f'Simulation {key} differs from its accepted engineering report')
     _require_current_causal_runtime(simulation['runtime_implementation'])
+    _require_connector_demand_binding(plan, physical_model, simulation)
     simulated_loads = _simulated_loads(simulation.get('metrics'))
     if not simulated_loads or set(simulated_loads) != set(plan.document['loads']):
         raise QualificationError('Load cases must cover every active simulated actuator exactly')
@@ -708,6 +779,26 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
         peak = _number(metrics.get('peak_output_torque_Nm'), f'{name} simulated peak torque')
         if plan.document['loads'][name]['demand_Nm'] < peak:
             raise QualificationError(f'Load case {name} understates simulated torque demand')
+        if name == 'rack_motor':
+            # The opposed rack has its own requested-output clip before the
+            # gripper motor model, not rotary arm belt/gear source limits.
+            if 'output_demand_limit_s' not in metrics:
+                raise QualificationError('Rack motor lacks output demand-limit telemetry')
+            duration = _number(metrics['output_demand_limit_s'],
+                               'Rack motor output demand-limit duration')
+            if duration > 0:
+                raise QualificationError('Rack motor demanded torque beyond its source output model limit')
+            continue
+        # Delivered torque is clipped by the source drivetrain limit. A low
+        # delivered peak cannot excuse a task that demanded more than its
+        # declared belt/gear screen; redesign the drive or task and rerun.
+        for limit in ('belt', 'gear'):
+            if f'{limit}_demand_limit_s' not in metrics:
+                raise QualificationError(f'Load case {name} lacks {limit} demand-limit telemetry')
+            duration = _number(metrics[f'{limit}_demand_limit_s'],
+                               f'{name} {limit} demand-limit duration')
+            if duration > 0:
+                raise QualificationError(f'Load case {name} demanded torque beyond its {limit} model limit')
     basis = dict(source_sha256=digest(source_files), plan_sha256=plan.sha256,
                  native_build_sha256=digest(receipt), native_source_binding_sha256=digest(binding),
                  model_sha256=report['model_sha256'], control_sha256=report['control_sha256'],

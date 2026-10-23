@@ -41,6 +41,21 @@ def test_single_electrical_motor_drives_cad_mass_loaded_passive_output(built):
     assert abs(trace['frames'][-1]['qpos'][0]-math.tau)<project.specification['tracking_limit_rad']
     assert trace['metrics']['max_applied_generalized_force']==0
     assert trace['metrics']['max_external_body_force_N']==0
+    design = report['design_envelope']
+    assert design['nominal_fit']['status'] == 'declared_stack_passed'
+    assert design['nominal_fit']['complete_declared_stack']
+    assert {row['name'] for row in design['nominal_fit']['fits']} == {
+        'input_pin_bore', 'output_pin_bore'}
+    assert all(row['variation_source'] == 'native_authored_design'
+               and row['declared_stack_screen_passed']
+               for row in design['nominal_fit']['fits'])
+    assert not design['nominal_fit']['manufacturing_fit_qualified']
+    assert design['planar_kinematics']['full_interval_branch_bounds']
+    assert design['planar_kinematics']['quasi_static_gravity']['total_gravity_torque_bound_Nm'] > 0
+    assert design['connector_demands']['complete_solver_coverage']
+    assert design['connector_demands']['connectors']['coupler_closure']['peak_modeled_anchor_force_N'] > 0
+    assert not design['manufacturing_qualified']
+    assert json.loads((output/'design-envelope.json').read_text()) == design
     masses = json.loads((output/'native'/'mass_properties.json').read_text(encoding='utf-8'))
     source = trace['physical_source']['mass_records']
     assert source=={name:masses[name] for name in ('crank','rocker','coupler')}

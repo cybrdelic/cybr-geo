@@ -62,6 +62,13 @@ def test_real_single_motor_moves_all_nine_passive_leaves_and_closes_loops(client
     assert result['metrics']['actuators']['annular_motor']['copper_heat_J'] > 0
     assert result['metrics']['monitoring_interval']['integration_steps'] == 40000
     for index in range(9):
+        closure = result['metrics']['constraints'][f'rod_{index:02}_closure']
+        reaction = closure['reaction_vector_norms']['anchor_force']
+        assert reaction['unit'] == 'N'
+        assert reaction['samples'] == result['steps']
+        assert reaction['peak_absolute']['value'] > 0
+        assert closure['incomplete_reaction_row_steps'] == 0
+    for index in range(9):
         measured = result['metrics']['joints'][f'leaf_{index:02}_hinge']
         assert measured['maximum_position']['value'] > .89
         assert measured['direct_motor_actuator'] is None

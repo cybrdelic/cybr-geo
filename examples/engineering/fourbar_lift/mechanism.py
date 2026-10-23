@@ -13,7 +13,9 @@ import xml.etree.ElementTree as ET
 import cadquery as cq
 import numpy as np
 
+from mechanism_lab.fit_construction import PinBoreFit
 from mechanism_lab.linkages import PinnedLink
+from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
 from mechanism_lab.physical_model import PhysicalModel, digest
 
@@ -22,13 +24,19 @@ DENSITIES = dict(aluminum=2700., bronze=8800., steel=7850., steel_blue=7850., st
 
 
 def specification():
-    return json.loads((HERE/'data'/'specification.json').read_text(encoding='utf-8'))
+    return validate(json.loads((HERE/'data'/'specification.json').read_text(encoding='utf-8')))
 
 
 def validate(spec):
     spec = deepcopy(spec)
     if spec.get('schema') != 'cybrgeo-fourbar-lift/1':
         raise ValueError('Expected cybrgeo-fourbar-lift/1')
+    fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    if ('diametral_clearance_mm' in spec and not math.isclose(
+            spec['diametral_clearance_mm'], fit.nominal_diametral_clearance_mm,
+            rel_tol=0, abs_tol=1e-12)):
+        raise ValueError('Derived pin bore clearance disagrees with its fit design source')
+    spec['diametral_clearance_mm'] = fit.nominal_diametral_clearance_mm
     for name, value in spec.items():
         if name.endswith(('_mm', '_s', '_rad')):
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
@@ -37,9 +45,12 @@ def validate(spec):
     lengths = sorted((a, b, c, d))
     if lengths[0] != a or lengths[0]+lengths[-1] >= lengths[1]+lengths[2]:
         raise ValueError('The authored branch requires a strict Grashof crank-rocker without a change-point')
+    # Certify that the one physical closure branch exists through the entire
+    # commanded revolution before constructing any solids or actuator model.
+    linkage(spec).angular_rate_bounds(0., math.tau)
     # These supports/retainers are a coupled nominal stack, not generic vendor
     # fittings. A different interface must change its geometry first.
-    fixed = dict(shaft_diameter_mm=6., pin_diameter_mm=5., diametral_clearance_mm=.1,
+    fixed = dict(shaft_diameter_mm=6., pin_diameter_mm=5.,
         link_thickness_mm=4., coupler_height_mm=8.5)
     for key, value in fixed.items():
         if spec[key] != value:
@@ -77,20 +88,16 @@ def frame(angle=0., position=(0., 0., 0.)):
     return result
 
 
+def linkage(spec):
+    """One reusable planar closure source for CAD, physics setup and bounds."""
+    return PlanarFourBar((0., 0.), (spec['ground_length_mm'], 0.),
+        spec['crank_length_mm'], spec['coupler_length_mm'],
+        spec['rocker_length_mm'], branch=1)
+
+
 def rocker_angle(theta, spec):
     """Upper circle-intersection branch for initialization and verification."""
-    a, b, c, d = (spec[key] for key in ('crank_length_mm', 'coupler_length_mm', 'rocker_length_mm', 'ground_length_mm'))
-    first = np.array([a*math.cos(theta), a*math.sin(theta)])
-    ground = np.array([d, 0.])
-    delta = ground-first
-    distance = float(np.linalg.norm(delta))
-    along = (b*b-c*c+distance*distance)/(2*distance)
-    square = b*b-along*along
-    if square <= 0:
-        raise ValueError('Four-bar branch is unreachable or at a toggle')
-    unit = delta/distance
-    point = first+along*unit+math.sqrt(square)*np.array([-unit[1], unit[0]])
-    return math.atan2(point[1], point[0]-d)
+    return linkage(spec).solve(theta)['rocker_angle_rad']
 
 
 def layout(spec):
@@ -191,6 +198,9 @@ def build(spec, output):
     for body, name, shape, material in rows:
         native.addpart(body+'__'+name, shape, material, 'New nominal machined geometry; no measured process qualification')
         native.place(body, name, shape, material)
+    fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    pin_bore_variations = dict(first_mm=fit.bore_declared_radial_variation_mm,
+                               second_mm=fit.pin_declared_radial_variation_mm)
     requirements = NativeInterfaceRequirements(dict(scope='Nominal bored shaft/pin/keeper interfaces and separated axial layers'))
     for body, length in (('crank', spec['crank_length_mm']), ('rocker', spec['rocker_length_mm'])):
         shape = next(shape for b,n,shape,m in rows if b==body and n.endswith('_shaft_link_and_pin'))
@@ -200,13 +210,15 @@ def build(spec, output):
     coupler = info['link'].native_shape()
     for label, x in (('input', 0.), ('output', info['link'].length_mm)):
         requirements.clearance(label+'_pin_bore', coupler, cylinder(2.5, -2., 2., (x, 0.)),
-                               minimum_distance_mm=spec['diametral_clearance_mm']/2,
-                               kernel_allowance_mm=1e-8)
+                               minimum_distance_mm=fit.required_service_radial_gap_mm,
+                               kernel_allowance_mm=1e-8,
+                               declared_design_variations_mm=pin_bore_variations)
         for position, lo, hi in (('lower_shoulder', -4.5, -2.3), ('upper_keeper', 2.3, 3.3)):
             requirements.noninterference(label+'_'+position, coupler, cylinder(4., lo, hi, (x, 0.)))
     return native.finish('Generated nominal CAD density and full inertia, no mass overrides or hardware qualification',
         {'mechanism-layout.json': dict(frames={name:value.tolist() for name,value in info['frames'].items()},
             links=[info['link'].source()], gravity_m_s2=[0., -9.81, 0.],
+            pin_bore_fit_design=fit.report(),
             axial_stack_mm=dict(fixed_plate=[-14., -8.], bushings=[-8., 0.],
                 rotating_links=[.5,4.5], coupler=[6.5,10.5], keeper=[10.8,11.8]),
             assumptions=spec['assumptions'])}, native_requirements=requirements)

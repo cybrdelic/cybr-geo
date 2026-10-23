@@ -4,6 +4,7 @@ from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 import pytest
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -12,7 +13,8 @@ from cryptography.hazmat.primitives import serialization
 from mechanism_lab.qualification import (
     QualificationError, QualificationPlan, QualifiedNativeConstruction,
     _recheck_qualified_native_steps, _require_physical_mass_binding,
-    _simulated_loads, _verify_evidence, release_project,
+    _require_connector_demand_binding, _simulated_loads, _verify_evidence,
+    release_project,
 )
 
 
@@ -34,6 +36,27 @@ def _plan():
                 assembly_requirements=dict(minimum_endurance_cycles=1000,
                                            minimum_thermal_test_C=60.,
                                            maximum_measured_backlash_mm=.3))
+
+
+def test_qualified_connector_mapping_needs_known_interface_and_covers_model_demand():
+    from types import SimpleNamespace
+
+    plan = _plan()
+    plan['solver_connectors'] = {'bearing_joint': 'unknown'}
+    with pytest.raises(QualificationError, match='planned physical interface'):
+        QualificationPlan(plan)
+    plan['solver_connectors']['bearing_joint'] = 'pin_fit'
+    qualified = QualificationPlan(plan)
+    root = ET.Element('mujoco')
+    ET.SubElement(ET.SubElement(root, 'equality'), 'connect',
+                  name='bearing_joint', body1='fixed', body2='moving')
+    simulation = dict(steps=2, metrics={'constraints': {'bearing_joint': dict(
+        type='connect', active_steps=2, missing_row_steps=0,
+        incomplete_reaction_row_steps=0,
+        reaction_vector_norms={'anchor_force': dict(samples=2,
+            peak_absolute=dict(value=4.))})}})
+    assert _require_connector_demand_binding(qualified, SimpleNamespace(root=root),
+                                             simulation) is None
 
 
 def _signed_fixture(tmp_path, *, basis='a'*64, step_hashes=None):
@@ -249,6 +272,141 @@ def test_examples_cannot_release_without_preconstruction_policy(tmp_path):
     assert not (tmp_path/'product').exists()
 
 
+@pytest.mark.parametrize('case,limit,duration,expected', [
+    ('drive', 'belt', .001, 'demanded torque beyond its belt model limit'),
+    ('drive', 'gear', .001, 'demanded torque beyond its gear model limit'),
+    ('drive', 'belt', None, 'demand-limit'),
+    ('drive', 'gear', None, 'demand-limit'),
+    ('rack', 'output', .001, 'source output model limit'),
+    ('rack', 'output', None, 'output demand-limit telemetry'),
+    ('rack', 'output', 0., None),
+    ('unmapped_connector', 'belt', 0., 'lack exact planned interface mapping'),
+    ('missing_connector', 'belt', 0., 'inventory differs'),
+    ('incomplete_connector', 'belt', 0., 'reaction coverage is incomplete'),
+    ('understated_connector', 'belt', 0., 'understates modeled connector force'),
+    ('unrelated_connector', 'belt', 0., 'unrelated native interface bodies'),
+    ('missing_body_endpoint_connector', 'belt', 0., 'requires two distinct named body endpoints'),
+])
+def test_release_rejects_unbounded_drivetrain_or_connector_demand(
+        tmp_path, monkeypatch, case, limit, duration, expected):
+    """Clipped drivetrain demand or incomplete connector demand cannot release.
+
+    Only unrelated upstream CAD/source checks are stubbed. The release method
+    reads persisted metrics; a clean rack reaches downstream release basis
+    hashing without needing rotary belt/gear fields. No product is created.
+    """
+    from types import SimpleNamespace
+    from mechanism_lab import engineering_source, physical_model, qualification
+    from mechanism_lab.causal_runtime import _runtime_identity
+    from mechanism_lab.physical_model import digest
+
+    plan = _plan()
+    connector_case = case.endswith('_connector')
+    if connector_case and case != 'unmapped_connector':
+        plan['solver_connectors'] = {'bearing_joint': 'pin_fit'}
+    if case == 'rack':
+        plan['loads']['rack_motor'] = dict(part='moving__b', demand_Nm=1.,
+                                          design_capacity_Nm=2., service_temperature_C=50.)
+    source = tmp_path/'project'
+    (source/'data').mkdir(parents=True)
+    plan_path = source/'data'/'qualification-plan.json'
+    plan_path.write_text(json.dumps(plan), encoding='utf-8')
+    source_files = {'data/qualification-plan.json': hashlib.sha256(plan_path.read_bytes()).hexdigest()}
+    native = tmp_path/'native'
+    native.mkdir()
+    qualified_record = dict(schema='cybrgeo-qualification-construction/1',
+                            plan_sha256=QualificationPlan(plan).sha256,
+                            qualification_service_sha256=qualification._sha(qualification.__file__),
+                            placements=['fixed__a', 'moving__b'], interface_names=['pin_fit'],
+                            exact_placed_interface_checks={'pin_fit': dict(
+                                parts=['fixed__a', 'moving__b'], intersection_volume_mm3=0.,
+                                minimum_distance_mm=.5, worst_case_clearance_mm=.3)})
+    record_path = native/'qualification-construction.json'
+    record_path.write_text(json.dumps(qualified_record), encoding='utf-8')
+    receipt = dict(files_sha256={'qualification-construction.json': hashlib.sha256(
+                       record_path.read_bytes()).hexdigest()},
+                   material_densities_kg_m3={'alloy': 2700.})
+    (native/'placed-native-parts.json').write_text(json.dumps(dict(units='mm', records=[
+        dict(body='fixed', name='a'), dict(body='moving', name='b')])), encoding='utf-8')
+    (native/'native-interface-requirements.json').write_text(json.dumps(dict(
+        passed=True, checks=[dict(name='pin_fit')])), encoding='utf-8')
+    binding = {'schema': 'test-only-source-binding'}
+    run = tmp_path/'run'
+    (run/'simulation').mkdir(parents=True)
+    model = {'schema': 'test-only-physical', 'mass_records': {}}
+    control = {'schema': 'test-only-controller'}
+    metrics = {'peak_output_torque_Nm': .5,
+               'belt_demand_limit_s': 0., 'gear_demand_limit_s': 0.}
+    rack_metrics = None
+    if case == 'rack':
+        rack_metrics = {'peak_output_torque_Nm': .2}
+        if duration is not None:
+            rack_metrics['output_demand_limit_s'] = duration
+    elif case == 'drive' and duration is None:
+        del metrics[f'{limit}_demand_limit_s']
+    elif case == 'drive':
+        metrics[f'{limit}_demand_limit_s'] = duration
+    reaction = dict(type='connect', active_steps=2, missing_row_steps=0,
+        incomplete_reaction_row_steps=0,
+        reaction_vector_norms={'anchor_force': dict(samples=2,
+            peak_absolute=dict(value=6. if case == 'understated_connector' else 4.))})
+    constraints = ({} if case == 'missing_connector' else
+                   {'bearing_joint': reaction} if connector_case else {})
+    if case == 'incomplete_connector':
+        reaction['missing_row_steps'] = 1
+    root = ET.Element('mujoco')
+    if connector_case:
+        attributes = dict(name='bearing_joint', body1=(
+            'other' if case == 'unrelated_connector' else 'fixed'))
+        if case != 'missing_body_endpoint_connector':
+            attributes['body2'] = 'moving'
+        ET.SubElement(ET.SubElement(root, 'equality'), 'connect', **attributes)
+    simulation = dict(schema='cybrgeo-causal-simulation/1',
+                      model_sha256=digest(model), control_sha256=digest(control),
+                      runtime_implementation=_runtime_identity(), mujoco_version='test-only',
+                      options={}, steps=2, metrics={'actuators': {'output': metrics},
+                                                    'rack_motor': rack_metrics,
+                                                    'constraints': constraints})
+    (run/'physical-source.json').write_text(json.dumps(model), encoding='utf-8')
+    (run/'control-source.json').write_text(json.dumps(control), encoding='utf-8')
+    (run/'simulation'/'simulation.json').write_text(json.dumps(simulation), encoding='utf-8')
+    report = dict(schema='cybrgeo-engineering-result/2', name='synthetic', passed=True,
+                  source_files=source_files, native={'directory': str(native)},
+                  native_build_sha256=digest(receipt),
+                  native_source_binding_sha256=digest(binding),
+                  model_sha256=digest(model), control_sha256=digest(control),
+                  simulation=simulation)
+    (run/'engineering.json').write_text(json.dumps(report), encoding='utf-8')
+
+    monkeypatch.setattr(engineering_source, 'project_directory', lambda _: source)
+    monkeypatch.setattr(engineering_source, 'load_project', lambda _: (
+        SimpleNamespace(name='synthetic', specification={}), source_files))
+    monkeypatch.setattr(engineering_source, 'verify_native_build',
+                        lambda *args, **kwargs: receipt)
+    monkeypatch.setattr(engineering_source, 'verify_native_source_binding',
+                        lambda *args, **kwargs: binding)
+    monkeypatch.setattr(qualification, '_recheck_qualified_native_steps',
+                        lambda *args, **kwargs: {})
+    monkeypatch.setattr(physical_model.PhysicalModel, 'from_source',
+                        lambda *_: SimpleNamespace(mass_records={}, root=root))
+    class LoadGatePassed(Exception):
+        pass
+    original_sha = qualification._sha
+    def observe_after_load_gate(path):
+        if Path(path).name == 'trace.json.gz':
+            raise LoadGatePassed
+        return original_sha(path)
+    monkeypatch.setattr(qualification, '_sha', observe_after_load_gate)
+    monkeypatch.setattr(qualification, '_verify_evidence',
+                        lambda *args, **kwargs: pytest.fail('Load gate was bypassed'))
+    product = tmp_path/'product'
+    with pytest.raises(LoadGatePassed if expected is None else QualificationError,
+                       match=expected):
+        release_project(source, run, tmp_path/'evidence', tmp_path/'trusted-policy.json', product)
+    assert not product.exists()
+    assert not list(tmp_path.glob('.product-stage-*'))
+
+
 def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, monkeypatch):
     """Synthetic signed reports exercise the real native constructor and release copy.
 
@@ -338,7 +496,9 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     simulation = dict(schema='cybrgeo-causal-simulation/1', model_sha256=digest(model),
                       control_sha256=digest(control), runtime_implementation=runtime_identity,
                       mujoco_version='test-only', options={},
-                      metrics={'actuators': {'output': {'peak_output_torque_Nm': .5}}})
+                      metrics={'actuators': {'output': {
+                          'peak_output_torque_Nm': .5,
+                          'belt_demand_limit_s': 0., 'gear_demand_limit_s': 0.}}})
     (run/'physical-source.json').write_text(json.dumps(model), encoding='utf-8')
     (run/'control-source.json').write_text(json.dumps(control), encoding='utf-8')
     (run/'simulation'/'simulation.json').write_text(json.dumps(simulation), encoding='utf-8')

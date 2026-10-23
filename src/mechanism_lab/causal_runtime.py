@@ -197,7 +197,9 @@ class CausalSimulation:
             self.constraint_names[equality] = name
             kind = mj.mjtEq(int(self.model.eq_type[equality])).name.removeprefix('mjEQ_').lower()
             self.constraint_monitor[name] = dict(equality_id=equality, type=kind, sampled_steps=0,
-                active_steps=0, inactive_steps=0, missing_row_steps=0, components=[], vector_norms={})
+                active_steps=0, inactive_steps=0, missing_row_steps=0,
+                incomplete_reaction_row_steps=0, components=[], vector_norms={},
+                reaction_vector_norms={})
         self.transmission_monitor = [dict(joint=row['joint'], unit='Nm', minimum=None,
             maximum=None, peak_absolute=None, samples=0,
             method='motor output minus reflected dof armature times velocity increment / timestep; '
@@ -208,6 +210,8 @@ class CausalSimulation:
         self.contact_pairs = {}
         self._observe_contacts(0., 0., initial=True)
         self.rack_monitor = (dict(samples=0, peak_current_A=0., peak_output_torque_Nm=0.,
+                                  peak_requested_output_torque_Nm=0., output_demand_limit_s=0.,
+                                  source_output_torque_limit_Nm=self.rack['output_torque_limit_Nm'],
                                   peak_absolute_current=None) if self.rack else None)
 
     def _object_names(self, kind, count, prefix):
@@ -251,24 +255,38 @@ class CausalSimulation:
         """
         m, mj = self.model, self.mj
         kind = self.constraint_monitor[self.constraint_names[equality]]['type']
-        info = dict(index=component, label=f'component_{component}', unit=None, peak_absolute=None, samples=0)
+        info = dict(index=component, label=f'component_{component}', unit=None,
+                    peak_absolute=None, samples=0,
+                    solver_reaction=dict(unit='dual_to_solver_constraint_coordinate',
+                        minimum=None, maximum=None, peak_absolute=None, samples=0,
+                        interpretation='MuJoCo efc_force for this equality row; not a measured part load'))
         if kind == 'connect' or (kind == 'weld' and component < 3):
             info.update(label=f'anchor_delta_{"xyz"[component]}', unit='m')
+            info['solver_reaction']['unit'] = 'N'
+            info['solver_reaction']['interpretation'] = (
+                'Signed world-axis MuJoCo anchor constraint multiplier; '
+                'body-side sign and local bearing stress are not inferred')
         elif kind == 'weld':
             info.update(label=f'torquescale_scaled_quaternion_{"xyz"[component-3]}', unit='m',
                         torquescale_m=float(m.eq_data[equality, 10]),
                         interpretation='scaled quaternion vector, not an angle or positional gap')
+            info['solver_reaction']['unit'] = 'N'
+            info['solver_reaction']['interpretation'] = (
+                'Dual to torquescale-scaled quaternion residual; not direct body torque')
         elif kind == 'joint':
             joint = int(m.eq_obj1id[equality])
             info.update(label='joint_polynomial_residual',
                         unit='rad' if m.jnt_type[joint] == mj.mjtJoint.mjJNT_HINGE else 'm')
+            info['solver_reaction']['unit'] = 'Nm' if info['unit'] == 'rad' else 'N'
         elif kind == 'tendon':
             tendon = int(m.eq_obj1id[equality])
             start, count = int(m.tendon_adr[tendon]), int(m.tendon_num[tendon])
             fixed = any(m.wrap_type[start:start+count] == mj.mjtWrap.mjWRAP_JOINT)
             info.update(label='tendon_polynomial_residual', unit='tendon_coordinate' if fixed else 'm')
+            info['solver_reaction']['unit'] = ('dual_to_tendon_coordinate' if fixed else 'N')
         elif kind == 'flex':
             info.update(label=f'edge_length_residual_{component}', unit='m')
+            info['solver_reaction']['unit'] = 'N'
         else:
             info.update(label=f'native_scaled_{kind}_residual_{component}')
         return info
@@ -278,7 +296,7 @@ class CausalSimulation:
         # and implicit integrators this precedes state integration. RK4 retains
         # an internal stage: report the interval, without inventing a timestamp.
         rk4 = self.model.opt.integrator == self.mj.mjtIntegrator.mjINT_RK4
-        counts, values = {}, {}
+        counts, values, reactions = {}, {}, {}
         for k in range(self.data.nefc):
             if self.data.efc_type[k] != self.mj.mjtConstraint.mjCNSTR_EQUALITY:
                 continue
@@ -290,27 +308,53 @@ class CausalSimulation:
                 record['components'].append(self._constraint_component(equality, component))
             row = record['components'][component]
             value = float(self.data.efc_pos[k])
-            if not math.isfinite(value):
-                raise RuntimeError('Nonfinite equality constraint residual')
+            force = float(self.data.efc_force[k])
+            if not math.isfinite(value) or not math.isfinite(force):
+                raise RuntimeError('Nonfinite equality constraint residual or solver reaction')
             values.setdefault(equality, []).append(value)
+            reactions.setdefault(equality, []).append(force)
             event = dict(value=value,
                          time_s=None if rk4 else start_time_s,
                          interval_start_s=start_time_s, interval_end_s=end_time_s)
             self._extrema(row, None, None, 'peak_absolute', event)
             row['samples'] += 1
+            reaction = row['solver_reaction']
+            self._extrema(reaction, 'minimum', 'maximum', 'peak_absolute',
+                          dict(value=force, time_s=event['time_s'],
+                               interval_start_s=start_time_s, interval_end_s=end_time_s))
+            reaction['samples'] += 1
         for equality, name in self.constraint_names.items():
             record = self.constraint_monitor[name]
             record['active_steps' if self.data.eq_active[equality] else 'inactive_steps'] += 1
             record['sampled_steps' if equality in counts else 'missing_row_steps'] += 1
+            expected = {'connect': 3, 'weld': 6, 'joint': 1, 'tendon': 1}.get(record['type'])
+            if equality in counts and expected is not None and counts[equality] != expected:
+                record['incomplete_reaction_row_steps'] += 1
             if record['type'] in ('connect', 'weld') and equality in values:
                 for start, label in [(0, 'anchor_delta')] + ([(3, 'torquescale_scaled_quaternion')]
                                                             if record['type'] == 'weld' else []):
+                    if len(values[equality]) < start+3:
+                        continue
                     group = record['vector_norms'].setdefault(label, dict(unit='m', peak_absolute=None, samples=0))
                     event = dict(value=float(np.linalg.norm(values[equality][start:start+3])),
                                  time_s=None if rk4 else start_time_s,
                                  interval_start_s=start_time_s, interval_end_s=end_time_s)
                     self._extrema(group, None, None, 'peak_absolute', event)
                     group['samples'] += 1
+                    # Connect's first three rows are an XYZ world-anchor
+                    # residual. Their dual solver multipliers form one force
+                    # vector. Weld's angular rows are scaled coordinates and
+                    # intentionally do not become a guessed physical torque.
+                    if start == 0:
+                        reaction_group = record['reaction_vector_norms'].setdefault(
+                            'anchor_force', dict(unit='N', peak_absolute=None, samples=0,
+                            interpretation='Euclidean norm of MuJoCo XYZ anchor equality multipliers; '
+                                'ideal modeled connector demand, not tested pin or bearing capacity'))
+                        force_event = dict(value=float(np.linalg.norm(reactions[equality][:3])),
+                            time_s=None if rk4 else start_time_s,
+                            interval_start_s=start_time_s, interval_end_s=end_time_s)
+                        self._extrema(reaction_group, None, None, 'peak_absolute', force_event)
+                        reaction_group['samples'] += 1
 
     def _observe_transmissions(self, previous_speed, start_time_s, end_time_s):
         dt = self.model.opt.timestep
@@ -460,7 +504,13 @@ class CausalSimulation:
                                       -r['max_jaw_velocity_m_s'], r['max_jaw_velocity_m_s'])
             force = r['velocity_force_gain_N_s_m'] * (requested_speed - speed)
             radius, limit = r['pinion_pitch_radius_m'], r['output_torque_limit_Nm'] * o['gripScale']
-            output = float(np.clip(2 * radius * force, -limit, limit))
+            requested_output = float(2 * radius * force)
+            if not math.isfinite(requested_output):
+                raise RuntimeError('Nonfinite requested rack output torque')
+            self.rack_monitor['peak_requested_output_torque_Nm'] = max(
+                self.rack_monitor['peak_requested_output_torque_Nm'], abs(requested_output))
+            self.rack_monitor['output_demand_limit_s'] += dt if abs(requested_output) > limit else 0.
+            output = float(np.clip(requested_output, -limit, limit))
             gross = output + r['output_torque_per_current_Nm_A'] * r['no_load_current_A'] * np.sign(output)
             ceiling = self.rack_budget.step(self.rack_motor.state.current_A, dt)
             state = self.rack_motor.step(float(gross), speed / radius, dt, power=bool(powered),
@@ -571,8 +621,10 @@ class CausalSimulation:
             contacts=dict(deepcopy(self.contact_monitor), pairs=deepcopy(list(self.contact_pairs.values()))),
             rack_motor=deepcopy(self.rack_monitor),
             monitoring_interval=dict(start_time_s=0., end_time_s=self.steps*dt, integration_steps=self.steps),
-            constraint_sampling='Native solver residuals from every mj_step; pre-integration for Euler/implicit, '
-                'last internal stage for RK4. Missing rows are not zero residuals. No terminal post-state refresh.',
+            constraint_sampling='Native solver residuals and efc_force equality multipliers from every mj_step; '
+                'pre-integration for Euler/implicit, last internal stage for RK4. Missing rows are not zero '
+                'residuals or zero force. XYZ connect/weld anchor force norms are modeled reaction demands, '
+                'not measured bearing loads. No terminal post-state refresh.',
             monitor_scope='Rotary/rack actuator, transmission, joint, constraint, contact and free-body extrema '
                 'cover every integration step since initialization; joints and contacts also include the initial state'),
             qualification=dict(dynamics='actual integrated electromechanical/contact model', hardware='not qualified'))

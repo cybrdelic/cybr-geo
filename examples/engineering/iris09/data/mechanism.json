@@ -9,7 +9,12 @@
   "rod_width_mm": 4.0,
   "rod_thickness_mm": 1.0,
   "pin_diameter_mm": 2.0,
-  "diametral_clearance_mm": 0.05,
+  "pin_bore_fit": {
+    "required_service_radial_gap_mm": 0.025,
+    "pin_declared_radial_variation_mm": 0.005,
+    "bore_declared_radial_variation_mm": 0.005,
+    "design_reserve_radial_gap_mm": 0.0025
+  },
   "minimum_wall_mm": 0.7,
   "rod_height_mm": 31.5,
   "axial_stack": {
@@ -33,7 +38,7 @@
     "New derived four-bar mechanism; the source has no inherited mechanical transmission or dynamics",
     "One scene unit is assumed to be 50 mm; materials and motor values are engineering assumptions",
     "Source foil thickness is 0.0325 mm; its manufacturing and tolerance stack are unqualified",
-    "Pinned joints use ideal axes with nominal CAD bores; bearing contact, flexibility, fatigue and wear are not modeled",
+    "Pin bores are constructed from a 0.025 mm service radial gap, two 0.005 mm design variation budgets and a further 0.0025 mm design reserve; those required process targets are not measured capability. Ideal bearing contact, flexibility, fatigue and wear are not modeled",
     "Grooved split retainers have nominal CAD capture and clearance; elastic installation and retention strength are unqualified",
     "Rotor capture lips retain 0.3 mm nominal thickness with an envelope-derived axial fit; their strength and deflection are unqualified",
     "Joint limits are model travel guards, not a claim of physical stop hardware",

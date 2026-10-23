@@ -48,11 +48,20 @@ the bored coupler. Moving bodies use density-integrated CAD mass, center of
 mass and full inertia. There are no mass overrides. Colored finishes on the
 crank and rocker retain the same physical steel density.
 
-The shaft/bushing diametral gap is 0.10 mm. The shared pin-clearance service
-requires a 0.05 mm radial gap at both coupler bores. Coupler shoulders and
+The shaft/bushing diametral gap is 0.10 mm. The shared `PinBoreFit` derives
+5.15 mm coupler bores around 5 mm pins from a 0.05 mm required service radial
+gap, authored 0.01 mm radial variation budgets for each mating part and a
+further 0.005 mm design reserve. The resulting nominal radial gap is 0.075 mm;
+the worst gap under those *declared design targets* is 0.055 mm, leaving the
+positive reserve beyond service. No process or supplier has demonstrated the
+variation budget or reserve. The native pin-clearance requirement measures the nominal
+gap independently. Coupler shoulders and
 keepers leave 0.30 mm axial gaps. Actual grooves clear the split retainers.
 The nominal screw shafts fit their matching holes; thread engagement,
 preload, bushing retention and an external mounting fixture are not modeled.
+The axial and other radial interfaces still need complete measured production
+tolerance stacks. Changing any fit input invalidates prior CAD, mass/inertia,
+interface, simulation and media receipts until regenerated.
 
 One motor actuator receives voltage/current-derived torque. The rocker and
 coupler have passive hinges; the shared material-pin closure transmits their

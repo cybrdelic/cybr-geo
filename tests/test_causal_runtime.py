@@ -254,13 +254,16 @@ def test_undeclared_position_actuator_cannot_secretly_drive_a_passive_coordinate
         passive_sim(xml)
 
 
-def test_declared_rack_is_included_in_complete_actuator_coverage():
+@pytest.mark.parametrize('output_limit_Nm,clipped', [(.1, False), (.0001, True)])
+def test_declared_rack_reports_output_clipping_and_complete_actuator_coverage(
+        output_limit_Nm, clipped):
     cfg = control()
     cfg.pop('initial_keyframe')
     cfg['rack'] = dict(joints=['jaw_left', 'jaw_right'], actuator='rack_motor',
         motor=deepcopy(cfg['drives'][0]['motor']), pinion_pitch_radius_m=.01,
         max_jaw_velocity_m_s=.1, position_to_velocity_gain_per_s=10., velocity_force_gain_N_s_m=1.,
-        output_torque_limit_Nm=.1, output_torque_per_current_Nm_A=.5, no_load_current_A=.01,
+        output_torque_limit_Nm=output_limit_Nm,
+        output_torque_per_current_Nm_A=.5, no_load_current_A=.01,
         current_budget=dict(continuous_current_A=1., peak_current_A=2., peak_budget_s=.1))
     xml = passive_model('').split('<keyframe>')[0] + '</mujoco>'
     jaws = ''.join(f'<body name="{name}"><joint name="{name}" type="slide" axis="1 0 0"/>'
@@ -278,6 +281,9 @@ def test_declared_rack_is_included_in_complete_actuator_coverage():
     assert rack['samples'] == 2 and rack['peak_current_A'] > 0
     assert rack['peak_current_A'] == pytest.approx(abs(rack['peak_absolute_current']['value']))
     assert rack['peak_output_torque_Nm'] > 0
+    assert rack['source_output_torque_limit_Nm'] == output_limit_Nm
+    assert rack['peak_requested_output_torque_Nm'] > 0
+    assert (rack['output_demand_limit_s'] > 0) is clipped
 
 
 def test_all_scalar_joint_extrema_cover_unsaved_steps_and_repeated_runs():
@@ -319,18 +325,25 @@ def test_all_scalar_joint_extrema_cover_unsaved_steps_and_repeated_runs():
 
 def test_connect_residual_is_actual_solver_gap_and_inactive_rows_are_not_zero():
     sim = passive_sim(passive_model(key='.22 .01 .2 -.2'))
-    gaps = []
+    gaps, forces = [], []
     for _ in range(25):
         sim.step()
         rows = sim.data.efc_type == sim.mj.mjtConstraint.mjCNSTR_EQUALITY
         gaps.append(sim.data.efc_pos[rows].copy())
+        forces.append(sim.data.efc_force[rows].copy())
+    # The logged vector is the solver's actual constraint-space force: its
+    # Jacobian transpose recreates generalized constraint force in this model.
+    generalized = np.zeros(sim.model.nv)
+    sim.mj.mj_mulJacTVec(sim.model, sim.data, generalized,
+                         sim.data.efc_force[:sim.data.nefc])
+    np.testing.assert_allclose(generalized, sim.data.qfrc_constraint, rtol=1e-10, atol=1e-12)
     frozen = deepcopy(sim.constraint_monitor['closure'])
     sim.data.eq_active[:] = 0
     result = sim.run(.005, output_hz=1)
     record = result['metrics']['constraints']['closure']
     assert record['active_steps'] == record['sampled_steps'] == 25
     assert record['inactive_steps'] == record['missing_row_steps'] == 5
-    gaps = np.array(gaps)
+    gaps, forces = np.array(gaps), np.array(forces)
     for axis, row in enumerate(record['components']):
         index = np.argmax(abs(gaps[:, axis]))
         assert row['unit'] == 'm'
@@ -338,9 +351,23 @@ def test_connect_residual_is_actual_solver_gap_and_inactive_rows_are_not_zero():
         # These are pre-integration solver evaluations, not end-of-step qpos.
         assert row['peak_absolute']['time_s'] == pytest.approx(index*.001)
         assert row['samples'] == 25
+        reaction = row['solver_reaction']
+        peak = np.argmax(abs(forces[:, axis]))
+        assert reaction['unit'] == 'N' and reaction['samples'] == 25
+        assert reaction['minimum']['value'] == pytest.approx(min(forces[:, axis]))
+        assert reaction['maximum']['value'] == pytest.approx(max(forces[:, axis]))
+        assert reaction['peak_absolute']['value'] == pytest.approx(forces[peak, axis])
+        assert reaction['peak_absolute']['time_s'] == pytest.approx(peak*.001)
     norm = np.linalg.norm(gaps, axis=1)
     assert record['vector_norms']['anchor_delta']['peak_absolute']['value'] == pytest.approx(max(norm))
+    reactions = np.linalg.norm(forces, axis=1)
+    observed = record['reaction_vector_norms']['anchor_force']
+    assert observed['unit'] == 'N' and observed['samples'] == 25
+    assert observed['peak_absolute']['value'] == pytest.approx(max(reactions))
+    assert observed['peak_absolute']['time_s'] == pytest.approx(np.argmax(reactions)*.001)
+    assert record['incomplete_reaction_row_steps'] == 0
     assert record['vector_norms'] == frozen['vector_norms']
+    assert record['reaction_vector_norms'] == frozen['reaction_vector_norms']
     assert record['components'] == frozen['components']
 
 
@@ -350,6 +377,7 @@ def test_never_active_constraint_has_no_fabricated_zero_residual():
     assert record['sampled_steps'] == record['active_steps'] == 0
     assert record['missing_row_steps'] == record['inactive_steps'] == 3
     assert record['components'] == [] and record['vector_norms'] == {}
+    assert record['reaction_vector_norms'] == {}
 
 
 def test_unnamed_passive_joint_does_not_overwrite_a_named_joint_monitor():
@@ -384,6 +412,11 @@ def test_equality_residual_units_follow_native_coordinate_type(equality, extra, 
     result = sim.run(.002, output_hz=1)
     record = result['metrics']['constraints']['closure']
     assert [row['unit'] for row in record['components']] == expected
+    dual = [row['solver_reaction']['unit'] for row in record['components']]
+    assert dual == (['N']*3 if record['type'] == 'connect' else
+                    ['N']*6 if record['type'] == 'weld' else
+                    ['Nm'] if expected == ['rad'] else
+                    ['N'] if expected == ['m'] else ['dual_to_tendon_coordinate'])
     assert record['sampled_steps'] == 2
     if record['type'] == 'weld':
         angular = record['components'][5]
@@ -428,7 +461,7 @@ def test_observers_do_not_recompute_or_change_integration_dynamics(monkeypatch):
     for _ in range(100):
         observed.step()
         original.step()
-    for field in ('qpos', 'qvel', 'qacc', 'qfrc_bias', 'qfrc_constraint', 'efc_pos'):
+    for field in ('qpos', 'qvel', 'qacc', 'qfrc_bias', 'qfrc_constraint', 'efc_pos', 'efc_force'):
         assert np.array_equal(getattr(observed.data, field), getattr(original.data, field))
     matrices = [np.zeros((sim.model.nv, sim.model.nv)) for sim in (observed, original)]
     for sim, matrix in zip((observed, original), matrices):

@@ -29,7 +29,7 @@ the original source oracle above.
 
 The project applies the shared `mechanism_lab.reference_clock.PhaseClock` to
 that authored reference. Source and physical knot times declare a complete
-default cycle of 17.4 seconds.
+default cycle of 18.05 seconds.
 Transfer uses rate 0.5 and loaded descent rate 0.2. Requested velocity scales
 with rate and acceleration with rate squared. Every changed-rate join is
 screened at two probe widths for continuity and stationarity before simulation;

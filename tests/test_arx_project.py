@@ -20,12 +20,14 @@ def test_default_clock_binds_authored_posture_and_derivatives(compiled):
     project, identity, physical, control, parameters = compiled
     clock = PhaseClock.from_source(parameters['reference_clock'])
     source_reference = sys.modules[project.reference.__module__].source_reference
-    assert project.duration_s == clock.physical_period_s == 17.4
+    assert project.duration_s == clock.physical_period_s == 18.05
     assert parameters['reference_clock_validation']['passed']
     assert parameters['operating_policy'] == {'lateral_tilt_scale': 0.0}
     assert 'data/default-task.json' in identity
     assert clock.physical_time(3.2) == pytest.approx(6.1)
-    assert clock.physical_time(7.2) == pytest.approx(11.45)
+    assert clock.physical_time(7.2) == pytest.approx(12.1)
+    assert clock.physical_time(6.0) == pytest.approx(9.7)
+    assert clock.physical_time(6.65) == pytest.approx(11.0)
     for source_time in (.5, 2., 3.2, 4.9, 7.2, 8.2, 9.9):
         time = clock.physical_time(source_time)
         expected = source_reference(source_time, parameters, lateral_tilt_scale=0.0)
@@ -98,7 +100,7 @@ def test_missing_policy_preserves_source_default_and_policy_enters_identity():
         np.testing.assert_allclose(project.reference(clock.physical_time(source_time), parameters)['q'], expected['q'], atol=1e-12, rtol=0)
     parameters['operating_policy']['lateral_tilt_scale'] = 0.0
     with pytest.raises(ValueError, match='unchanged bound'):
-        project.reference(11.45, parameters)
+        project.reference(clock.physical_time(7.2), parameters)
 
 
 @pytest.mark.parametrize('coefficient', [True, -.01, 1.01, float('nan'), float('inf'), '0'])

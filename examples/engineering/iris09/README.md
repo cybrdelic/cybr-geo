@@ -49,12 +49,21 @@ neighboring fixed shafts. The source profile and cant remain visible, while the
 crop and shaft keepouts are explicitly new geometry. These particular envelope
 constructions do not establish clearance for every part of the assembly.
 
-The adaptation adds 20 mm connecting rods, 2 mm pins with 0.05 mm nominal
-diametral bore clearance, grooved split retainers, a fixed reaction housing and
+The adaptation adds 20 mm connecting rods, 2 mm pins with 2.075 mm nominal
+bores, grooved split retainers, a fixed reaction housing and
 an assumed annular direct-drive torque port. Native interface measurements and
 integrated closure/travel checks have separate receipts. The solver uses ideal
 pin axes and loop constraints; it does not resolve bearing contact, fit or wear.
 No independent actuator or prescribed motion is applied to a follower leaf.
+The same shared `PinBoreFit` derives rod and fixed-bearing bores from a 0.025 mm
+required service radial gap, authored 0.005 mm radial variation budgets for
+each of the pin and bore and a further 0.0025 mm design reserve. The resulting
+nominal radial gap is 0.0375 mm; the worst gap under those *declared design
+targets* is 0.0275 mm, leaving positive reserve beyond service. No process or
+supplier has demonstrated the variation budget or reserve. The axial keeper and
+bearing stacks have separate nominal clearances and no demonstrated production
+tolerance stack. Changing any fit input invalidates prior CAD, mass/inertia,
+interface, simulation and media receipts until regenerated.
 
 The pin, keeper, bearing lip and rotor heights share one `axial_stack`
 construction. The lower fixed lip starts 0.2 mm above the moving pin/keeper

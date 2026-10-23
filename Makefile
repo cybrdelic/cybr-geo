@@ -1,6 +1,6 @@
 .PHONY: test test-core test-mechanisms preview doctor motor media drawings release
 
-ENGINEERING_TESTS := $(wildcard tests/test_engineering_*.py tests/test_arx*.py tests/test_iris*.py tests/test_fourbar*.py tests/test_linkages.py tests/test_native_replay.py tests/test_native_assembly_placement.py tests/test_native_clearance.py tests/test_reference_clock.py tests/test_part_geometry.py tests/test_manufacturing_*.py tests/test_qualification.py)
+ENGINEERING_TESTS := $(wildcard tests/test_engineering_*.py tests/test_arx*.py tests/test_iris*.py tests/test_fourbar*.py tests/test_linkages.py tests/test_native_replay.py tests/test_native_assembly_placement.py tests/test_native_clearance.py tests/test_native_pose_envelope.py tests/test_planar_linkage.py tests/test_planar_native_envelope.py tests/test_planar_axial_broadphase.py tests/test_fit_construction.py tests/test_design_envelope.py tests/test_reference_clock.py tests/test_part_geometry.py tests/test_manufacturing_*.py tests/test_qualification.py)
 STUDIO_TESTS := $(wildcard studio/tests/test_*.py)
 
 test-mechanisms:

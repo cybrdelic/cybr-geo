@@ -44,6 +44,35 @@ def test_numerical_allowance_is_explicit_and_does_not_replace_volume_requirement
     assert not overlapping['pass']
 
 
+def test_clearance_records_authored_part_variation_on_the_measured_interface():
+    first = cq.Workplane('XY').box(10, 10, 10)
+    second = first.translate((10.14, 0, 0))
+    variations = {'first_mm': .01, 'second_mm': .02}
+    requirements = NativeInterfaceRequirements()
+    row = requirements.clearance('pin_bore', first, second,
+        minimum_distance_mm=.05, declared_design_variations_mm=variations)
+    assert row['pass']
+    assert row['declared_design_variations_mm'] == variations
+    assert requirements.report()['checks'][0]['declared_design_variations_mm'] == variations
+    variations['first_mm'] = .09
+    assert row['declared_design_variations_mm']['first_mm'] == .01
+
+
+@pytest.mark.parametrize('variation', [
+    {'first_mm': .01},
+    {'first_mm': .01, 'second_mm': .02, 'third_mm': .01},
+    {'first_mm': True, 'second_mm': .02},
+    {'first_mm': -.01, 'second_mm': .02},
+    {'first_mm': float('nan'), 'second_mm': .02},
+])
+def test_invalid_declared_variation_rejects_before_native_measurement(variation):
+    requirements = NativeInterfaceRequirements()
+    with pytest.raises((ValueError, TypeError)):
+        requirements.clearance('invalid', None, None, minimum_distance_mm=.05,
+            declared_design_variations_mm=variation)
+    assert requirements.checks == []
+
+
 @pytest.mark.parametrize('keyword', ['minimum_distance_mm', 'kernel_allowance_mm'])
 @pytest.mark.parametrize('value', [True, -.01, float('inf'), float('nan')])
 def test_invalid_distance_requirement_does_not_append_partial_check(keyword, value):

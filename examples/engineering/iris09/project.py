@@ -1,7 +1,30 @@
 """IRIS-derived linkage client of the shared engineering architecture."""
+import math
+
 from mechanism_lab.core import Material
 from mechanism_lab.engineering_source import EngineeringProject
-from .mechanism import build, compile_model, reference, requirements, specification
+from mechanism_lab.physical_model import digest
+from mechanism_lab.planar_native_envelope import PlanarBody, PlanarNativePath
+
+from .mechanism import build, compile_model, linkage, reference, requirements, specification
+
+
+def planar_path(spec, source_files):
+    """Nine radial copies of one constrained leaf/rod/rotor construction."""
+    closed = linkage(spec)
+    bodies = dict(fixed=PlanarBody('ground'), rotor=PlanarBody('rocker', closed))
+    count = spec['source_geometry']['leaf']['count']
+    for index in range(count):
+        azimuth = index * math.tau / count
+        bodies[f'leaf_{index:02}'] = PlanarBody('crank', closed,
+            world_rotation_rad=-azimuth,
+            yaw_offset_rad=-spec['leaf_crank_angle_rad'])
+        bodies[f'rod_{index:02}'] = PlanarBody('coupler', closed,
+            world_rotation_rad=-azimuth, yaw_offset_rad=math.pi,
+            anchor='rocker_pin_mm', z_mm=spec['rod_height_mm'])
+    return PlanarNativePath(bodies, -spec['hinge_range_rad'][0],
+        -spec['hinge_range_rad'][1],
+        source_identity=digest(dict(project_source_files=source_files, specification=spec)))
 
 
 def replay(directory, result):
@@ -21,4 +44,4 @@ def replay(directory, result):
 def create():
     spec = specification()
     return EngineeringProject('iris09', spec, build, compile_model, reference, replay, requirements,
-                              duration_s=spec['period_s'])
+                              duration_s=spec['period_s'], planar_path=planar_path)

@@ -68,7 +68,7 @@ lab mechanism --step --media
 ```
 
 `lab mechanism` builds the actual ARX belt example through shared services and
-runs its 17.4-second causal contact task. **`outputs/arx_belt/`** contains native
+runs its 18.05-second causal contact task. **`outputs/arx_belt/`** contains native
 and placed STEP, GLB, material/mass records, editable physical source, motor
 results, simulation traces and actual rendered PNG/GIF views. Allow several
 minutes for initial construction. Ratings and material properties remain
@@ -89,7 +89,7 @@ lab mechanism fourbar_lift --step --out outputs/fourbar_lift
 lab replay arx_belt --run outputs/arx_belt --out outputs/arx-film
 lab replay iris09 --run outputs/iris09 --out outputs/iris-film --elevation 67 --no-floor
 lab replay fourbar_lift --run outputs/fourbar_lift --out outputs/fourbar-film
-lab animate arx_belt --seconds 17.4
+lab animate arx_belt --seconds 18.05
 lab mechanism examples/constructed/compact_arm.json --step --media
 lab preview nitinol_fiber_actuator --spp 64
 lab preview examples/custom_flange.py --step
@@ -100,7 +100,73 @@ lab blueprint nitinol_fiber_actuator
 
 These commands create diagnostic CAD, simulation and media. `--step` and
 `--stl` export inspectable geometry, not manufacturing-approved parts. The
-qualified product path is `lab release PROJECT --run RUN --evidence EVIDENCE
+normal engineering run also writes `design-envelope.json`. It binds measured
+native STEP gaps to their required service gaps, simulated torque demand to
+the source motor limits, and modeled MuJoCo connector reactions to every-step
+coverage. The IRIS and four-bar clients additionally use the same planar
+closure service for full-range branch bounds and CAD-mass gravity demand.
+`nominal_fit.status="unresolved"` means at least one CAD gap has no allocated
+design variation budget; a passing torque screen is only a source-model result. The
+drive screen requires both belt and gear demand-limit telemetry: a controller
+that clipped requested torque fails its source-model screen even when the
+delivered peak stays at the declared limit. Missing telemetry is unresolved.
+The report's continuous-clearance field stays unresolved until its named native
+part-pair scope is certified. Inspect both `engineering.json` and
+`design-envelope.json` before using a diagnostic design.
+For a qualified release, the opposed rack drive has its own source output
+torque limit and requested-output clipping history; missing or clipped rack
+telemetry is rejected independently of the six rotary belt/gear screens.
+
+From a source checkout, after building `fourbar_lift`, check one moving native pair over
+the entire ideal crank revolution with the common STEP envelope service:
+
+```python
+from pathlib import Path
+from mechanism_lab.engineering_source import load_project, verify_native_build
+
+run = Path('outputs/fourbar_lift')
+project, sources = load_project('fourbar_lift')
+native = run / 'native'
+receipt = verify_native_build(native, project.specification, source_files=sources)
+path = project.planar_path(project.specification, sources)
+result = path.certify_native(native, receipt, clearance_pairs=[
+    ('crank__crank_shaft_link_and_pin', 'rocker__rocker_shaft_link_and_pin')])
+assert result['passed']
+print(result['clearance_pairs'], result['unexamined_cross_body_pairs'])
+```
+
+This checks only the listed pair on its authored ideal rigid path; the receipt
+counts every unexamined pair. ARX's recorded contact motion and unsampled
+MuJoCo states need their own explicitly scoped checks. No example currently
+has a complete, production-toleranced moving-assembly clearance certificate.
+
+For IRIS, the reusable axial broad phase can cheaply classify every
+cross-body pair whose native STEP Z slabs stay separated over the complete
+ideal planar path:
+
+```sh
+python -m examples.analysis.iris09_axial_broadphase --native outputs/iris09/native --output outputs/iris09/axial-broadphase.json
+```
+
+The receipt names every unresolved overlapping or close slab. Those pairs
+still need an exact swept-solid check or a declared mating/contact model;
+axial separation alone does not establish production tolerance clearance.
+
+The ARX gripper client uses the same native interval checker on its actual
+source XML slide range and STEP parts:
+
+```sh
+python examples/analysis/arx_belt_gripper_envelope.py --native outputs/arx_belt/native --output outputs/arx_belt/gripper-native-full-range.json
+```
+
+Its receipt covers six selected gripper components and all 12 cross-body
+noncontact pairs among them across the nominal 10–40 mm synchronized travel.
+It records the other 374 native placements as omitted. The puck contacts,
+pinion/rack mesh and guide fits require their own evidence, and this check
+does not establish clearance for the moving arm or the integrated MuJoCo
+trajectory.
+
+The qualified product path is `lab release PROJECT --run RUN --evidence EVIDENCE
 --trust-policy POLICY --out NEW_DIRECTORY`. It requires a construction policy
 enforced before CAD placement, exact source/native/model/controller/runtime
 binding, independently signed supplier and process records, measured part and
@@ -108,6 +174,9 @@ interface results, load tests and an assembled hardware test. Missing or stale
 records fail before a release directory is created. Current examples lack
 those physical records and cannot be released as qualified hardware. See the
 [manufacturing release contract](docs/MANUFACTURING-RELEASE.md).
+For a model with `connect` or `weld` equalities, the qualification plan must
+also map each named solver connector to a planned interface; release compares
+its complete modeled reaction history with that interface's declared demand.
 
 [Shared ARX, IRIS and four-bar films](docs/pr-assets/shared-engineering/README.md)
 show the same construction, simulation and replay services at the pinned
@@ -130,6 +199,7 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | Engineering source | [Project protocol](src/mechanism_lab/engineering_source.py), [native construction](src/mechanism_lab/native_construction.py), [CSG DAG](src/mechanism_lab/shape_dag.py), [physical tree](src/mechanism_lab/physical_model.py) |
 | Causal engineering execution | [Shared pipeline](src/mechanism_lab/engineering_pipeline.py), [electromechanical kernels](src/mechanism_lab/actuation.py), [MuJoCo runtime](src/mechanism_lab/causal_runtime.py), [recorded replay](src/mechanism_lab/physical_replay.py) |
 | Passive mechanism construction | [Pinned links](src/mechanism_lab/linkages.py), [native CAD replay](src/mechanism_lab/native_replay.py), [IRIS client](examples/engineering/iris09/README.md) |
+| Source-bound mechanism budgets | [Planar closure](src/mechanism_lab/planar_linkage.py), [native rigid-path interval clearance](src/mechanism_lab/native_pose_envelope.py), [planar native adapter](src/mechanism_lab/planar_native_envelope.py), [fit/load screens](src/mechanism_lab/design_envelope.py) |
 | Source-aware manufacturing geometry | [Native part resolver](src/mechanism_lab/part_geometry.py), [coupled tube/splice interfaces](src/mechanism_lab/manufacturing_joints.py), [involute pinion/rack](src/mechanism_lab/manufacturing_gears.py), [Refined/P6B clients](examples/engineering/arx_compact/README.md) |
 | Manufacturing release boundary | [Construction policy, signed evidence and release gate](src/mechanism_lab/qualification.py); [contract](docs/MANUFACTURING-RELEASE.md) |
 | Component document compatibility | [Component compiler](src/mechanism_lab/construction.py), [continuous path clearance](src/mechanism_lab/motion_envelope.py), [Studio](studio/README.md) |

@@ -36,7 +36,7 @@ cannot be relabeled from the current source. Shipped
 historical mass records are comparison fixtures only, used by the standalone
 counterfactual helper when `--native` is omitted; that output is labeled cached.
 
-The puck is a free body. The default takes 17.4 seconds along the original TCP
+The puck is a free body. The default takes 18.05 seconds along the original TCP
 path, with lateral transfer tilt removed to reduce wrist-brake gravity load.
 Forward tilt, roll formula and endpoints remain source-derived. Transfer runs
 at half rate and loaded descent at one fifth rate. The source's
