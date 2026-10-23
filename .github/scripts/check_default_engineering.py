@@ -90,7 +90,10 @@ def verify(output):
         solid = cq.importers.importStep(str(native/row['step_file'])).val()
         mass, center, tensor = shape_mass_properties(solid, receipt['material_densities_kg_m3'][row['material']])
         rebuilt.append(dict(name=row['name'], mass_kg=mass, com_m=center.tolist(),
-                            inertia_at_com_kg_m2=tensor.tolist()))
+                            inertia_at_com_kg_m2=tensor.tolist(),
+                            provenance=dict(method='Independent placed STEP volume integration',
+                                step_file=row['step_file'], step_sha256=sha256(native/row['step_file']),
+                                density_kg_m3=receipt['material_densities_kg_m3'][row['material']])))
     reconstructed = aggregate_mass_properties(rebuilt)
     expected = masses['jaw_opposed']
     for key in ('mass_kg', 'com_m', 'inertia_tensor_kg_m2'):
