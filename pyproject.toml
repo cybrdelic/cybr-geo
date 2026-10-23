@@ -27,6 +27,7 @@ cybrgeo = ["native/*.cpp"]
 mechanism_lab = ["native/*.cpp", "native/*.h", "mechanisms/*.json"]
 
 [tool.setuptools.data-files]
+"share/cybr-geo/examples/engineering/arx_petg_cinema" = ["examples/engineering/arx_petg_cinema/*.md"]
 "share/cybr-geo/examples/analysis" = ["examples/analysis/*.py"]
 "share/cybr-geo/examples/engineering" = ["examples/engineering/*.md", "examples/engineering/*.json"]
 "share/cybr-geo/examples/engineering/arx_belt" = ["examples/engineering/arx_belt/*.py", "examples/engineering/arx_belt/*.json", "examples/engineering/arx_belt/*.md", "examples/engineering/arx_belt/*.mjs"]
