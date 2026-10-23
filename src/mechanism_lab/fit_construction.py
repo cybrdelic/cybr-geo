@@ -17,6 +17,57 @@ def _positive(value, label):
     return float(value)
 
 
+def _nonnegative(value, label):
+    if (isinstance(value, bool) or not isinstance(value, (int, float))
+            or not math.isfinite(value) or value < 0):
+        raise ValueError(f'{label} must be finite and nonnegative')
+    return float(value)
+
+
+@dataclass(frozen=True)
+class CoaxialShaftHubSeat:
+    """Reject a nominal shaft/hub mismatch before either part is placed.
+
+    This is a mating-diameter design constraint, not evidence that a key,
+    clamp, bearing, or vendor hub can transfer the requested torque. The
+    minimum and maximum gaps are authored design targets, not measured
+    process capabilities.
+    """
+
+    shaft_diameter_mm: float
+    hub_bore_diameter_mm: float
+    minimum_nominal_radial_gap_mm: float
+    maximum_nominal_radial_gap_mm: float
+
+    def __post_init__(self):
+        _positive(self.shaft_diameter_mm, 'shaft_diameter_mm')
+        _positive(self.hub_bore_diameter_mm, 'hub_bore_diameter_mm')
+        minimum = _nonnegative(self.minimum_nominal_radial_gap_mm,
+                               'minimum_nominal_radial_gap_mm')
+        maximum = _positive(self.maximum_nominal_radial_gap_mm,
+                            'maximum_nominal_radial_gap_mm')
+        if maximum < minimum:
+            raise ValueError('Maximum nominal shaft/hub gap cannot be smaller than minimum')
+        gap = self.nominal_radial_gap_mm
+        if not minimum <= gap <= maximum:
+            raise ValueError('Shaft/hub nominal radial gap lies outside its authored mating interval')
+
+    @property
+    def nominal_radial_gap_mm(self):
+        return (self.hub_bore_diameter_mm - self.shaft_diameter_mm) / 2.
+
+    def report(self):
+        return dict(schema='cybrgeo-coaxial-shaft-hub-seat/1',
+                    shaft_diameter_mm=self.shaft_diameter_mm,
+                    hub_bore_diameter_mm=self.hub_bore_diameter_mm,
+                    nominal_radial_gap_mm=self.nominal_radial_gap_mm,
+                    minimum_nominal_radial_gap_mm=self.minimum_nominal_radial_gap_mm,
+                    maximum_nominal_radial_gap_mm=self.maximum_nominal_radial_gap_mm,
+                    keyed_torque_capacity_verified=False,
+                    process_capability_verified=False,
+                    scope='Nominal mating diameters only; no keyed torque, axial retention, supplier fit or measured process capability')
+
+
 @dataclass(frozen=True)
 class PinBoreFit:
     """One nominal bore with a positive reserve beyond declared part variation."""
@@ -126,6 +177,17 @@ class DirectedFaceGap:
         if isinstance(second_face_mm, bool) or not isinstance(second_face_mm, (int, float)) or not math.isfinite(second_face_mm):
             raise ValueError('Second face coordinate must be finite')
         return float(second_face_mm) - self.nominal_gap_mm
+
+    def require_second_face_at_or_beyond(self, first_face_mm, second_face_mm):
+        """Reject a proposed placement that spends the service/variation reserve."""
+        if (isinstance(first_face_mm, bool) or not isinstance(first_face_mm, (int, float))
+                or not math.isfinite(first_face_mm) or isinstance(second_face_mm, bool)
+                or not isinstance(second_face_mm, (int, float))
+                or not math.isfinite(second_face_mm)):
+            raise ValueError('Both directed face coordinates must be finite')
+        if float(second_face_mm) - float(first_face_mm) + 1e-12 < self.nominal_gap_mm:
+            raise ValueError('Proposed face placement consumes the authored service gap, variation or design reserve')
+        return float(second_face_mm)
 
     def declared_design_variations_mm(self):
         return dict(first_mm=self.first_declared_variation_mm,

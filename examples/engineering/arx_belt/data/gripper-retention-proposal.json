@@ -1,0 +1,70 @@
+{
+  "schema": "cybrgeo-arx-gripper-retention-proposal/1",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "source_brake_key": "small",
+  "source_brake_signature": {
+    "OD_mm": 39.5,
+    "ID_mm": 13.0,
+    "length_mm": 25.7,
+    "mass_kg": 0.19,
+    "holding_torque_Nm": 2.2,
+    "mount_pcd_mm": 32.5,
+    "mount_count": 3,
+    "coil_voltage_V": 24.0,
+    "coil_power_W": 8.2
+  },
+  "source_gripper_upper_shaft_diameter_mm": 3.0,
+  "authored_small_brake_hub_bore_diameter_mm": 8.02,
+  "hub_source": "generate_cad_p2.py small_brake_keyed_hub nominal inner radius 4.00+0.01 mm; configured supplier hub drawing remains unavailable",
+  "candidate_shaft_target_diameter_mm": 8.0,
+  "candidate_nominal_seat": {
+    "minimum_nominal_radial_gap_mm": 0.0,
+    "maximum_nominal_radial_gap_mm": 0.05
+  },
+  "candidate_revision": "outboard_pm_brake_diagnostic_v1",
+  "candidate_native_geometry_mm": {
+    "front_bearing_outer_diameter": 10.0,
+    "front_bearing_inner_diameter": 8.02,
+    "front_bearing_z": [4.0, 9.0],
+    "front_wall_bore_diameter": 8.2,
+    "front_wall_z": [14.0, 16.0],
+    "stator_bracket_z": [21.25, 22.75],
+    "stator_inner_face_z": 22.75,
+    "stator_bracket_outer_radius": 20.5,
+    "stator_bracket_inner_radius": 6.6,
+    "stator_standoff_centers_xy": [[-14.0, -7.5], [14.0, -7.5]],
+    "stator_standoff_radius": 2.5,
+    "hub_outer_radius": 6.4,
+    "armature_outer_radius": 17.5,
+    "armature_thickness": 1.0,
+    "shaft_end_above_armature": 2.0,
+    "key_z": [24.0, 46.0]
+  },
+  "source_puck_outer_radius_mm": 19.0,
+  "surveyed_outboard_inner_face_z_mm": 20.5,
+  "puck_to_stator_axial_design": {
+    "required_service_gap_mm": 1.5,
+    "first_declared_variation_mm": 0.25,
+    "second_declared_variation_mm": 0.25,
+    "design_reserve_mm": 0.25
+  },
+  "gap_design_scope": "New nominal design target only: 1.5 mm preserves the pinned source's stated housing/puck clearance target; 0.25 mm allocations and reserve are authored candidate budgets, not measured capability or an established vendor tolerance.",
+  "required_native_redesign": [
+    "pinion upper shaft/hub and keyed torque path",
+    "larger front bearing post and radial bearing",
+    "through-bore in front wall and outboard radial/thrust support",
+    "outboard stator bracket and reaction fasteners",
+    "24 V fail-released coil supply and wiring",
+    "finite rotating pinion brake coupling in the physical model"
+  ],
+  "missing_external_evidence": [
+    "configured Kendrion hub and mounting drawing",
+    "supplier static and dynamic torque conditions for installed hub",
+    "shaft, key, bearing, thrust and bracket capacity",
+    "installed brake engagement time and thermal duty",
+    "measured puck pad friction and compression under service conditions",
+    "measured fabrication variation and assembled gap",
+    "power-loss payload retention hardware test"
+  ],
+  "scope": "Construction input for an unbuilt diagnostic redesign. Existing P5 gripper has no retention brake; this document neither installs one nor supports manufacturing release."
+}

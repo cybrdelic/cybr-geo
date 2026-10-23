@@ -1,10 +1,12 @@
-"""Original ARX-6 belt design using GEO's shared native construction services.
+"""ARX-6 belt source geometry with a derived rotating gripper pinion.
 
 Adapted directly from cybrdelic/cybr-arx6-belt at commit
  aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2,
  ARX-6-P5-Engineering/integration/generate_cad_p2.py.
-Geometry, placement, material assumptions and mass reserves retain source values.
-The original source's nominal prototype / vendor-envelope qualification applies.
+Most geometry, material assumptions and mass reserves retain source values.
+The gripper pinion is relocated from the fixed tool body into its own rigid
+body, which changes the assembly and invalidates archived P5 dynamics claims.
+The original source's nominal prototype / vendor-envelope limits still apply.
 Importing this recipe does not generate files or alter the source checkout.
 This adaptation follows CYBR GEO's GPL-2.0-only licensing.
 """
@@ -13,6 +15,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from copy import deepcopy
 from pathlib import Path
 
 import cadquery as cq
@@ -21,16 +24,144 @@ import numpy as np
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification, transform_shape, shape_mass_properties
 from mechanism_lab.spring_anchor import verify_native_anchor
 from mechanism_lab.spring_anchor import tension_anchor_demand
-from mechanism_lab.qualification import QualificationIntentPlan
+from mechanism_lab.qualification import (QualificationError, QualificationIntentPlan,
+    QualificationPlan, QualifiedNativeConstruction)
 
 from .rack_contract import (PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM,
     arx_rack_report, rack_travel_from_source)
+from .gripper_retention import CANDIDATE_PARTS, candidate_recipe
 from .spring_anchor_contract import (EYE_PIN_DIAMETER_MM, EYE_PIN_LENGTH_MM,
     EYE_PIN_END_RELIEF_MM, CLEVIS_BORE_DIAMETER_MM,
     arx_spring_anchor_plan)
 
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
 SOURCE_GENERATOR_SHA256 = 'ae3b03b11f533c59a3507d18d93f9b0f7df7a804a8e52ced44b1d3f577d55e37'
+HERE = Path(__file__).resolve().parent
+BODY_IDS = ('fixed', 'turret', 'upper', 'fore', 'roll', 'bend', 'tool', 'pinion', 'jaw', 'jaw_opposed')
+PHYSICAL_BODY_MAPPING = dict(fixed='fixed_hardware', turret='turret', upper='upper',
+    fore='fore', roll='roll', bend='bend', tool='tool', pinion='gripper_pinion',
+    jaw='jaw_left', jaw_opposed='jaw_right')
+
+
+class _PlacedRows(NativeConstruction):
+    """Collect the one ARX geometry recipe in memory for direct strict placement.
+
+    The archival generator defines reusable unplaced templates and includes
+    vendor masses and engineering reserves. These may inform diagnostics but
+    cannot be exported as qualified CAD or substituted for measured mass.
+    Only the exact 380 *placed solids* feed QualifiedNativeConstruction.
+    """
+
+    def __init__(self, output, densities, body_ids, intent, provenance):
+        self.output = Path(output).resolve()
+        self.cad_directory = self.output / 'cad'
+        self.placed_directory = self.cad_directory / 'placed'
+        self.densities = dict(densities)
+        self.parts, self.part_metadata, self.assemblies, self.placed_shapes = {}, {}, {}, {}
+        self.body_records = {name: [] for name in body_ids}
+        self.meshes, self.placed_records, self.auxiliary_assemblies = [], [], {}
+        self.qualification_intent = intent
+        self.provenance = provenance
+        self._files = []
+        self.source_mass_overrides = []
+
+    def _export(self, *args, **kwargs):
+        # No template, placed STEP, mesh, or receipt is emitted by this stage.
+        pass
+
+    def place(self, body, label, shape, material='aluminum', mass=None, note='CAD density', *,
+              linear_tolerance_mm=.18, angular_tolerance_rad=.22):
+        if (body, label) in self.placed_shapes:
+            raise ValueError(f'Duplicate native placement: {body}/{label}')
+        self.qualification_intent.check_placement(body, label, material, shape, self.densities)
+        if mass is not None:
+            self.source_mass_overrides.append(dict(body=body, name=label,
+                source_mass_kg=mass, source_note=note))
+        self.placed_shapes[body, label] = shape
+        self.placed_records.append(dict(body=body, name=label, material=material))
+        # The source recipe's place_part labels depend on this count. These
+        # rows are only counters, never passed into a physical mass record.
+        self.body_records.setdefault(body, []).append(dict(name=label))
+
+    def save_auxiliary_assembly(self, name, assembly):
+        self.auxiliary_assemblies[name] = assembly
+
+    def rows(self):
+        placed = [f"{row['body']}__{row['name']}" for row in self.placed_records]
+        if (len(placed) != len(set(placed)) or
+                set(placed) != set(self.qualification_intent.document['parts'])):
+            raise QualificationError('ARX strict route did not construct the exact source intent inventory')
+        return [(row['body'], row['name'], self.placed_shapes[row['body'], row['name']],
+                 row['material']) for row in self.placed_records]
+
+
+def _source_home_body_poses_mm():
+    """Derive source home poses from the pinned MJCF, then add the zero pinion.
+
+    The revised rack adapter preserves both jaw world frames at home and puts
+    the new hinge at tool-local (0, 201.5, 0) mm. Release later independently
+    compares these frames with the *actual* fresh bound physical model.
+    """
+    import mujoco as mj
+    from . import model as arx_model
+    root = arx_model.DATA / 'P2-baseline.xml'
+    physical = mj.MjModel.from_xml_path(str(root))
+    data = mj.MjData(physical)
+    mj.mj_resetDataKeyframe(physical, data, physical.key('home').id)
+    mj.mj_forward(physical, data)
+    mapping = {name: physical_name for name, physical_name in PHYSICAL_BODY_MAPPING.items()
+               if name != 'pinion'}
+    poses = {}
+    for body, physical_name in mapping.items():
+        body_id = physical.body(physical_name).id
+        pose = np.eye(4)
+        pose[:3, :3] = data.xmat[body_id].reshape(3, 3)
+        pose[:3, 3] = data.xpos[body_id] * 1000.
+        poses[body] = pose
+    pinion = poses['tool'].copy()
+    pinion[:3, 3] += pinion[:3, :3] @ np.array([0., PINION_CENTER_Y_MM, 0.])
+    poses['pinion'] = pinion
+    if set(poses) != set(PHYSICAL_BODY_MAPPING):
+        raise ValueError('ARX source home frame inventory differs from native bodies')
+    return {body: poses[body].tolist() for body in sorted(poses)}
+
+
+def _finish_qualified(output, densities, intent, plan, rows, body_records,
+                      source_mass_overrides, provenance, extras):
+    """Export directly through qualified placement, with CAD-density inertia.
+
+    Original catalog mass substitutions, spring allocations and cable reserves
+    remain disclosed here, never silently inherited by the qualified model.
+    The release verifier must bind a fresh physical model to the resulting CAD
+    inertia and still requires independent supplier/fabrication evidence.
+    """
+    # Keep this lowerer fail-closed even when invoked independently of build.
+    # Today's ARX source intent still has two unresolved design requirements.
+    intent.require_resolved_by(plan)
+    plan_parts = set(plan.document['parts'])
+    names = [f'{body}__{name}' for body, name, _, _ in rows]
+    if len(names) != len(set(names)) or set(names) != plan_parts:
+        raise QualificationError('ARX strict placements differ from the resolved 380-part plan')
+    placed_keys = {(body, name) for body, name, _, _ in rows}
+    unplaced_mass = [dict(body=body, name=record['name'], source_note=record.get('provenance'))
+                     for body, records in body_records.items() for record in records
+                     if (body, record['name']) not in placed_keys]
+    native = QualifiedNativeConstruction(output, densities, body_ids=BODY_IDS,
+        provenance=provenance, qualification_plan=plan,
+        initial_body_poses_mm=_source_home_body_poses_mm(),
+        physical_body_mapping=PHYSICAL_BODY_MAPPING,
+        qualification_intent=intent)
+    for body, name, shape, material in rows:
+        intent.check_placement(body, name, material, shape, densities)
+        native.place(body, name, shape, material)
+    extras = dict(extras)
+    extras['arx-strict-mass-basis.json'] = dict(
+        schema='cybrgeo-arx-strict-mass-basis/1',
+        excluded_source_mass_overrides=source_mass_overrides,
+        excluded_unplaced_mass_allocations=unplaced_mass,
+        status='Strict CAD masses are density-integrated only; supplier masses, spring allocation and reserve require independent physical binding and measured evidence')
+    return native.finish('Exact placed CAD density mass only; source vendor and reserve masses are not qualified',
+                         extras)
 
 
 def validate_native_spec(spec):
@@ -56,7 +187,7 @@ def validate_native_spec(spec):
 
 def qualification_intent(spec):
     """Bind source force/drive limits before exporting placed diagnostic CAD."""
-    document = json.loads((Path(__file__).with_name('data') / 'qualification-intent.json').read_text(encoding='utf-8'))
+    document = json.loads((HERE / 'data' / 'qualification-intent.json').read_text(encoding='utf-8'))
     intent = QualificationIntentPlan(document)
     if set(document['interfaces']) != {
             f'{group}_spring_member_{member}_{end}'
@@ -78,7 +209,7 @@ def qualification_intent(spec):
     rating = spec['folded_transmission']['rating_screen']
     expected = [rating['large']['operating_screen_limit_Nm']]*3 + [
         rating['small']['operating_screen_limit_Nm']]*3
-    baseline = json.loads((Path(__file__).with_name('data') / 'P2-baseline-parameters.json').read_text(encoding='utf-8'))
+    baseline = json.loads((HERE / 'data' / 'P2-baseline-parameters.json').read_text(encoding='utf-8'))
     source_limits = {f'motor{index}': limit for index, limit in enumerate(expected, 1)}
     source_limits['rack_motor'] = baseline['gripper']['output_torque_limit_Nm']
     if set(document['loads']) != set(source_limits):
@@ -87,7 +218,51 @@ def qualification_intent(spec):
         if not math.isclose(document['loads'][name]['source_demand_limit_Nm'], limit,
                             rel_tol=1e-12, abs_tol=1e-12):
             raise ValueError(f'ARX intent {name} source limit changed without drive redesign')
+    blockers = {(item['category'], item['kind'], item['subject'])
+                for item in document['unresolved_requirements']}
+    required = {
+        ('design', 'installed_interface_graph', 'assembly'),
+        ('design', 'power_loss_payload_retention',
+         'pinion__gripper_pinion_m0p3_z20_0'),
+    }
+    if not required <= blockers:
+        raise QualificationError('ARX source intent must retain its unresolved '
+            'installed interface graph and power-loss payload retention blockers')
     return intent
+
+
+def _candidate_intent(source_intent):
+    """Extend the source inventory for one opt-in, unresolved native revision."""
+    document = deepcopy(source_intent.document)
+    for name in ('tool__gripper_bridge_10', 'tool__pinion_front_bushing_12',
+                 'pinion__gripper_pinion_m0p3_z20_0'):
+        if name not in document['parts']:
+            raise ValueError(f'ARX candidate cannot locate source construction part {name}')
+        # Altered native geometry has no reviewed volume cap. The installed
+        # candidate still receives a CAD-integrated mass, never source P5 mass.
+        document['parts'][name]['maximum_volume_mm3'] = None
+    for name, material in CANDIDATE_PARTS.items():
+        if name in document['parts']:
+            raise ValueError(f'ARX candidate part identity collides: {name}')
+        document['parts'][name] = dict(material=material, process=None,
+            nominal_minimum_wall_mm=None, required_dimensional_tolerance_mm=None,
+            maximum_volume_mm3=None)
+    document['interfaces']['gripper_brake_shaft_to_hub'] = dict(
+        parts=['pinion__gripper_pinion_m0p3_z20_0',
+               'pinion__gripper_brake_hub_surrogate'], role='retained_contact',
+        required_service_gap_mm=None, first_variation_mm=None,
+        second_variation_mm=None, force_demand_N=None)
+    document['interfaces']['gripper_brake_stator_to_bridge'] = dict(
+        parts=['tool__gripper_brake_stator_envelope', 'tool__gripper_bridge_10'],
+        role='retained_contact', required_service_gap_mm=None,
+        first_variation_mm=None, second_variation_mm=None, force_demand_N=None)
+    document['unresolved_requirements'].append(dict(category='design',
+        kind='loaded_power_loss_retention', subject='gripper_brake_candidate',
+        reason='Vendor envelope and authored attachment have no loaded-puck retention or full posed-clearance evidence'))
+    document['unresolved_requirements'].append(dict(category='external',
+        kind='configured_brake_interface', subject='gripper_brake_candidate',
+        reason='Configured hub/mount drawing, installed brake delay and torque, bearing/key/bracket capacity and measured fabrication fits are absent'))
+    return QualificationIntentPlan(document)
 
 
 def nominal_interface_requirements(parts, specification, transmissions):
@@ -161,16 +336,32 @@ def build(spec, output):
     # whether the nominal pinion remains within both racks throughout travel.
     rack_travel = rack_travel_from_source(SPEC)
     rack_frame = rack_travel.opposed_pitch_line_y(PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM)
+    candidate = candidate_recipe(SPEC)
     intent = qualification_intent(SPEC)
+    if candidate is not None:
+        intent = _candidate_intent(intent)
+    plan_path = HERE / 'data' / 'qualification-plan.json'
+    plan = QualificationPlan(json.loads(plan_path.read_text(encoding='utf-8'))) if plan_path.is_file() else None
+    if candidate is not None and plan is not None:
+        raise QualificationError('The opt-in brake candidate is diagnostic and has no resolved qualified plan')
+    if plan is not None:
+        # Incomplete or weakened plans fail before any template or placed CAD
+        # can be exported. The source intent is the exact 380-part inventory.
+        intent.require_resolved_by(plan)
     RHO = {'aluminum':2700., 'steel':7850., 'polymer':1150., 'rubber':1100.}
-    construction = NativeConstruction(output, RHO,
-        body_ids=['fixed','turret','upper','fore','roll','bend','tool','jaw'],
-        qualification_intent=intent,
-        provenance=dict(repository='https://github.com/cybrdelic/cybr-arx6-belt',
+    provenance = dict(repository='https://github.com/cybrdelic/cybr-arx6-belt',
             commit=SOURCE_COMMIT, generator_sha256=SOURCE_GENERATOR_SHA256,
             **specification_identity,
             adapted_recipe_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-            adaptation='Original geometry recipe; shared native placement and mass accounting'))
+            adaptation='P5 geometry recipe with the gripper pinion moved into its own rotating CAD body; shared native placement and mass accounting')
+    if plan is None:
+        construction = NativeConstruction(output, RHO, body_ids=BODY_IDS,
+            qualification_intent=intent, provenance=provenance)
+    else:
+        # The same shape recipe is collected once without any file export or
+        # diagnostic mass assumptions. QualifiedNativeConstruction receives
+        # only its exact directly placed solids, then integrates CAD inertia.
+        construction = _PlacedRows(output, RHO, BODY_IDS, intent, provenance)
     PARTS, META, BODIES = construction.parts, construction.part_metadata, construction.body_records
     MESHES = construction.meshes
     addpart, place, ppart = construction.addpart, construction.place, construction.place_part
@@ -384,8 +575,18 @@ def build(spec, output):
     bridge=drill(bridge,[(x,188.65,z) for x in [-f,f] for z in [-f,f]],(0,1,0),5.5,L=2.1)
     # Two shaft-support posts: front bearing supports integral pinion stub;
     # rear post clamps the Pololu rectangular gearmotor at its gearbox shoulder.
-    frontpost=cq.Workplane('XY').box(8,21.4,5).translate((0,196.3,6.5))
-    frontpost=frontpost.cut(cyl(3.5,3.5,9.5).translate((0,201.5,0)))
+    if candidate is None:
+        frontpost=cq.Workplane('XY').box(8,21.4,5).translate((0,196.3,6.5))
+        frontpost=frontpost.cut(cyl(3.5,3.5,9.5).translate((0,201.5,0)))
+    else:
+        g=candidate['geometry']
+        # The proposed 8x10x5 mm sleeve has 0.99 mm radial material. The
+        # housing front face Y=207.5 leaves a nominal 2.5 mm to the pinned
+        # puck envelope at Y=210.0; process capability is not established.
+        frontpost=cq.Workplane('XY').box(14,22.4,5).translate((0,196.3,6.5))
+        frontpost=frontpost.cut(cyl(g['front_bearing_outer_diameter']/2,
+            g['front_bearing_z'][0]-.5,g['front_bearing_z'][1]+.5)
+            .translate((0,PINION_CENTER_Y_MM,0)))
     frontpost=drill(frontpost,[(0,193,10)],(1,0,0),4.4)
     bridge=bridge.union(frontpost)
     rearpost=cq.Workplane('XY').box(34,16.9,8).translate((0,200.05,-12))
@@ -395,6 +596,23 @@ def build(spec, output):
     bridge=bridge.union(rearpost)
     bridge=bridge.cut(cq.Workplane('XY').box(12.15,10.15,16).translate((0,201.5,-12)))
     bridge=drill(bridge,[(x,191,-15) for x in [-20,20]],(0,0,1),2.5,L=6)
+    if candidate is not None:
+        g=candidate['geometry']
+        bridge=bridge.cut(cyl(g['front_wall_bore_diameter']/2,
+            g['front_wall_z'][0]-.1,g['front_wall_z'][1]+.1)
+            .translate((0,PINION_CENTER_Y_MM,0)))
+        for x,y in g['stator_standoff_centers_xy']:
+            bridge=bridge.union(cyl(g['stator_standoff_radius'],16,
+                g['stator_bracket_z'][0]).translate((x,y+PINION_CENTER_Y_MM,0)))
+        plate=ring(g['stator_bracket_outer_radius'],
+            g['stator_bracket_inner_radius'],*g['stator_bracket_z'])
+        b=SPEC['brakes']['small']
+        plate=holes(plate,b['mount_pcd_mm'],b['mount_count'],
+            b['mount_clearance_mm'],g['stator_bracket_z'][0]-.1,
+            g['stator_bracket_z'][1]+.1)
+        plate=holes(plate,b['mount_pcd_mm'],b['mount_count'],4.0,
+            g['stator_bracket_z'][0]-.1,g['stator_bracket_z'][0]+1.0)
+        bridge=bridge.union(plate.translate((0,PINION_CENTER_Y_MM,0)))
     addpart('gripper_bridge',bridge)
     finger=cq.Workplane('XY').box(8,6.4,27.6).translate((5.8,193,0)).union(cq.Workplane('XY').box(8,35.8,20).translate((5.8,214.1,0)))
     finger=drill(finger,[(5.8,193,z) for z in [-10,10]],(1,0,0),6)
@@ -406,7 +624,15 @@ def build(spec, output):
     addpart('left_jaw_carriage',left.mirror('YZ'))
     addpart('finger_pad',cq.Workplane('XY').box(1.8,24,18.4).translate((.9,219.2,0)),'rubber','Bonded replaceable silicone insert; bond strength and friction require coupon test')
     addpart('jaw_guide_bushing',ring(3,2.01,-4,4),'polymer')
-    addpart('pinion_front_bushing',ring(3.5,1.51,4,9),'steel','Custom oil-impregnated bronze sleeve; CAD density conservatively approximated by steel')
+    if candidate is None:
+        front_bushing=ring(3.5,1.51,4,9)
+    else:
+        g=candidate['geometry']
+        front_bushing=ring(g['front_bearing_outer_diameter']/2,
+            g['front_bearing_inner_diameter']/2,*g['front_bearing_z'])
+    addpart('pinion_front_bushing',front_bushing,'steel',
+        'Custom oil-impregnated bronze sleeve; CAD density conservatively approximated by steel; redesigned 8x10 candidate requires bearing and thrust qualification' if candidate else
+        'Custom oil-impregnated bronze sleeve; CAD density conservatively approximated by steel')
 
     def spur_gear(m=.3,z=20,b=6,pressure=20):
         """Involute flank nominal with radial root closure; root fillet not released."""
@@ -440,7 +666,19 @@ def build(spec, output):
         if len(root_edges)!=2*z:raise RuntimeError('Unexpected pinion root topology')
         s=s.newObject(root_edges).fillet(.06)
         return s
-    pin=spur_gear(m=rack_travel.module_mm,z=rack_travel.pinion_teeth).translate((0,0,-3)).union(cyl(3.5,-7,-3)).union(cyl(1.5,3,10))
+    pin=spur_gear(m=rack_travel.module_mm,z=rack_travel.pinion_teeth).translate((0,0,-3)).union(cyl(3.5,-7,-3))
+    if candidate is None:
+        pin=pin.union(cyl(1.5,3,10))
+    else:
+        g=candidate['geometry']
+        # A single rotating CAD member carries gear, upper Ø8 journal and
+        # stop collar. The lower motor D socket remains the source feature.
+        pin=pin.union(cyl(candidate['proposal']['proposed_upper_shaft_diameter_mm']/2,
+                          3,candidate['shaft_end_z_mm']))
+        pin=pin.union(ring(6.2,3.9,9.5,10.5))
+        key_z=g['key_z']
+        pin=pin.cut(cq.Workplane('XY').box(2.2,2.1,key_z[1]-key_z[0])
+            .translate((3.9,0,sum(key_z)/2)))
     # Blind shaft socket: manufacturer3mmDprofile must be gauged before broaching.
     # Physical blind D socket, 3 mm nominal shaft and 2.50 mm across-flat.
     # +0.025 radial clearance; factory shaft gauge remains a release gate.
@@ -836,7 +1074,11 @@ def build(spec, output):
     ppart('bend','wrist_bend_cradle');ppart('bend','wrist_idle_trunnion')
     ppart('tool','gripper_bridge')
     place('tool','gripper_motor',cq.Workplane('XY').box(12,10,32).translate((0,201.5,-24)),mass=.012,note='Pololu envelope; mass engineering allowance')
-    ppart('tool','gripper_pinion_m0p3_z20',(0,PINION_CENTER_Y_MM,0))
+    # The pinion is a separate rotating member. Its own body frame is located
+    # on the source 3 mm pitch-circle axis by the physical model; leaving it
+    # welded to the tool would make an electrical/power-loss brake impossible
+    # to couple to the rack without an unphysical hidden reaction path.
+    ppart('pinion','gripper_pinion_m0p3_z20')
     ppart('tool','pinion_front_bushing',(0,PINION_CENTER_Y_MM,0))
     for z in [-10,10]:place('tool','guide_rod_'+str(z),trans_shape(cyl(2,-53,53),(0,193,z),(1,0,0)),'steel')
     # Canonical right jaw frame: inner contact planeX=0, pad centerY=0.
@@ -952,9 +1194,63 @@ def build(spec, output):
             raise ValueError(f'ARX intent {name} differs from its placed spring interface')
 
 
-    return construction.finish(
-        'P5 CAD-density compact parts, preserved catalog motor/brake mass, folded belt transmission, explicit cable/fastener reserves; supplier interfaces not released',
-        {
+    if candidate is not None:
+        g=candidate['geometry']
+        b=SPEC['brakes']['small']
+        bottom=g['stator_inner_face_z']
+        top=candidate['stator_outer_z_mm']
+        arm_top=candidate['armature_outer_z_mm']
+        # The source envelope is a catalog mass allocation, not an imported
+        # configured brake solid. The hub, armature, key, and screws are
+        # diagnostic native parts with their own CAD-density mass.
+        stator=ring(b['OD_mm']/2,b['ID_mm']/2,bottom,top)
+        stator=holes(stator,b['mount_pcd_mm'],b['mount_count'],
+            b['mount_clearance_mm'],bottom-.1,bottom+3.1)
+        place('tool','gripper_brake_stator_envelope',
+              trans_shape(stator,(0,PINION_CENTER_Y_MM,0)),
+              'steel',b['mass_kg'],
+              'Entire source catalog brake mass allocated to fixed stator envelope; moving armature mass is separately conservative until supplier split is known')
+        hub=ring(g['hub_outer_radius'],
+            candidate['proposal']['authored_hub_bore_diameter_mm']/2,
+            bottom,candidate['shaft_end_z_mm'])
+        hub=hub.union(ring(8.,candidate['proposal']['authored_hub_bore_diameter_mm']/2,
+                           arm_top,candidate['shaft_end_z_mm']))
+        key_z=g['key_z']
+        hub=hub.cut(cq.Workplane('XY').box(2.2,2.1,key_z[1]-key_z[0])
+            .translate((4.1,0,sum(key_z)/2)))
+        hub=holes(hub,13.5,4,1.8,arm_top-.1,candidate['shaft_end_z_mm']+.1,
+                  math.pi/4)
+        place('pinion','gripper_brake_hub_surrogate',hub,'steel',
+              note='P5-authored Ø8.02 keyed hub candidate; configured vendor mating and fastener drawings unavailable')
+        rotor=ring(g['armature_outer_radius'],b['ID_mm']/2,top,arm_top)
+        rotor=holes(rotor,13.5,4,1.8,top-.1,arm_top+.1,math.pi/4)
+        rotor=holes(rotor,13.5,4,2.6,top-.1,top+.5,math.pi/4)
+        place('pinion','gripper_brake_armature_surrogate',rotor,'steel',
+              note='Rotating armature envelope with authored hub fastener pattern; not the configured vendor rotor')
+        key=cq.Workplane('XY').box(2,2,key_z[1]-key_z[0]).translate((3.8,0,sum(key_z)/2))
+        place('pinion','gripper_brake_key_surrogate',key,'steel',
+              note='Candidate keyed torque path; key shear, groove root and fit capacity untested')
+        for index in range(4):
+            angle=math.pi/4 + index*math.pi/2
+            x,y=6.75*math.cos(angle),6.75*math.sin(angle)
+            screw=cyl(.8,top+.5,candidate['shaft_end_z_mm']).union(cyl(1.2,top,top+.5))
+            place('pinion',f'gripper_brake_rotor_screw_{index}',
+                  screw.translate((x,y,0)),'steel',
+                  note='Nominal rotor-to-hub fastener envelope; thread engagement and shear capacity unqualified')
+        for index in range(b['mount_count']):
+            angle=2*math.pi*index/b['mount_count']
+            x,y=b['mount_pcd_mm']/2*math.cos(angle),b['mount_pcd_mm']/2*math.sin(angle)
+            screw=cyl(1.,g['stator_bracket_z'][0]+1.,bottom+3.).union(
+                cyl(2.,g['stator_bracket_z'][0],g['stator_bracket_z'][0]+1.))
+            place('tool',f'gripper_brake_mount_screw_{index}',
+                  screw.translate((x,y+PINION_CENTER_Y_MM,0)),'steel',
+                  note='Nominal stator-to-integral-bridge reaction fastener; supplier thread location and bracket capacity unqualified')
+        for face,z0,z1 in (('lower',3.5,3.8),('upper',9.,9.2)):
+            washer=ring(5.5,4.05,z0,z1)
+            place('tool',f'gripper_brake_{face}_thrust_envelope',
+                  washer.translate((0,PINION_CENTER_Y_MM,0)),'steel',
+                  note='Plain thrust surface envelope; load, lubricant, axial float and wear remain unqualified')
+    extra_records = {
             'packaging_envelopes.json': primitive_records,
             'folded-transmissions.json': TRANSMISSIONS,
             'gripper-rack-travel.json': arx_rack_report(rack_travel),
@@ -967,4 +1263,39 @@ def build(spec, output):
                 'joint_extra_armature_kg_m2': [r['extra_joint_armature_kg_m2'] for r in TRANSMISSIONS],
                 'replace_names': [],
                 'scope': 'Motor/reducer capsules from actual folded CAD. Structural proxy additions follow in collision review. No flexible belt contact; torque screened independently.'},
-        }, native_requirements=nominal_interface_requirements(PARTS, SPEC, TRANSMISSIONS))
+        }
+    if candidate is not None:
+        expected = set(CANDIDATE_PARTS)
+        placed = {f"{row['body']}__{row['name']}" for row in construction.placed_records}
+        if not expected <= placed:
+            raise ValueError('ARX brake candidate lacks a native torque/reaction part')
+        candidate_masses = {f'{body}__{row["name"]}': row['mass_kg']
+            for body, rows in BODIES.items() for row in rows
+            if f'{body}__{row["name"]}' in expected}
+        if set(candidate_masses) != expected or not math.isclose(
+                candidate_masses['tool__gripper_brake_stator_envelope'],
+                SPEC['brakes']['small']['mass_kg'], rel_tol=1e-12):
+            raise ValueError('ARX candidate brake mass is not bound to its placed native solids')
+        extra_records['gripper-retention-candidate.json'] = dict(
+            schema='cybrgeo-arx-native-gripper-brake-candidate/1',
+            revision=candidate['revision'], source_commit=SOURCE_COMMIT,
+            canonical_specification_sha256=specification_identity['canonical_specification_sha256'],
+            construction_input=candidate['proposal'],
+            native_placement=candidate['placement'],
+            authored_geometry_mm=candidate['geometry'],
+            placed_candidate_parts=sorted(expected),
+            candidate_part_mass_kg=candidate_masses,
+            vendor_mass_allocation_kg=SPEC['brakes']['small']['mass_kg'],
+            vendor_mass_allocation_scope='Full source catalog mass assigned to fixed stator envelope; rotor, hub, key and fastener surrogates add CAD density mass until configured vendor mass split is supplied',
+            full_posed_clearance_verified=False,
+            motor_off_loaded_puck_retained=False,
+            configured_hub_verified=False,
+            manufacturing_qualified=False,
+            scope='Opt-in native diagnostic candidate with finite pinion brake; no supplier interface, installed holding torque, posed collision or hardware retention evidence')
+    if plan is not None:
+        return _finish_qualified(output, RHO, intent, plan, construction.rows(),
+            construction.body_records, construction.source_mass_overrides,
+            provenance, extra_records)
+    return construction.finish(
+        'P5 CAD-density compact parts, preserved catalog motor/brake mass, folded belt transmission, explicit cable/fastener reserves; supplier interfaces not released',
+        extra_records, native_requirements=nominal_interface_requirements(PARTS, SPEC, TRANSMISSIONS))

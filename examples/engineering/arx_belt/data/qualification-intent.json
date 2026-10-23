@@ -91,7 +91,7 @@
   },
   "loads": {
     "rack_motor": {
-      "part": "tool__gripper_pinion_m0p3_z20_12",
+      "part": "pinion__gripper_pinion_m0p3_z20_0",
       "source_demand_limit_Nm": 0.05
     },
     "motor1": {
@@ -1842,28 +1842,28 @@
       "process": null,
       "required_dimensional_tolerance_mm": null
     },
-    "tool__gripper_cable_clamp_base_17": {
+    "tool__gripper_cable_clamp_base_16": {
       "material": "aluminum",
       "maximum_volume_mm3": null,
       "nominal_minimum_wall_mm": null,
       "process": null,
       "required_dimensional_tolerance_mm": null
     },
-    "tool__gripper_cable_clamp_cap_18": {
+    "tool__gripper_cable_clamp_cap_17": {
       "material": "aluminum",
       "maximum_volume_mm3": null,
       "nominal_minimum_wall_mm": null,
       "process": null,
       "required_dimensional_tolerance_mm": null
     },
-    "tool__gripper_cable_clamp_liner_19": {
+    "tool__gripper_cable_clamp_liner_18": {
       "material": "rubber",
       "maximum_volume_mm3": null,
       "nominal_minimum_wall_mm": null,
       "process": null,
       "required_dimensional_tolerance_mm": null
     },
-    "tool__gripper_cable_clamp_mount_16": {
+    "tool__gripper_cable_clamp_mount_15": {
       "material": "aluminum",
       "maximum_volume_mm3": null,
       "nominal_minimum_wall_mm": null,
@@ -1877,7 +1877,7 @@
       "process": null,
       "required_dimensional_tolerance_mm": null
     },
-    "tool__gripper_pinion_m0p3_z20_12": {
+    "pinion__gripper_pinion_m0p3_z20_0": {
       "material": "steel",
       "maximum_volume_mm3": null,
       "nominal_minimum_wall_mm": null,
@@ -1898,7 +1898,7 @@
       "process": null,
       "required_dimensional_tolerance_mm": null
     },
-    "tool__pinion_front_bushing_13": {
+    "tool__pinion_front_bushing_12": {
       "material": "steel",
       "maximum_volume_mm3": null,
       "nominal_minimum_wall_mm": null,
@@ -2793,7 +2793,7 @@
       "category": "design",
       "kind": "power_loss_payload_retention",
       "reason": "The source power-loss case drops the free puck. No passive pawl, brake or qualified fail-closed jaw return mechanism is present in both native CAD and MuJoCo; the motor-off grip must not be called retained.",
-      "subject": "tool__gripper_pinion_m0p3_z20_12"
+      "subject": "pinion__gripper_pinion_m0p3_z20_0"
     },
     {
       "category": "external",

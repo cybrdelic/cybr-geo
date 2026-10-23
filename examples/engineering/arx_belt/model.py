@@ -10,17 +10,93 @@ from copy import deepcopy
 import json
 import math
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 from mechanism_lab.physical_model import PhysicalModel, digest
 from mechanism_lab.contact_geometry import tabletop_tiles
+from mechanism_lab.contact_geometry import ProxyBuilder
 
 from .contacts import build as build_contacts
 from .rack_contract import arx_rack_report, rack_travel_from_source
 from .spring_anchor_contract import (arx_member_offsets, verify_arx_anchor_receipt,
                                      verify_arx_spring_joint_frames)
+from .rack_contract import PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM
+from .gripper_retention import CANDIDATE_PARTS, CANDIDATE_REVISION, candidate_recipe
 
 DATA = Path(__file__).with_name('data')
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
+
+
+def attach_rotating_pinion(physical, travel):
+    """Derive a physical pinion axis and both rack meshes from the P5 pitch.
+
+    The archived P5 model is preserved as an input. This coupled modification
+    is used only with a newly constructed pinion body and its own CAD inertia.
+    It replaces the ideal tendon/one-jaw equality with a hinged pinion and two
+    source-radius mesh constraints. Tooth flank contact remains an unresolved
+    qualification requirement, rather than being inferred from an equality.
+    """
+    root = physical.root
+    tool = root.find(".//body[@name='tool']")
+    equality = root.find('equality')
+    tendon = root.find(".//tendon/fixed[@name='rack_pinion_angle']")
+    motor = root.find(".//actuator/motor[@name='gripper_motor']")
+    home = root.find(".//keyframe/key[@name='home']")
+    if (tool is None or equality is None or tendon is None or motor is None
+            or home is None or root.find(".//joint[@name='gripper_pinion']") is not None):
+        raise ValueError('Rotating pinion requires the exact pinned P5 rack topology')
+    coordinates = [float(item) for item in home.get('qpos', '').split()]
+    if len(coordinates) != 15 or not all(math.isfinite(item) for item in coordinates):
+        raise ValueError('Pinned P5 home keyframe must have six arm, two jaw and seven free-body coordinates')
+    home_gap = coordinates[6]
+    if (not math.isclose(coordinates[7], home_gap, abs_tol=1e-12)
+            or not travel.slide_min_mm/1000. < home_gap < travel.slide_max_mm/1000.):
+        raise ValueError('Both source jaws must have the same interior home opening')
+    for name, sign in (('jaw_left', 1), ('jaw_right', -1)):
+        body = tool.find(f"body[@name='{name}']")
+        joint = None if body is None else body.find(f"joint[@name='{name}']")
+        if body is None or joint is None or joint.get('ref') is not None:
+            raise ValueError('Rotating pinion requires unshifted source jaw frames')
+        origin = [float(item) for item in body.get('pos', '').split()]
+        if (len(origin) != 3 or any(not math.isfinite(item) for item in origin)
+                or any(not math.isclose(a, b, abs_tol=1e-12)
+                       for a, b in zip(origin, (0., JAW_ORIGIN_Y_MM/1000., 0.)))):
+            raise ValueError('Source jaw frame differs from native rack placement')
+        # ``ref`` changes qpos0 but not the body's authored initial placement.
+        # Shift the body by its source home opening to preserve world geometry
+        # at q=.038 m while making the new pinion angle zero at home.
+        body.set('pos', f'{sign*home_gap:.15g} {origin[1]:.15g} 0')
+        joint.set('ref', f'{home_gap:.15g}')
+    shaft = ET.SubElement(tool, 'body', name='gripper_pinion',
+                          pos=f'0 {PINION_CENTER_Y_MM/1000.:.15g} 0')
+    pitch = travel.pitch_radius_m
+    ET.SubElement(shaft, 'joint', name='gripper_pinion', type='hinge', axis='0 0 1',
+                  range=f'{(travel.slide_min_mm/1000.-home_gap)/pitch:.15g} '
+                        f'{(travel.slide_max_mm/1000.-home_gap)/pitch:.15g}',
+                  limited='true', damping='0', frictionloss='0', armature='0')
+    original = equality.find("joint[@name='opposed_rack_synchronization']")
+    if original is None or motor.get('tendon') != 'rack_pinion_angle':
+        raise ValueError('Source jaw equality or motor transmission changed')
+    equality.remove(original)
+    # Solver equality softness must stay within the explicit 0.1 mm dynamic
+    # coupling budget below. The stronger numerical parameters are not gear
+    # flank material properties, manufacturing backlash or tested capacity.
+    for name in ('jaw_left', 'jaw_right'):
+        ET.SubElement(equality, 'joint', name=f'{name}_pinion_mesh',
+                      joint1=name, joint2='gripper_pinion',
+                      polycoef=f'0 {pitch:.15g} 0 0 0',
+                      solref='.0005 1', solimp='.9999 .99999 .000001')
+    root.find('tendon').remove(tendon)
+    del motor.attrib['tendon']
+    motor.set('joint', 'gripper_pinion')
+    coordinates.insert(8, 0.)  # hinge follows the two source jaw slides
+    home.set('qpos', ' '.join(f'{item:.15g}' for item in coordinates))
+    physical.provenance['rotating_pinion'] = dict(
+        kind='derived CAD-bound hinge', source_commit=SOURCE_COMMIT,
+        pitch_radius_m=pitch, home_jaw_opening_m=home_gap,
+        cad_body='pinion', physical_body='gripper_pinion',
+        scope='Ideal pitch coupling; rolling tooth contact, backlash, brake and shaft fit are unresolved')
+    return dict(home_jaw_opening_m=home_gap, pitch_radius_m=pitch)
 
 
 def load(name, directory=DATA):
@@ -34,14 +110,56 @@ def compile_model(spec=None, *, native_directory=None):
     records. The shipped reference records allow an explicitly cached run.
     """
     spec = deepcopy(spec or load('spec.json'))
+    candidate = candidate_recipe(spec)
+    if candidate is not None and native_directory is None:
+        raise ValueError('ARX brake candidate requires fresh native CAD and mass records')
     records = Path(native_directory) if native_directory else DATA
     props = load('mass_properties.json', records)
     transmission = load('folded-transmissions.json', records)
     proxy_config = build_contacts(spec, transmission)
+    if candidate is not None:
+        receipt = load('gripper-retention-candidate.json', records)
+        expected = set(CANDIDATE_PARTS)
+        if (receipt.get('schema') != 'cybrgeo-arx-native-gripper-brake-candidate/1'
+                or receipt.get('revision') != CANDIDATE_REVISION
+                or receipt.get('canonical_specification_sha256') != digest(spec)
+                or set(receipt.get('placed_candidate_parts', [])) != expected
+                or receipt.get('native_placement') != candidate['placement']
+                or receipt.get('authored_geometry_mm') != candidate['geometry']):
+            raise ValueError('ARX brake candidate physical model lacks matching native construction')
+        masses = receipt.get('candidate_part_mass_kg', {})
+        components = {f'{body}__{row["name"]}': row['mass_kg']
+            for body in ('tool', 'pinion') for row in props[body]['components']
+            if f'{body}__{row["name"]}' in expected}
+        if (set(components) != expected or set(masses) != expected
+                or any(not math.isclose(components[name], masses[name], rel_tol=1e-12)
+                       for name in expected)
+                or not math.isclose(masses['tool__gripper_brake_stator_envelope'],
+                                    spec['brakes']['small']['mass_kg'], rel_tol=1e-12)):
+            raise ValueError('ARX brake candidate mass is not bound into both native rigid bodies')
+        builder = ProxyBuilder(prefix='ARX_brake_candidate_')
+        g = candidate['geometry']
+        b = spec['brakes']['small']
+        builder.annulus('stator','tool',b['ID_mm']/2,b['OD_mm']/2,
+            g['stator_inner_face_z'],candidate['stator_outer_z_mm'],
+            center_xy_mm=(0,PINION_CENTER_Y_MM),
+            native_part='gripper_brake_stator_envelope')
+        builder.annulus('integral_mount','tool',g['stator_bracket_inner_radius'],
+            g['stator_bracket_outer_radius'],*g['stator_bracket_z'],
+            center_xy_mm=(0,PINION_CENTER_Y_MM),native_part='gripper_bridge')
+        for index,(x,y) in enumerate(g['stator_standoff_centers_xy']):
+            builder.cylinder(f'standoff_{index}','tool',
+                [x,y+PINION_CENTER_Y_MM,16],
+                [x,y+PINION_CENTER_Y_MM,g['stator_bracket_z'][0]],
+                g['stator_standoff_radius'],native_part='gripper_bridge')
+        proxy_config['records'].extend(builder.records)
+        proxy_config['scope'] += ' Opt-in outboard brake stator, bracket and standoffs are conservative native-dimension proxies; vendor internals and full posed clearance remain unresolved.'
     physical = PhysicalModel.from_xml((DATA / 'P2-baseline.xml').read_text(), provenance=dict(
         repository='https://github.com/cybrdelic/cybr-arx6-belt', commit=SOURCE_COMMIT,
         design_spec_sha256=digest(spec), native_records='freshly generated' if native_directory else 'shipped source records',
         hardware_qualification='not qualified'))
+    # Validate the unchanged P5 source slides/tendon first; a fresh native
+    # build then replaces that ideal tendon with two source-pitch jaw meshes.
     travel = rack_travel_from_source(spec, model_root=physical.root)
     if native_directory:
         recorded = load('gripper-rack-travel.json', records)
@@ -54,8 +172,21 @@ def compile_model(spec=None, *, native_directory=None):
             load('cad_parts.json', records))
         verify_arx_spring_joint_frames(physical.root, anchor_plan)
         physical.provenance['spring_anchor_load_path_plan_sha256'] = anchor_plan['plan_sha256']
-    physical.root.set('model', 'ARX6_P5_compact_belt_drives')
+    # Archived/cached P5 records retain the original tendon model. A fresh
+    # native build has the separately integrated pinion mass and uses the
+    # revised physical transmission instead of silently reusing P5 inertias.
+    if native_directory:
+        if 'pinion' not in props:
+            raise ValueError('A rotating gripper pinion requires its own fresh native CAD mass')
+        pinion = attach_rotating_pinion(physical, travel)
+        physical.root.set('model', 'ARX6_P5_derived_outboard_brake_candidate' if candidate else
+                          'ARX6_P5_derived_rotating_pinion')
+    else:
+        pinion = None
+        physical.root.set('model', 'ARX6_P5_compact_belt_drives')
     physical.bind_inertias(props, {name: name for name in ('turret', 'upper', 'fore', 'roll', 'bend', 'tool')})
+    if pinion is not None:
+        physical.bind_inertias(props, {'gripper_pinion': 'pinion'})
     for name in ('jaw_left', 'jaw_right'):
         if name in props:
             physical.bind_inertias(props, {name: name})
@@ -94,7 +225,16 @@ def compile_model(spec=None, *, native_directory=None):
     # task metadata cannot advertise stale CAD values beside the new model.
     p['bodies'] = deepcopy(physical.mass_records)
     p['integration'] = spec
-    p['model_revision'] = 'P5'
+    p['model_revision'] = (CANDIDATE_REVISION if candidate is not None else
+        'P5-derived-rotating-pinion' if pinion is not None else 'P5')
+    if candidate is not None:
+        physical.provenance['gripper_retention_candidate'] = dict(
+            revision=CANDIDATE_REVISION,
+            native_receipt_sha256=digest(receipt),
+            full_posed_clearance_verified=False,
+            loaded_power_loss_retention_verified=False,
+            configured_vendor_brake_verified=False,
+            scope='CAD-bound diagnostic brake candidate with finite pinion friction; no physical qualification')
     p['controller']['ki_Nm_rad_s'][1:3] = [80., 60.]
     efficiency = spec['folded_transmission'].get('efficiency_screening', .97)
     if isinstance(efficiency, (float, int)):
@@ -127,6 +267,16 @@ def control_source(p):
     gripper = deepcopy(p['gripper'])
     rack = dict(joints=['jaw_left', 'jaw_right'], actuator='gripper_motor', motor=gripper,
                 current_budget=spec['gripper_driver'])
+    if p['model_revision'] in ('P5-derived-rotating-pinion', CANDIDATE_REVISION):
+        rack.update(pinion_joint='gripper_pinion', pinion_body='gripper_pinion',
+                    maximum_coupling_error_m=.0001,
+                    coupling_budget_scope='Authored 0.1 mm solver/kinematic discrepancy ceiling; '
+                        'not measured tooth backlash or production fit')
+    if p['model_revision'] == CANDIDATE_REVISION:
+        # A finite, delayed PM holding torque reacts through the physical
+        # pinion hinge into its tool parent. This is a reduced-order actuator
+        # model, not rotor/stator contact or measured brake engagement.
+        rack['pinion_brake'] = deepcopy(spec['brakes']['small'])
     for name in ('pinion_pitch_radius_m', 'position_to_velocity_gain_per_s', 'max_jaw_velocity_m_s',
                  'velocity_force_gain_N_s_m', 'output_torque_limit_Nm', 'output_torque_per_current_Nm_A', 'no_load_current_A'):
         rack[name] = gripper[name]

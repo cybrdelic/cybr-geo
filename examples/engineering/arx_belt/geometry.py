@@ -2,8 +2,9 @@
 
 All arm and handed-jaw CAD, placement and mass records come from construction.
 Only the run's free workpiece and nest primitives are additional scene solids.
-Placement follows aabdf8c's coordinate conventions; recorded solver states own
-motion. No archived film, commanded FK or cosmetic drivetrain phase is used.
+Placement follows aabdf8c's coordinate conventions; the derived pinion has
+its own CAD body and recorded solver angle. Recorded solver states own motion.
+No archived film, commanded FK or cosmetic drivetrain phase is used.
 """
 import cadquery as cq
 import numpy as np
@@ -67,13 +68,21 @@ def build_assembly(native_directory, simulation_result, *, analytic=True):
     mapping.update(fixed='fixed_hardware', jaw='jaw_left', jaw_opposed='jaw_right', puck='puck', world='world')
     mass_mapping = {name: name for name in moving}
     mass_mapping.update(jaw_left='jaw', jaw_right='jaw_opposed')
+    rotating_pinion = 'gripper_pinion' in physical.bodies
+    if rotating_pinion:
+        mapping['pinion'] = 'gripper_pinion'
+        mass_mapping['gripper_pinion'] = 'pinion'
     assembly = replay_native(native_directory, simulation_result,
         specification=parameters['integration'], body_mapping=mapping, mass_mapping=mass_mapping,
         materials=materials, world_rotation=Y_UP_TO_Z_UP, analytic=analytic,
         scene_records=scenes, scene_shapes=shapes, name='ARX belt / integrated native geometry',
         metadata={'visual_limitations': [
             'Four deforming spring coil visuals are omitted; spring forces remain in the physical model.',
-            'Internal input shafts, drive pulleys, pinion and belt teeth retain native local phase; separate rotor/belt material states are not recorded.',
+            ('Internal input shafts, drive pulleys and belt teeth retain native local phase; '
+             'the source-derived gripper pinion hinge follows recorded solver angle.'
+             if rotating_pinion else
+             'Internal input shafts, drive pulleys, pinion and belt teeth retain native local phase; '
+             'separate rotor/belt material states are not recorded.'),
             'Flexible cable harness is omitted; contacts use the separate declared conservative proxy model.',
             'Workbench surface is omitted from the display; its authored physical contacts remain active.',
             'Workpiece bore is native visual geometry; its physical contact primitive remains the declared cylinder.',

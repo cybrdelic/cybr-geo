@@ -45,6 +45,17 @@ around them; changing those values requires a coupled design revision. This
 proves nominal tooth-span coverage only, not rolling flank contact, gear
 strength, backlash, bushing fit or production capability.
 
+Fresh GEO construction now puts that same source pinion in its own native
+`pinion` body and binds its integrated CAD inertia to a `gripper_pinion` hinge.
+Both slides are coupled to the hinge with the source 3 mm pitch radius, and
+the existing motor applies torque directly to the hinge. The authored home
+opening, 10–40 mm jaw travel and initial world geometry are preserved. The
+shared simulator limits numerical jaw/pinion displacement error to 0.1 mm;
+this is a solver design budget, not measured tooth backlash. The archived P5
+XML and cached mass path remain available for historical comparison. The
+earlier recorded films and fault numbers do not validate this revised drive;
+its actual native rebuild and loaded fault outcomes must be checked afresh.
+
 Every default generation rebuilds geometry and its mass properties. Explicit
 `--reuse-native` requires the source binding issued by a successful fresh
 construction: all project Python/data files, shared construction code, CAD
@@ -64,6 +75,28 @@ Earlier unbound native folders must be rebuilt through `lab mechanism`; they
 cannot be relabeled from the current source. Shipped
 historical mass records are comparison fixtures only, used by the standalone
 counterfactual helper when `--native` is omitted; that output is labeled cached.
+
+If a complete `data/qualification-plan.json` is supplied, ARX now checks it
+against that exact intent **before exporting any CAD**. The one source geometry
+recipe then collects its 380 placed solids in memory and hands them directly
+to `QualifiedNativeConstruction`. The strict builder checks each declared
+material/process and exact initial-positioned STEP interface. It derives
+physical mass and inertia from those placed CAD shapes, without importing the
+diagnostic source's catalog mass substitutions, spring mass allocations or
+cable/fastener reserves. Its initial pose map comes from the pinned MJCF home
+state, including the revised pinion at tool-local Y=201.5 mm and both original
+jaw world poses. Native `fixed`, `jaw`, `jaw_opposed` and `pinion` map to
+physical `fixed_hardware`, `jaw_left`, `jaw_right` and `gripper_pinion`.
+
+**The current ARX intent still rejects a resolved plan.** Its installed
+part-to-part interface/load graph is incomplete, and the native and physical
+power-loss retention mechanism is not yet constructed. Those are design
+requirements, not fields to fill with invented supplier numbers. After they
+are resolved in source, a fresh strict build still needs actual material lot,
+process capability, part measurements, tested joint capacities and assembled
+service/fault results before `lab release` can succeed. The strict CAD-density
+mass basis also needs a fresh physical model and runtime verification; the
+original vendor-envelope masses cannot become measured values by declaration.
 
 The puck is a free body. The default takes 18.05 seconds along the original TCP
 path, with lateral transfer tilt removed to reduce wrist-brake gravity load.
@@ -105,7 +138,11 @@ bushing/post at Z 4-9 mm, and the front wall occupies approximately
 Z 14-16 mm. A spring-applied pinion brake cannot be added there as an
 invisible friction coefficient or lock; its rotor, reaction mount, release
 device, finite torque and clearances need a joint packaging redesign. The
-current film and fault report do not contain that design.
+current film and fault report do not contain that design. The new pinion hinge
+is a prerequisite for a causal brake, not a brake or a retention claim by
+itself. A candidate brake needs a source-bound compatible package, keyed
+rotor, stator reaction into the bridge, thrust support, finite engagement
+timing and loaded power-loss contact validation before the design is usable.
 
 See [architecture](../../../docs/CONSTRUCTIVE_MECHANISMS.md),
 [task/source comparison](TASK.md) and [notices](../../../NOTICE-SOURCES.md).
