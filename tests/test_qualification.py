@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import sys
 from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
@@ -15,6 +16,9 @@ from cryptography.hazmat.primitives import serialization
 from mechanism_lab.qualification import (
     QualificationError, QualificationPlan, QualifiedNativeConstruction,
     _check_placed_interface,
+    _qualified_body_poses, _qualified_body_mapping, _qualified_body_mapping_receipt,
+    _qualified_world_shape, _require_initial_pose_binding,
+    _physical_startup_poses_mm,
     _recheck_qualified_native_steps, _require_physical_mass_binding,
     _require_connector_demand_binding, _require_spring_anchor_demand_binding,
     _require_native_spring_anchor_steps,
@@ -43,6 +47,114 @@ def _plan():
                 assembly_requirements=dict(minimum_endurance_cycles=1000,
                                            minimum_thermal_test_C=60.,
                                            maximum_measured_backlash_mm=.3))
+
+
+def _initial_poses():
+    identity = [[1., 0., 0., 0.], [0., 1., 0., 0.],
+                [0., 0., 1., 0.], [0., 0., 0., 1.]]
+    return {'fixed': deepcopy(identity), 'moving': deepcopy(identity)}
+
+
+def test_qualified_initial_pose_contract_rejects_missing_nonrigid_and_stale_frames():
+    parts = _plan()['parts']
+    valid = _initial_poses()
+    assert _qualified_body_poses(valid, parts) == valid
+    for fault in ('missing', 'extra', 'reflection', 'scale', 'nonfinite', 'boolean'):
+        altered = deepcopy(valid)
+        if fault == 'missing':
+            del altered['moving']
+        elif fault == 'extra':
+            altered['unused'] = deepcopy(altered['fixed'])
+        elif fault == 'reflection':
+            altered['moving'][0][0] = -1.
+        elif fault == 'scale':
+            altered['moving'][0][0] = 2.
+        elif fault == 'nonfinite':
+            altered['moving'][0][3] = math.inf
+        else:
+            altered['moving'][0][0] = True
+        with pytest.raises(QualificationError, match='initial pose'):
+            _qualified_body_poses(altered, parts)
+    record = dict(initial_body_poses_mm=valid, initial_body_pose_sha256=digest(valid))
+    assert _require_initial_pose_binding(record, valid, parts) == valid
+    moved = deepcopy(valid)
+    moved['moving'][0][3] = 10.
+    with pytest.raises(QualificationError, match='differs from the physical model'):
+        _require_initial_pose_binding(record, moved, parts)
+    record['initial_body_poses_mm'] = moved
+    with pytest.raises(QualificationError, match='construction receipt'):
+        _require_initial_pose_binding(record, valid, parts)
+
+
+def test_qualified_physical_body_aliases_are_explicit_complete_and_one_to_one():
+    parts = _plan()['parts']
+    identity = {'fixed': 'fixed', 'moving': 'moving'}
+    assert _qualified_body_mapping(None, parts) == identity
+    aliases = {'fixed': 'fixed_hardware', 'moving': 'jaw_left'}
+    assert _qualified_body_mapping(aliases, parts) == aliases
+    record = dict(physical_body_mapping=aliases,
+                  physical_body_mapping_sha256=digest(aliases))
+    assert _qualified_body_mapping_receipt(record, parts) == aliases
+    for invalid in ({'fixed': 'fixed_hardware'},
+                    {'fixed': 'jaw_left', 'moving': 'jaw_left'},
+                    {'fixed': 'fixed_hardware', 'moving': 'jaw_left', 'extra': 'extra'}):
+        with pytest.raises(QualificationError, match='physical body mapping'):
+            _qualified_body_mapping(invalid, parts)
+    record['physical_body_mapping']['moving'] = 'jaw_right'
+    with pytest.raises(QualificationError, match='construction receipt'):
+        _qualified_body_mapping_receipt(record, parts)
+
+
+def test_qualified_pair_uses_common_world_frame_without_moving_local_solid(monkeypatch):
+    class PointSolid:
+        def __init__(self, x):
+            self.x = x
+
+        def transformShape(self, matrix):
+            return PointSolid(self.x + matrix[0][3])
+
+        def distance(self, other):
+            return abs(self.x - other.x)
+
+    monkeypatch.setitem(sys.modules, 'cadquery', SimpleNamespace(Matrix=lambda value: value))
+    poses = _initial_poses()
+    poses['moving'][0][3] = -99.5
+    fixed, moving = PointSolid(0.), PointSolid(100.)
+    world_fixed = _qualified_world_shape(fixed, 'fixed', poses)
+    world_moving = _qualified_world_shape(moving, 'moving', poses)
+    assert fixed.distance(moving) == 100.
+    assert world_fixed.distance(world_moving) == pytest.approx(.5)
+    assert moving.x == 100.  # Native STEP and body-local inertia stay untouched.
+
+
+def test_qualified_initial_pose_matches_actual_mujoco_startup_keyframe():
+    pytest.importorskip('mujoco')
+    from mechanism_lab.physical_model import PhysicalModel
+
+    physical = PhysicalModel.from_xml('''<mujoco><worldbody>
+        <body name="fixed"/><body name="moving" pos="0.01 0 0">
+          <joint name="hinge" type="hinge" axis="0 0 1"/>
+          <geom type="box" size=".001 .001 .001" mass=".001"/>
+        </body></worldbody><keyframe>
+        <key name="rotated" qpos="1.5707963267948966"/>
+        </keyframe></mujoco>''')
+    parts = _plan()['parts']
+    default = _physical_startup_poses_mm(physical, {}, parts, None)
+    rotated = _physical_startup_poses_mm(physical, {'initial_keyframe': 'rotated'}, parts, None)
+    assert default['moving'][0][3] == pytest.approx(10.)
+    assert default['moving'][0][0] == pytest.approx(1.)
+    assert rotated['moving'][0][0] == pytest.approx(0., abs=1e-12)
+    assert rotated['moving'][1][0] == pytest.approx(1.)
+    record = dict(initial_body_poses_mm=default,
+                  initial_body_pose_sha256=digest(default))
+    with pytest.raises(QualificationError, match='differs from the physical model'):
+        _require_initial_pose_binding(record, rotated, parts)
+    with pytest.raises(QualificationError, match='keyframe is missing'):
+        _physical_startup_poses_mm(physical, {'initial_keyframe': 'unknown'}, parts, None)
+    alias = {'fixed': 'fixed', 'moving': 'jaw_left'}
+    aliased = PhysicalModel.from_xml(physical.xml().replace('name="moving"', 'name="jaw_left"'))
+    assert _physical_startup_poses_mm(aliased, {'initial_keyframe': 'rotated'},
+                                      parts, alias) == rotated
 
 
 def _retained_contact_plan():
@@ -459,7 +571,8 @@ def test_policy_blocks_wrong_part_before_native_export(tmp_path, monkeypatch):
     monkeypatch.setattr('mechanism_lab.native_construction.NativeConstruction.place',
                         lambda *args, **kwargs: reached.append(args))
     constructor = QualifiedNativeConstruction(tmp_path/'native', {'alloy': 2700.},
-                                               qualification_plan=_plan())
+                                               qualification_plan=_plan(),
+                                               initial_body_poses_mm=_initial_poses())
     with pytest.raises(QualificationError, match='lacks its exact'):
         constructor.place('fixed', 'a', Solid(), 'wrong-material')
     with pytest.raises(QualificationError, match='lacks its exact'):
@@ -603,10 +716,14 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
         pair_fit = dict(parts=['fixed__a', 'moving__b'], intersection_volume_mm3=0.,
                         minimum_distance_mm=0., role='tested_retention_contact',
                         worst_case_closest_gap_mm=.2 if case == 'retained_contact' else .3)
-    qualified_record = dict(schema='cybrgeo-qualification-construction/1',
+    qualified_record = dict(schema='cybrgeo-qualification-construction/2',
                             plan_sha256=QualificationPlan(plan).sha256,
                             qualification_service_sha256=qualification._sha(qualification.__file__),
                             placements=['fixed__a', 'moving__b'], interface_names=['pin_fit'],
+                            initial_body_poses_mm=_initial_poses(),
+                            initial_body_pose_sha256=digest(_initial_poses()),
+                            physical_body_mapping={'fixed': 'fixed', 'moving': 'moving'},
+                            physical_body_mapping_sha256=digest({'fixed': 'fixed', 'moving': 'moving'}),
                             exact_placed_interface_checks={'pin_fit': pair_fit})
     record_path = native/'qualification-construction.json'
     record_path.write_text(json.dumps(qualified_record), encoding='utf-8')
@@ -676,6 +793,8 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
                         lambda *args, **kwargs: binding)
     monkeypatch.setattr(qualification, '_recheck_qualified_native_steps',
                         lambda *args, **kwargs: {})
+    monkeypatch.setattr(qualification, '_physical_startup_poses_mm',
+                        lambda model, control, parts, mapping: _initial_poses())
     monkeypatch.setattr(physical_model.PhysicalModel, 'from_source',
                         lambda *_: SimpleNamespace(mass_records={}, root=root))
     class LoadGatePassed(Exception):
@@ -719,29 +838,28 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     source_files = {'data/qualification-plan.json': hashlib.sha256(plan_file.read_bytes()).hexdigest()}
     native = tmp_path/'native'
     builder = QualifiedNativeConstruction(native, {'alloy': 2700.},
-        qualification_plan=plan, provenance={'input_spec_sha256': digest({'test': True})})
+        qualification_plan=plan, initial_body_poses_mm=_initial_poses(),
+        provenance={'input_spec_sha256': digest({'test': True})})
     first = cq.Workplane('XY').box(4, 4, 4).translate((-2.25, 0, 0))
     second = cq.Workplane('XY').box(4, 4, 4).translate((2.25, 0, 0))
     builder.place('fixed', 'a', first, 'alloy')
     builder.place('moving', 'b', second, 'alloy')
-    fits = NativeInterfaceRequirements()
-    fits.clearance('pin_fit', first, second, minimum_distance_mm=.5, kernel_allowance_mm=1e-8)
     placed_step = native/'cad'/'placed'/'fixed__a.step'
     original_step = placed_step.read_bytes()
     cq.exporters.export(first.translate((20, 0, 0)), str(placed_step))
     with pytest.raises(QualificationError, match='differs from constructed CAD'):
-        builder.finish('test-only native mass', native_requirements=fits)
+        builder.finish('test-only native mass')
     placed_step.write_bytes(original_step)
     spoofed = NativeInterfaceRequirements()
     spoofed.clearance('pin_fit', first, second.translate((100, 0, 0)), minimum_distance_mm=.5)
-    with pytest.raises(QualificationError, match='different solids'):
+    with pytest.raises(QualificationError, match='derives interface measurements'):
         builder.finish('test-only native mass', native_requirements=spoofed)
     builder.placed_records.append(deepcopy(builder.placed_records[0]))
     with pytest.raises(QualificationError, match='inventory is ambiguous'):
-        builder.finish('test-only native mass', native_requirements=fits)
+        builder.finish('test-only native mass')
     builder.placed_records.pop()
     assert not (native/'qualification-construction.json').exists()
-    builder.finish('test-only native mass', native_requirements=fits)
+    builder.finish('test-only native mass')
     receipt = json.loads((native/'native-build.json').read_text(encoding='utf-8'))
     placed_document = json.loads((native/'placed-native-parts.json').read_text(encoding='utf-8'))
     fit_document = json.loads((native/'native-interface-requirements.json').read_text(encoding='utf-8'))
@@ -750,12 +868,14 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     bad_material_placements['records'][0]['material'] = 'other-material'
     with pytest.raises(QualificationError, match='material differs from plan'):
         _recheck_qualified_native_steps(native, bad_material_placements, fit_document,
-                                        receipt, plan, construction_record)
+                                        receipt, plan, construction_record,
+                                        startup_poses=_initial_poses())
     forged_pair_receipt = deepcopy(construction_record)
     forged_pair_receipt['exact_placed_interface_checks']['pin_fit']['minimum_distance_mm'] = 5.
     with pytest.raises(QualificationError, match='independently measured fit'):
         _recheck_qualified_native_steps(native, placed_document, fit_document,
-                                        receipt, plan, forged_pair_receipt)
+                                        receipt, plan, forged_pair_receipt,
+                                        startup_poses=_initial_poses())
     real_mass = json.loads((native/'mass_properties.json').read_text(encoding='utf-8'))
     lighter_aggregate = deepcopy(real_mass)
     lighter_aggregate['moving']['mass_kg'] *= .5
@@ -766,7 +886,8 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
         (native/'mass_properties.json').read_bytes()).hexdigest()
     with pytest.raises(QualificationError, match='aggregate mass_kg differs'):
         _recheck_qualified_native_steps(native, placed_document, fit_document,
-                                        changed_receipt, plan, construction_record)
+                                        changed_receipt, plan, construction_record,
+                                        startup_poses=_initial_poses())
     (native/'mass_properties.json').write_bytes(original_mass_bytes)
     fake_model = SimpleNamespace(mass_records=deepcopy(real_mass))
     _require_physical_mass_binding(fake_model, real_mass)
@@ -821,6 +942,8 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     from mechanism_lab import physical_model
     monkeypatch.setattr(physical_model.PhysicalModel, 'from_source',
                         lambda source: SimpleNamespace(mass_records=source['mass_records']))
+    monkeypatch.setattr(qualification, '_physical_startup_poses_mm',
+                        lambda model, control, parts, mapping: _initial_poses())
 
     product = tmp_path/'product'
     manifest = release_project(project_dir, run, package, trust, product)

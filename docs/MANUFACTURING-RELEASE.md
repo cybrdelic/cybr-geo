@@ -92,17 +92,22 @@ instead of `NativeConstruction`, and place every part directly or through
 `place_assembly`. Unbound template STEP, auxiliary CAD, mass-only bodies and
 mass overrides are rejected. It rejects unsupported combinations and
 out-of-volume shapes *before* its `place` method emits STEP, STL, meshes or
-mass records. `finish` requires exact inventory coverage and role-appropriate
-named native interface checks. It reimports each exact placed STEP, compares its solid
-with the CAD used at placement, and measures interface gaps from those
-exported parts. It writes a hashed construction receipt bound to the
+mass records. The qualified constructor also requires a complete source-derived
+initial rigid pose for every placed body. `finish` requires exact inventory
+coverage and reimports each exact placed STEP. It compares each solid with
+the CAD used at placement, then measures cross-body interface gaps after
+placing copies of those solids in the common initial assembly frame. The
+exported STEP and native mass properties remain body-local. The hashed
+construction receipt includes the body poses and their digest. It is bound to the
 plan and qualification implementation. A plan is a design contract; its
 wall minimum is checked against the declared process feature limit, not
 measured from the CAD. Actual walls, fits and load capacities require the
 signed physical measurements below.
 Release independently reimports those STEP files and compares exact part-pair
 gaps, material densities, component masses, body aggregates and solver
-inertials. A diagnostic constructor cannot write the reserved construction
+inertials. It also derives the initial poses from the bound MuJoCo source and
+startup keyframe, rejecting a construction pose that does not match the
+simulated assembly. A diagnostic constructor cannot write the reserved construction
 receipt through its public API.
 
 ## External physical evidence

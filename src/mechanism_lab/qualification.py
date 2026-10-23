@@ -20,8 +20,10 @@ from pathlib import Path
 import re
 import shutil
 import tempfile
+import numpy as np
 
-from .native_construction import NativeConstruction, _shape, _QUALIFICATION_RECEIPT_CAPABILITY
+from .native_construction import (NativeConstruction, NativeInterfaceRequirements,
+                                  _shape, _QUALIFICATION_RECEIPT_CAPABILITY)
 from .physical_model import digest
 
 
@@ -132,6 +134,112 @@ def _check_placed_interface(name, interface, measured, overlap,
         raise QualificationError(f'Placed CAD parts fail qualified interface {name} contact proximity/play')
     return dict(role=_RETAINED_CONTACT_ROLE,
                 worst_case_closest_gap_mm=largest_closest_gap)
+
+
+def _qualified_body_poses(poses, parts):
+    """Validate body-local mm -> initial world mm rigid placements.
+
+    STEP and inertia remain body-local. These poses are used only to measure
+    inter-body material interfaces in one common assembly frame.
+    """
+    bodies = {name.split('__', 1)[0] for name in parts}
+    if not isinstance(poses, dict) or set(poses) != bodies:
+        raise QualificationError('Qualified initial pose map must cover every placed CAD body exactly')
+    normalized = {}
+    for body, value in poses.items():
+        try:
+            elements = np.asarray(value, dtype=object)
+            matrix = np.asarray(value)
+        except (TypeError, ValueError) as error:
+            raise QualificationError(f'Qualified initial pose {body} must be a finite 4x4 numeric matrix') from error
+        if (elements.shape != (4, 4) or any(isinstance(item, (bool, np.bool_))
+                                            for item in elements.flat)):
+            raise QualificationError(f'Qualified initial pose {body} must be a finite 4x4 numeric matrix')
+        if matrix.shape != (4, 4) or matrix.dtype.kind not in 'fi' or not np.isfinite(matrix).all():
+            raise QualificationError(f'Qualified initial pose {body} must be a finite 4x4 numeric matrix')
+        matrix = matrix.astype(float)
+        rotation = matrix[:3, :3]
+        if (not np.allclose(matrix[3], [0., 0., 0., 1.], rtol=0, atol=1e-12)
+                or not np.allclose(rotation.T @ rotation, np.eye(3), rtol=0, atol=1e-10)
+                or not math.isclose(float(np.linalg.det(rotation)), 1., rel_tol=0, abs_tol=1e-10)):
+            raise QualificationError(f'Qualified initial pose {body} must be a proper rigid transform')
+        normalized[body] = matrix.tolist()
+    return {body: normalized[body] for body in sorted(normalized)}
+
+
+def _qualified_body_mapping(mapping, parts):
+    """An explicit one-to-one native CAD body -> physical MJCF body binding."""
+    bodies = {name.split('__', 1)[0] for name in parts}
+    if mapping is None:
+        mapping = {body: body for body in bodies}
+    if not isinstance(mapping, dict) or set(mapping) != bodies:
+        raise QualificationError('Qualified physical body mapping must cover every placed CAD body exactly')
+    normalized = {}
+    for native, physical in mapping.items():
+        _safe_id(physical, f'Physical body for {native}')
+        normalized[native] = physical
+    if len(set(normalized.values())) != len(normalized):
+        raise QualificationError('Qualified physical body mapping must be one-to-one')
+    return {body: normalized[body] for body in sorted(normalized)}
+
+
+def _qualified_body_mapping_receipt(record, parts):
+    mapping = _qualified_body_mapping(record.get('physical_body_mapping'), parts)
+    if record.get('physical_body_mapping_sha256') != digest(mapping):
+        raise QualificationError('Qualified physical body mapping differs from its construction receipt')
+    return mapping
+
+
+def _qualified_world_shape(shape, body, poses):
+    """Rigidly locate a copy for assembly fit checks; never change local mass."""
+    import cadquery as cq
+    matrix = poses[body]
+    if np.array_equal(matrix, np.eye(4)):
+        return shape
+    return shape.transformShape(cq.Matrix(matrix))
+
+
+def _require_initial_pose_binding(record, startup_poses, parts):
+    authored = _qualified_body_poses(record.get('initial_body_poses_mm'), parts)
+    if record.get('initial_body_pose_sha256') != digest(authored):
+        raise QualificationError('Qualified initial poses differ from their construction receipt')
+    physical = _qualified_body_poses(startup_poses, parts)
+    for body in authored:
+        cad, model = np.asarray(authored[body]), np.asarray(physical[body])
+        if (not np.allclose(cad[:3, 3], model[:3, 3], rtol=0, atol=1e-9)
+                or not np.allclose(cad[:3, :3], model[:3, :3], rtol=0, atol=1e-12)):
+            raise QualificationError(f'Qualified initial pose {body} differs from the physical model startup')
+    return physical
+
+
+def _physical_startup_poses_mm(physical_model, control, parts, body_mapping):
+    """Read exactly the startup body frames used by the causal MuJoCo runtime."""
+    import mujoco as mj
+    model = mj.MjModel.from_xml_string(physical_model.xml())
+    data = mj.MjData(model)
+    key = control.get('initial_keyframe')
+    if key is not None:
+        if not isinstance(key, str) or not key:
+            raise QualificationError('Physical startup keyframe identity is invalid')
+        try:
+            mj.mj_resetDataKeyframe(model, data, model.key(key).id)
+        except (KeyError, ValueError) as error:
+            raise QualificationError('Physical startup keyframe is missing') from error
+    mj.mj_forward(model, data)
+    poses = {}
+    mapping = _qualified_body_mapping(body_mapping, parts)
+    for body, physical_name in mapping.items():
+        try:
+            body_id = model.body(physical_name).id
+        except (KeyError, ValueError) as error:
+            raise QualificationError(f'Qualified CAD body {body} lacks mapped physical body {physical_name}') from error
+        if body_id == 0:
+            raise QualificationError(f'Qualified CAD body {body} must map to a named physical body')
+        matrix = np.eye(4)
+        matrix[:3, :3] = data.xmat[body_id].reshape(3, 3)
+        matrix[:3, 3] = data.xpos[body_id] * 1000.
+        poses[body] = matrix.tolist()
+    return _qualified_body_poses(poses, parts)
 
 
 @dataclass(frozen=True)
@@ -456,15 +564,24 @@ class QualifiedNativeConstruction(NativeConstruction):
     required, but is insufficient, for a hardware release.
     """
 
-    def __init__(self, output, densities, body_ids=(), provenance=None, *, qualification_plan):
+    def __init__(self, output, densities, body_ids=(), provenance=None, *, qualification_plan,
+                 initial_body_poses_mm, physical_body_mapping=None):
         document = (qualification_plan.document if isinstance(qualification_plan, QualificationPlan)
                     else qualification_plan)
         self.qualification_plan = QualificationPlan(deepcopy(document))
+        self.initial_body_poses_mm = _qualified_body_poses(
+            initial_body_poses_mm, self.qualification_plan.document['parts'])
+        self.physical_body_mapping = _qualified_body_mapping(
+            physical_body_mapping, self.qualification_plan.document['parts'])
+        declared_body_ids = list(body_ids)
+        if (declared_body_ids and (len(declared_body_ids) != len(set(declared_body_ids))
+                                   or set(declared_body_ids) != set(self.initial_body_poses_mm))):
+            raise QualificationError('Qualified body IDs differ from the initial pose inventory')
         self._qualified_placements = set()
         self._placing_qualified_part = False
         if set(densities) != set(self.qualification_plan.document['materials']):
             raise QualificationError('Qualified construction must declare every material density exactly')
-        super().__init__(output, densities, body_ids, provenance)
+        super().__init__(output, densities, declared_body_ids, provenance)
 
     def addpart(self, *args, **kwargs):
         raise QualificationError('Qualified construction requires named direct placements; unbound CAD templates are diagnostic')
@@ -504,11 +621,8 @@ class QualifiedNativeConstruction(NativeConstruction):
         if (len(native_names) != len(plan['parts']) or set(native_names) != set(plan['parts'])
                 or len({name.casefold() for name in native_names}) != len(native_names)):
             raise QualificationError('Qualified placed STEP inventory is ambiguous or incomplete')
-        if native_requirements is None:
-            raise QualificationError('Qualified construction requires named native interface measurements')
-        report = native_requirements.report()
-        if not report.get('passed') or {check['name'] for check in report.get('checks', [])} != set(plan['interfaces']):
-            raise QualificationError('Qualified construction must measure every declared interface exactly')
+        if native_requirements is not None:
+            raise QualificationError('Qualified construction derives interface measurements from exact posed STEP pairs')
         import cadquery as cq
         exported = {}
         for row in self.placed_records:
@@ -528,24 +642,34 @@ class QualifiedNativeConstruction(NativeConstruction):
                     or difference_mm3 > max(1e-6, volume_mm3 * 1e-8)):
                 raise QualificationError(f'Qualified placed STEP differs from constructed CAD: {name}')
             exported[name] = imported
+        positioned = {}
         measured_interfaces = {}
-        for check in report['checks']:
-            name = check['name']
-            interface = plan['interfaces'][name]
-            first, second = (exported[part] for part in interface['parts'])
+        generated_requirements = NativeInterfaceRequirements(dict(
+            scope='Exact imported placed STEP pairs in source-declared initial assembly pose'))
+        for name, interface in plan['interfaces'].items():
+            for part in interface['parts']:
+                if part not in positioned:
+                    positioned[part] = _qualified_world_shape(
+                        exported[part], part.split('__', 1)[0], self.initial_body_poses_mm)
+            first, second = (positioned[part] for part in interface['parts'])
             measured = _number(float(first.distance(second)), f'Native interface {name} clearance')
             overlap = _number(float(first.intersect(second).Volume()), f'Native interface {name} overlap')
             # These are fixed CAD arithmetic allowances, never process fits.
             distance_kernel_allowance_mm = 1e-7
             volume_kernel_allowance_mm3 = 1e-6
-            claimed = _number(check.get('minimum_distance_mm'), f'Native interface {name} claimed clearance')
-            claimed_overlap = _number(check.get('intersection_volume_mm3'), f'Native interface {name} claimed overlap')
-            if (abs(claimed - measured) > distance_kernel_allowance_mm
-                    or abs(claimed_overlap - overlap) > volume_kernel_allowance_mm3):
-                raise QualificationError(f'Native interface {name} receipt measured different solids than its placed part pair')
             fit = _check_placed_interface(name, interface, measured, overlap,
                 distance_kernel_allowance_mm=distance_kernel_allowance_mm,
                 volume_kernel_allowance_mm3=volume_kernel_allowance_mm3)
+            if _interface_role(interface) == 'clearance':
+                generated_requirements.clearance(name, first, second,
+                    minimum_distance_mm=interface['nominal_clearance_mm'],
+                    kernel_allowance_mm=distance_kernel_allowance_mm,
+                    allowed_volume_mm3=volume_kernel_allowance_mm3,
+                    declared_design_variations_mm=dict(first_mm=interface['first_tolerance_mm'],
+                                                       second_mm=interface['second_tolerance_mm']))
+            else:
+                generated_requirements.noninterference(name, first, second,
+                    allowed_volume_mm3=volume_kernel_allowance_mm3)
             measured_interfaces[name] = dict(parts=list(interface['parts']), minimum_distance_mm=measured,
                                              intersection_volume_mm3=overlap, **fit,
                                              distance_kernel_allowance_mm=distance_kernel_allowance_mm,
@@ -554,12 +678,16 @@ class QualifiedNativeConstruction(NativeConstruction):
         if 'qualification-construction.json' in records:
             raise QualificationError('Qualification construction receipt is reserved')
         records['qualification-construction.json'] = dict(
-            schema='cybrgeo-qualification-construction/1', plan_sha256=self.qualification_plan.sha256,
+            schema='cybrgeo-qualification-construction/2', plan_sha256=self.qualification_plan.sha256,
             qualification_service_sha256=_sha(__file__),
             placements=sorted(self._qualified_placements), interface_names=sorted(plan['interfaces']),
+            initial_body_poses_mm=self.initial_body_poses_mm,
+            initial_body_pose_sha256=digest(self.initial_body_poses_mm),
+            physical_body_mapping=self.physical_body_mapping,
+            physical_body_mapping_sha256=digest(self.physical_body_mapping),
             exact_placed_interface_checks=measured_interfaces,
             status='declared_construction_constraints_passed; actual_wall_fit_load_hardware_evidence_pending')
-        return super().finish(body_status, records, native_requirements=native_requirements,
+        return super().finish(body_status, records, native_requirements=generated_requirements,
                               _receipt_capability=_QUALIFICATION_RECEIPT_CAPABILITY)
 
 
@@ -1121,12 +1249,13 @@ def _require_native_spring_anchor_steps(solids, spring_record):
 
 
 def _recheck_qualified_native_steps(native, placements, interfaces, receipt, plan, record,
-                                    spring_record=None):
+                                    spring_record=None, *, startup_poses):
     """Reopen the releasable STEP, independently checking pair fits and mass."""
     import cadquery as cq
     from .native_construction import aggregate_mass_properties, shape_mass_properties
 
     files = receipt['files_sha256']
+    physical_poses = _require_initial_pose_binding(record, startup_poses, plan['parts'])
     required = ('placed-native-parts.json', 'native-interface-requirements.json',
                 'mass_properties.json', 'cad_parts.json')
     if any(files.get(name) != _sha(native / name) for name in required):
@@ -1179,8 +1308,13 @@ def _recheck_qualified_native_steps(native, placements, interfaces, receipt, pla
     reported_checks = {row['name']: row for row in interfaces['checks']}
     if len(reported_checks) != len(interfaces['checks']):
         raise QualificationError('Qualified native interface report has duplicate checks')
+    positioned = {}
     for name, interface in plan['interfaces'].items():
-        first, second = (solids[part] for part in interface['parts'])
+        for part in interface['parts']:
+            if part not in positioned:
+                positioned[part] = _qualified_world_shape(
+                    solids[part], part.split('__', 1)[0], physical_poses)
+        first, second = (positioned[part] for part in interface['parts'])
         measured = _number(float(first.distance(second)), f'{name} STEP clearance')
         overlap = _number(float(first.intersect(second).Volume()), f'{name} STEP overlap')
         fit = _check_placed_interface(name, interface, measured, overlap)
@@ -1258,7 +1392,7 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     record = _read_json(native / 'qualification-construction.json')
     if ('qualification-construction.json' not in receipt['files_sha256']
             or receipt['files_sha256']['qualification-construction.json'] != _sha(native / 'qualification-construction.json')
-            or record.get('schema') != 'cybrgeo-qualification-construction/1'
+            or record.get('schema') != 'cybrgeo-qualification-construction/2'
             or record.get('plan_sha256') != plan.sha256
             or record.get('qualification_service_sha256') != _sha(__file__)
             or set(record.get('placements', ())) != set(plan.document['parts'])
@@ -1295,11 +1429,8 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     spring_file = 'spring-anchor-load-path.json'
     spring_record = (_read_json(native / spring_file)
                      if spring_file in receipt['files_sha256'] else None)
-    native_mass = _recheck_qualified_native_steps(native, placements, interfaces,
-        receipt, plan.document, record, spring_record)
     physical_source = _read_json(run / 'physical-source.json')
     physical_model = PhysicalModel.from_source(physical_source)
-    _require_physical_mass_binding(physical_model, native_mass)
     control = _read_json(run / 'control-source.json')
     simulation = _read_json(run / 'simulation' / 'simulation.json')
     if (digest(physical_source) != report.get('model_sha256')
@@ -1313,6 +1444,12 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     for key, value in report['simulation'].items():
         if key in simulation and simulation[key] != value:
             raise QualificationError(f'Simulation {key} differs from its accepted engineering report')
+    body_mapping = _qualified_body_mapping_receipt(record, plan.document['parts'])
+    startup_poses = _physical_startup_poses_mm(physical_model, control, plan.document['parts'],
+                                               body_mapping)
+    native_mass = _recheck_qualified_native_steps(native, placements, interfaces,
+        receipt, plan.document, record, spring_record, startup_poses=startup_poses)
+    _require_physical_mass_binding(physical_model, native_mass)
     _require_current_causal_runtime(simulation['runtime_implementation'])
     modeled_interface_demands = {}
     _require_connector_demand_binding(plan, physical_model, simulation,
