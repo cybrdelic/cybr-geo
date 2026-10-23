@@ -7,7 +7,8 @@ import pytest
 
 from examples.engineering.arx_belt.gripper_retention import (
     CANDIDATE_PARTS, CANDIDATE_REVISION, DATA, candidate_recipe,
-    fault_contact_eligibility, proposal, require_nominal_brake_placement)
+    _capture_lip_recipe, fault_contact_eligibility, proposal,
+    require_nominal_brake_placement)
 from examples.engineering.arx_belt.model import compile_model, control_source
 
 
@@ -78,6 +79,15 @@ def test_opt_in_revision_requires_a_redesigned_native_support_path():
     assert candidate['geometry']['front_bearing_outer_diameter'] == 10.
     assert candidate['geometry']['front_bearing_inner_diameter'] == 8.02
     assert candidate['geometry']['stator_standoff_centers_xy'] == [[-14., -7.5], [14., -7.5]]
+    lip = candidate['capture_lip']
+    assert lip['nominal_puck_face_y_mm'] == pytest.approx(238.)
+    assert lip['ledge_top_y_mm'] == pytest.approx(238.8)
+    assert lip['source_finger']['y_end'] == pytest.approx(232.)
+    assert lip['source_nest_seat_radius_mm'] == pytest.approx(15.)
+    stem, ledge = lip['boxes']['stem'], lip['boxes']['ledge']
+    assert stem['center_tool_mm'][1] - stem['half_size_mm'][1] < lip['source_finger']['y_end']
+    assert ledge['center_tool_mm'][0] - ledge['half_size_mm'][0] == pytest.approx(-2.5)
+    assert candidate['proposal']['puck_outer_radius_mm'] - 2.5 > lip['source_nest_seat_radius_mm']
     assert len(CANDIDATE_PARTS) == 13
     with pytest.raises(ValueError, match='fresh native CAD and mass records'):
         compile_model(spec)
@@ -85,6 +95,24 @@ def test_opt_in_revision_requires_a_redesigned_native_support_path():
     bad['gripper_retention_revision'] = 'unknown'
     with pytest.raises(ValueError, match='Unknown ARX gripper retention revision'):
         candidate_recipe(bad)
+
+
+def test_capture_lip_rejects_loss_of_nominal_drop_budget_or_nest_clearance():
+    authored = json.loads((DATA/'gripper-retention-proposal.json').read_text(encoding='utf-8'))
+    geom = authored['candidate_native_geometry_mm']['capture_lip']
+    design = proposal()
+    bad = deepcopy(geom)
+    bad['nominal_puck_face_gap_mm'] = 1.1
+    with pytest.raises(ValueError, match='Capture lip must join'):
+        _capture_lip_recipe(bad, design)
+    bad = deepcopy(geom)
+    bad['inner_reach_below_pad_face_mm'] = 4.5
+    with pytest.raises(ValueError, match='clear the nest seat'):
+        _capture_lip_recipe(bad, design)
+    bad = deepcopy(geom)
+    bad['stem_start_y_mm'] = 233.
+    with pytest.raises(ValueError, match='join the source finger'):
+        _capture_lip_recipe(bad, design)
 
 
 def test_candidate_brake_only_controls_a_separately_rotating_native_pinion():

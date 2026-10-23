@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update -qq
-          sudo apt-get install -y g++ cmake libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
+          sudo apt-get install -y g++ cmake ffmpeg xvfb libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
       - name: Install pinned engineering dependencies
         run: |
           python -m pip install --only-binary=:all: -r requirements-tested.txt
@@ -84,6 +84,12 @@ jobs:
               if log.exists():
                   print(log.read_text(encoding='utf-8', errors='replace')[-24000:])
               print(json.dumps(status, indent=2))
+      - name: Render both passing recorded candidate traces through shared CAD replay
+        if: success()
+        run: |
+          xvfb-run -a python -m examples.engineering.arx_belt.capture_brake_candidate \
+            --run outputs/portable-brake-candidate \
+            --out outputs/portable-brake-candidate-media
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -93,8 +99,11 @@ jobs:
             outputs/portable-brake-candidate/*.log
             outputs/portable-brake-candidate/*.json.gz
             outputs/portable-brake-candidate/native/*.json
-            outputs/portable-brake-candidate/native/*brake*.step
-            outputs/portable-brake-candidate/native/*bridge*.step
-            outputs/portable-brake-candidate/native/*pinion*.step
+            outputs/portable-brake-candidate/native/cad/*.step
+            outputs/portable-brake-candidate/native/cad/*.stl
+            outputs/portable-brake-candidate/native/cad/placed/*.step
+            outputs/portable-brake-candidate-media/*.json
+            outputs/portable-brake-candidate-media/*.log
+            outputs/portable-brake-candidate-media/*.mp4
           if-no-files-found: error
           retention-days: 30

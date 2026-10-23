@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 
 from mechanism_lab.fit_construction import CoaxialShaftHubSeat, DirectedFaceGap
 
-from .rack_contract import PINION_CENTER_Y_MM
+from .rack_contract import JAW_ORIGIN_Y_MM, PINION_CENTER_Y_MM
 
 
 DATA = Path(__file__).with_name('data')
@@ -26,7 +26,7 @@ SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
 BRAKE_SIGNATURE_FIELDS = {
     'OD_mm', 'ID_mm', 'length_mm', 'mass_kg', 'holding_torque_Nm',
     'mount_pcd_mm', 'mount_count', 'coil_voltage_V', 'coil_power_W'}
-CANDIDATE_REVISION = 'outboard_pm_brake_diagnostic_v1'
+CANDIDATE_REVISION = 'outboard_pm_brake_capture_diagnostic_v2'
 CANDIDATE_PARTS = {
     'tool__gripper_brake_stator_envelope': 'steel',
     'tool__gripper_brake_mount_screw_0': 'steel',
@@ -97,7 +97,9 @@ def _design_source(specification, baseline, document):
     _same(baseline_shaft, source_shaft, 'baseline gripper upper shaft diameter')
     puck_radius = _same(puck.get('outer_radius_m'),
                         document['source_puck_outer_radius_mm']/1000., 'puck outer radius') * 1000.
-    return vendor, gripper, puck, source_shaft, puck_radius
+    puck_half_length = _positive(puck.get('height_m'), 'puck full length') * 500.
+    tool_tcp = _positive(baseline.get('tool_length_m'), 'tool TCP distance') * 1000.
+    return vendor, gripper, puck, source_shaft, puck_radius, puck_half_length, tool_tcp
 
 
 def proposal(*, specification=None, baseline=None, document=None):
@@ -110,7 +112,7 @@ def proposal(*, specification=None, baseline=None, document=None):
     spec = _load('spec.json') if specification is None else specification
     base = _load('P2-baseline-parameters.json') if baseline is None else baseline
     authored = _load('gripper-retention-proposal.json') if document is None else document
-    vendor, gripper, puck, source_shaft, puck_radius = _design_source(spec, base, authored)
+    vendor, gripper, puck, source_shaft, puck_radius, puck_half_length, tool_tcp = _design_source(spec, base, authored)
     gap_document = authored['puck_to_stator_axial_design']
     if (not isinstance(gap_document, dict) or
             set(gap_document) != {'required_service_gap_mm', 'first_declared_variation_mm',
@@ -174,6 +176,8 @@ def proposal(*, specification=None, baseline=None, document=None):
         proposed_upper_shaft_diameter_mm=target_shaft,
         proposed_nominal_shaft_hub_seat=proposed_seat.report(),
         puck_outer_radius_mm=puck_radius,
+        puck_half_length_mm=puck_half_length,
+        tool_tcp_y_mm=tool_tcp,
         surveyed_outboard_inner_face_z_mm=surveyed_face,
         surveyed_outboard_nominal_gap_mm=surveyed_face-puck_radius,
         minimum_authored_outboard_inner_face_z_mm=required_face,
@@ -238,7 +242,10 @@ def candidate_recipe(specification):
     if revision != CANDIDATE_REVISION:
         raise ValueError('Unknown ARX gripper retention revision')
     design = proposal(specification=specification)
-    geometry = _load('gripper-retention-proposal.json')['candidate_native_geometry_mm']
+    authored = _load('gripper-retention-proposal.json')
+    if authored.get('candidate_revision') != revision:
+        raise ValueError('Candidate revision differs from its single native recipe')
+    geometry = authored['candidate_native_geometry_mm']
     required = {
         'front_bearing_outer_diameter', 'front_bearing_inner_diameter',
         'front_bearing_z', 'front_wall_bore_diameter', 'front_wall_z',
@@ -246,7 +253,7 @@ def candidate_recipe(specification):
         'stator_bracket_outer_radius', 'stator_bracket_inner_radius',
         'stator_standoff_centers_xy', 'stator_standoff_radius',
         'hub_outer_radius', 'armature_outer_radius', 'armature_thickness',
-        'shaft_end_above_armature', 'key_z',
+        'shaft_end_above_armature', 'key_z', 'capture_lip',
     }
     if set(geometry) != required:
         raise ValueError('Candidate CAD revision needs its complete authored geometry')
@@ -280,14 +287,68 @@ def candidate_recipe(specification):
     placement = require_nominal_brake_placement(
         design['proposed_upper_shaft_diameter_mm'],
         geometry['stator_inner_face_z'], construction_input=design)
+    capture = _capture_lip_recipe(geometry['capture_lip'], design)
     stator_outer_z = placement['outboard_outer_face_z_mm']
     armature_outer_z = stator_outer_z + geometry['armature_thickness']
     if not key_z[0] > geometry['stator_inner_face_z'] or not key_z[1] < stator_outer_z:
         raise ValueError('Candidate key must remain within the brake hub seat')
-    return dict(revision=revision, geometry=geometry, proposal=design,
+    return dict(revision=revision, geometry=geometry, capture_lip=capture, proposal=design,
                 placement=placement, stator_outer_z_mm=stator_outer_z,
                 armature_outer_z_mm=armature_outer_z,
                 shaft_end_z_mm=armature_outer_z + geometry['shaft_end_above_armature'])
+
+
+def _capture_lip_recipe(authored, design):
+    """One candidate solid recipe for both handed native jaws and contact boxes.
+
+    The lip is integral with each source aluminum carriage. It reaches under
+    the puck's load-facing axial face during the authored pickup pose; the
+    actual motion and contact must still be checked on fresh CAD/MuJoCo.
+    """
+    required = {'nominal_puck_face_gap_mm', 'inner_reach_below_pad_face_mm',
+        'ledge_outer_x_mm', 'ledge_depth_y_mm', 'ledge_half_width_z_mm',
+        'stem_inner_x_mm', 'stem_outer_x_mm', 'stem_start_y_mm',
+        'stem_end_below_ledge_top_mm'}
+    if not isinstance(authored, dict) or set(authored) != required:
+        raise ValueError('Capture lip needs one complete source-bound geometry recipe')
+    g = {key: _positive(value, f'capture lip {key}') for key, value in authored.items()}
+    source = ET.fromstring((DATA/'P2-baseline.xml').read_bytes())
+    finger = source.find(".//geom[@name='structure_jaw_finger_jaw_left']")
+    seat = source.find(".//geom[@name='nest_A_seat']")
+    tcp = source.find(".//site[@name='tcp']")
+    if finger is None or seat is None or tcp is None:
+        raise ValueError('Pinned finger, puck nest and TCP geometry are required')
+    finger_pos = [float(x)*1000 for x in finger.get('pos').split()]
+    finger_half = [float(x)*1000 for x in finger.get('size').split()]
+    source_finger = dict(x_min=finger_pos[0]-finger_half[0],
+                         x_max=finger_pos[0]+finger_half[0],
+                         y_end=JAW_ORIGIN_Y_MM+finger_pos[1]+finger_half[1])
+    _same(float(tcp.get('pos').split()[1]), design['tool_tcp_y_mm']/1000.,
+          'model TCP y')
+    nest_radius = float(seat.get('size').split()[0])*1000.
+    top = design['tool_tcp_y_mm'] + design['puck_half_length_mm'] + g['nominal_puck_face_gap_mm']
+    stem_end = top + g['stem_end_below_ledge_top_mm']
+    inner_x = -g['inner_reach_below_pad_face_mm']
+    outer_x = g['ledge_outer_x_mm']
+    if (not 0 < g['nominal_puck_face_gap_mm'] < 1.
+            or not source_finger['x_min'] <= g['stem_inner_x_mm'] < outer_x
+            or not g['stem_outer_x_mm'] <= source_finger['x_max']
+            or not source_finger['y_end'] > g['stem_start_y_mm']
+            or not stem_end > top
+            or not g['stem_end_below_ledge_top_mm'] < g['ledge_depth_y_mm']
+            or not design['puck_outer_radius_mm']-g['inner_reach_below_pad_face_mm'] > nest_radius
+            or not inner_x < 0 < outer_x):
+        raise ValueError('Capture lip must join the source finger, fit the puck rim and clear the nest seat')
+    def box(x0, x1, y0, y1):
+        return dict(center_tool_mm=[(x0+x1)/2, (y0+y1)/2, 0.],
+                    half_size_mm=[(x1-x0)/2, (y1-y0)/2, g['ledge_half_width_z_mm']])
+    boxes = dict(stem=box(g['stem_inner_x_mm'], g['stem_outer_x_mm'],
+                          g['stem_start_y_mm'], stem_end),
+                 ledge=box(inner_x, outer_x, top, top+g['ledge_depth_y_mm']))
+    return dict(boxes=boxes, nominal_puck_face_y_mm=design['tool_tcp_y_mm']+design['puck_half_length_mm'],
+        ledge_top_y_mm=top, nominal_axial_gap_mm=g['nominal_puck_face_gap_mm'],
+        source_finger=source_finger, source_nest_seat_radius_mm=nest_radius,
+        scope='Integral aluminum jaw lips, native CAD and matching collision boxes; no strength, continuous clearance or hardware retention qualification')
 
 
 def fault_contact_eligibility(frames, onset_s, *, window_s=.05):

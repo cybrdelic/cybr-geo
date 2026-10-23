@@ -235,7 +235,8 @@ def _candidate_intent(source_intent):
     """Extend the source inventory for one opt-in, unresolved native revision."""
     document = deepcopy(source_intent.document)
     for name in ('tool__gripper_bridge_10', 'tool__pinion_front_bushing_12',
-                 'pinion__gripper_pinion_m0p3_z20_0'):
+                 'pinion__gripper_pinion_m0p3_z20_0',
+                 'jaw__right_jaw_carriage_0', 'jaw_opposed__left_jaw_carriage'):
         if name not in document['parts']:
             raise ValueError(f'ARX candidate cannot locate source construction part {name}')
         # Altered native geometry has no reviewed volume cap. The installed
@@ -620,6 +621,16 @@ def build(spec, output):
     right=drill(right,[(6,202.5,0)],(0,1,0),1.6,L=9)
     left=finger.cut(cq.Workplane('XY').box(8.5,2.8,6.2).translate((5.8,196.8,0)))
     left=drill(left,[(6,200.5,0)],(0,1,0),1.6,L=9)
+    if candidate is not None:
+        # These integral carriage extensions are the same two source-bound
+        # boxes later lowered as jaw-body contact proxies. The stem overlaps
+        # the original finger; the ledge reaches beneath the puck axial face.
+        # Neither nominal geometry nor contact simulation proves its strength.
+        for item in candidate['capture_lip']['boxes'].values():
+            solid=cq.Workplane('XY').box(*[2*h for h in item['half_size_mm']]).translate(
+                tuple(item['center_tool_mm']))
+            right=right.union(solid)
+            left=left.union(solid)
     addpart('right_jaw_carriage',right)
     addpart('left_jaw_carriage',left.mirror('YZ'))
     addpart('finger_pad',cq.Workplane('XY').box(1.8,24,18.4).translate((.9,219.2,0)),'rubber','Bonded replaceable silicone insert; bond strength and friction require coupon test')
@@ -1283,6 +1294,10 @@ def build(spec, output):
             construction_input=candidate['proposal'],
             native_placement=candidate['placement'],
             authored_geometry_mm=candidate['geometry'],
+            capture_lip_recipe=candidate['capture_lip'],
+            capture_lip_carriage_mass_kg={body: next(row['mass_kg'] for row in BODIES[body]
+                if row['name'] == name) for body, name in
+                (('jaw', 'right_jaw_carriage_0'), ('jaw_opposed', 'left_jaw_carriage'))},
             placed_candidate_parts=sorted(expected),
             candidate_part_mass_kg=candidate_masses,
             vendor_mass_allocation_kg=SPEC['brakes']['small']['mass_kg'],
@@ -1291,7 +1306,7 @@ def build(spec, output):
             motor_off_loaded_puck_retained=False,
             configured_hub_verified=False,
             manufacturing_qualified=False,
-            scope='Opt-in native diagnostic candidate with finite pinion brake; no supplier interface, installed holding torque, posed collision or hardware retention evidence')
+            scope='Opt-in native diagnostic brake and integral jaw capture lip; no supplier interface, installed holding torque, posed collision, lip strength or hardware retention evidence')
     if plan is not None:
         return _finish_qualified(output, RHO, intent, plan, construction.rows(),
             construction.body_records, construction.source_mass_overrides,

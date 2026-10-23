@@ -61,6 +61,24 @@ def test_fresh_and_unchanged_reuse_bind_constructor_outside_design_py(tmp_path):
     assert (native / 'native-build.json').read_bytes() == before
 
 
+def test_optional_native_build_result_preserves_bound_receipts(tmp_path):
+    project_path = authored_project(tmp_path / 'project')
+    project, identity = source.load_project(project_path)
+    original = project.construct
+    constructed = object()
+    def return_build(*args):
+        original(*args)
+        return constructed
+    project.construct = return_build
+    native = tmp_path / 'native'
+    receipt, binding, returned = source.construct_project_native(
+        project, project_path, identity, native, return_native=True)
+    assert returned is constructed
+    assert binding['native_build_sha256'] == digest(receipt)
+    assert source.verify_native_source_binding(
+        native, project.specification, identity, receipt=receipt) == binding
+
+
 @pytest.mark.parametrize('relative,contents', [
     ('helpers/shape.py', 'DIMENSION_MM = 30\n'),
     ('data/dimensions.json', '{"offset_mm":50}'),

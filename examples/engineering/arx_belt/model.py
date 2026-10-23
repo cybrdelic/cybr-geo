@@ -182,7 +182,8 @@ def compile_model(spec=None, *, native_directory=None):
                 or receipt.get('canonical_specification_sha256') != digest(spec)
                 or set(receipt.get('placed_candidate_parts', [])) != expected
                 or receipt.get('native_placement') != candidate['placement']
-                or receipt.get('authored_geometry_mm') != candidate['geometry']):
+                or receipt.get('authored_geometry_mm') != candidate['geometry']
+                or receipt.get('capture_lip_recipe') != candidate['capture_lip']):
             raise ValueError('ARX brake candidate physical model lacks matching native construction')
         masses = receipt.get('candidate_part_mass_kg', {})
         components = {f'{body}__{row["name"]}': row['mass_kg']
@@ -194,6 +195,17 @@ def compile_model(spec=None, *, native_directory=None):
                 or not math.isclose(masses['tool__gripper_brake_stator_envelope'],
                                     spec['brakes']['small']['mass_kg'], rel_tol=1e-12)):
             raise ValueError('ARX brake candidate mass is not bound into both native rigid bodies')
+        changed_jaws = {'jaw': 'right_jaw_carriage_0',
+                        'jaw_opposed': 'left_jaw_carriage'}
+        recorded_jaw_mass = receipt.get('capture_lip_carriage_mass_kg')
+        if (not isinstance(recorded_jaw_mass, dict)
+                or set(recorded_jaw_mass) != set(changed_jaws)):
+            raise ValueError('ARX capture lips require both native jaw carriage masses')
+        for body, part in changed_jaws.items():
+            actual = {row['name']: row['mass_kg'] for row in props[body]['components']}
+            if (part not in actual or not math.isclose(actual[part],
+                    recorded_jaw_mass[body], rel_tol=1e-12)):
+                raise ValueError('ARX capture lip carriage mass differs from native CAD')
         builder = ProxyBuilder(prefix='ARX_brake_candidate_')
         g = candidate['geometry']
         b = spec['brakes']['small']
@@ -209,8 +221,16 @@ def compile_model(spec=None, *, native_directory=None):
                 [x,y+PINION_CENTER_Y_MM,16],
                 [x,y+PINION_CENTER_Y_MM,g['stator_bracket_z'][0]],
                 g['stator_standoff_radius'],native_part='gripper_bridge')
+        for sign, body, native in ((1, 'jaw_left', 'right_jaw_carriage_0'),
+                                    (-1, 'jaw_right', 'left_jaw_carriage')):
+            for name, box in candidate['capture_lip']['boxes'].items():
+                x, y, z = box['center_tool_mm']
+                builder.box(f'{body}_capture_{name}', body,
+                    [sign*x, y-JAW_ORIGIN_Y_MM, z], box['half_size_mm'],
+                    native_part=native,
+                    approximation='Exact box used by the candidate integral jaw carriage CAD')
         proxy_config['records'].extend(builder.records)
-        proxy_config['scope'] += ' Opt-in outboard brake stator, bracket and standoffs are conservative native-dimension proxies; vendor internals and full posed clearance remain unresolved.'
+        proxy_config['scope'] += ' Opt-in outboard brake stator, bracket and standoffs are conservative native-dimension proxies; two integral jaw capture lips use the same boxes as native CAD. Vendor internals, lip strength and full posed clearance remain unresolved.'
     physical = PhysicalModel.from_xml((DATA / 'P2-baseline.xml').read_text(), provenance=dict(
         repository='https://github.com/cybrdelic/cybr-arx6-belt', commit=SOURCE_COMMIT,
         design_spec_sha256=digest(spec), native_records='freshly generated' if native_directory else 'shipped source records',
@@ -236,7 +256,7 @@ def compile_model(spec=None, *, native_directory=None):
         if 'pinion' not in props:
             raise ValueError('A rotating gripper pinion requires its own fresh native CAD mass')
         pinion = attach_rotating_pinion(physical, travel)
-        physical.root.set('model', 'ARX6_P5_derived_outboard_brake_candidate' if candidate else
+        physical.root.set('model', 'ARX6_P5_derived_outboard_brake_capture_candidate' if candidate else
                           'ARX6_P5_derived_rotating_pinion')
     else:
         pinion = None
@@ -288,10 +308,11 @@ def compile_model(spec=None, *, native_directory=None):
         physical.provenance['gripper_retention_candidate'] = dict(
             revision=CANDIDATE_REVISION,
             native_receipt_sha256=digest(receipt),
+            capture_lip_recipe_sha256=digest(candidate['capture_lip']),
             full_posed_clearance_verified=False,
             loaded_power_loss_retention_verified=False,
             configured_vendor_brake_verified=False,
-            scope='CAD-bound diagnostic brake candidate with finite pinion friction; no physical qualification')
+            scope='CAD-bound diagnostic brake and integral jaw capture; no lip strength, supplier or hardware qualification')
     p['controller']['ki_Nm_rad_s'][1:3] = [80., 60.]
     efficiency = spec['folded_transmission'].get('efficiency_screening', .97)
     if isinstance(efficiency, (float, int)):

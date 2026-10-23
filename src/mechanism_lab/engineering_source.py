@@ -262,7 +262,7 @@ def verify_native_source_binding(directory, specification, source_files, *, rece
     return binding
 
 
-def construct_project_native(project, source, source_files, directory):
+def construct_project_native(project, source, source_files, directory, *, return_native=False):
     """Execute construction, then bind its verified outputs to captured sources.
 
     There is deliberately no public operation to bind a pre-existing build.
@@ -270,6 +270,8 @@ def construct_project_native(project, source, source_files, directory):
     so a failed or no-op callback cannot confer a new identity on an old build.
     """
     from .physical_model import digest
+    if not isinstance(return_native, bool):
+        raise ValueError('return_native must be boolean')
     root = Path(directory).resolve()
     root.mkdir(parents=True, exist_ok=True)
     (root / NATIVE_SOURCE_BINDING).unlink(missing_ok=True)
@@ -277,7 +279,7 @@ def construct_project_native(project, source, source_files, directory):
     try:
         assert_project_source_identity(source, source_files)
         dependencies = construction_dependency_identity()
-        project.construct(project.specification, root)
+        native_build = project.construct(project.specification, root)
         assert_project_source_identity(source, source_files)
         if dependencies != construction_dependency_identity():
             raise ValueError('Shared construction dependencies changed during native construction')
@@ -289,7 +291,7 @@ def construct_project_native(project, source, source_files, directory):
             native_build_file_sha256=hashlib.sha256((root / 'native-build.json').read_bytes()).hexdigest())
         (root / NATIVE_SOURCE_BINDING).write_text(json.dumps(binding, indent=2, sort_keys=True) + '\n', encoding='utf-8')
         verify_native_build(root, project.specification, source_files=source_files)
-        return receipt, binding
+        return (receipt, binding, native_build) if return_native else (receipt, binding)
     except Exception:
         (root / NATIVE_SOURCE_BINDING).unlink(missing_ok=True)
         (root / 'native-build.json').unlink(missing_ok=True)
