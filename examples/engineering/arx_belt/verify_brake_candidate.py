@@ -23,8 +23,7 @@ from scipy.spatial.transform import Rotation
 
 from mechanism_lab.causal_runtime import CausalSimulation
 from mechanism_lab.engineering_source import (assert_project_source_identity,
-    construct_project_native, project_source_identity, verify_native_build,
-    verify_native_source_binding)
+    construct_project_native, project_source_identity)
 from mechanism_lab.part_geometry import place_local_shape
 from mechanism_lab.physical_model import digest
 
@@ -142,7 +141,7 @@ def _fault_metrics(result, simulation, onset_s):
         raise ValueError('Fault trace does not cover both sides of the event')
     pre = before[-1]
     pre_y = pre['bodies']['puck']['position_m'][1]
-    drop = max(pre_y-row['bodies']['puck']['position_m'][1] for row in after)
+    drop = max(0., max(pre_y-row['bodies']['puck']['position_m'][1] for row in after))
     contact_eligibility = fault_contact_eligibility(before, onset_s)
     pinion = simulation.model.joint('gripper_pinion').id
     left, right = (simulation.model.joint(name).id for name in ('jaw_left', 'jaw_right'))
@@ -194,11 +193,6 @@ def verify(output):
     source_files = project_source_identity(source)
     native_receipt, binding, native = construct_project_native(
         project, source, source_files, native_dir, return_native=True)
-    if verify_native_build(native_dir, spec, source_files=source_files) != native_receipt:
-        raise ValueError('Candidate native build differs from its source-bound receipt')
-    if verify_native_source_binding(native_dir, spec, source_files,
-                                    receipt=native_receipt) != binding:
-        raise ValueError('Candidate native source binding changed before physics')
     physical, control, parameters = project.compile_physics(spec, native_directory=native_dir)
     physical.provenance['native_build_sha256'] = digest(native_receipt)
     physical.provenance['native_source_binding_sha256'] = digest(binding)

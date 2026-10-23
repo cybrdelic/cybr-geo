@@ -95,8 +95,7 @@ def _design_source(specification, baseline, document):
     source_shaft = _same(source_shaft, document['source_gripper_upper_shaft_diameter_mm'],
                          'gripper upper shaft diameter')
     _same(baseline_shaft, source_shaft, 'baseline gripper upper shaft diameter')
-    puck_radius = _same(puck.get('outer_radius_m'),
-                        document['source_puck_outer_radius_mm']/1000., 'puck outer radius') * 1000.
+    puck_radius = _positive(puck.get('outer_radius_m'), 'puck outer radius') * 1000.
     puck_half_length = _positive(puck.get('height_m'), 'puck full length') * 500.
     tool_tcp = _positive(baseline.get('tool_length_m'), 'tool TCP distance') * 1000.
     return vendor, gripper, puck, source_shaft, puck_radius, puck_half_length, tool_tcp

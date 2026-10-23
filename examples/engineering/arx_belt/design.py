@@ -1295,9 +1295,6 @@ def build(spec, output):
             native_placement=candidate['placement'],
             authored_geometry_mm=candidate['geometry'],
             capture_lip_recipe=candidate['capture_lip'],
-            capture_lip_carriage_mass_kg={body: next(row['mass_kg'] for row in BODIES[body]
-                if row['name'] == name) for body, name in
-                (('jaw', 'right_jaw_carriage_0'), ('jaw_opposed', 'left_jaw_carriage'))},
             placed_candidate_parts=sorted(expected),
             candidate_part_mass_kg=candidate_masses,
             vendor_mass_allocation_kg=SPEC['brakes']['small']['mass_kg'],

@@ -51,7 +51,6 @@
     "shaft_end_above_armature": 2.0,
     "key_z": [24.0, 46.0]
   },
-  "source_puck_outer_radius_mm": 19.0,
   "surveyed_outboard_inner_face_z_mm": 20.5,
   "puck_to_stator_axial_design": {
     "required_service_gap_mm": 1.5,

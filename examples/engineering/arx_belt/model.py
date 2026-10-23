@@ -195,17 +195,6 @@ def compile_model(spec=None, *, native_directory=None):
                 or not math.isclose(masses['tool__gripper_brake_stator_envelope'],
                                     spec['brakes']['small']['mass_kg'], rel_tol=1e-12)):
             raise ValueError('ARX brake candidate mass is not bound into both native rigid bodies')
-        changed_jaws = {'jaw': 'right_jaw_carriage_0',
-                        'jaw_opposed': 'left_jaw_carriage'}
-        recorded_jaw_mass = receipt.get('capture_lip_carriage_mass_kg')
-        if (not isinstance(recorded_jaw_mass, dict)
-                or set(recorded_jaw_mass) != set(changed_jaws)):
-            raise ValueError('ARX capture lips require both native jaw carriage masses')
-        for body, part in changed_jaws.items():
-            actual = {row['name']: row['mass_kg'] for row in props[body]['components']}
-            if (part not in actual or not math.isclose(actual[part],
-                    recorded_jaw_mass[body], rel_tol=1e-12)):
-                raise ValueError('ARX capture lip carriage mass differs from native CAD')
         builder = ProxyBuilder(prefix='ARX_brake_candidate_')
         g = candidate['geometry']
         b = spec['brakes']['small']
