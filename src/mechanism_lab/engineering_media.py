@@ -281,9 +281,12 @@ def _size(value):
 
 def _backend(studio):
     import vtk
+    occlusion = [dict(radius_model_units=render_pass.GetRadius(), bias_model_units=render_pass.GetBias(),
+                      kernel_size=render_pass.GetKernelSize(), blur=bool(render_pass.GetBlur()))
+                 for render_pass in studio.passes if isinstance(render_pass, vtk.vtkSSAOPass)]
     return dict(name='vtk-pbr', renderer='VTK PBR rasterizer', vtk_version=vtk.vtkVersion.GetVTKVersion(),
         render_window=studio.win.GetClassName(), graphics_capabilities=studio.win.ReportCapabilities(),
-        supersample=studio.supersample, generated_imagery=False, spp=None,
+        supersample=studio.supersample, ambient_occlusion=occlusion, generated_imagery=False, spp=None,
         scope='Actual native mesh rasterization with source display materials and studio illumination; not path tracing')
 
 

@@ -162,7 +162,11 @@ class Studio:
         steps=vtk.vtkRenderStepsPass();delegate=steps;self.passes=[steps]
         if ao:
             ssao=vtk.vtkSSAOPass();ssao.SetDelegatePass(steps)
-            extent=max(np.ptp(assembly.bounds,axis=0));ssao.SetRadius(max(1.0,extent*.025));ssao.SetBias(.018);ssao.SetKernelSize(64);ssao.BlurOn()
+            extent=max(np.ptp(assembly.bounds,axis=0));radius=max(1.0,extent*.025)
+            # A fixed .018 model-unit bias creates false self-occlusion bands
+            # on millimetre CAD. Keep the numerical bias relative to the sampled
+            # neighbourhood, retaining AO instead of darkening flat surfaces.
+            ssao.SetRadius(radius);ssao.SetBias(radius*.12);ssao.SetKernelSize(64);ssao.BlurOn()
             delegate=ssao;self.passes.append(ssao)
         tone=vtk.vtkToneMappingPass();tone.SetToneMappingType(vtk.vtkToneMappingPass.GenericFilmic);tone.SetGenericFilmicDefaultPresets();tone.SetExposure(1.05*float(exposure));tone.SetDelegatePass(delegate)
         self.passes.append(tone);self.ren.SetPass(tone)
