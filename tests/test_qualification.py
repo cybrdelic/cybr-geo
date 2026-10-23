@@ -21,6 +21,8 @@ from mechanism_lab.qualification import (
     _physical_startup_poses_mm,
     _recheck_qualified_native_steps, _require_physical_mass_binding,
     _require_connector_demand_binding, _require_spring_anchor_demand_binding,
+    _require_release_service_cases,
+    _routed_moment_capacities,
     _require_native_spring_anchor_steps,
     _simulated_loads, _verify_evidence,
     release_project,
@@ -44,6 +46,9 @@ def _plan():
                                             required_clearance_mm=.2, demand_N=5., design_capacity_N=10.)},
                 loads={'output': dict(part='moving__b', demand_Nm=1., design_capacity_Nm=2.,
                                       service_temperature_C=50.)},
+                 service_cases={'output': dict(source_part='moving__b', reaction_part='fixed__a',
+                                               load_mode='torque_Nm', demand=1.)},
+                 interface_moment_capacities_Nm={'pin_fit': {'torque_Nm': 2.}},
                 assembly_requirements=dict(minimum_endurance_cycles=1000,
                                            minimum_thermal_test_C=60.,
                                            maximum_measured_backlash_mm=.3))
@@ -211,6 +216,63 @@ def test_qualified_connector_mapping_needs_known_interface_and_covers_model_dema
             peak_absolute=dict(value=4.))})}})
     assert _require_connector_demand_binding(qualified, SimpleNamespace(root=root),
                                              simulation) is None
+
+
+@pytest.mark.parametrize('kind', ('joint', 'tendon', 'distance'))
+def test_qualified_release_rejects_unbounded_equality_couplings(kind):
+    # The ARX rotating pinion uses two equality/joint rack meshes. They may be
+    # simulated diagnostically, but this release protocol has no source-bound
+    # force/capacity mapping for their solver reactions.
+    root = ET.Element('mujoco')
+    ET.SubElement(ET.SubElement(root, 'equality'), kind, name='unbounded_mesh')
+    with pytest.raises(QualificationError, match=f'Unsupported physical equality {kind}'):
+        _require_connector_demand_binding(QualificationPlan(_plan()),
+            SimpleNamespace(root=root), {'metrics': {'constraints': {}}})
+
+
+def test_qualified_release_requires_source_reaction_and_service_demand():
+    plan = _plan()
+    assert _require_release_service_cases(plan) is None
+    missing = deepcopy(plan)
+    del missing['service_cases']
+    with pytest.raises(QualificationError, match='requires source-bound service cases'):
+        _require_release_service_cases(missing)
+
+    from mechanism_lab.load_path_routes import LoadPathRouteError, validate_mechanical_load_paths
+    signed = {'output': dict(source_part='moving__b', reaction_part='fixed__a',
+                             load_mode='torque_Nm', demand=1.,
+                             routes=[dict(parts=['moving__b', 'fixed__a'], interfaces=['pin_fit'])])}
+    assert validate_mechanical_load_paths(signed, loads=plan['loads'], parts=plan['parts'],
+        interfaces=plan['interfaces'], source_cases=plan['service_cases']) == frozenset({'pin_fit'})
+    signed['output']['reaction_part'] = 'moving__b'
+    with pytest.raises(LoadPathRouteError, match='source-bound load|distinct'):
+        validate_mechanical_load_paths(signed, loads=plan['loads'], parts=plan['parts'],
+            interfaces=plan['interfaces'], source_cases=plan['service_cases'])
+
+
+def test_qualified_torque_and_bending_routes_require_every_interface_capacity():
+    plan = _plan()
+    signed = {'output': dict(**plan['service_cases']['output'],
+        routes=[dict(parts=['moving__b', 'fixed__a'], interfaces=['pin_fit'])])}
+    assert _routed_moment_capacities(plan, signed) == {('pin_fit', 'torque_Nm'): 2.}
+    omitted = deepcopy(plan)
+    del omitted['interface_moment_capacities_Nm']
+    with pytest.raises(QualificationError, match='exact mode-specific design capacities'):
+        _routed_moment_capacities(omitted, signed)
+    weak = deepcopy(plan)
+    weak['interface_moment_capacities_Nm']['pin_fit']['torque_Nm'] = .5
+    with pytest.raises(QualificationError, match='understates source torque_Nm demand'):
+        _routed_moment_capacities(weak, signed)
+    bending = deepcopy(plan)
+    bending['service_cases']['bend'] = dict(source_part='moving__b',
+        reaction_part='fixed__a', load_mode='bending_moment_Nm', demand=.7)
+    signed['bend'] = dict(**bending['service_cases']['bend'],
+        routes=[dict(parts=['moving__b', 'fixed__a'], interfaces=['pin_fit'])])
+    with pytest.raises(QualificationError, match='exact mode-specific design capacities'):
+        _routed_moment_capacities(bending, signed)
+    bending['interface_moment_capacities_Nm']['pin_fit']['bending_moment_Nm'] = 1.
+    assert _routed_moment_capacities(bending, signed) == {
+        ('pin_fit', 'torque_Nm'): 2., ('pin_fit', 'bending_moment_Nm'): 1.}
 
 
 def _spring_binding_fixture():
@@ -432,8 +494,9 @@ def _signed_fixture(tmp_path, *, basis='a'*64, step_hashes=None):
     step_hashes = step_hashes or {'fixed__a': 'b'*64, 'moving__b': 'c'*64}
     rows = [
         ('system_service_envelope', 'complete_assembly', dict(load_paths_reviewed=True,
-            mechanical_load_paths={'output': {'parts': ['moving__b', 'fixed__a'],
-                                              'interfaces': ['pin_fit']}},
+             mechanical_load_paths={'output': dict(source_part='moving__b',
+                 reaction_part='fixed__a', load_mode='torque_Nm', demand=1.,
+                 routes=[dict(parts=['moving__b', 'fixed__a'], interfaces=['pin_fit'])])},
             actuator_demand_Nm={'output': 1.}, interface_demand_N={'pin_fit': 5.},
             required_thermal_test_C=60., required_endurance_cycles=1000,
             maximum_backlash_mm=.3)),
@@ -452,7 +515,8 @@ def _signed_fixture(tmp_path, *, basis='a'*64, step_hashes=None):
                                               maximum_dimensional_error_mm=.05, step_sha256=step_hashes['moving__b'])),
         ('interface_test', 'pin_fit', dict(assembled_serial='TEST-ASSEMBLY',
                                            part_serials={'fixed__a': 'TEST-A', 'moving__b': 'TEST-B'},
-                                           measured_minimum_clearance_mm=.3, tested_capacity_N=10.)),
+                                            measured_minimum_clearance_mm=.3, tested_capacity_N=10.,
+                                            tested_torque_capacity_Nm=2.)),
         ('load_test', 'output', dict(assembled_serial='TEST-ASSEMBLY', part_serial='TEST-B',
                                       tested_capacity_Nm=2., tested_temperature_C=60.)),
         ('assembly_test', 'complete_assembly', dict(assembled_serial='TEST-ASSEMBLY', fit_passed=True,
@@ -648,7 +712,9 @@ def test_signed_service_envelope_cannot_understate_combined_source_force(tmp_pat
                                    'wrong_assembly_bom', 'wrong_interface_unit',
                                    'wrong_interface_part', 'wrong_load_unit', 'wrong_load_part',
                                    'understated_service_torque', 'unreviewed_load_path',
-                                   'missing_mechanical_path', 'disconnected_mechanical_path'])
+                                    'missing_mechanical_path', 'disconnected_mechanical_path',
+                                    'wrong_source_reaction', 'missing_torque_capacity',
+                                    'weak_torque_capacity'])
 def test_signed_evidence_rejects_stale_forged_or_failed_measurements(tmp_path, fault):
     package, policy, plan, records, private = _signed_fixture(tmp_path)
     modified = deepcopy(records)
@@ -671,7 +737,10 @@ def test_signed_evidence_rejects_stale_forged_or_failed_measurements(tmp_path, f
     elif fault == 'understated_service_torque': modified[0]['measurements']['actuator_demand_Nm']['output'] = 1.5
     elif fault == 'unreviewed_load_path': modified[0]['measurements']['load_paths_reviewed'] = False
     elif fault == 'missing_mechanical_path': modified[0]['measurements']['mechanical_load_paths'] = {}
-    elif fault == 'disconnected_mechanical_path': modified[0]['measurements']['mechanical_load_paths']['output']['parts'].reverse()
+    elif fault == 'disconnected_mechanical_path': modified[0]['measurements']['mechanical_load_paths']['output']['routes'][0]['parts'].reverse()
+    elif fault == 'wrong_source_reaction': modified[0]['measurements']['mechanical_load_paths']['output']['reaction_part'] = 'moving__b'
+    elif fault == 'missing_torque_capacity': modified[5]['measurements'].pop('tested_torque_capacity_Nm')
+    elif fault == 'weak_torque_capacity': modified[5]['measurements']['tested_torque_capacity_Nm'] = 1.5
     if fault != 'forged_signature': _resign(package, modified, private)
     else: (package/'evidence.json').write_text(json.dumps(dict(schema='cybrgeo-signed-evidence-set/1',
                                                                records=modified)), encoding='utf-8')
@@ -698,6 +767,7 @@ def test_examples_cannot_release_without_preconstruction_policy(tmp_path):
     ('rack', 'output', .001, 'source output model limit'),
     ('rack', 'output', None, 'output demand-limit telemetry'),
     ('rack', 'output', 0., None),
+    ('missing_source_cases', 'belt', 0., 'requires source-bound service cases'),
     ('unmapped_connector', 'belt', 0., 'lack exact planned interface mapping'),
     ('missing_connector', 'belt', 0., 'inventory differs'),
     ('zero_step_connector', 'belt', 0., 'Modeled connector demands require integration-step count'),
@@ -729,6 +799,10 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
     if case == 'rack':
         plan['loads']['rack_motor'] = dict(part='moving__b', demand_Nm=1.,
                                           design_capacity_Nm=2., service_temperature_C=50.)
+        plan['service_cases']['rack_motor'] = dict(source_part='moving__b',
+            reaction_part='fixed__a', load_mode='torque_Nm', demand=1.)
+    elif case == 'missing_source_cases':
+        del plan['service_cases']
     source = tmp_path/'project'
     (source/'data').mkdir(parents=True)
     plan_path = source/'data'/'qualification-plan.json'

@@ -407,7 +407,8 @@ class QualificationPlan:
         fields = {'schema', 'parts', 'materials', 'processes', 'interfaces', 'loads',
                   'assembly_requirements'}
         if (not fields <= set(row) or set(row) - fields -
-                {'solver_connectors', 'spring_load_paths', 'service_cases', 'unloaded_clearances'}):
+                {'solver_connectors', 'spring_load_paths', 'service_cases',
+                 'unloaded_clearances', 'interface_moment_capacities_Nm'}):
             raise QualificationError('Qualification plan fields must include the construction contract and only supported load-path mappings')
         if row['schema'] != 'cybrgeo-qualification-plan/1':
             raise QualificationError('Expected cybrgeo-qualification-plan/1')
@@ -551,6 +552,16 @@ class QualificationPlan:
                 raise QualificationError(f'Source service-case plan is invalid: {error}') from error
         elif row.get('unloaded_clearances'):
             raise QualificationError('Nonload clearances require source-bound service cases')
+        moment_capacities = row.get('interface_moment_capacities_Nm', {})
+        if not isinstance(moment_capacities, dict):
+            raise QualificationError('Interface moment capacities must map interfaces to load modes')
+        for interface_name, modes in moment_capacities.items():
+            if interface_name not in interfaces or not isinstance(modes, dict) or not modes:
+                raise QualificationError('Interface moment capacity needs a declared interface and modes')
+            for mode, capacity in modes.items():
+                if mode not in ('torque_Nm', 'bending_moment_Nm'):
+                    raise QualificationError('Interface moment capacity has an unsupported load mode')
+                _number(capacity, f'{interface_name} {mode} design capacity', positive=True)
 
     @property
     def sha256(self):
@@ -719,6 +730,53 @@ EVIDENCE_KINDS = ('system_service_envelope', 'material', 'process', 'part_inspec
                   'interface_test', 'load_test', 'assembly_test')
 
 
+def _require_release_service_cases(plan):
+    """Require a source-fixed load and reaction for every qualified route.
+
+    The older single-route parser remains useful for reading diagnostic or
+    archived evidence, but it cannot establish a newly released assembly's
+    reaction parts or service demands from source construction inputs.
+    """
+    from .load_path_routes import LoadPathRouteError, validate_service_case_plan
+
+    cases = plan.get('service_cases') if isinstance(plan, dict) else None
+    if not isinstance(cases, dict) or not cases:
+        raise QualificationError('Qualified release requires source-bound service cases')
+    try:
+        validate_service_case_plan(cases, parts=plan['parts'],
+            interfaces=plan['interfaces'], loads=plan['loads'],
+            unloaded_clearances=plan.get('unloaded_clearances', ()))
+    except (KeyError, LoadPathRouteError) as error:
+        raise QualificationError(f'Qualified release service cases are invalid: {error}') from error
+
+
+def _routed_moment_capacities(plan, signed_routes):
+    """Bind each routed torque/moment edge to source demand and planned capacity.
+
+    This does not convert torque into force, distribute parallel loads, or
+    imply hardware strength. A later signed same-unit interface test must meet
+    every declared capacity on the same assembled unit and part serial pair.
+    """
+    required = {}
+    for name, source in plan['service_cases'].items():
+        mode = source['load_mode']
+        if mode not in ('torque_Nm', 'bending_moment_Nm'):
+            continue
+        for route in signed_routes[name]['routes']:
+            for interface_name in route['interfaces']:
+                key = (interface_name, mode)
+                required[key] = max(required.get(key, 0.), float(source['demand']))
+    declared = {(interface_name, mode): capacity
+                for interface_name, modes in plan.get('interface_moment_capacities_Nm', {}).items()
+                for mode, capacity in modes.items()}
+    if set(declared) != set(required):
+        raise QualificationError('Routed torque/moment interfaces require exact mode-specific design capacities')
+    for key, demand in required.items():
+        if _number(declared[key], f'{key} design moment capacity', positive=True) < demand:
+            raise QualificationError(f'Interface {key[0]} understates source {key[1]} demand')
+    return declared
+
+
 def _artifact(root, relative):
     if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
         raise QualificationError('Evidence document must use a contained relative path')
@@ -734,6 +792,7 @@ def _artifact(root, relative):
 def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256,
                      modeled_interface_demands=None):
     """Verify detached Ed25519 signatures under an externally supplied trust policy."""
+    _require_release_service_cases(plan)
     try:
         from cryptography.exceptions import InvalidSignature
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
@@ -794,6 +853,7 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
             modeled_interface_demands=modeled_interface_demands)
     except LoadPathRouteError as error:
         raise QualificationError(f'Signed mechanical load paths are invalid: {error}') from error
+    moment_capacities = _routed_moment_capacities(plan, service['mechanical_load_paths'])
     actuator_demands = _object(service.get('actuator_demand_Nm'), 'Signed actuator demands')
     interface_demands = _object(service.get('interface_demand_N'), 'Signed interface demands')
     if set(actuator_demands) != set(plan['loads']) or set(interface_demands) != set(plan['interfaces']):
@@ -856,6 +916,13 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
                 or row.get('part_serials') != pair_serials
                 or _number(row.get('tested_capacity_N'), 'Tested interface capacity', positive=True) < interface['design_capacity_N']):
             raise QualificationError(f'Interface {name} unit, part serials, clearance or capacity fail')
+        for mode, measurement in (('torque_Nm', 'tested_torque_capacity_Nm'),
+                                  ('bending_moment_Nm', 'tested_bending_moment_capacity_Nm')):
+            capacity = moment_capacities.get((name, mode))
+            if (capacity is not None and
+                    _number(row.get(measurement), f'{name} tested {mode} capacity', positive=True)
+                    < capacity):
+                raise QualificationError(f'Interface {name} lacks tested {mode} capacity')
         if _interface_role(interface) == 'clearance':
             if (_number(row.get('measured_minimum_clearance_mm'), 'Measured clearance')
                     < interface['required_clearance_mm']):
@@ -928,7 +995,11 @@ def _require_connector_demand_binding(plan, physical_model, simulation,
             collect_sites(worldbody, 'world')
         for element in root.findall('./equality/*'):
             if element.tag not in ('connect', 'weld'):
-                continue
+                # Joint/tendon equalities can carry the rack, belt or another
+                # transmission load. No signed force/capacity binding for
+                # their solver reactions exists in this release protocol.
+                raise QualificationError(
+                    f'Unsupported physical equality {element.tag} needs a qualified load path')
             name = element.get('name')
             if not name or name in source_connectors:
                 raise QualificationError('Physical connect/weld constraints need unique source names')
@@ -1419,6 +1490,7 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     if 'data/qualification-plan.json' not in source_files or not plan_path.is_file():
         raise QualificationError('Project lacks a source-bound qualification construction plan')
     plan = QualificationPlan(_read_json(plan_path))
+    _require_release_service_cases(plan.document)
     intent_path = project_dir / 'data' / 'qualification-intent.json'
     source_intent = None
     if intent_path.is_file() or 'data/qualification-intent.json' in source_files:
