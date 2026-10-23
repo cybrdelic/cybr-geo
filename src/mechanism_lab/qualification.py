@@ -148,8 +148,8 @@ class QualificationPlan:
         row = self.document
         fields = {'schema', 'parts', 'materials', 'processes', 'interfaces', 'loads',
                   'assembly_requirements'}
-        if set(row) not in (fields, fields | {'solver_connectors'}):
-            raise QualificationError('Qualification plan fields must include the construction contract and optional solver_connectors')
+        if not fields <= set(row) or set(row) - fields - {'solver_connectors', 'spring_load_paths'}:
+            raise QualificationError('Qualification plan fields must include the construction contract and only supported load-path mappings')
         if row['schema'] != 'cybrgeo-qualification-plan/1':
             raise QualificationError('Expected cybrgeo-qualification-plan/1')
         parts = _object(row['parts'], 'Parts')
@@ -233,6 +233,35 @@ class QualificationPlan:
             _safe_id(name, 'Solver connector ID')
             if interface_name not in interfaces:
                 raise QualificationError(f'Solver connector {name} lacks a planned physical interface')
+        spring_paths = row.get('spring_load_paths', {})
+        if not isinstance(spring_paths, dict):
+            raise QualificationError('Spring load paths must map each control spring to its native interfaces')
+        spring_interfaces = set()
+        for name, path in spring_paths.items():
+            if not isinstance(name, str) or not re.fullmatch(r'spring_(0|[1-9][0-9]*)', name):
+                raise QualificationError('Spring load path keys must use their control-source index')
+            if not isinstance(path, dict):
+                raise QualificationError(f'Spring load path {name} must be an object')
+            _keys(path, ('joint', 'maximum_service_scale', 'uncertainty_factor', 'anchors'),
+                  f'Spring load path {name}')
+            _safe_id(path['joint'], f'Spring {name} joint')
+            if (_number(path['maximum_service_scale'], f'Spring {name} maximum service scale') < 1
+                    or _number(path['uncertainty_factor'], f'Spring {name} uncertainty factor') < 1):
+                raise QualificationError('Spring service scale and authored uncertainty factor must be at least one')
+            anchors = path['anchors']
+            if not isinstance(anchors, dict) or not anchors:
+                raise QualificationError(f'Spring load path {name} needs exact physical anchor interfaces')
+            members = {}
+            for anchor, interface_name in anchors.items():
+                match = re.fullmatch(r'member_(0|[1-9][0-9]*)_(fixed|moving)', anchor) if isinstance(anchor, str) else None
+                if (match is None or not isinstance(interface_name, str)
+                        or interface_name not in interfaces or interface_name in spring_interfaces):
+                    raise QualificationError(f'Spring anchor {anchor} lacks a distinct planned interface')
+                members.setdefault(int(match[1]), set()).add(match[2])
+                spring_interfaces.add(interface_name)
+            if (set(members) != set(range(len(members)))
+                    or any(endpoints != {'fixed', 'moving'} for endpoints in members.values())):
+                raise QualificationError(f'Spring load path {name} must declare both ends of every physical member')
         for name, load in loads.items():
             _safe_id(name, 'Load ID')
             _keys(load, ('part', 'demand_Nm', 'design_capacity_Nm', 'service_temperature_C'), f'Load {name}')
@@ -406,7 +435,8 @@ def _artifact(root, relative):
     return path
 
 
-def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256):
+def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256,
+                     modeled_interface_demands=None):
     """Verify detached Ed25519 signatures under an externally supplied trust policy."""
     try:
         from cryptography.exceptions import InvalidSignature
@@ -487,8 +517,12 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
         if _number(demand, f'{name} signed torque demand', positive=True) > plan['loads'][name]['demand_Nm']:
             raise QualificationError(f'Plan understates the independent torque demand for {name}')
     for name, demand in interface_demands.items():
-        if _number(demand, f'{name} signed force demand', positive=True) > plan['interfaces'][name]['demand_N']:
+        signed = _number(demand, f'{name} signed force demand', positive=True)
+        if signed > plan['interfaces'][name]['demand_N']:
             raise QualificationError(f'Plan understates the independent interface force demand for {name}')
+        if (modeled_interface_demands is not None
+                and signed < modeled_interface_demands.get(name, 0.)):
+            raise QualificationError(f'Signed service envelope understates modeled interface force for {name}')
     if (_number(service.get('required_thermal_test_C'), 'Signed thermal demand') > plan['assembly_requirements']['minimum_thermal_test_C']
             or _number(service.get('required_endurance_cycles'), 'Signed endurance demand', positive=True) > plan['assembly_requirements']['minimum_endurance_cycles']
             or _number(service.get('maximum_backlash_mm'), 'Signed backlash limit') < plan['assembly_requirements']['maximum_measured_backlash_mm']):
@@ -575,7 +609,8 @@ def _simulated_loads(metrics):
     return actuators
 
 
-def _require_connector_demand_binding(plan, physical_model, simulation):
+def _require_connector_demand_binding(plan, physical_model, simulation,
+                                      modeled_interface_demands=None):
     """Bound modeled connect/weld reactions by source-planned interface loads.
 
     Each source equality must be monitored on every integration step and mapped
@@ -634,6 +669,233 @@ def _require_connector_demand_binding(plan, physical_model, simulation):
     for name, demand in demands.items():
         if demand > plan.document['interfaces'][name]['demand_N']:
             raise QualificationError(f'Interface {name} understates modeled connector force demand')
+        if modeled_interface_demands is not None:
+            modeled_interface_demands[name] = modeled_interface_demands.get(name, 0.) + demand
+
+
+def _require_spring_anchor_demand_binding(plan, physical_model, control, simulation,
+                                          native_record, placements,
+                                          modeled_interface_demands=None):
+    """Map every controlled spring end to an actual tested interface demand.
+
+    The native receipt establishes which placed pin/clevis pair carries each
+    spring end. The control source and physical hinge independently determine
+    the ideal full-range force. Authored service scale and uncertainty only
+    increase that demand; neither is a measured spring or hardware capacity.
+    """
+    from .actuation import TensionSpring
+    from .spring_anchor import member_anchor_positions_mm, tension_anchor_demand
+
+    springs = control.get('springs', []) if isinstance(control, dict) else None
+    paths = plan.document.get('spring_load_paths', {})
+    if not isinstance(springs, list) or any(not isinstance(item, dict) for item in springs):
+        raise QualificationError('Control source has an invalid spring inventory')
+    if not springs:
+        if paths or native_record is not None:
+            raise QualificationError('Spring load-path plan or native receipt has no controlled spring')
+        return
+    if set(paths) != {f'spring_{index}' for index in range(len(springs))}:
+        raise QualificationError('Every controlled spring needs an exact planned anchor load path')
+    if (not isinstance(native_record, dict)
+            or native_record.get('schema') != 'cybrgeo-native-spring-anchor-load-path/1'
+            or not isinstance(native_record.get('plan'), dict)
+            or not isinstance(native_record.get('native_anchor_bindings'), list)
+            or not isinstance(placements, dict)
+            or not isinstance(placements.get('records'), list)):
+        raise QualificationError('Controlled springs need a source-bound native anchor receipt')
+    native_plan = native_record['plan']
+    if (native_plan.get('schema') != 'cybrgeo-spring-anchor-plan/1'
+            or native_plan.get('plan_sha256') != digest({
+                key: value for key, value in native_plan.items() if key != 'plan_sha256'})):
+        raise QualificationError('Native spring-anchor plan has invalid source identity')
+    groups = native_plan.get('groups')
+    if not isinstance(groups, list) or len(groups) != len(springs):
+        raise QualificationError('Native anchor groups differ from controlled springs')
+    placed = {}
+    for item in placements['records']:
+        if not isinstance(item, dict):
+            raise QualificationError('Native spring-anchor placement inventory is invalid')
+        key = (item.get('body'), item.get('name'))
+        if (not all(isinstance(value, str) for value in key) or key in placed):
+            raise QualificationError('Native spring-anchor placement identity is ambiguous')
+        placed[key] = item
+    bindings = {}
+    for item in native_record['native_anchor_bindings']:
+        if not isinstance(item, dict):
+            raise QualificationError('Native spring-anchor binding is invalid')
+        key = (item.get('source_spring_index'), item.get('member_index'), item.get('role'))
+        if (not isinstance(key[0], int) or isinstance(key[0], bool)
+                or not isinstance(key[1], int) or isinstance(key[1], bool)
+                or key[2] not in ('fixed', 'moving') or key in bindings):
+            raise QualificationError('Native spring-anchor binding identity is ambiguous')
+        bindings[key] = item
+    expected_keys = set()
+    options = simulation.get('options') if isinstance(simulation, dict) else None
+    if not isinstance(options, dict):
+        raise QualificationError('Spring load screening needs the accepted runtime options')
+    if options.get('enforceLimits') is not True:
+        raise QualificationError('Spring force screening requires physical joint limits throughout the accepted run')
+    root = getattr(physical_model, 'root', None)
+    if root is None:
+        raise QualificationError('Spring load paths need a physical joint and body tree')
+    compiler = root.find('./compiler')
+    if compiler is None or compiler.get('angle') != 'radian':
+        raise QualificationError('Spring load screening requires physical hinge ranges in radians')
+    parents = {child: parent for parent in root.iter() for child in parent}
+    for index, spring in enumerate(springs):
+        path = paths[f'spring_{index}']
+        joint_name, config = spring.get('joint'), spring.get('parameters')
+        if (not isinstance(joint_name, str) or not isinstance(config, dict)
+                or path['joint'] != joint_name):
+            raise QualificationError('Spring load path differs from its controlled joint or parameters')
+        joint_rows = [row for row in root.findall('.//body/joint')
+                      if row.get('name') == joint_name]
+        if len(joint_rows) != 1 or joint_rows[0].get('type', 'hinge') != 'hinge':
+            raise QualificationError(f'Spring {joint_name} requires one ranged physical hinge')
+        moving_body_node = parents[joint_rows[0]]
+        if (len(moving_body_node.findall('./joint')) != 1
+                or moving_body_node.find('./freejoint') is not None):
+            raise QualificationError(f'Spring {joint_name} requires one physical hinge degree of freedom')
+        fixed_body_node = parents.get(moving_body_node)
+        while fixed_body_node is not None and fixed_body_node.tag not in ('body', 'worldbody'):
+            fixed_body_node = parents.get(fixed_body_node)
+        fixed_body = ('world' if fixed_body_node is not None and fixed_body_node.tag == 'worldbody'
+                      else fixed_body_node.get('name') if fixed_body_node is not None else None)
+        moving_body = moving_body_node.get('name')
+        if not fixed_body or not moving_body or fixed_body == moving_body:
+            raise QualificationError(f'Spring {joint_name} lacks distinct named physical joint bodies')
+        try:
+            if any(key in moving_body_node.attrib for key in
+                   ('euler', 'axisangle', 'xyaxes', 'zaxis')):
+                raise ValueError('Unsupported body orientation for source-frame spring anchors')
+            def xml_vector(element, attribute, default, size):
+                values = [float(value) for value in element.get(attribute, default).split()]
+                if len(values) != size or not all(math.isfinite(value) for value in values):
+                    raise ValueError(f'Invalid physical {attribute} vector')
+                return values
+
+            joint_range = [float(value) for value in joint_rows[0].get('range', '').split()]
+            physical_axis = [float(value) for value in joint_rows[0].get('axis', '0 0 1').split()]
+            spring_axis = TensionSpring(config, spring.get('axis', [0, 0, -1])).axis
+            length = math.sqrt(sum(value*value for value in physical_axis))
+            limited = joint_rows[0].get('limited')
+            if (limited in ('false', '0')
+                    or (limited is None and compiler.get('autolimits') not in ('true', '1'))
+                    or float(joint_rows[0].get('ref', '0')) != 0
+                    or len(joint_range) != 2 or len(physical_axis) != 3
+                    or not all(math.isfinite(value) for value in joint_range+physical_axis)
+                    or length <= 0
+                    or any(not math.isclose(value/length, expected, rel_tol=0, abs_tol=1e-10)
+                           for value, expected in zip(physical_axis, spring_axis))):
+                raise ValueError('Physical hinge axis or range disagrees with the spring')
+            group = groups[index]
+            if not isinstance(group, dict):
+                raise ValueError('Native spring group must be an object')
+            diameter = _number(group.get('demand', {}).get('nominal_pin_diameter_mm'),
+                               'Native spring anchor pin diameter', positive=True)
+            demand = tension_anchor_demand(config, joint_range,
+                                           pin_diameter_mm=diameter, axis=spring_axis)
+            positions = member_anchor_positions_mm(config,
+                spring.get('member_offsets_m'),
+                child_body_pos_m=xml_vector(moving_body_node, 'pos', '0 0 0', 3),
+                child_body_quat_wxyz=xml_vector(moving_body_node, 'quat', '1 0 0 0', 4),
+                joint_pos_m=xml_vector(joint_rows[0], 'pos', '0 0 0', 3),
+                axis=spring_axis)
+        except (AttributeError, KeyError, TypeError, ValueError) as error:
+            raise QualificationError(f'Spring {joint_name} has invalid physical force inputs') from error
+        if (type(group.get('source_spring_index')) is not int
+                or group['source_spring_index'] != index
+                or group.get('control_joint') != joint_name
+                or group.get('source_parameters_sha256') != digest(config)
+                or ('parent_body' in group and group['parent_body'] != fixed_body)
+                or ('child_body' in group and group['child_body'] != moving_body)
+                or group.get('demand') != demand):
+            raise QualificationError(f'Spring {joint_name} native demand differs from control and physical range')
+        if ('nominal_pin_diameter_mm' in native_plan
+                and _number(native_plan['nominal_pin_diameter_mm'],
+                            'Native spring plan pin diameter', positive=True) != diameter):
+            raise QualificationError(f'Spring {joint_name} native pin diameter differs from its source plan')
+        scale_key = spring.get('scale_option', 'springScale')
+        if not isinstance(scale_key, str) or 'springScale' not in options:
+            raise QualificationError(f'Spring {joint_name} lacks its accepted runtime scale')
+        run_scale = _number(options.get(scale_key, options['springScale']),
+                            f'Spring {joint_name} run scale')
+        service_scale = path['maximum_service_scale']
+        if run_scale > service_scale:
+            raise QualificationError(f'Spring {joint_name} exceeds its declared service scale')
+        force = demand['required_capacity_per_separate_pin_N'] * service_scale * path['uncertainty_factor']
+        group_anchors = group.get('anchors')
+        if not isinstance(group_anchors, list) or len(group_anchors) != 2*config['spring_count']:
+            raise QualificationError(f'Spring {joint_name} lacks both native ends of every member')
+        if set(path['anchors']) != {
+                f'member_{member}_{role}' for member in range(config['spring_count'])
+                for role in ('fixed', 'moving')}:
+            raise QualificationError(f'Spring {joint_name} plan omits or adds an anchor interface')
+        for anchor in group_anchors:
+            if not isinstance(anchor, dict):
+                raise QualificationError('Native spring anchor is invalid')
+            member, role = anchor.get('member_index'), anchor.get('role')
+            key = (index, member, role)
+            name = f'member_{member}_{role}'
+            binding = bindings.get(key)
+            if (not isinstance(member, int) or isinstance(member, bool)
+                    or member < 0 or member >= config['spring_count']
+                    or role not in ('fixed', 'moving') or key in expected_keys
+                    or type(anchor.get('source_spring_index')) is not int
+                    or anchor['source_spring_index'] != index
+                    or binding is None or path['anchors'].get(name) is None):
+                raise QualificationError(f'Spring {joint_name} has a missing or duplicate physical anchor')
+            expected_keys.add(key)
+            body = anchor.get('body')
+            expected_body = fixed_body if role == 'fixed' else moving_body
+            actual_position = anchor.get('body_local_anchor_mm')
+            expected_position = positions[member][role]
+            if (not isinstance(actual_position, list) or len(actual_position) != 3
+                    or any(isinstance(value, bool) or not isinstance(value, (int, float))
+                           or not math.isfinite(value)
+                           or not math.isclose(value, expected, rel_tol=0., abs_tol=1e-6)
+                           for value, expected in zip(actual_position, expected_position))):
+                raise QualificationError(f'Spring {joint_name} native anchor differs from its physical joint frame')
+            pin, clevis = binding.get('pin_native_part'), binding.get('clevis_placed_part')
+            pin_base, clevis_base = anchor.get('pin_part'), anchor.get('clevis_part')
+            if (body != expected_body or not isinstance(pin, str)
+                    or not isinstance(clevis, str) or binding.get('body') != body
+                    or not isinstance(pin_base, str) or not isinstance(clevis_base, str)
+                    or not (pin == pin_base or pin.startswith(pin_base+'_'))
+                    or not (clevis == clevis_base or clevis.startswith(clevis_base+'_'))
+                    or binding.get('anchor') != anchor.get('name')
+                    or binding.get('body_local_anchor_mm') != anchor.get('body_local_anchor_mm')
+                    or binding.get('clevis_native_part') != anchor.get('clevis_part')
+                    or binding.get('pin_diameter_mm') != diameter
+                    or ('nominal_pin_length_mm' in native_plan
+                        and binding.get('pin_length_mm') != _number(
+                            native_plan['nominal_pin_length_mm'],
+                            'Native spring plan pin length', positive=True))
+                    or ('nominal_clevis_bore_diameter_mm' in native_plan
+                        and binding.get('clevis_bore_diameter_mm') != _number(
+                            native_plan['nominal_clevis_bore_diameter_mm'],
+                            'Native spring plan clevis bore', positive=True))
+                    or binding.get('required_capacity_N') != demand['required_capacity_per_separate_pin_N']
+                    or (body, pin) not in placed or (body, clevis) not in placed):
+                raise QualificationError(f'Spring {joint_name} native pin or clevis is unbound')
+            pair = {f'{body}__{pin}', f'{body}__{clevis}'}
+            interface = path['anchors'][name]
+            if pair != set(plan.document['interfaces'][interface]['parts']):
+                raise QualificationError(f'Spring {joint_name} maps force to an unrelated native interface')
+            if modeled_interface_demands is not None:
+                modeled_interface_demands[interface] = modeled_interface_demands.get(interface, 0.) + force
+            elif force > plan.document['interfaces'][interface]['demand_N']:
+                raise QualificationError(f'Spring {joint_name} interface understates source force demand')
+        if {key for key in expected_keys if key[0] == index} != {
+                (index, member, role) for member in range(config['spring_count'])
+                for role in ('fixed', 'moving')}:
+            raise QualificationError(f'Spring {joint_name} native member coverage is incomplete')
+    if set(bindings) != expected_keys:
+        raise QualificationError('Native spring-anchor receipt has an extra or missing binding')
+    if modeled_interface_demands is not None:
+        for name, force in modeled_interface_demands.items():
+            if force > plan.document['interfaces'][name]['demand_N']:
+                raise QualificationError(f'Interface {name} understates combined modeled force demand')
 
 
 def _require_current_causal_runtime(recorded):
@@ -661,7 +923,35 @@ def _numeric_geometry_matches(actual, expected):
             and math.isclose(actual, expected, rel_tol=1e-6, abs_tol=1e-12))
 
 
-def _recheck_qualified_native_steps(native, placements, interfaces, receipt, plan, record):
+def _require_native_spring_anchor_steps(solids, spring_record):
+    """Recheck each source-bound pin/bore on the actual imported placed STEP."""
+    from .spring_anchor import verify_native_anchor
+
+    rows = spring_record.get('native_anchor_bindings') if isinstance(spring_record, dict) else None
+    if not isinstance(rows, list) or not rows:
+        raise QualificationError('Native spring-anchor receipt lacks placed pin/bore bindings')
+    for row in rows:
+        if not isinstance(row, dict):
+            raise QualificationError('Native spring-anchor pin/bore binding is invalid')
+        body, pin, clevis = (row.get('body'), row.get('pin_native_part'),
+                              row.get('clevis_placed_part'))
+        if not all(isinstance(value, str) and value for value in (body, pin, clevis)):
+            raise QualificationError('Native spring-anchor pin/bore identity is invalid')
+        try:
+            measured = verify_native_anchor(solids[f'{body}__{pin}'],
+                solids[f'{body}__{clevis}'], row.get('body_local_anchor_mm'),
+                pin_diameter_mm=row.get('pin_diameter_mm'),
+                pin_length_mm=row.get('pin_length_mm'),
+                nominal_bore_diameter_mm=row.get('clevis_bore_diameter_mm'))
+        except (KeyError, TypeError, ValueError) as error:
+            raise QualificationError(f'Native spring-anchor {body} pin/bore STEP fails its source dimensions') from error
+        if any(not _numeric_geometry_matches(value, row.get(name))
+               for name, value in measured.items() if name != 'scope'):
+            raise QualificationError(f'Native spring-anchor {body} pin/bore receipt differs from placed STEP')
+
+
+def _recheck_qualified_native_steps(native, placements, interfaces, receipt, plan, record,
+                                    spring_record=None):
     """Reopen the releasable STEP, independently checking pair fits and mass."""
     import cadquery as cq
     from .native_construction import aggregate_mass_properties, shape_mass_properties
@@ -735,6 +1025,8 @@ def _recheck_qualified_native_steps(native, placements, interfaces, receipt, pla
                 or (_interface_role(interface) != 'clearance'
                     and prior.get('role') != _RETAINED_CONTACT_ROLE)):
             raise QualificationError(f'Qualified native STEP pair {name} fails independently measured fit')
+    if spring_record is not None:
+        _require_native_spring_anchor_steps(solids, spring_record)
     return mass
 
 
@@ -825,7 +1117,11 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     for name, material in plan.document['materials'].items():
         if receipt['material_densities_kg_m3'][name] != material['density_kg_m3']:
             raise QualificationError('Native material density differs from the qualification plan')
-    native_mass = _recheck_qualified_native_steps(native, placements, interfaces, receipt, plan.document, record)
+    spring_file = 'spring-anchor-load-path.json'
+    spring_record = (_read_json(native / spring_file)
+                     if spring_file in receipt['files_sha256'] else None)
+    native_mass = _recheck_qualified_native_steps(native, placements, interfaces,
+        receipt, plan.document, record, spring_record)
     physical_source = _read_json(run / 'physical-source.json')
     physical_model = PhysicalModel.from_source(physical_source)
     _require_physical_mass_binding(physical_model, native_mass)
@@ -843,7 +1139,12 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
         if key in simulation and simulation[key] != value:
             raise QualificationError(f'Simulation {key} differs from its accepted engineering report')
     _require_current_causal_runtime(simulation['runtime_implementation'])
-    _require_connector_demand_binding(plan, physical_model, simulation)
+    modeled_interface_demands = {}
+    _require_connector_demand_binding(plan, physical_model, simulation,
+                                      modeled_interface_demands)
+    _require_spring_anchor_demand_binding(plan, physical_model, control,
+                                          simulation, spring_record, placements,
+                                          modeled_interface_demands)
     simulated_loads = _simulated_loads(simulation.get('metrics'))
     if not simulated_loads or set(simulated_loads) != set(plan.document['loads']):
         raise QualificationError('Load cases must cover every active simulated actuator exactly')
@@ -889,7 +1190,8 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
         if receipt['files_sha256'].get(relative) != _sha(path):
             raise QualificationError(f'Native STEP changed before release: {name}')
         step_hashes[name] = _sha(path)
-    evidence = _verify_evidence(package, trust, digest(basis), plan.document, step_hashes)
+    evidence = _verify_evidence(package, trust, digest(basis), plan.document,
+                                step_hashes, modeled_interface_demands)
     # A failed copy never leaves a partially populated product directory.
     destination.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix='.' + destination.name + '-stage-', dir=destination.parent))

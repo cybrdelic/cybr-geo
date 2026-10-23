@@ -9,7 +9,7 @@ import math
 
 from mechanism_lab.actuation import TensionSpring
 from mechanism_lab.physical_model import digest
-from mechanism_lab.spring_anchor import tension_anchor_demand
+from mechanism_lab.spring_anchor import member_anchor_positions_mm, tension_anchor_demand
 
 
 EYE_PIN_DIAMETER_MM = 4.
@@ -18,6 +18,17 @@ EYE_PIN_LENGTH_MM = 16.
 # existed in the inherited 16 mm deep cuts. This is not a process capability.
 EYE_PIN_END_RELIEF_MM = 1.
 CLEVIS_BORE_DIAMETER_MM = 4.2
+
+
+def arx_member_offsets(config):
+    """Express the two P5 eye planes as generic axial member offsets."""
+    if config.get('spring_count') != 2:
+        raise ValueError('ARX P5 requires two separately pinned spring members')
+    first_z, second_z = config['parent_anchor_m'][2], config['second_spring_z_m']
+    if not all(isinstance(value, (int, float)) and not isinstance(value, bool)
+               and math.isfinite(value) for value in (first_z, second_z)):
+        raise ValueError('ARX spring member planes must be finite')
+    return [[0., 0., 0.], [0., 0., second_z-first_z]]
 
 
 def arx_spring_anchor_plan(spec, transmissions):
@@ -31,7 +42,7 @@ def arx_spring_anchor_plan(spec, transmissions):
         ('elbow', 'elbow_counterbalance', 'J3', 'upper', 'fore',
          'elbow_spring_fixed_clevis', 'elbow_spring_moving_clevis'),
     )
-    for label, key, joint, parent_body, child_body, fixed_part, moving_part in definitions:
+    for source_index, (label, key, joint, parent_body, child_body, fixed_part, moving_part) in enumerate(definitions):
         transmission = by_joint[joint]
         if (transmission['parent'], transmission['child']) != (parent_body, child_body):
             raise ValueError(f'{joint} spring anchor body path disagrees with the native transmission')
@@ -60,23 +71,27 @@ def arx_spring_anchor_plan(spec, transmissions):
                 raise ValueError(f'{joint} spring {name} reference disagrees with its force model')
         demand = tension_anchor_demand(config, spec['joint_hard_limits_rad'][config['joint_index']],
                                         pin_diameter_mm=EYE_PIN_DIAMETER_MM)
+        positions = member_anchor_positions_mm(config, arx_member_offsets(config),
+            child_body_pos_m=[value/1000 for value in pivot],
+            child_body_quat_wxyz=[1., 0., 0., 0.], joint_pos_m=[0., 0., 0.])
         anchors = []
-        for index, z_m in enumerate((parent[2], config['second_spring_z_m'])):
-            for role, body, coordinates, clevis in (
-                    ('fixed', parent_body, parent, fixed_part),
-                    ('moving', child_body, child, moving_part)):
-                local_mm = [1000*coordinates[0], 1000*coordinates[1], 1000*z_m]
-                if role == 'fixed':
-                    local_mm = [origin + value for origin, value in zip(pivot, local_mm)]
+        for index, member in enumerate(positions):
+            for role, body, clevis in (
+                    ('fixed', parent_body, fixed_part),
+                    ('moving', child_body, moving_part)):
+                local_mm = member[role]
                 anchors.append(dict(name=f'{label}_{role}_{index}', role=role,
+                    source_spring_index=source_index, member_index=index,
                     body=body, body_local_anchor_mm=local_mm,
                     pin_part='spring_eye_pin', clevis_part=clevis,
                     required_capacity_N=demand['required_capacity_per_separate_pin_N']))
         groups.append(dict(name=label, source_config=key, joint=joint,
+            control_joint=f'j{joint[1:]}', source_parameters_sha256=digest(config),
+            source_spring_index=source_index,
             parent_body=parent_body, child_body=child_body,
             parent_joint_origin_mm=list(pivot), nominal_reference=nominal,
             demand=demand, anchors=anchors))
-    plan = dict(schema='cybrgeo-arx-spring-anchor-plan/1',
+    plan = dict(schema='cybrgeo-spring-anchor-plan/1',
         nominal_pin_diameter_mm=EYE_PIN_DIAMETER_MM,
         nominal_pin_length_mm=EYE_PIN_LENGTH_MM,
         nominal_bore_end_relief_mm=EYE_PIN_END_RELIEF_MM,
@@ -144,6 +159,9 @@ def verify_arx_anchor_receipt(spec, transmissions, receipt, placements, parts):
                 or placed_clevis.get('material') != 'aluminum'
                 or placed_clevis.get('step_file') != f'cad/placed/{body}__{clevis_name}.step'
                 or row.get('anchor') != expected['name']
+                or row.get('source_spring_index') != expected['source_spring_index']
+                or row.get('member_index') != expected['member_index']
+                or row.get('role') != expected['role']
                 or row.get('body') != body
                 or row.get('clevis_native_part') != clevis_part
                 or row.get('required_capacity_N') != expected['required_capacity_N']

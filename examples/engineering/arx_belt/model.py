@@ -16,7 +16,8 @@ from mechanism_lab.contact_geometry import tabletop_tiles
 
 from .contacts import build as build_contacts
 from .rack_contract import arx_rack_report, rack_travel_from_source
-from .spring_anchor_contract import verify_arx_anchor_receipt, verify_arx_spring_joint_frames
+from .spring_anchor_contract import (arx_member_offsets, verify_arx_anchor_receipt,
+                                     verify_arx_spring_joint_frames)
 
 DATA = Path(__file__).with_name('data')
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
@@ -130,8 +131,11 @@ def control_source(p):
                  'velocity_force_gain_N_s_m', 'output_torque_limit_Nm', 'output_torque_per_current_Nm_A', 'no_load_current_A'):
         rack[name] = gripper[name]
     return dict(schema='cybrgeo-control/1', drives=drives, rack=rack,
-        springs=[dict(joint='j2', parameters=spec['counterbalance'], axis=[0, 0, -1]),
-                 dict(joint='j3', parameters=spec['elbow_counterbalance'], axis=[0, 0, -1], scale_option='elbowSpringScale')],
+        springs=[dict(joint='j2', parameters=spec['counterbalance'], axis=[0, 0, -1],
+                      member_offsets_m=arx_member_offsets(spec['counterbalance'])),
+                 dict(joint='j3', parameters=spec['elbow_counterbalance'], axis=[0, 0, -1],
+                      member_offsets_m=arx_member_offsets(spec['elbow_counterbalance']),
+                      scale_option='elbowSpringScale')],
         gravity_and_coriolis_feedforward=cfg['gravity_and_coriolis_feedforward'],
         inertial_feedforward=cfg['inertial_feedforward'], initial_keyframe='home',
         provenance=dict(commit=SOURCE_COMMIT, source='controller.mjs and safety.mjs; example task stays in task.py'))

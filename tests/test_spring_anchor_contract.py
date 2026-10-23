@@ -8,7 +8,8 @@ import xml.etree.ElementTree as ET
 import cadquery as cq
 import pytest
 
-from mechanism_lab.spring_anchor import tension_anchor_demand, verify_native_anchor
+from mechanism_lab.spring_anchor import (member_anchor_positions_mm,
+                                         tension_anchor_demand, verify_native_anchor)
 from mechanism_lab.engineering_source import _CONSTRUCTION_SERVICES
 from examples.engineering.arx_belt.spring_anchor_contract import (
     arx_spring_anchor_plan, verify_arx_anchor_receipt,
@@ -39,6 +40,39 @@ def test_exact_interior_peak_and_undefined_coincident_eyes():
         tension_anchor_demand(spring, [-1., 1.], pin_diameter_mm=4.)
 
 
+def test_nondefault_joint_axis_changes_full_range_anchor_force():
+    spring = dict(parent_anchor_m=[0., 0., 2.], child_anchor_m=[1., 0., 0.],
+                  spring_count=1, free_eye_length_m=0., initial_tension_N=0.,
+                  stiffness_N_m=1.)
+    about_y = tension_anchor_demand(spring, [0., math.pi/2],
+                                    pin_diameter_mm=4., axis=[0., 1., 0.])
+    about_z = tension_anchor_demand(spring, [0., math.pi/2],
+                                    pin_diameter_mm=4., axis=[0., 0., -1.])
+    assert about_y['required_capacity_per_separate_pin_N'] == pytest.approx(3.)
+    assert about_z['required_capacity_per_separate_pin_N'] == pytest.approx(math.sqrt(5.))
+
+
+def test_member_anchors_follow_joint_frame_and_reject_transverse_offsets():
+    config = dict(parent_anchor_m=[1., 0., 0.], child_anchor_m=[2., 0., 0.],
+                  spring_count=2, free_eye_length_m=0., initial_tension_N=0.,
+                  stiffness_N_m=1.)
+    q = math.sqrt(.5)
+    rows = member_anchor_positions_mm(config, [[0., 0., 0.], [0., 0., .02]],
+        child_body_pos_m=[.1, .2, .3], child_body_quat_wxyz=[q, 0., 0., q],
+        joint_pos_m=[0., 0., .01], axis=[0., 0., 1.])
+    assert rows[0]['fixed'] == pytest.approx([100., 1200., 310.])
+    assert rows[0]['moving'] == pytest.approx([2000., 0., 10.])
+    assert rows[1]['fixed'] == pytest.approx([100., 1200., 330.])
+    assert rows[1]['moving'] == pytest.approx([2000., 0., 30.])
+    with pytest.raises(ValueError, match='joint-frame offset'):
+        member_anchor_positions_mm(config, None, child_body_pos_m=[0., 0., 0.],
+            child_body_quat_wxyz=[1., 0., 0., 0.], joint_pos_m=[0., 0., 0.])
+    with pytest.raises(ValueError, match='parallel'):
+        member_anchor_positions_mm(config, [[0., 0., 0.], [0., .02, 0.]],
+            child_body_pos_m=[0., 0., 0.], child_body_quat_wxyz=[1., 0., 0., 0.],
+            joint_pos_m=[0., 0., 0.], axis=[0., 0., 1.])
+
+
 def test_placed_native_pin_requires_actual_matching_bore():
     pin = cq.Workplane('XY').circle(2).extrude(16).translate((0, 0, -8))
     clevis = cq.Workplane('XY').circle(6).circle(2.1).extrude(4).translate((0, 0, -2))
@@ -46,6 +80,9 @@ def test_placed_native_pin_requires_actual_matching_bore():
     binding = verify_native_anchor(pin, clevis, [0, 0, 0], **kwargs)
     assert binding['measured_nominal_radial_gap_mm'] == pytest.approx(.1)
     assert binding['intersection_volume_mm3'] == pytest.approx(0.)
+    pin.val().tessellate(.18, .22)  # Actual NativeConstruction display-mesh order.
+    assert pin.val().BoundingBox().xlen > 4.001  # OCC's cached mesh inflates this bound.
+    assert verify_native_anchor(pin, clevis, [0, 0, 0], **kwargs) == binding
     with pytest.raises(ValueError, match='position or dimensions'):
         verify_native_anchor(pin.translate((.2, 0, 0)), clevis, [0, 0, 0], **kwargs)
     with pytest.raises(ValueError, match='position or dimensions'):
@@ -108,6 +145,8 @@ def test_named_native_receipt_rejects_missing_stale_or_unqualified_bindings():
         clevis_part = anchor['clevis_part']
         clevis_name = clevis_part+'_0'
         bindings.append(dict(anchor=anchor['name'], body=body, pin_native_part=name,
+            source_spring_index=anchor['source_spring_index'],
+            member_index=anchor['member_index'], role=anchor['role'],
             clevis_native_part=clevis_part, clevis_placed_part=clevis_name,
             required_capacity_N=anchor['required_capacity_N'],
             body_local_anchor_mm=anchor['body_local_anchor_mm'],

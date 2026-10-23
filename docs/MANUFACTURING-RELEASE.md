@@ -44,6 +44,24 @@ reaction records, and modeled peak anchor-force demand above the interface's
 declared `demand_N`. Several connectors mapped to one interface are summed
 conservatively. These are ideal solver reactions, not measured bearing forces
 or validated interface capacities.
+For each controlled tension spring, `spring_load_paths` maps its indexed source
+spring and both ends of every physical spring member to distinct placed
+pin/clevis interfaces. Its `joint` must match the physical ranged hinge;
+the control's joint-frame anchor vectors and axial `member_offsets_m` must
+resolve to the placed pins under that hinge's child-body and joint transforms.
+Unsupported frames and extra child degrees of freedom fail closed. Release
+reopens the placed STEP and checks the pin dimensions and nominal bore gap
+against that source-bound construction receipt.
+`maximum_service_scale` bounds accepted runtime spring scale and
+`uncertainty_factor` is an authored factor of at least one. The release path
+computes ideal force over the full declared joint range, multiplies it by
+both factors, and adds it to any modeled connector demand assigned to the
+same interface. The planned `demand_N`, independent signed service demand,
+and serial-bound tested capacity must cover that combined force in order.
+The factors are design assumptions, not measured spring uncertainty or a
+supplier rating; the independent service review must justify the actual
+service envelope. Missing spring pin/clevis construction or physical capacity
+evidence blocks release.
 Loads specify a part, torque demand/capacity and service temperature. The
 assembly declares required endurance cycles, thermal test temperature and a
 maximum measured backlash. All values use the units named in the fields.
@@ -118,7 +136,8 @@ also needs witnessed fit, motion, thermal, measured backlash and endurance
 results that meet the declared and signed service requirements.
 Duplicate, unsigned, stale, untrusted, incomplete or failed records are
 rejected. Signed capacities must meet the plan's declared design capacities,
-which themselves must exceed the signed service demands.
+which themselves must cover the signed service demands. Any required strength
+reserve must be declared in the planned capacity and supported by the test.
 
 Run only after a current passing diagnostic engineering run and actual
 independent physical evidence:

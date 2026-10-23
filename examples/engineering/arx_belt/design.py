@@ -860,6 +860,8 @@ def build(spec, output):
                 pin_length_mm=EYE_PIN_LENGTH_MM,
                 nominal_bore_diameter_mm=CLEVIS_BORE_DIAMETER_MM)
             anchor_bindings.append(dict(anchor=anchor['name'], body=body,
+                source_spring_index=anchor['source_spring_index'],
+                member_index=anchor['member_index'], role=anchor['role'],
                 pin_native_part=placed['name'], clevis_native_part=clevis_part,
                 clevis_placed_part=clevis_label,
                 required_capacity_N=anchor['required_capacity_N'], **measured))

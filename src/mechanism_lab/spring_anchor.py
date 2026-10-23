@@ -18,7 +18,8 @@ def _finite(value, label, *, positive=False):
     return float(value)
 
 
-def tension_anchor_demand(config, joint_range_rad, *, pin_diameter_mm):
+def tension_anchor_demand(config, joint_range_rad, *, pin_diameter_mm,
+                          axis=(0, 0, -1)):
     """Bound force on each separate anchor pin over a full rotational range.
 
     Rotating the child point about the spring joint axis makes squared eye
@@ -35,7 +36,7 @@ def tension_anchor_demand(config, joint_range_rad, *, pin_diameter_mm):
     count = config.get('spring_count') if isinstance(config, dict) else None
     if isinstance(count, bool) or not isinstance(count, int) or count < 1:
         raise ValueError('One or more physical anchor pins are required')
-    spring = TensionSpring(config)
+    spring = TensionSpring(config, axis)
     axis, child, parent = spring.axis, spring.child, spring.parent
     dot = sum(a*b for a, b in zip(axis, child))
     perpendicular = [b-a*dot for a, b in zip(axis, child)]
@@ -72,6 +73,76 @@ def tension_anchor_demand(config, joint_range_rad, *, pin_diameter_mm):
         scope='Full declared joint range of the ideal tension-only spring; each spring has separate anchor pins. No pin/clevis bearing, shear, bending, fastener, fatigue or tested spring capacity follows from this demand.')
 
 
+def member_anchor_positions_mm(config, member_offsets_m, *, child_body_pos_m,
+                               child_body_quat_wxyz, joint_pos_m, axis=(0, 0, -1)):
+    """Derive each physical eye location from the controlled joint frame.
+
+    The spring source anchors are in the child's unrotated hinge frame.
+    Member offsets must run along the hinge axis, so every member has the
+    same ideal force curve; a transverse offset would need its own force
+    model. The fixed point is transformed into the parent body's coordinates
+    at the hinge reference pose, while the moving point remains child-local.
+    """
+    spring = TensionSpring(config, axis)
+    count = config.get('spring_count')
+    if isinstance(count, bool) or not isinstance(count, int) or count < 1:
+        raise ValueError('Spring member count must be a positive integer')
+    if member_offsets_m is None and count == 1:
+        member_offsets_m = [[0., 0., 0.]]
+    if (not isinstance(member_offsets_m, list) or len(member_offsets_m) != count):
+        raise ValueError('Each controlled spring member needs one joint-frame offset')
+    body_pos = _vector3(child_body_pos_m, 'Child-body position')
+    joint_pos = _vector3(joint_pos_m, 'Joint position')
+    quaternion = _vector4(child_body_quat_wxyz, 'Child-body quaternion')
+    norm = math.sqrt(sum(value*value for value in quaternion))
+    if not math.isclose(norm, 1., rel_tol=0., abs_tol=1e-8):
+        raise ValueError('Child-body quaternion must be unit length')
+    w, x, y, z = quaternion
+
+    def rotate(vector):
+        # MuJoCo's wxyz quaternion maps child-local vectors to parent-local.
+        cross = [y*vector[2]-z*vector[1], z*vector[0]-x*vector[2],
+                 x*vector[1]-y*vector[0]]
+        twice = [2*value for value in cross]
+        second = [y*twice[2]-z*twice[1], z*twice[0]-x*twice[2],
+                  x*twice[1]-y*twice[0]]
+        return [vector[i]+w*twice[i]+second[i] for i in range(3)]
+
+    rows = []
+    seen = set()
+    for index, raw_offset in enumerate(member_offsets_m):
+        offset = _vector3(raw_offset, 'Spring member offset')
+        if (index == 0 and any(abs(value) > 1e-12 for value in offset)):
+            raise ValueError('First spring member must use the source anchor coordinates')
+        axial = sum(a*b for a, b in zip(offset, spring.axis))
+        transverse = [offset[i]-axial*spring.axis[i] for i in range(3)]
+        if (any(abs(value) > 1e-12 for value in transverse)
+                or tuple(offset) in seen):
+            raise ValueError('Spring member offsets must be distinct and parallel to the hinge axis')
+        seen.add(tuple(offset))
+        fixed_in_child = [joint_pos[i]+spring.parent[i]+offset[i] for i in range(3)]
+        moving_in_child = [joint_pos[i]+spring.child[i]+offset[i] for i in range(3)]
+        fixed_rotated = rotate(fixed_in_child)
+        rows.append(dict(member_index=index,
+            # Canonicalize binary arithmetic at a sub-picometre CAD scale so
+            # 144 mm - 40 mm and 1000*(.144-.04) share one native identity.
+            fixed=[round(1000*(body_pos[i]+fixed_rotated[i]), 12) for i in range(3)],
+            moving=[round(1000*value, 12) for value in moving_in_child]))
+    return rows
+
+
+def _vector3(value, label):
+    if not isinstance(value, (list, tuple)) or len(value) != 3:
+        raise ValueError(f'{label} requires three finite coordinates')
+    return [_finite(item, label) for item in value]
+
+
+def _vector4(value, label):
+    if not isinstance(value, (list, tuple)) or len(value) != 4:
+        raise ValueError(f'{label} requires four finite coordinates')
+    return [_finite(item, label) for item in value]
+
+
 def verify_native_anchor(pin, clevis, expected_position_mm, *,
                          pin_diameter_mm, pin_length_mm,
                          nominal_bore_diameter_mm):
@@ -90,14 +161,22 @@ def verify_native_anchor(pin, clevis, expected_position_mm, *,
     bore = _finite(nominal_bore_diameter_mm, 'Clevis bore diameter', positive=True)
     if bore <= diameter:
         raise ValueError('Nominal clevis bore must exceed pin diameter')
-    box = pin.BoundingBox()
-    center = [float((box.xmin+box.xmax)/2), float((box.ymin+box.ymax)/2),
-              float((box.zmin+box.zmax)/2)]
+    # NativeConstruction tessellates placements for display before checking
+    # this interface. CadQuery's default BoundingBox then incorporates that
+    # mesh's deflection into the dimensions (a 4 mm pin can read 4.0059 mm).
+    # Bound the underlying B-rep without triangulation; no design tolerance
+    # is relaxed and the solid's actual nominal size remains authoritative.
+    from OCP.Bnd import Bnd_Box
+    from OCP.BRepBndLib import BRepBndLib
+    bounds = Bnd_Box()
+    BRepBndLib.AddOptimal_s(pin.wrapped, bounds, False, False)
+    xmin, ymin, zmin, xmax, ymax, zmax = bounds.Get()
+    center = [(xmin+xmax)/2, (ymin+ymax)/2, (zmin+zmax)/2]
     if (not all(math.isclose(value, target, rel_tol=0, abs_tol=1e-6)
                 for value, target in zip(center, position))
-            or not math.isclose(box.xlen, diameter, rel_tol=0, abs_tol=1e-6)
-            or not math.isclose(box.ylen, diameter, rel_tol=0, abs_tol=1e-6)
-            or not math.isclose(box.zlen, length, rel_tol=0, abs_tol=1e-6)
+            or not math.isclose(xmax-xmin, diameter, rel_tol=0, abs_tol=1e-6)
+            or not math.isclose(ymax-ymin, diameter, rel_tol=0, abs_tol=1e-6)
+            or not math.isclose(zmax-zmin, length, rel_tol=0, abs_tol=1e-6)
             or len(pin.Solids()) != 1
             or not math.isclose(pin.Volume(), math.pi*(diameter/2)**2*length,
                                 rel_tol=1e-6, abs_tol=1e-6)):

@@ -3,7 +3,9 @@ import base64
 from copy import deepcopy
 import hashlib
 import json
+import math
 from pathlib import Path
+from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
 import pytest
@@ -14,9 +16,13 @@ from mechanism_lab.qualification import (
     QualificationError, QualificationPlan, QualifiedNativeConstruction,
     _check_placed_interface,
     _recheck_qualified_native_steps, _require_physical_mass_binding,
-    _require_connector_demand_binding, _simulated_loads, _verify_evidence,
+    _require_connector_demand_binding, _require_spring_anchor_demand_binding,
+    _require_native_spring_anchor_steps,
+    _simulated_loads, _verify_evidence,
     release_project,
 )
+from mechanism_lab.physical_model import digest
+from mechanism_lab.spring_anchor import tension_anchor_demand
 
 
 def _plan():
@@ -67,6 +73,204 @@ def test_qualified_connector_mapping_needs_known_interface_and_covers_model_dema
             peak_absolute=dict(value=4.))})}})
     assert _require_connector_demand_binding(qualified, SimpleNamespace(root=root),
                                              simulation) is None
+
+
+def _spring_binding_fixture():
+    """One non-default-axis source spring with two placed native ends."""
+    plan = _plan()
+    for name in ('fixed__pin', 'fixed__clevis', 'moving__pin', 'moving__clevis'):
+        plan['parts'][name] = deepcopy(plan['parts']['fixed__a'])
+    anchors = {}
+    native_anchors = []
+    bindings = []
+    placements = []
+    for role, body, position in (('fixed', 'fixed', [0., 0., 2000.]),
+                                 ('moving', 'moving', [1000., 0., 0.])):
+        interface = f'{role}_anchor'
+        plan['interfaces'][interface] = dict(parts=[f'{body}__pin', f'{body}__clevis'],
+            nominal_clearance_mm=.5, first_tolerance_mm=.1, second_tolerance_mm=.1,
+            required_clearance_mm=.2, demand_N=4.2, design_capacity_N=5.)
+        anchors[f'member_0_{role}'] = interface
+        native_anchors.append(dict(name=f'eye_{role}', source_spring_index=0,
+            member_index=0, role=role, body=body, body_local_anchor_mm=position,
+            pin_part='pin', clevis_part='clevis'))
+        bindings.append(dict(anchor=f'eye_{role}', source_spring_index=0,
+            member_index=0, role=role, body=body, body_local_anchor_mm=position,
+            pin_native_part='pin', clevis_native_part='clevis',
+            clevis_placed_part='clevis', required_capacity_N=3.,
+            pin_diameter_mm=4., pin_length_mm=16., clevis_bore_diameter_mm=4.2,
+            measured_nominal_radial_gap_mm=.1, intersection_volume_mm3=0.))
+        placements.extend((dict(body=body, name='pin'), dict(body=body, name='clevis')))
+    plan['spring_load_paths'] = {'spring_0': dict(joint='j2',
+        maximum_service_scale=1.2, uncertainty_factor=1.1, anchors=anchors)}
+    config = dict(parent_anchor_m=[0., 0., 2.], child_anchor_m=[1., 0., 0.],
+        spring_count=1, free_eye_length_m=0., initial_tension_N=0., stiffness_N_m=1.)
+    control = {'springs': [dict(joint='j2', parameters=config, axis=[0., 1., 0.])]}
+    root = ET.Element('mujoco')
+    ET.SubElement(root, 'compiler', angle='radian', autolimits='true')
+    fixed = ET.SubElement(ET.SubElement(root, 'worldbody'), 'body', name='fixed')
+    moving = ET.SubElement(fixed, 'body', name='moving')
+    ET.SubElement(moving, 'joint', name='j2', type='hinge', axis='0 1 0',
+                  range=f'0 {math.pi/2}')
+    demand = tension_anchor_demand(config, [0., math.pi/2], pin_diameter_mm=4.,
+                                    axis=[0., 1., 0.])
+    assert demand['required_capacity_per_separate_pin_N'] == pytest.approx(3.)
+    group = dict(source_spring_index=0, control_joint='j2',
+        source_parameters_sha256=digest(config), parent_body='fixed',
+        child_body='moving', demand=demand, anchors=native_anchors)
+    native_plan = dict(schema='cybrgeo-spring-anchor-plan/1', groups=[group],
+        nominal_pin_diameter_mm=4., nominal_pin_length_mm=16.,
+        nominal_clevis_bore_diameter_mm=4.2)
+    native_plan['plan_sha256'] = digest(native_plan)
+    native = dict(schema='cybrgeo-native-spring-anchor-load-path/1',
+        plan=native_plan, native_anchor_bindings=bindings)
+    simulation = dict(options={'springScale': 1.1, 'enforceLimits': True})
+    return plan, SimpleNamespace(root=root), control, simulation, native, {'records': placements}
+
+
+def test_spring_native_load_path_combines_with_connector_and_requires_service_margin():
+    plan, physical, control, simulation, native, placements = _spring_binding_fixture()
+    qualified = QualificationPlan(plan)
+    modeled = {'fixed_anchor': .2}
+    _require_spring_anchor_demand_binding(qualified, physical, control, simulation,
+                                          native, placements, modeled)
+    assert modeled == pytest.approx({'fixed_anchor': 4.16, 'moving_anchor': 3.96})
+    with pytest.raises(QualificationError, match='combined modeled force'):
+        _require_spring_anchor_demand_binding(qualified, physical, control,
+            simulation, native, placements, {'fixed_anchor': .3})
+
+
+@pytest.mark.parametrize('fault, expected', [
+    ('missing_plan', 'Every controlled spring'),
+    ('missing_native', 'source-bound native anchor receipt'),
+    ('extra_control', 'Every controlled spring'),
+    ('wrong_joint_body', 'native pin or clevis is unbound'),
+    ('wrong_both_positions', 'differs from its physical joint frame'),
+    ('changed_body_frame', 'differs from its physical joint frame'),
+    ('unsupported_body_orientation', 'invalid physical force inputs'),
+    ('wrong_physical_axis', 'invalid physical force inputs'),
+    ('extra_joint', 'one physical hinge degree of freedom'),
+    ('degree_joint_range', 'hinge ranges in radians'),
+    ('unlimited_hinge', 'invalid physical force inputs'),
+    ('limits_disabled', 'requires physical joint limits'),
+    ('wrong_pair', 'unrelated native interface'),
+    ('wrong_position', 'native pin or clevis is unbound'),
+    ('wrong_plan_pin_diameter', 'native pin diameter differs'),
+    ('wrong_plan_pin_length', 'native pin or clevis is unbound'),
+    ('wrong_plan_bore', 'native pin or clevis is unbound'),
+    ('missing_member_end', 'both native ends'),
+    ('over_service_scale', 'exceeds its declared service scale'),
+    ('stale_source', 'native demand differs'),
+    ('bool_source_index', 'native demand differs'),
+])
+def test_spring_release_rejects_unbound_or_understated_native_force(fault, expected):
+    plan, physical, control, simulation, native, placements = _spring_binding_fixture()
+    if fault == 'missing_plan':
+        plan['spring_load_paths'].clear()
+    elif fault == 'missing_native':
+        native = None
+    elif fault == 'extra_control':
+        control['springs'].append(deepcopy(control['springs'][0]))
+    elif fault == 'wrong_joint_body':
+        native['plan']['groups'][0]['anchors'][0]['body'] = 'moving'
+        native['plan']['plan_sha256'] = digest({k: v for k, v in native['plan'].items()
+                                              if k != 'plan_sha256'})
+    elif fault == 'wrong_both_positions':
+        native['plan']['groups'][0]['anchors'][0]['body_local_anchor_mm'] = [1., 0., 2000.]
+        native['native_anchor_bindings'][0]['body_local_anchor_mm'] = [1., 0., 2000.]
+        native['plan']['plan_sha256'] = digest({k: v for k, v in native['plan'].items()
+                                              if k != 'plan_sha256'})
+    elif fault == 'changed_body_frame':
+        physical.root.find('.//body/body').set('pos', '.001 0 0')
+    elif fault == 'unsupported_body_orientation':
+        physical.root.find('.//body/body').set('euler', '0 0 90')
+    elif fault == 'wrong_physical_axis':
+        physical.root.find('.//joint').set('axis', '0 0 1')
+    elif fault == 'extra_joint':
+        ET.SubElement(physical.root.find('.//body/body'), 'joint', name='other')
+    elif fault == 'degree_joint_range':
+        physical.root.find('./compiler').set('angle', 'degree')
+    elif fault == 'unlimited_hinge':
+        physical.root.find('.//joint').set('limited', 'false')
+    elif fault == 'limits_disabled':
+        simulation['options']['enforceLimits'] = False
+    elif fault == 'wrong_pair':
+        plan['interfaces']['fixed_anchor']['parts'] = ['fixed__pin', 'fixed__a']
+    elif fault == 'wrong_position':
+        native['native_anchor_bindings'][0]['body_local_anchor_mm'] = [0., 0., 0.]
+    elif fault in ('wrong_plan_pin_diameter', 'wrong_plan_pin_length', 'wrong_plan_bore'):
+        field = {'wrong_plan_pin_diameter': 'nominal_pin_diameter_mm',
+                 'wrong_plan_pin_length': 'nominal_pin_length_mm',
+                 'wrong_plan_bore': 'nominal_clevis_bore_diameter_mm'}[fault]
+        native['plan'][field] += .1
+        native['plan']['plan_sha256'] = digest({k: v for k, v in native['plan'].items()
+                                              if k != 'plan_sha256'})
+    elif fault == 'missing_member_end':
+        native['plan']['groups'][0]['anchors'].pop()
+        native['plan']['plan_sha256'] = digest({k: v for k, v in native['plan'].items()
+                                              if k != 'plan_sha256'})
+    elif fault == 'over_service_scale':
+        simulation['options']['springScale'] = 1.3
+    elif fault == 'stale_source':
+        control['springs'][0]['parameters']['stiffness_N_m'] = 2.
+    elif fault == 'bool_source_index':
+        native['plan']['groups'][0]['source_spring_index'] = False
+        native['plan']['plan_sha256'] = digest({k: v for k, v in native['plan'].items()
+                                              if k != 'plan_sha256'})
+    qualified = QualificationPlan(plan)
+    with pytest.raises(QualificationError, match=expected):
+        _require_spring_anchor_demand_binding(qualified, physical, control,
+                                              simulation, native, placements, {})
+
+
+def test_spring_plan_rejects_missing_member_side_or_invalid_service_bound():
+    plan, _, _, _, _, _ = _spring_binding_fixture()
+    QualificationPlan(plan)
+    for value in (0., .99, float('inf'), float('nan')):
+        for field in ('maximum_service_scale', 'uncertainty_factor'):
+            altered = deepcopy(plan)
+            altered['spring_load_paths']['spring_0'][field] = value
+            with pytest.raises(QualificationError):
+                QualificationPlan(altered)
+    altered = deepcopy(plan)
+    del altered['spring_load_paths']['spring_0']['anchors']['member_0_moving']
+    with pytest.raises(QualificationError, match='both ends'):
+        QualificationPlan(altered)
+
+
+def test_source_spring_force_never_substitutes_for_tested_pin_capacity(tmp_path):
+    package, policy, _, _, _ = _signed_fixture(tmp_path)
+    plan, physical, control, simulation, native, placements = _spring_binding_fixture()
+    _require_spring_anchor_demand_binding(QualificationPlan(plan), physical,
+        control, simulation, native, placements, {})
+    # The synthetic hardware records cover neither spring-end part serials nor
+    # capacity tests. A valid native force model cannot supply those records.
+    with pytest.raises(QualificationError, match='cover every required subject'):
+        _verify_evidence(package, policy, 'a'*64, plan,
+                         {part: 'b'*64 for part in plan['parts']})
+
+
+def test_native_spring_anchor_rechecks_placed_brep_size_and_bore():
+    import cadquery as cq
+
+    pin = cq.Workplane('XY').circle(2.).extrude(16.).translate((0, 0, -8)).val()
+    clevis = cq.Workplane('XY').circle(6.).circle(2.1).extrude(4.).translate((0, 0, -2)).val()
+    solids = {'fixed__pin': pin, 'fixed__clevis': clevis}
+    row = dict(body='fixed', pin_native_part='pin', clevis_placed_part='clevis',
+               body_local_anchor_mm=[0., 0., 0.], pin_diameter_mm=4.,
+               pin_length_mm=16., clevis_bore_diameter_mm=4.2,
+               measured_nominal_radial_gap_mm=.1, intersection_volume_mm3=0.)
+    _require_native_spring_anchor_steps(solids, {'native_anchor_bindings': [row]})
+    wrong_diameter = deepcopy(row)
+    wrong_diameter['pin_diameter_mm'] = 3.9
+    with pytest.raises(QualificationError, match='STEP fails its source dimensions'):
+        _require_native_spring_anchor_steps(solids,
+                                            {'native_anchor_bindings': [wrong_diameter]})
+    wrong_gap = deepcopy(row)
+    wrong_gap['measured_nominal_radial_gap_mm'] = .2
+    with pytest.raises(QualificationError, match='receipt differs'):
+        _require_native_spring_anchor_steps(solids,
+                                            {'native_anchor_bindings': [wrong_gap]})
 
 
 def _signed_fixture(tmp_path, *, basis='a'*64, step_hashes=None):
@@ -281,6 +485,16 @@ def test_signed_evidence_requires_external_authority_and_full_coverage(tmp_path)
     wrong_policy.write_text(json.dumps(dict(schema='cybrgeo-trust-policy/1', issuers={})), encoding='utf-8')
     with pytest.raises(QualificationError):
         _check(package, wrong_policy, plan)
+
+
+def test_signed_service_envelope_cannot_understate_combined_source_force(tmp_path):
+    package, policy, plan, _, _ = _signed_fixture(tmp_path)
+    step_hashes = {'fixed__a': 'b'*64, 'moving__b': 'c'*64}
+    assert _verify_evidence(package, policy, 'a'*64, plan, step_hashes,
+                            {'pin_fit': 5.})['evidence_count'] == 8
+    with pytest.raises(QualificationError, match='understates modeled interface force'):
+        _verify_evidence(package, policy, 'a'*64, plan, step_hashes,
+                         {'pin_fit': 5.01})
 
 
 @pytest.mark.parametrize('fault', ['stale_basis', 'forged_signature', 'material_lot',
