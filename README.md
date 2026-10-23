@@ -98,6 +98,23 @@ lab animate nitinol_fiber_actuator --seconds 6
 lab blueprint nitinol_fiber_actuator
 ```
 
+These commands create diagnostic CAD, simulation and media. `--step` and
+`--stl` export inspectable geometry, not manufacturing-approved parts. The
+qualified product path is `lab release PROJECT --run RUN --evidence EVIDENCE
+--trust-policy POLICY --out NEW_DIRECTORY`. It requires a construction policy
+enforced before CAD placement, exact source/native/model/controller/runtime
+binding, independently signed supplier and process records, measured part and
+interface results, load tests and an assembled hardware test. Missing or stale
+records fail before a release directory is created. Current examples lack
+those physical records and cannot be released as qualified hardware. See the
+[manufacturing release contract](docs/MANUFACTURING-RELEASE.md).
+
+[Shared ARX, IRIS and four-bar films](docs/pr-assets/shared-engineering/README.md)
+show the same construction, simulation and replay services at the pinned
+engineering source revision. They demonstrate recorded motion and native CAD;
+the release gate above still blocks hardware qualification without physical
+evidence.
+
 `lab replay` renders accepted engineering traces at 1920x1080, 24 fps and 2x
 supersampling. It records actual shared-code execution, input and output hashes,
 graphics backend and frame sampling in `media.json`. It uses saved integrated
@@ -114,6 +131,7 @@ For the full photographic workflow, `lab render`, `lab video` and `lab film` use
 | Causal engineering execution | [Shared pipeline](src/mechanism_lab/engineering_pipeline.py), [electromechanical kernels](src/mechanism_lab/actuation.py), [MuJoCo runtime](src/mechanism_lab/causal_runtime.py), [recorded replay](src/mechanism_lab/physical_replay.py) |
 | Passive mechanism construction | [Pinned links](src/mechanism_lab/linkages.py), [native CAD replay](src/mechanism_lab/native_replay.py), [IRIS client](examples/engineering/iris09/README.md) |
 | Source-aware manufacturing geometry | [Native part resolver](src/mechanism_lab/part_geometry.py), [coupled tube/splice interfaces](src/mechanism_lab/manufacturing_joints.py), [involute pinion/rack](src/mechanism_lab/manufacturing_gears.py), [Refined/P6B clients](examples/engineering/arx_compact/README.md) |
+| Manufacturing release boundary | [Construction policy, signed evidence and release gate](src/mechanism_lab/qualification.py); [contract](docs/MANUFACTURING-RELEASE.md) |
 | Component document compatibility | [Component compiler](src/mechanism_lab/construction.py), [continuous path clearance](src/mechanism_lab/motion_envelope.py), [Studio](studio/README.md) |
 | Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
 | Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |

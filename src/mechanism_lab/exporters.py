@@ -87,6 +87,9 @@ def export_stls(assembly,directory):
         mesh.apply_transform(assembly.pose(p,0,0))
         mesh.export(directory/(p.name+'.stl'))
     (directory/'UNITS.txt').write_text('All STL coordinates are millimetres in assembled world pose at time zero; shaft X, up Z. STL does not encode units.\n')
+    (directory/'DIAGNOSTIC-NOT-FOR-MANUFACTURE.json').write_text(json.dumps({
+        'schema':'cybrgeo-diagnostic-artifact/1','status':'diagnostic_mesh',
+        'manufacturing_release':False,'manufacturing_validated':False},indent=2)+'\n')
 
 def export_bom(assembly,directory):
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)

@@ -182,6 +182,11 @@ def test_pipeline_fresh_reuse_and_midrun_artifact_acceptance(tmp_path, monkeypat
         return
     _, first = engineering_pipeline.generate_project(path, output)
     assert first['passed'] and (output / 'assembly.glb').exists()
+    marker = json.loads((output / 'DIAGNOSTIC-NOT-FOR-MANUFACTURE.json').read_text())
+    assert marker['status'] == 'diagnostic_engineering_only'
+    assert marker['software_task_passed'] is True and marker['manufacturing_release'] is False
+    assert first['qualification']['manufacturing_release'] is False
+    assert not (output / 'qualified-release.json').exists()
     assert first['simulation']['duration_s'] == 17.4
     native = output / 'native'
     before = (native / 'native-build.json').read_bytes()

@@ -159,6 +159,8 @@ def generate(architecture='compact_arm', parameters=None, output=None, step=Fals
               'media': image_report,
               'simulated_animation': simulated_animation, 'simulated_media': simulated_media,
               'engineering_passed': engineering['passed'],
+              'manufacturing_release': False,
+              'artifact_status': 'diagnostic_engineering_only',
               'scope': engineering['scope'],
               'files_sha256': {name: hashlib.sha256((output/name).read_bytes()).hexdigest()
                                for name in generated}}

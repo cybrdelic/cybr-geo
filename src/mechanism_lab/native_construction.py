@@ -23,6 +23,11 @@ from typing import Any
 import numpy as np
 
 
+# Internal capability used only by QualifiedNativeConstruction after its
+# construction checks. Plain diagnostic builders cannot emit this marker.
+_QUALIFICATION_RECEIPT_CAPABILITY = object()
+
+
 def read_specification(spec):
     """Load finite JSON and distinguish semantic identity from source bytes.
 
@@ -437,13 +442,23 @@ class NativeConstruction:
         self._files.append(path)
 
     def write_json(self, filename, document):
+        if (filename == 'qualification-construction.json'
+                and not getattr(self, '_qualified_receipt_write_active', False)):
+            raise ValueError('Qualification construction receipt is reserved for the qualified builder')
         path = self.output / _name(filename)
         def scalar(value):
             return value.item() if hasattr(value, 'item') else list(value)
         path.write_text(json.dumps(document, indent=2, default=scalar, allow_nan=False)+'\n', encoding='utf-8')
         self._files.append(path)
 
-    def finish(self, body_status, extra_records=None, *, native_requirements=None):
+    def finish(self, body_status, extra_records=None, *, native_requirements=None,
+               _receipt_capability=None):
+        extra_records = extra_records or {}
+        if 'qualification-construction.json' in extra_records:
+            from .qualification import QualifiedNativeConstruction
+            if (_receipt_capability is not _QUALIFICATION_RECEIPT_CAPABILITY
+                    or type(self) is not QualifiedNativeConstruction):
+                raise ValueError('Qualification construction receipt requires the qualified builder')
         if native_requirements is not None:
             if not isinstance(native_requirements, NativeInterfaceRequirements):
                 raise TypeError('Expected native interface requirements')
@@ -461,8 +476,12 @@ class NativeConstruction:
         self.write_json('cad_parts.json', self.part_metadata)
         self.write_json('geometry-meshes.json', dict(units='mm', meshes=self.meshes))
         self.write_json('placed-native-parts.json', dict(units='mm', records=self.placed_records))
-        for filename, document in (extra_records or {}).items():
-            self.write_json(filename, document)
+        for filename, document in extra_records.items():
+            self._qualified_receipt_write_active = (filename == 'qualification-construction.json')
+            try:
+                self.write_json(filename, document)
+            finally:
+                self._qualified_receipt_write_active = False
         hashes = {str(path.relative_to(self.output)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in self._files}
         self.write_json('native-build.json', dict(schema='cybrgeo-native-build/1', provenance=self.provenance,
                         units='CAD mm; mass kg; body-local CoM m; inertia kg m2',

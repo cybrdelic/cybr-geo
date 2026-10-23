@@ -1,4 +1,8 @@
-"""Portable release packaging, content inventory and safe source selection."""
+"""Portable software archive, content inventory and safe source selection.
+
+``pack`` distributes repository/source outputs; it does not manufacture or
+qualify a mechanical assembly. Use ``lab release`` for the separate gated path.
+"""
 from __future__ import annotations
 from pathlib import Path
 import hashlib
@@ -87,4 +91,5 @@ def pack(root, output, source_only=False):
                 'not a released motor/differential manufacturing design.\n')
     return {'archive': str(output), 'bytes': output.stat().st_size,
             'sha256': digest(output), 'source_only': source_only,
-            'files': len(selected)+(1 if source_only else 0)}
+            'files': len(selected)+(1 if source_only else 0),
+            'artifact_status': 'software_distribution; no manufacturing release'}

@@ -37,6 +37,14 @@ def generate_project(source, output=None, *, seconds=None, reuse_native=None, me
                       'Simulation duration', positive=True)
     root = Path(output or project_root() / 'outputs' / project.name)
     root.mkdir(parents=True, exist_ok=True)
+    if (root / 'qualified-release.json').exists():
+        raise ValueError('Diagnostic generation cannot reuse a qualified manufacturing release directory')
+    diagnostic_marker = root / 'DIAGNOSTIC-NOT-FOR-MANUFACTURE.json'
+    diagnostic_marker.write_text(json.dumps(dict(schema='cybrgeo-diagnostic-artifact/1',
+        status='diagnostic_engineering_only', manufacturing_release=False,
+        software_task_passed=False,
+        scope='CAD, simulation and GLB outputs are engineering diagnostics; hardware release requires lab release.'),
+        indent=2) + '\n', encoding='utf-8')
     (root / 'engineering.json').unlink(missing_ok=True)
     for owned_export in ('assembly.glb', 'diagnostic-assembly.glb', project.name + '.step'):
         (root / owned_export).unlink(missing_ok=True)
@@ -88,11 +96,19 @@ def generate_project(source, output=None, *, seconds=None, reuse_native=None, me
                     verified_artifacts=len(receipt['files_sha256']), directory=str(native)),
         simulation={key: value for key, value in result.items()
                     if key not in ('frames', 'task_parameters', 'physical_source', 'requirements')},
-        qualification=dict(construction='native authored geometry and explicit mass records',
+        qualification=dict(status='diagnostic_engineering_only', manufacturing_release=False,
+            construction='native authored geometry and explicit mass records',
             dynamics='actual MuJoCo integration of declared electrical drives, mechanical constraints and contacts',
             clearance='project-declared contact and native clearance scope; not a complete continuous B-rep motion envelope',
             hardware='not qualified'))
     (root / 'engineering.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
+    diagnostic_marker.write_text(json.dumps(dict(schema='cybrgeo-diagnostic-artifact/1',
+        status='diagnostic_engineering_only', manufacturing_release=False,
+        software_task_passed=bool(outcomes['passed']),
+        artifacts=['assembly.glb' if outcomes['passed'] else 'diagnostic-assembly.glb',
+                   'native/cad/', 'native/cad/placed/'],
+        scope='Software task acceptance is not manufacturing qualification. Use lab release with source-bound externally signed physical evidence.'),
+        indent=2) + '\n', encoding='utf-8')
     assembly.metadata['engineering_result'] = report
     return assembly, report
 

@@ -12,5 +12,6 @@ ezdxf==1.4.4
 CairoSVG==2.8.2
 mitsuba==3.7.1
 mujoco==3.16.0
+cryptography==50.0.2
 pytest==9.0.2
 setuptools==82.0.1

@@ -56,12 +56,12 @@ def parser():
     q.add_argument('--renderer',choices=['auto','native','pbr'],default='auto')
     q.add_argument('--step',action='store_true',help='Also export analytic STEP (requires CAD-backed parts)')
     q.add_argument('--rebuild',action='store_true');_truth_args(q)
-    q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
+    q=sub.add_parser('build',help='Build/cache diagnostic geometry and export GLB plus its component list')
     q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE);q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
-    q=sub.add_parser('mechanism',help='Compile one engineering document to CAD, clearance and MuJoCo artifacts')
+    q=sub.add_parser('mechanism',help='Construct diagnostic CAD and integrate an engineering task; hardware release is separate')
     q.add_argument('architecture',nargs='?',default=DEFAULT_RECIPE,help='Mechanism JSON document, or a compatibility example alias')
     q.add_argument('--parameters',type=Path,help='JSON object of bounded construction parameters')
-    q.add_argument('--out',type=Path);q.add_argument('--step',action='store_true')
+    q.add_argument('--out',type=Path);q.add_argument('--step',action='store_true',help='Export diagnostic STEP with manufacturing_validated=false')
     q.add_argument('--reuse-native',type=Path,help='Reuse a hash-verified native build of the same authored project')
     q.add_argument('--media',action='store_true',help='Also render actual mesh PNG/GIF inspection views')
     q.add_argument('--size',type=resolution,default=(960,720))
@@ -69,6 +69,12 @@ def parser():
     q.add_argument('--fps',type=positive_int,default=12)
     from .engineering_media import add_arguments as replay_arguments
     replay_arguments(sub.add_parser('replay',help='Render accepted native CAD and saved integrated motion with source-bound media receipts'))
+    q=sub.add_parser('release',help='Release manufacturing CAD only after source-bound construction and externally signed hardware evidence')
+    q.add_argument('project',help='Engineering project containing data/qualification-plan.json')
+    q.add_argument('--run',type=Path,required=True,help='Accepted diagnostic engineering run to qualify')
+    q.add_argument('--evidence',type=Path,required=True,help='Signed physical records and their original report documents')
+    q.add_argument('--trust-policy',type=Path,required=True,help='Independently provisioned Ed25519 issuer policy')
+    q.add_argument('--out',type=Path,required=True,help='Fresh qualified release directory')
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
     q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=positive_int,default=V9.still_spp);q.add_argument('--depth',type=positive_int,default=V9.still_depth);q.add_argument('--threads',type=positive_int,default=4)
@@ -121,6 +127,10 @@ def run(args):
     if args.command=='replay':
         from .engineering_media import run_arguments
         run_arguments(args)
+        return 0
+    if args.command=='release':
+        from .qualification import release_project
+        print(json.dumps(release_project(args.project,args.run,args.evidence,args.trust_policy,args.out),indent=2))
         return 0
     from .core import project_root,validate
     from .registry import load,BUILTINS,is_mechanism_source
@@ -188,12 +198,19 @@ def run(args):
             assembly=simulated_assembly(assembly,engineering['simulation'])
     if args.command=='build':
         from .exporters import export_glb,export_step,export_bom,export_stls
-        out=args.out or out;out.mkdir(parents=True,exist_ok=True);export_glb(assembly,out/(stem+'.glb'));export_bom(assembly,out)
+        out=args.out or out;out.mkdir(parents=True,exist_ok=True)
+        if (out/'qualified-release.json').exists():
+            raise ValueError('Diagnostic build cannot write into a qualified manufacturing release')
+        (out/'DIAGNOSTIC-NOT-FOR-MANUFACTURE.json').write_text(json.dumps({
+            'schema':'cybrgeo-diagnostic-artifact/1','status':'diagnostic_geometry',
+            'manufacturing_release':False},indent=2)+'\n',encoding='utf-8')
+        export_glb(assembly,out/(stem+'.glb'));export_bom(assembly,out)
         if args.step:export_step(assembly,out/(stem+'_analytic.step'))
         if args.stl:export_stls(assembly,out/'stl')
         from .registry import cache_directory
         shutil.copy2(cache_directory(args.recipe)/'validation.json',out/'validation.json')
-        print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out)},indent=2))
+        print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out),
+                          'manufacturing_release':False,'artifact_status':'diagnostic_geometry'},indent=2))
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
         if args.renderer=='v9':
