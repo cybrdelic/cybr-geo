@@ -11,6 +11,7 @@ This adaptation follows CYBR GEO's GPL-2.0-only licensing.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 from pathlib import Path
 
@@ -19,6 +20,8 @@ import numpy as np
 
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification, transform_shape, shape_mass_properties
 from mechanism_lab.spring_anchor import verify_native_anchor
+from mechanism_lab.spring_anchor import tension_anchor_demand
+from mechanism_lab.qualification import QualificationIntentPlan
 
 from .rack_contract import (PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM,
     arx_rack_report, rack_travel_from_source)
@@ -49,6 +52,42 @@ def validate_native_spec(spec):
     for key, value in expected.items():
         if bench.get(key) != value:
             raise ValueError(f'Unsupported bench_interface.{key} edit: revise the native foot, pedestal and mounting construction together')
+
+
+def qualification_intent(spec):
+    """Bind source force/drive limits before exporting placed diagnostic CAD."""
+    document = json.loads((Path(__file__).with_name('data') / 'qualification-intent.json').read_text(encoding='utf-8'))
+    intent = QualificationIntentPlan(document)
+    if set(document['interfaces']) != {
+            f'{group}_spring_member_{member}_{end}'
+            for group in ('shoulder', 'elbow') for member in range(2)
+            for end in ('fixed', 'moving')}:
+        raise ValueError('ARX intent spring interface inventory differs from source members')
+    for group, source_key in (('shoulder', 'counterbalance'),
+                              ('elbow', 'elbow_counterbalance')):
+        spring = spec[source_key]
+        demand = tension_anchor_demand(
+            spring, spec['joint_hard_limits_rad'][spring['joint_index']],
+            pin_diameter_mm=EYE_PIN_DIAMETER_MM)['required_capacity_per_separate_pin_N']
+        for member in range(spring['spring_count']):
+            for end in ('fixed', 'moving'):
+                row = document['interfaces'][f'{group}_spring_member_{member}_{end}']
+                if (row['role'] != 'retained_contact'
+                        or not math.isclose(row['force_demand_N'], demand, rel_tol=1e-10)):
+                    raise ValueError('ARX intent anchor force differs from its source spring')
+    rating = spec['folded_transmission']['rating_screen']
+    expected = [rating['large']['operating_screen_limit_Nm']]*3 + [
+        rating['small']['operating_screen_limit_Nm']]*3
+    baseline = json.loads((Path(__file__).with_name('data') / 'P2-baseline-parameters.json').read_text(encoding='utf-8'))
+    source_limits = {f'motor{index}': limit for index, limit in enumerate(expected, 1)}
+    source_limits['rack_motor'] = baseline['gripper']['output_torque_limit_Nm']
+    if set(document['loads']) != set(source_limits):
+        raise ValueError('ARX intent load inventory differs from source actuators')
+    for name, limit in source_limits.items():
+        if not math.isclose(document['loads'][name]['source_demand_limit_Nm'], limit,
+                            rel_tol=1e-12, abs_tol=1e-12):
+            raise ValueError(f'ARX intent {name} source limit changed without drive redesign')
+    return intent
 
 
 def nominal_interface_requirements(parts, specification, transmissions):
@@ -122,9 +161,11 @@ def build(spec, output):
     # whether the nominal pinion remains within both racks throughout travel.
     rack_travel = rack_travel_from_source(SPEC)
     rack_frame = rack_travel.opposed_pitch_line_y(PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM)
+    intent = qualification_intent(SPEC)
     RHO = {'aluminum':2700., 'steel':7850., 'polymer':1150., 'rubber':1100.}
     construction = NativeConstruction(output, RHO,
         body_ids=['fixed','turret','upper','fore','roll','bend','tool','jaw'],
+        qualification_intent=intent,
         provenance=dict(repository='https://github.com/cybrdelic/cybr-arx6-belt',
             commit=SOURCE_COMMIT, generator_sha256=SOURCE_GENERATOR_SHA256,
             **specification_identity,
@@ -895,6 +936,20 @@ def build(spec, output):
     # Wire/encoder/fastener reserve is explicit; not treated as measured hardware.
     reserve={'turret':(.10,[0,.09,-.04]),'upper':(.08,[0,.14,0]),'fore':(.06,[0,.122,0]),'roll':(.025,[0,0,-.025]),'bend':(.025,[0,.08,0]),'tool':(.06,[0,.195,0])}
     for b,(m,c) in reserve.items():BODIES[b].append({'name':'fastener_encoder_cable_allowance','mass_kg':m,'com_m':c,'inertia_at_com_kg_m2':(np.eye(3)*m*.02**2/6).tolist(),'provenance':'Engineering mass reserve'})
+
+    # The intent must identify the exact pin and clevis placements that this
+    # build actually made. The source force is a demand, never a test capacity.
+    group_by_index = {group['source_spring_index']: group['name']
+                      for group in anchor_plan['groups']}
+    for binding in anchor_bindings:
+        name = (f"{group_by_index[binding['source_spring_index']]}_spring_member_"
+                f"{binding['member_index']}_{binding['role']}")
+        expected_pair = [f"{binding['body']}__{binding['pin_native_part']}",
+                         f"{binding['body']}__{binding['clevis_placed_part']}"]
+        planned = intent.document['interfaces'][name]
+        if (planned['parts'] != expected_pair or not math.isclose(
+                planned['force_demand_N'], binding['required_capacity_N'], rel_tol=1e-10)):
+            raise ValueError(f'ARX intent {name} differs from its placed spring interface')
 
 
     return construction.finish(

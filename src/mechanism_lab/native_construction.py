@@ -316,7 +316,13 @@ class NativeBuild:
 
 class NativeConstruction:
     """Per-build registries; importing the module has no filesystem effects."""
-    def __init__(self, output, densities, body_ids=(), provenance=None):
+    def __init__(self, output, densities, body_ids=(), provenance=None, *,
+                 qualification_intent=None):
+        if qualification_intent is not None:
+            from .qualification import QualificationIntentPlan
+            document = (qualification_intent.document if isinstance(qualification_intent, QualificationIntentPlan)
+                        else qualification_intent)
+            qualification_intent = QualificationIntentPlan(deepcopy(document))
         self.output = Path(output).resolve()
         self.cad_directory = self.output / 'cad'
         self.placed_directory = self.cad_directory / 'placed'
@@ -329,6 +335,7 @@ class NativeConstruction:
         self.meshes, self.placed_records, self.auxiliary_assemblies = [], [], {}
         self.provenance = deepcopy(provenance or {})
         self.provenance['native_construction_sha256'] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+        self.qualification_intent = qualification_intent
         self._files = []
 
     def _export(self, shape, path, **kwargs):
@@ -359,6 +366,11 @@ class NativeConstruction:
         angular_tolerance_rad = _positive(angular_tolerance_rad, 'Angular tessellation tolerance')
         if (body, label) in self.placed_shapes:
             raise ValueError(f'Duplicate native placement: {body}/{label}')
+        if self.qualification_intent is not None:
+            # The source-bound inventory/material/volume contract executes
+            # before an individual placed STEP, mesh or mass record is emitted.
+            self.qualification_intent.check_placement(body, label, material,
+                                                      shape, self.densities)
         self.body_records.setdefault(body, [])
         if body not in self.assemblies:
             self.assemblies[body] = cq.Assembly(name=body)
@@ -462,6 +474,9 @@ class NativeConstruction:
         if (filename == 'qualification-construction.json'
                 and not getattr(self, '_qualified_receipt_write_active', False)):
             raise ValueError('Qualification construction receipt is reserved for the qualified builder')
+        if (filename == 'qualification-intent-construction.json'
+                and not getattr(self, '_intent_receipt_write_active', False)):
+            raise ValueError('Qualification intent receipt is reserved for the planned native builder')
         path = self.output / _name(filename)
         def scalar(value):
             return value.item() if hasattr(value, 'item') else list(value)
@@ -470,7 +485,32 @@ class NativeConstruction:
 
     def finish(self, body_status, extra_records=None, *, native_requirements=None,
                _receipt_capability=None):
-        extra_records = extra_records or {}
+        extra_records = dict(extra_records or {})
+        if self.qualification_intent is not None:
+            plan = self.qualification_intent.document
+            names = [f"{row['body']}__{row['name']}" for row in self.placed_records]
+            if len(names) != len(set(names)) or set(names) != set(plan['parts']):
+                raise ValueError('Native placed inventory differs from source-bound qualification intent')
+            if 'qualification-intent-construction.json' in extra_records:
+                raise ValueError('Qualification intent receipt is reserved for the native builder')
+            # Interface geometry remains unresolved here: diagnostic projects
+            # may use synthetic fixture checks and body-local STEP coordinates.
+            # Pair identity is real and enforced; the strict qualified builder
+            # later reimports exact posed STEP pairs and requires physical data.
+            extra_records['qualification-intent-construction.json'] = dict(
+                schema='cybrgeo-qualification-intent-construction/1',
+                intent_sha256=self.qualification_intent.sha256,
+                placements=sorted(names),
+                declared_interfaces={name: list(row['parts'])
+                    for name, row in sorted(plan['interfaces'].items())},
+                declared_loads={name: row['part']
+                    for name, row in sorted(plan['loads'].items())},
+                unresolved_requirements=deepcopy(plan['unresolved_requirements']),
+                exact_placed_pair_fit='unresolved',
+                manufacturing_release=False,
+                status='source_bound_design_intent_only')
+        elif 'qualification-intent-construction.json' in extra_records:
+            raise ValueError('Qualification intent receipt requires a source-bound construction intent')
         if 'qualification-construction.json' in extra_records:
             from .qualification import QualifiedNativeConstruction
             if (_receipt_capability is not _QUALIFICATION_RECEIPT_CAPABILITY
@@ -495,10 +535,13 @@ class NativeConstruction:
         self.write_json('placed-native-parts.json', dict(units='mm', records=self.placed_records))
         for filename, document in extra_records.items():
             self._qualified_receipt_write_active = (filename == 'qualification-construction.json')
+            self._intent_receipt_write_active = (filename == 'qualification-intent-construction.json'
+                                                 and self.qualification_intent is not None)
             try:
                 self.write_json(filename, document)
             finally:
                 self._qualified_receipt_write_active = False
+                self._intent_receipt_write_active = False
         hashes = {str(path.relative_to(self.output)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in self._files}
         self.write_json('native-build.json', dict(schema='cybrgeo-native-build/1', provenance=self.provenance,
                         units='CAD mm; mass kg; body-local CoM m; inertia kg m2',

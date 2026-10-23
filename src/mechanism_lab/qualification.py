@@ -135,6 +135,150 @@ def _check_placed_interface(name, interface, measured, overlap,
 
 
 @dataclass(frozen=True)
+class QualificationIntentPlan:
+    """Source-bound construction targets with explicit unresolved requirements.
+
+    This is the first stage of the same qualification path, never a release
+    certificate. A null target says that the author has not established it;
+    zero or a fabricated supplier/process number must not stand in for one.
+    NativeConstruction uses the known inventory, material and volume targets
+    before exporting each placed part, then records the unresolved scope.
+    """
+
+    document: dict
+
+    def __post_init__(self):
+        row = self.document
+        _keys(row, ('schema', 'parts', 'interfaces', 'loads', 'unresolved_requirements'),
+              'Qualification intent')
+        if row['schema'] != 'cybrgeo-qualification-intent/1':
+            raise QualificationError('Expected cybrgeo-qualification-intent/1')
+        parts = _object(row['parts'], 'Intent parts')
+        interfaces = _object(row['interfaces'], 'Intent interfaces')
+        loads = _object(row['loads'], 'Intent loads')
+        for name, part in parts.items():
+            _safe_part_export_id(name)
+            _keys(part, ('material', 'process', 'nominal_minimum_wall_mm',
+                         'required_dimensional_tolerance_mm', 'maximum_volume_mm3'),
+                  f'Intent part {name}')
+            _safe_id(part['material'], 'Intent material')
+            if part['process'] is not None:
+                _safe_id(part['process'], 'Intent process')
+            for key in ('nominal_minimum_wall_mm', 'required_dimensional_tolerance_mm',
+                        'maximum_volume_mm3'):
+                if part[key] is not None:
+                    _number(part[key], f'Intent {name} {key}', positive=True)
+        if len({name.casefold() for name in parts}) != len(parts):
+            raise QualificationError('Intent part IDs collide on case-insensitive filesystems')
+        for name, interface in interfaces.items():
+            _safe_id(name, 'Intent interface ID')
+            _keys(interface, ('parts', 'role', 'required_service_gap_mm',
+                              'first_variation_mm', 'second_variation_mm',
+                              'force_demand_N'), f'Intent interface {name}')
+            pair = interface['parts']
+            if (not isinstance(pair, list) or len(pair) != 2 or pair[0] == pair[1]
+                    or not set(pair) <= parts.keys()):
+                raise QualificationError(f'Intent interface {name} lacks two placed part IDs')
+            if interface['role'] not in ('clearance', 'retained_contact', 'unresolved'):
+                raise QualificationError(f'Intent interface {name} has unsupported role')
+            for key in ('required_service_gap_mm', 'first_variation_mm',
+                        'second_variation_mm', 'force_demand_N'):
+                if interface[key] is not None:
+                    _number(interface[key], f'Intent {name} {key}',
+                            positive=(key == 'force_demand_N'))
+        for name, load in loads.items():
+            _safe_id(name, 'Intent load ID')
+            _keys(load, ('part', 'source_demand_limit_Nm'), f'Intent load {name}')
+            if load['part'] not in parts:
+                raise QualificationError(f'Intent load {name} lacks a placed loaded part')
+            if load['source_demand_limit_Nm'] is not None:
+                _number(load['source_demand_limit_Nm'], f'Intent {name} source limit', positive=True)
+        pending = row['unresolved_requirements']
+        if not isinstance(pending, list) or not pending:
+            raise QualificationError('Construction intent must name unresolved design or external requirements')
+        seen = set()
+        for item in pending:
+            _keys(item, ('category', 'kind', 'subject', 'reason'), 'Unresolved requirement')
+            if item['category'] not in ('design', 'external'):
+                raise QualificationError('Unresolved requirement category must be design or external')
+            _safe_id(item['kind'], 'Unresolved requirement kind')
+            _text(item['subject'], 'Unresolved requirement subject')
+            _text(item['reason'], 'Unresolved requirement reason')
+            identity = (item['category'], item['kind'], item['subject'])
+            if identity in seen:
+                raise QualificationError('Duplicate unresolved external requirement')
+            seen.add(identity)
+
+    @property
+    def sha256(self):
+        return digest(self.document)
+
+    def check_placement(self, body, label, material, shape, densities):
+        name = f'{body}__{label}'
+        _safe_part_export_id(name)
+        part = self.document['parts'].get(name)
+        if part is None or part['material'] != material or material not in densities:
+            raise QualificationError(f'Placement {name} differs from its source-bound intent')
+        native = _shape(shape)
+        if not native.isValid() or not native.Solids():
+            raise QualificationError(f'Intent placement {name} requires valid native CAD')
+        volume = _number(float(native.Volume()), f'Intent {name} CAD volume', positive=True)
+        maximum = part['maximum_volume_mm3']
+        if maximum is not None and volume > maximum:
+            raise QualificationError(f'Intent placement {name} exceeds its authored volume limit')
+        return volume
+
+    def require_resolved_by(self, resolved):
+        """Prevent a later strict plan from silently dropping authored targets."""
+        document = resolved.document if isinstance(resolved, QualificationPlan) else resolved
+        complete = QualificationPlan(document).document
+        intent = self.document
+        if set(complete['parts']) != set(intent['parts']):
+            raise QualificationError('Resolved plan changes the source-bound intent part inventory')
+        for name, part in intent['parts'].items():
+            actual = complete['parts'][name]
+            if actual['material'] != part['material'] or (
+                    part['process'] is not None and actual['process'] != part['process']):
+                raise QualificationError(f'Resolved plan changes intent material/process for {name}')
+            minimum = part['nominal_minimum_wall_mm']
+            tolerance = part['required_dimensional_tolerance_mm']
+            maximum = part['maximum_volume_mm3']
+            if ((minimum is not None and actual['nominal_minimum_wall_mm'] < minimum)
+                    or (tolerance is not None and actual['required_dimensional_tolerance_mm'] > tolerance)
+                    or (maximum is not None and actual['maximum_volume_mm3'] > maximum)):
+                raise QualificationError(f'Resolved plan weakens intent part targets for {name}')
+        if not set(intent['interfaces']) <= set(complete['interfaces']):
+            raise QualificationError('Resolved plan omits a source-bound intent interface')
+        for name, interface in intent['interfaces'].items():
+            actual = complete['interfaces'][name]
+            if actual['parts'] != interface['parts']:
+                raise QualificationError(f'Resolved plan changes intent interface pair {name}')
+            role = interface['role']
+            if (role == 'retained_contact' and _interface_role(actual) != _RETAINED_CONTACT_ROLE
+                    or role == 'clearance' and _interface_role(actual) != 'clearance'):
+                raise QualificationError(f'Resolved plan changes intent interface role {name}')
+            required = interface['required_service_gap_mm']
+            if (required is not None and role == 'clearance'
+                    and actual['required_clearance_mm'] < required):
+                raise QualificationError(f'Resolved plan weakens intent service gap {name}')
+            for key, target in (('first_tolerance_mm', interface['first_variation_mm']),
+                                ('second_tolerance_mm', interface['second_variation_mm']),
+                                ('demand_N', interface['force_demand_N'])):
+                if target is not None and actual[key] < target:
+                    raise QualificationError(f'Resolved plan understates intent {key} for {name}')
+        if not set(intent['loads']) <= set(complete['loads']):
+            raise QualificationError('Resolved plan omits a source-bound intent load')
+        for name, load in intent['loads'].items():
+            actual = complete['loads'][name]
+            if actual['part'] != load['part']:
+                raise QualificationError(f'Resolved plan changes intent loaded part {name}')
+            source_limit = load['source_demand_limit_Nm']
+            if source_limit is not None and actual['demand_Nm'] > source_limit:
+                raise QualificationError(f'Resolved plan demands more than source actuator limit {name}')
+        return complete
+
+
+@dataclass(frozen=True)
 class QualificationPlan:
     """Typed construction contract checked before any native placement export.
 
@@ -623,6 +767,24 @@ def _require_connector_demand_binding(plan, physical_model, simulation,
     root = getattr(physical_model, 'root', None)
     source_connectors = {}
     if root is not None:
+        # MuJoCo connect equalities can name sites instead of bodies. Resolve
+        # each site through its actual source XML body ancestry; a site name or
+        # native part label alone is never evidence of ownership.
+        site_owners = {}
+        def collect_sites(container, body):
+            for site in container.findall('site'):
+                site_name = site.get('name')
+                if not site_name or site_name in site_owners:
+                    raise QualificationError('Physical connector sites need unique source names')
+                site_owners[site_name] = body
+            for child in container.findall('body'):
+                child_name = child.get('name')
+                if not child_name:
+                    raise QualificationError('Physical connector site owner must be a named body')
+                collect_sites(child, child_name)
+        worldbody = root.find('./worldbody')
+        if worldbody is not None:
+            collect_sites(worldbody, 'world')
         for element in root.findall('./equality/*'):
             if element.tag not in ('connect', 'weld'):
                 continue
@@ -630,6 +792,12 @@ def _require_connector_demand_binding(plan, physical_model, simulation,
             if not name or name in source_connectors:
                 raise QualificationError('Physical connect/weld constraints need unique source names')
             body1, body2 = element.get('body1'), element.get('body2')
+            site1, site2 = element.get('site1'), element.get('site2')
+            if site1 is not None or site2 is not None:
+                if (body1 is not None or body2 is not None or not site1 or not site2
+                        or site1 not in site_owners or site2 not in site_owners):
+                    raise QualificationError(f'Physical connector {name} has ambiguous or unknown site endpoints')
+                body1, body2 = site_owners[site1], site_owners[site2]
             if not body1 or not body2 or body1 == body2:
                 raise QualificationError(f'Physical connector {name} requires two distinct named body endpoints')
             source_connectors[name] = dict(kind=element.tag, bodies={body1, body2})
@@ -1072,6 +1240,11 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     if 'data/qualification-plan.json' not in source_files or not plan_path.is_file():
         raise QualificationError('Project lacks a source-bound qualification construction plan')
     plan = QualificationPlan(_read_json(plan_path))
+    intent_path = project_dir / 'data' / 'qualification-intent.json'
+    if intent_path.is_file() or 'data/qualification-intent.json' in source_files:
+        if not intent_path.is_file() or 'data/qualification-intent.json' not in source_files:
+            raise QualificationError('Source-bound construction intent is missing or stale')
+        QualificationIntentPlan(_read_json(intent_path)).require_resolved_by(plan)
     report = _read_json(run / 'engineering.json')
     if (report.get('schema') != 'cybrgeo-engineering-result/2' or report.get('passed') is not True
             or report.get('source_files') != source_files or report.get('name') != project.name):

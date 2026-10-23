@@ -18,6 +18,7 @@ from mechanism_lab.linkages import PinnedLink
 from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
 from mechanism_lab.physical_model import PhysicalModel, digest
+from mechanism_lab.qualification import QualificationIntentPlan
 
 HERE = Path(__file__).resolve().parent
 DENSITIES = dict(aluminum=2700., bronze=8800., steel=7850., steel_blue=7850., steel_orange=7850.)
@@ -25,6 +26,31 @@ DENSITIES = dict(aluminum=2700., bronze=8800., steel=7850., steel_blue=7850., st
 
 def specification():
     return validate(json.loads((HERE/'data'/'specification.json').read_text(encoding='utf-8')))
+
+
+def qualification_intent(spec):
+    """Bind unresolved fabrication requirements to this exact four-bar design.
+
+    This diagnostic construction intent cannot issue a qualified release. The
+    source motor limit and pin fit are demand/variation targets, not measured
+    motor capacity or process capability.
+    """
+    document = json.loads((HERE/'data'/'qualification-intent.json').read_text(encoding='utf-8'))
+    fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    if not math.isclose(document['loads']['crank_motor']['source_demand_limit_Nm'],
+                        spec['motor']['gear_output_torque_limit_Nm'], rel_tol=0, abs_tol=1e-12):
+        raise ValueError('Four-bar qualification intent motor demand differs from the physical source')
+    for name in ('input_pin_coupler_bore', 'output_pin_coupler_bore'):
+        row = document['interfaces'][name]
+        if any(not math.isclose(row[key], expected, rel_tol=0, abs_tol=1e-12)
+               for key, expected in (
+                   ('required_service_gap_mm', fit.required_service_radial_gap_mm),
+                   ('first_variation_mm', fit.pin_declared_radial_variation_mm),
+                   ('second_variation_mm', fit.bore_declared_radial_variation_mm))):
+            raise ValueError('Four-bar qualification intent pin fit differs from construction source')
+    if document['parts']['coupler__bored_coupler']['nominal_minimum_wall_mm'] != spec['minimum_wall_mm']:
+        raise ValueError('Four-bar qualification intent coupler wall differs from construction source')
+    return QualificationIntentPlan(document)
 
 
 def validate(spec):
@@ -191,11 +217,15 @@ def native_rows(spec):
 def build(spec, output):
     spec, identity = read_specification(spec)
     spec = validate(spec)
+    intent = qualification_intent(spec)
     rows, info = native_rows(spec)
     native = NativeConstruction(output, DENSITIES, provenance=dict(identity,
         scope='New gravity-loaded four-bar using shared native CAD, full inertia and pinned-link construction',
-        assumptions=spec['assumptions']))
+        assumptions=spec['assumptions']), qualification_intent=intent)
     for body, name, shape, material in rows:
+        # Templates are diagnostic artifacts; reject an unexpected placement
+        # before even its template STEP/STL can be exported.
+        intent.check_placement(body, name, material, shape, DENSITIES)
         native.addpart(body+'__'+name, shape, material, 'New nominal machined geometry; no measured process qualification')
         native.place(body, name, shape, material)
     fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])

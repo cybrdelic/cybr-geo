@@ -20,6 +20,7 @@ from mechanism_lab.linkages import PinnedLink
 from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
 from mechanism_lab.physical_model import PhysicalModel, digest
+from mechanism_lab.qualification import QualificationIntentPlan
 from . import design
 from .leaf_geometry import build_leaf
 
@@ -311,12 +312,19 @@ def moving_geometry(spec):
 def build(spec, output):
     spec, identity = read_specification(spec)
     spec = validate(spec)
+    # This is a source-bound construction intent, not measured process or
+    # hardware evidence. NativeConstruction checks every exact placement
+    # against it before exporting CAD while retaining the diagnostic path.
+    intent_document = json.loads((HERE / 'data' / 'qualification-intent.json').read_text(encoding='utf-8'))
+    intent = QualificationIntentPlan(intent_document)
     rows, info, leaf_report = moving_geometry(spec)
     source = dict(spec['source_geometry']['source'])
     source.update(identity, adapted_recipe_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                  qualification_intent_sha256=digest(intent.document),
                   scope='New rigid pinned-link mechanism derived from source optical geometry; no hardware qualification',
                   assumptions=spec['assumptions'])
-    native = NativeConstruction(output, DENSITIES, provenance=source)
+    native = NativeConstruction(output, DENSITIES, provenance=source,
+                                qualification_intent=intent)
     # The new bearing flange is one nominal piece with the source retainer;
     # fixed source material is partitioned before adding it to mass accounting.
     bearing = fixed_leaf_bearing(spec, info['count'])
@@ -364,6 +372,10 @@ def build(spec, output):
         rows.append(('fixed', name, shape, MATERIALS[material]))
     for body, name, shape, material in rows:
         unique = body + '__' + name
+        # The diagnostic template exporter precedes native.place. Preflight
+        # here too so an unexpected part/material cannot emit even a template
+        # STEP/STL before the shared construction intent rejects it.
+        intent.check_placement(body, name, material, shape, DENSITIES)
         native.addpart(unique, shape, material, 'New derived mechanism' if body != 'fixed' else 'Source housing with disclosed new bearing and reaction features')
         native.place(body, name, shape, material)
     requirements = NativeInterfaceRequirements(dict(scope='Nominal mating CAD and a solved initial closure; ideal bearings in dynamics'))

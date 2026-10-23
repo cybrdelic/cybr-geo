@@ -49,6 +49,17 @@ Every default generation rebuilds geometry and its mass properties. Explicit
 `--reuse-native` requires the source binding issued by a successful fresh
 construction: all project Python/data files, shared construction code, CAD
 dependencies, specification and native artifact hashes must still match.
+The diagnostic builder also reads
+[qualification-intent.json](data/qualification-intent.json) before placing
+parts. It binds all 380 installed part identities and material keys, eight
+source-derived spring pin/clevis pairs, and seven loaded drive parts to that
+construction. Null process, wall and variation fields mean unresolved
+engineering requirements; the resulting intent receipt is **not** a qualified
+construction receipt. The 52 source nominal template/fixture checks are kept
+separate from exact installed part-pair evidence. This example cannot pass
+`lab release` without a complete qualified construction plan and the
+serial-bound physical measurements described in the
+[release contract](../../../docs/MANUFACTURING-RELEASE.md).
 Earlier unbound native folders must be rebuilt through `lab mechanism`; they
 cannot be relabeled from the current source. Shipped
 historical mass records are comparison fixtures only, used by the standalone
@@ -77,6 +88,24 @@ still removes gripper torque and can drop the puck; passing an arm stop check
 does not establish payload retention. Contact overcoverage, omitted flexible-part
 contact, supplier fits, pretension, complete motion-envelope clearance and
 structural/fatigue/thermal qualification remain limits.
+
+A passive jaw-return spring cannot be silently added to claim power-loss
+retention. The current source has a 0.05 Nm gripper output torque limit and a
+3 mm pinion radius, or at most 8.33 N of ideal opening force per jaw. Its
+modeled slide friction is 2.687 N per jaw. At the approximately 19 mm grasp
+position, the 81.939 g puck and assumed 0.65 pad friction require at least
+0.618 N normal force per jaw for static gravity alone. A return spring with
+zero load at the 10 mm closed stop would need at least 367 N/m to overcome
+that slide friction and supply the grip force; by 40 mm opening it would
+oppose the motor with at least 11 N per jaw before slide friction. A
+preloaded low-rate spring or normally engaged brake needs a coupled native
+CAD, actuator and contact design, plus sourced component capacity and fault
+tests. The nominal pinion journal occupies Z 3-10 mm alongside the front
+bushing/post at Z 4-9 mm, and the front wall occupies approximately
+Z 14-16 mm. A spring-applied pinion brake cannot be added there as an
+invisible friction coefficient or lock; its rotor, reaction mount, release
+device, finite torque and clearances need a joint packaging redesign. The
+current film and fault report do not contain that design.
 
 See [architecture](../../../docs/CONSTRUCTIVE_MECHANISMS.md),
 [task/source comparison](TASK.md) and [notices](../../../NOTICE-SOURCES.md).

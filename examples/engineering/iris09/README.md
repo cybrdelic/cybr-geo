@@ -39,6 +39,17 @@ authored together in [mechanism.py](mechanism.py). Shared `PinnedLink`,
 provide the reusable implementation. This example supplies no separate physics
 solver or renderer.
 
+The [construction qualification intent](data/qualification-intent.json) names all
+68 placed parts, their assumed material identities, 119 pin/bearing/retainer/
+housing interfaces and the single annular drive. The shared native constructor
+checks those part identities before export and records a source-bound diagnostic
+receipt. The intent's `null` process, tolerance, capacity and inspection fields
+are unresolved requirements, not zero values or evidence that a supplier can
+make the design. This remains a diagnostic build: it has neither an externally
+supported qualification plan nor the physical tests required by `lab release`.
+The 119 interface identities include unmeasured retention and support paths;
+they do not expand the scope of the existing native clearance measurements.
+
 ## What was added, and what remains assumed
 
 The original shader removes leaf material with a stationary world cylinder at

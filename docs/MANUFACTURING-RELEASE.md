@@ -8,6 +8,18 @@ export diagnostic STEP files; their coverage reports say
 also carry a machine-readable `DIAGNOSTIC-NOT-FOR-MANUFACTURE.json` marker.
 `lab pack` distributes software and source.
 
+The ARX, IRIS and four-bar diagnostic projects now carry
+`data/qualification-intent.json`. The shared native builder checks its exact
+placed-part inventory, material identities and any known volume ceilings before
+each placement export. It records the actual placed IDs, declared part-pair
+identities, load entry points and separately categorized unresolved design and
+external requirements in `qualification-intent-construction.json`. These are
+source-bound construction targets, not process measurements or an exact
+placed-pair fit certificate. Existing nominal fixture/template checks remain
+diagnostic; they cannot be relabeled as measurements of installed interfaces.
+Changing the intent invalidates the native source binding. Its receipt cannot
+authorize a qualified release.
+
 `lab release` is the only CYBR GEO path that writes a qualified product
 directory. It fails before creating that directory unless all requirements
 below are met. No bundled example currently qualifies: actual purchased
@@ -22,6 +34,12 @@ every material grade and lot, each compatible process/facility/revision, each
 native interface and each load case. A part declares a nominal minimum wall,
 required dimensional tolerance and maximum volume. The process declares the
 smallest supported feature, achievable tolerance and maximum part volume.
+If a project has a construction intent, the resolved plan must retain every
+authored part and named interface, preserve their material and part-pair
+identities, and not weaken known wall, gap, variation, demand or source drive
+limits. Null intent targets are unresolved, not zero tolerances or inferred
+supplier capacities. Strict construction still needs sourced materials,
+compatible processes and complete numeric design limits.
 Part IDs use one portable `body__part` export stem: duplicate or
 case-insensitive-colliding names, extra `__` separators and Windows device
 names are rejected before STEP export.
@@ -37,8 +55,9 @@ neither retention nor contact pressure; interference/press fits need a
 separate supported design and physical evidence path.
 When the physical model has named MuJoCo `connect` or `weld` equalities, the
 plan's `solver_connectors` object must map every such name to a declared
-interface whose two native part body prefixes match the equality's explicit
-`body1` and `body2` endpoints. Release rejects missing mappings or endpoints,
+interface whose two native part body prefixes match the equality's `body1` and
+`body2` endpoints, or the source XML body owners of `site1` and `site2`.
+Release rejects missing or ambiguous mappings or endpoints,
 incomplete every-step solver
 reaction records, and modeled peak anchor-force demand above the interface's
 declared `demand_N`. Several connectors mapped to one interface are summed
@@ -91,8 +110,13 @@ receipt through its public API.
 Supply an external trust policy (`cybrgeo-trust-policy/1`) mapping issuer IDs
 to Ed25519 public keys and allowed evidence kinds. CYBR GEO has no bundled
 trusted issuer. The trust policy must be provisioned outside the project,
-engineering run and evidence package. Its authority is an organizational
-decision, outside software's ability to prove.
+engineering run and evidence package. Choosing its issuers is an accountable
+project owner's decision, whether that owner is an individual maker or an
+organization. A valid signature establishes origin under that policy; it does
+not prove that a physical test occurred or that a review was independent.
+Independent review requires a reviewer distinct from the design author and
+inspection of the underlying reports, which software cannot establish from a
+signature alone.
 
 The evidence package contains `evidence.json` with schema
 `cybrgeo-signed-evidence-set/1` and its original report documents. Each

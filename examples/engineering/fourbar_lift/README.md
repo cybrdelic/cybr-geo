@@ -31,6 +31,14 @@ python -m pytest tests/test_fourbar_lift.py --basetemp outputs/fourbar-test-temp
 
 `data/specification.json` is the design input. Its body dimensions, declared
 motor parameters, timing and acceptance limits enter the source identity.
+[`data/qualification-intent.json`](data/qualification-intent.json) binds the
+same diagnostic construction to its 15 exact part/material identities, 19
+named physical interfaces and the source motor output limit. The common
+`QualificationIntentPlan` checks each native placement before its placed CAD
+export and writes a source-bound diagnostic intent receipt. The plan keeps
+unknown process, capacity, service-force and fabrication values as `null` and
+names their unresolved design or external evidence requirements. It does not
+emit a qualified-construction receipt or authorize `lab release`.
 The strict Grashof and pin-wall rules reject unreachable or unmated edits
 before construction. The full-turn rocker extreme supplies conservative
 swept bounds for the extended rocker and load lobe against the input
@@ -59,6 +67,11 @@ gap independently. Coupler shoulders and
 keepers leave 0.30 mm axial gaps. Actual grooves clear the split retainers.
 The nominal screw shafts fit their matching holes; thread engagement,
 preload, bushing retention and an external mounting fixture are not modeled.
+The intent lists those as unresolved design work rather than treating hole
+clearance as an established bolted load path. It records the pin/bore service
+gap and two variation targets from the same `PinBoreFit` used to construct the
+native coupler. The motor's 0.2 Nm source limit is a model demand ceiling, not
+a tested torque capacity.
 The axial and other radial interfaces still need complete measured production
 tolerance stacks. Changing any fit input invalidates prior CAD, mass/inertia,
 interface, simulation and media receipts until regenerated.
