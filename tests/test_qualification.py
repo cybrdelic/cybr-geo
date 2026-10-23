@@ -186,6 +186,26 @@ def test_qualified_static_hardware_keeps_native_mass_without_fake_solver_inertia
     ET.SubElement(model.bodies['base'], 'joint', name='unexpected', type='hinge')
     with pytest.raises(QualificationError, match='Moving physical body base'):
         _require_physical_mass_binding(model, native, aliases)
+    model.bodies['base'].remove(model.bodies['base'].find('joint'))
+    world = model.root.find('worldbody')
+    extra = ET.SubElement(world, 'body', name='unmapped_drive')
+    ET.SubElement(extra, 'joint', name='unmapped_axis', type='hinge')
+    ET.SubElement(extra, 'inertial', mass='1', pos='0 0 0', diaginertia='.1 .1 .1')
+    with pytest.raises(QualificationError, match='Unmapped moving physical body unmapped_drive'):
+        _require_physical_mass_binding(model, native, aliases)
+    world.remove(extra)
+    inferred = ET.SubElement(model.bodies['arm'], 'body', name='inferred_mass')
+    ET.SubElement(inferred, 'geom', type='box', size='.001 .001 .001', mass='.001')
+    with pytest.raises(QualificationError, match='Unmapped moving physical body inferred_mass'):
+        _require_physical_mass_binding(model, native, aliases)
+    model.bodies['arm'].remove(inferred)
+    payload = ET.SubElement(world, 'body', name='external_payload')
+    ET.SubElement(payload, 'freejoint')
+    ET.SubElement(payload, 'inertial', mass='.08', pos='0 0 0', diaginertia='.001 .001 .001')
+    with pytest.raises(QualificationError, match='Unmapped moving physical body external_payload'):
+        _require_physical_mass_binding(model, native, aliases)
+    _require_physical_mass_binding(model, native, aliases,
+                                   external_free_workpieces=('external_payload',))
 
 
 def _retained_contact_plan():
@@ -554,6 +574,77 @@ def _check(package, policy, plan):
     return _verify_evidence(package, policy, 'a'*64, plan, {'fixed__a': 'b'*64, 'moving__b': 'c'*64})
 
 
+def _signed_fault_fixture(tmp_path):
+    """Only a signature/serial test fixture; no ARX hardware test took place."""
+    package, policy, plan, records, private = _signed_fixture(tmp_path)
+    trusted = json.loads(policy.read_text(encoding='utf-8'))
+    trusted['issuers']['test-only']['allowed_kinds'].append('fault_test')
+    policy.write_text(json.dumps(trusted), encoding='utf-8')
+    case_id = 'test_only_power_loss'
+    case = dict(workpiece_body='puck', contact_pairs=[['pad_left', 'puck'],
+                   ['pad_right', 'puck']], actuators_off=['gripper_motor'],
+                workpiece_mass_kg=.08, gravity_vector_m_s2=[0., -9.80665, 0.],
+                maximum_mass_deviation_kg=.001, minimum_observation_s=1.,
+                maximum_downward_drop_m=.001,
+                maximum_residual_current_A=.01,
+                maximum_residual_torque_Nm=.01)
+    requirements = dict(schema='cybrgeo-held-workpiece-fault-requirements/1',
+                        source_sha256='d'*64, model_sha256='e'*64,
+                        cases={case_id: case})
+    measurements = dict(case_id=case_id, source_sha256='d'*64,
+        model_sha256='e'*64, workpiece_body='puck',
+        assembled_serial='TEST-ASSEMBLY',
+        part_serials={'fixed__a': 'TEST-A', 'moving__b': 'TEST-B'},
+        workpiece_mass_kg=.08, power_removed=True,
+        actuators_off=['gripper_motor'], gravity_vector_m_s2=[0., -9.80665, 0.],
+        initial_contact_pairs=[['pad_left', 'puck'], ['pad_right', 'puck']],
+        initially_suspended_only_by_holder_contacts=True,
+        other_supports_absent=True, commanded_current_A=0.,
+        commanded_torque_Nm=0., maximum_measured_current_A=0.,
+        maximum_measured_torque_Nm=0., observation_s=1.,
+        maximum_downward_drop_m=0.)
+    document = package/'test-only-motor-off.txt'
+    document.write_text('TEST ONLY: not a real motor-off observation\n', encoding='utf-8')
+    records.append(dict(schema='cybrgeo-signed-evidence/1', kind='fault_test',
+        subject=case_id, basis_sha256='a'*64, result='observed_pass',
+        measurements=measurements, document=document.name,
+        document_sha256=hashlib.sha256(document.read_bytes()).hexdigest(),
+        issuer='test-only'))
+    _resign(package, records, private)
+    return package, policy, plan, records, private, dict(requirements=requirements)
+
+
+@pytest.mark.parametrize('fault', ['none', 'missing_record', 'unsigned',
+    'stale_basis', 'wrong_serial', 'wrong_bom', 'powered_motor',
+    'nest_support', 'no_holder_contact', 'short_observation', 'excess_drop'])
+def test_signed_motor_off_fault_evidence_is_required_for_the_same_unit(tmp_path, fault):
+    package, policy, plan, records, private, held = _signed_fault_fixture(tmp_path)
+    row = records[-1]
+    observed = row['measurements']
+    if fault == 'missing_record': records.pop()
+    elif fault == 'unsigned': row['signature_base64'] = 'not-a-signature'
+    elif fault == 'stale_basis': row['basis_sha256'] = '0'*64
+    elif fault == 'wrong_serial': observed['assembled_serial'] = 'OTHER'
+    elif fault == 'wrong_bom': observed['part_serials']['moving__b'] = 'OTHER'
+    elif fault == 'powered_motor': observed['power_removed'] = False
+    elif fault == 'nest_support': observed['other_supports_absent'] = False
+    elif fault == 'no_holder_contact': observed['initial_contact_pairs'] = []
+    elif fault == 'short_observation': observed['observation_s'] = .5
+    elif fault == 'excess_drop': observed['maximum_downward_drop_m'] = .01
+    if fault == 'unsigned':
+        (package/'evidence.json').write_text(json.dumps(dict(
+            schema='cybrgeo-signed-evidence-set/1', records=records)), encoding='utf-8')
+    else:
+        _resign(package, records, private)
+    result = lambda: _verify_evidence(package, policy, 'a'*64, plan,
+        {'fixed__a': 'b'*64, 'moving__b': 'c'*64}, held_fault=held)
+    if fault == 'none':
+        assert result()['evidence_count'] == 9
+    else:
+        with pytest.raises(QualificationError):
+            result()
+
+
 def test_plan_rejects_unsupported_material_process_fit_and_load():
     QualificationPlan(_plan())
     mutations = [
@@ -818,7 +909,7 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
                         worst_case_closest_gap_mm=.2 if case == 'retained_contact' else .3)
     qualified_record = dict(schema='cybrgeo-qualification-construction/2',
                             plan_sha256=QualificationPlan(plan).sha256,
-                            qualification_service_sha256=qualification._sha(qualification.__file__),
+                            qualification_service_sha256=qualification._qualification_service_sha256(),
                             placements=['fixed__a', 'moving__b'], interface_names=['pin_fit'],
                             initial_body_poses_mm=_initial_poses(),
                             initial_body_pose_sha256=digest(_initial_poses()),
@@ -1018,7 +1109,12 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
                                         changed_receipt, plan, construction_record,
                                         startup_poses=_initial_poses())
     (native/'mass_properties.json').write_bytes(original_mass_bytes)
-    fake_model = SimpleNamespace(mass_records=deepcopy(real_mass))
+    from mechanism_lab.physical_model import PhysicalModel
+    fake_model = PhysicalModel.from_xml('''<mujoco><worldbody><body name="fixed"/>
+        <body name="moving"><joint name="motion" type="hinge"/>
+        <inertial mass="1" pos="0 0 0" diaginertia=".1 .1 .1"/>
+        </body></worldbody></mujoco>''')
+    fake_model.mass_records = deepcopy(real_mass)
     _require_physical_mass_binding(fake_model, real_mass)
     fake_model.mass_records['moving']['mass_kg'] *= .5
     with pytest.raises(QualificationError, match='inertia differs'):
@@ -1069,8 +1165,14 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     monkeypatch.setattr(engineering_source, 'assert_project_source_identity',
                         lambda source, expected: expected if expected == source_files else (_ for _ in ()).throw(ValueError()))
     from mechanism_lab import physical_model
-    monkeypatch.setattr(physical_model.PhysicalModel, 'from_source',
-                        lambda source: SimpleNamespace(mass_records=source['mass_records']))
+    def physical_fixture(source):
+        model = physical_model.PhysicalModel.from_xml('''<mujoco><worldbody>
+            <body name="fixed"/><body name="moving"><joint name="motion" type="hinge"/>
+            <inertial mass="1" pos="0 0 0" diaginertia=".1 .1 .1"/>
+            </body></worldbody></mujoco>''')
+        model.mass_records = source['mass_records']
+        return model
+    monkeypatch.setattr(physical_model.PhysicalModel, 'from_source', physical_fixture)
     monkeypatch.setattr(qualification, '_physical_startup_poses_mm',
                         lambda model, control, parts, mapping: _initial_poses())
 

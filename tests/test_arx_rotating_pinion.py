@@ -115,6 +115,50 @@ def test_revised_control_targets_physical_pinion_and_bounds_solver_coupling():
     assert 'pinion_joint' not in control_source(p)['rack']
 
 
+def test_source_rotor_inertia_and_no_load_loss_follow_motor_to_pinion():
+    _, source, revised, _, transfer = _compiled_pair()
+    gripper = json.loads((DATA / 'P2-baseline-parameters.json').read_text(
+        encoding='utf-8'))['gripper']
+    radius = gripper['pinion_pitch_radius_m']
+    old_armature = [float(source.dof_armature[source.jnt_dofadr[source.joint(name).id]])
+                    for name in ('jaw_left', 'jaw_right')]
+    old_loss = [float(source.dof_frictionloss[source.jnt_dofadr[source.joint(name).id]])
+                for name in ('jaw_left', 'jaw_right')]
+    new_armature = [float(revised.dof_armature[revised.jnt_dofadr[revised.joint(name).id]])
+                    for name in ('jaw_left', 'jaw_right')]
+    new_loss = [float(revised.dof_frictionloss[revised.jnt_dofadr[revised.joint(name).id]])
+                for name in ('jaw_left', 'jaw_right')]
+    pinion_id = revised.joint('gripper_pinion').id
+    pinion_dof = revised.jnt_dofadr[pinion_id]
+    reflected = gripper['motor_rotor_inertia_kg_m2'] * gripper['gear_ratio']**2
+    no_load = (gripper['no_load_current_A'] *
+               gripper['output_torque_per_current_Nm_A'])
+    assert old_armature == pytest.approx([.559674272222]*2)
+    assert new_armature == pytest.approx([0., 0.])
+    assert revised.dof_armature[pinion_dof] == pytest.approx(reflected)
+    assert transfer['transferred_pinion_armature_kg_m2'] == pytest.approx(reflected)
+    assert old_loss == pytest.approx([2.68704378109]*2)
+    assert new_loss == pytest.approx([gripper['rail_friction_force_N_each']]*2)
+    assert revised.dof_frictionloss[pinion_dof] == pytest.approx(no_load)
+    assert transfer['transferred_pinion_friction_Nm'] == pytest.approx(no_load)
+    # At one coherent rack/pinion speed, the source effective kinetic energy
+    # and Coulomb dissipation rate remain equal after the DOF relocation.
+    jaw_speed = .02
+    pinion_speed = jaw_speed/radius
+    assert .5*sum(old_armature)*jaw_speed**2 == pytest.approx(
+        .5*revised.dof_armature[pinion_dof]*pinion_speed**2)
+    assert sum(old_loss)*jaw_speed == pytest.approx(
+        sum(new_loss)*jaw_speed + revised.dof_frictionloss[pinion_dof]*pinion_speed)
+
+
+def test_rotating_pinion_rejects_source_transmission_loss_drift():
+    physical = PhysicalModel.from_xml(SOURCE_MODEL.read_text(encoding='utf-8'))
+    physical.root.find(".//joint[@name='jaw_left']").set('frictionloss', '2.9')
+    with pytest.raises(ValueError, match='Source slide friction'):
+        attach_rotating_pinion(physical,
+            rack_travel_from_source(SPEC, model_root=physical.root))
+
+
 def test_diagnostic_intent_tracks_rotating_native_pinion_not_old_tool_member():
     intent = QualificationIntentPlan(json.loads(
         (DATA / 'qualification-intent.json').read_text(encoding='utf-8')))

@@ -129,6 +129,8 @@ jobs:
                          'tests/test_engineering_source_snapshot.py',
                          'tests/test_spring_anchor_contract.py',
                          'tests/test_qualification.py',
+                         'tests/test_held_workpiece_fault.py',
+                         'tests/test_held_workpiece_release.py',
                          'tests/test_qualification_intent.py',
                          'tests/test_qualification_body_aliases.py',
                          'tests/test_load_path_routes.py',

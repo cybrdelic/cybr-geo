@@ -24,7 +24,8 @@ from mechanism_lab.engineering_source import project_source_identity, verify_nat
 from mechanism_lab.part_geometry import place_local_shape
 from mechanism_lab.physical_model import digest
 
-from .gripper_retention import CANDIDATE_REVISION, candidate_recipe
+from .gripper_retention import (CANDIDATE_REVISION, candidate_recipe,
+                                fault_contact_eligibility)
 from .project import create
 
 
@@ -91,10 +92,7 @@ def _fault_metrics(result, simulation, onset_s):
     pre = before[-1]
     pre_y = pre['bodies']['puck']['position_m'][1]
     drop = max(pre_y-row['bodies']['puck']['position_m'][1] for row in after)
-    pad_puck = any('puck' in contact['geoms'] and
-        any('pad_' in name for name in contact['geoms'])
-        for row in before if onset_s-.25 <= row['time_s'] < onset_s
-        for contact in row['contacts'])
+    contact_eligibility = fault_contact_eligibility(before, onset_s)
     pinion = simulation.model.joint('gripper_pinion').id
     left, right = (simulation.model.joint(name).id for name in ('jaw_left', 'jaw_right'))
     addresses = {name: int(simulation.model.jnt_qposadr[index]) for name, index in
@@ -102,7 +100,9 @@ def _fault_metrics(result, simulation, onset_s):
     brake_rows = [row['rack_brake'] for row in after if row['rack_brake'] is not None]
     max_brake = max((row['capacity_Nm'] for row in brake_rows), default=0.)
     max_native = max((abs(row['native_constraint_torque_Nm']) for row in brake_rows), default=0.)
-    return dict(pre_fault_pad_puck_contact=pad_puck,
+    return dict(pre_fault_pad_puck_contact=contact_eligibility['both_pads_contact_at_last_sample'],
+        pre_fault_unsupported_workpiece=contact_eligibility['no_external_workpiece_support'],
+        pre_fault_contact_eligibility=contact_eligibility,
         pre_fault_puck_height_m=pre_y,
         max_post_fault_puck_drop_m=drop,
         final_jaw_opening_m=[after[-1]['qpos'][addresses[name]] for name in ('left', 'right')],
@@ -153,6 +153,8 @@ def verify(output):
     fault['passed'] = bool(
         held_metrics['pre_fault_pad_puck_contact'] and
         free_metrics['pre_fault_pad_puck_contact'] and
+        held_metrics['pre_fault_unsupported_workpiece'] and
+        free_metrics['pre_fault_unsupported_workpiece'] and
         held_metrics['max_post_fault_puck_drop_m'] <= .001 and
         free_metrics['max_post_fault_puck_drop_m'] > held_metrics['max_post_fault_puck_drop_m'] and
         held_metrics['brake_capacity_peak_Nm'] > 0 and

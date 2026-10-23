@@ -163,6 +163,37 @@ even if delivered peak torque is lower. Simulation alone does not establish
 physical interface loads;
 that mapping is an explicit responsibility of the trusted engineering review.
 
+When the physical model contains a freejoint workpiece with explicit moving
+holder contacts, `motor_off_fault_cases` in the source plan is mandatory. A
+separately supplied `cybrgeo-held-workpiece-fault-profile/1` must name exactly
+those cases, the actual free body, its source contact pairs and mass, all
+actuators switched off, source gravity, test duration, allowed drop and
+residual electrical/mechanical output. It pins the current source and model
+SHA-256 values. The profile is supplied outside the project, run and evidence
+package, and the external trust policy must authorize a `fault_test` issuer.
+Removing an example's unresolved-intent warning does not disable this
+physical-model gate.
+
+Each required case needs a saved shared-runtime simulation at
+`RUN_DIRECTORY/faults/CASE_ID/trace.json.gz`. Release reads the recorded
+states, checks the current source/model/controller/runtime identity, confirms
+the actual power-loss event, a pre-fault window held by the declared contacts
+without other modeled workpiece support, motor-off telemetry, observation
+duration and downward workpiece motion along the source gravity vector.
+It checks the compressed trace hash and binds both trace and external profile
+hashes into the evidence basis. Sampled states are a numerical screen, not a
+continuous clearance or physical brake test.
+
+A separately signed `fault_test` record with that case ID must identify the
+same assembled serial and full inspected part BOM. Its witnessed workpiece
+mass, initially suspended holder contacts, absence of external supports,
+power removal, residual current/torque, duration and maximum downward drop
+must meet the source/profile bounds. A workpiece sitting on a nest with zero
+drop cannot pass this observation. The signature verifies origin under the
+caller's trust policy; CYBR GEO cannot authenticate the physical test or an
+issuer's independence. Missing or stale profile, trace or signed same-unit
+observation blocks release before any product directory is created.
+
 Every material needs a grade/lot/density/stress/temperature report; every
 process a facility/revision/feature/tolerance/volume report; every placed part
 a unique fabricated serial, lot and process facility/method/revision match,
@@ -188,6 +219,11 @@ independent physical evidence:
 lab release PROJECT --run RUN_DIRECTORY --evidence EVIDENCE_DIRECTORY \
   --trust-policy EXTERNAL_TRUST_POLICY.json --out NEW_RELEASE_DIRECTORY
 ```
+
+Add `--fault-profile EXTERNAL_MOTOR_OFF_PROFILE.json` when the physical model
+holds a free workpiece. It is required for that assembly and rejected if the
+source has no held free workpiece. The release copies the checked profile and
+fault traces into its `faults/` directory alongside the signed evidence.
 
 Success atomically promotes a staged directory containing exact source-bound
 placed STEP files and the original signed evidence reports, then writes

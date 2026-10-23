@@ -7,7 +7,7 @@ import pytest
 
 from examples.engineering.arx_belt.gripper_retention import (
     CANDIDATE_PARTS, CANDIDATE_REVISION, DATA, candidate_recipe,
-    proposal, require_nominal_brake_placement)
+    fault_contact_eligibility, proposal, require_nominal_brake_placement)
 from examples.engineering.arx_belt.model import compile_model, control_source
 
 
@@ -102,3 +102,22 @@ def test_candidate_brake_only_controls_a_separately_rotating_native_pinion():
     assert 'pinion_brake' not in control_source(baseline)['rack']
     baseline['model_revision'] = 'P5'
     assert 'pinion_joint' not in control_source(baseline)['rack']
+
+
+def test_motor_off_candidate_requires_suspended_puck_held_by_both_pads():
+    def frame(time_s, *pairs):
+        return dict(time_s=time_s,
+                    contacts=[dict(geoms=list(pair)) for pair in pairs])
+    held = [frame(2.16, ('pad_left', 'puck'), ('pad_right', 'puck')),
+            frame(2.19, ('puck', 'pad_left'), ('puck', 'pad_right'))]
+    assert fault_contact_eligibility(held, 2.2)['passed']
+    on_nest = held + [frame(2.195, ('pad_left', 'puck'),
+                            ('pad_right', 'puck'), ('nest_A_seat', 'puck'))]
+    check = fault_contact_eligibility(on_nest, 2.2)
+    assert not check['passed']
+    assert not check['no_external_workpiece_support']
+    assert check['nonpad_puck_contact_geoms'] == ['nest_A_seat']
+    one_pad = [frame(2.19, ('pad_left', 'puck'))]
+    assert not fault_contact_eligibility(one_pad, 2.2)['passed']
+    with pytest.raises(ValueError, match='No sampled puck contacts'):
+        fault_contact_eligibility(held, 3.2)

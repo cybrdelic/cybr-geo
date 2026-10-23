@@ -288,3 +288,39 @@ def candidate_recipe(specification):
                 placement=placement, stator_outer_z_mm=stator_outer_z,
                 armature_outer_z_mm=armature_outer_z,
                 shaft_end_z_mm=armature_outer_z + geometry['shaft_end_above_armature'])
+
+
+def fault_contact_eligibility(frames, onset_s, *, window_s=.05):
+    """Require a two-pad suspended puck before a diagnostic motor-off fault.
+
+    The sampled interval is deliberately strict: any puck contact except the
+    two named pad geoms could externally support the part. Contact samples do
+    not prove continuous retention or a tested brake.
+    """
+    if (isinstance(onset_s, bool) or not isinstance(onset_s, (int, float))
+            or not math.isfinite(onset_s) or onset_s <= 0
+            or isinstance(window_s, bool) or not isinstance(window_s, (int, float))
+            or not math.isfinite(window_s) or window_s <= 0):
+        raise ValueError('A positive finite fault time and observation window are required')
+    recent = [row for row in frames if onset_s-window_s <= row['time_s'] < onset_s]
+    if not recent or onset_s-recent[-1]['time_s'] > .02:
+        raise ValueError('No sampled puck contacts sufficiently near motor-off onset')
+    def partners(row):
+        found = set()
+        for contact in row['contacts']:
+            geoms = contact['geoms']
+            if len(geoms) != 2:
+                raise ValueError('A contact must name two geoms')
+            if 'puck' in geoms:
+                found.add(geoms[1] if geoms[0] == 'puck' else geoms[0])
+        return found
+    expected = {'pad_left', 'pad_right'}
+    last_partners = partners(recent[-1])
+    other = sorted(set().union(*(partners(row)-expected for row in recent)))
+    return dict(last_sample_time_s=recent[-1]['time_s'],
+                observation_window_s=window_s, sampled_frames=len(recent),
+                both_pads_contact_at_last_sample=expected <= last_partners,
+                nonpad_puck_contact_geoms=other,
+                no_external_workpiece_support=not other,
+                passed=expected <= last_partners and not other,
+                scope='Sampled puck contacts before motor-off; both pads required and every non-pad puck contact disqualifies suspended retention')

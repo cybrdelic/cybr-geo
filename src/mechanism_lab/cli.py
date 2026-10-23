@@ -74,6 +74,7 @@ def parser():
     q.add_argument('--run',type=Path,required=True,help='Accepted diagnostic engineering run to qualify')
     q.add_argument('--evidence',type=Path,required=True,help='Signed physical records and their original report documents')
     q.add_argument('--trust-policy',type=Path,required=True,help='Independently provisioned Ed25519 issuer policy')
+    q.add_argument('--fault-profile',type=Path,help='External source/model-bound motor-off acceptance limits for a held free workpiece')
     q.add_argument('--out',type=Path,required=True,help='Fresh qualified release directory')
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
@@ -130,7 +131,8 @@ def run(args):
         return 0
     if args.command=='release':
         from .qualification import release_project
-        print(json.dumps(release_project(args.project,args.run,args.evidence,args.trust_policy,args.out),indent=2))
+        print(json.dumps(release_project(args.project,args.run,args.evidence,args.trust_policy,args.out,
+            fault_profile=args.fault_profile),indent=2))
         return 0
     from .core import project_root,validate
     from .registry import load,BUILTINS,is_mechanism_source

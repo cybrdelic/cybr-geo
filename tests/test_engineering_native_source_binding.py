@@ -200,7 +200,8 @@ def test_pipeline_fresh_reuse_and_midrun_artifact_acceptance(tmp_path, monkeypat
 def test_construction_dependency_boundary_includes_shared_shapes_and_kernel():
     identity = source.construction_dependency_identity()
     assert {'native_construction.py', 'shape_dag.py', 'core.py', 'geometry.py',
-            'physical_model.py', 'load_path_routes.py'} <= identity['source_files'].keys()
+            'physical_model.py', 'load_path_routes.py',
+            'held_workpiece_fault.py'} <= identity['source_files'].keys()
     assert all(len(value) == 64 for value in identity['source_files'].values())
     assert all(identity['packages'][name] for name in ('cadquery', 'cadquery-ocp', 'numpy'))
 

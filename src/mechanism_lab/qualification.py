@@ -12,6 +12,7 @@ import base64
 import binascii
 from copy import deepcopy
 from dataclasses import dataclass
+import gzip
 import hashlib
 import json
 import math
@@ -83,6 +84,14 @@ def _read_json(path):
 
 def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _qualification_service_sha256():
+    """Invalidate native qualification when either release rule module changes."""
+    from . import held_workpiece_fault
+
+    return digest(dict(qualification=_sha(__file__),
+                       held_workpiece_fault=_sha(held_workpiece_fault.__file__)))
 
 
 _CLEARANCE_INTERFACE_FIELDS = {'parts', 'nominal_clearance_mm', 'first_tolerance_mm',
@@ -408,7 +417,8 @@ class QualificationPlan:
                   'assembly_requirements'}
         if (not fields <= set(row) or set(row) - fields -
                 {'solver_connectors', 'spring_load_paths', 'service_cases',
-                 'unloaded_clearances', 'interface_moment_capacities_Nm'}):
+                 'unloaded_clearances', 'interface_moment_capacities_Nm',
+                 'motor_off_fault_cases'}):
             raise QualificationError('Qualification plan fields must include the construction contract and only supported load-path mappings')
         if row['schema'] != 'cybrgeo-qualification-plan/1':
             raise QualificationError('Expected cybrgeo-qualification-plan/1')
@@ -562,6 +572,9 @@ class QualificationPlan:
                 if mode not in ('torque_Nm', 'bending_moment_Nm'):
                     raise QualificationError('Interface moment capacity has an unsupported load mode')
                 _number(capacity, f'{interface_name} {mode} design capacity', positive=True)
+        if ('motor_off_fault_cases' in row
+                and not isinstance(row['motor_off_fault_cases'], dict)):
+            raise QualificationError('Motor-off fault cases must be a source-bound case mapping')
 
     @property
     def sha256(self):
@@ -714,7 +727,7 @@ class QualifiedNativeConstruction(NativeConstruction):
         records['qualification-construction.json'] = dict(
             schema='cybrgeo-qualification-construction/2', plan_sha256=self.qualification_plan.sha256,
             qualification_intent_sha256=self.source_intent_sha256,
-            qualification_service_sha256=_sha(__file__),
+            qualification_service_sha256=_qualification_service_sha256(),
             placements=sorted(self._qualified_placements), interface_names=sorted(plan['interfaces']),
             initial_body_poses_mm=self.initial_body_poses_mm,
             initial_body_pose_sha256=digest(self.initial_body_poses_mm),
@@ -727,7 +740,7 @@ class QualifiedNativeConstruction(NativeConstruction):
 
 
 EVIDENCE_KINDS = ('system_service_envelope', 'material', 'process', 'part_inspection',
-                  'interface_test', 'load_test', 'assembly_test')
+                  'interface_test', 'load_test', 'assembly_test', 'fault_test')
 
 
 def _require_release_service_cases(plan):
@@ -777,6 +790,233 @@ def _routed_moment_capacities(plan, signed_routes):
     return declared
 
 
+def _fault_trace_observation(trace, *, case_id, case, trace_sha256,
+                             source_files, model_sha256, control_sha256,
+                             runtime_implementation, control, workpiece_geoms):
+    """Derive a motor-off observation from recorded states, never a pass flag.
+
+    These are sampled simulation states. They cannot establish brake hardware
+    capacity, an unmodeled support's absence, or continuous motion clearance.
+    Signed assembled-hardware observations remain a separate release gate.
+    """
+    if (not isinstance(trace, dict)
+            or trace.get('schema') != 'cybrgeo-causal-simulation/1'
+            or trace.get('model_sha256') != model_sha256
+            or trace.get('control_sha256') != control_sha256
+            or trace.get('runtime_implementation') != runtime_implementation
+            or trace.get('reference_identity') != 'explicit source record'
+            or not isinstance(trace.get('reference_source'), dict)
+            or trace['reference_source'].get('source_files') != source_files):
+        raise QualificationError(f'Motor-off trace {case_id} differs from the current source, model or runtime')
+    options, final = trace.get('options'), trace.get('final_options')
+    if not isinstance(options, dict) or not isinstance(final, dict):
+        raise QualificationError(f'Motor-off trace {case_id} lacks its actual fault options')
+    onset = _number(options.get('motorOffTime'), f'{case_id} motor-off onset', positive=True)
+    timestep = _number(trace.get('timestep_s'), f'{case_id} timestep', positive=True)
+    if (options.get('power') is not True or final.get('power') is not False
+            or _number(trace.get('start_time_s'), f'{case_id} trace start') != 0):
+        raise QualificationError(f'Motor-off trace {case_id} did not start powered and remove drive power')
+    events = trace.get('events')
+    if (not isinstance(events, list) or len(events) != 1 or not isinstance(events[0], dict)
+            or events[0].get('reason') != 'power-loss'
+            or events[0].get('mode') != 'EMERGENCY'
+            or abs(_number(events[0].get('t'), f'{case_id} power-loss event') - onset)
+               > timestep + 1e-8):
+        raise QualificationError(f'Motor-off trace {case_id} lacks its matching power-loss event')
+    frames = trace.get('frames')
+    if not isinstance(frames, list) or len(frames) < 3:
+        raise QualificationError(f'Motor-off trace {case_id} needs recorded pre- and post-fault states')
+    try:
+        times = [_number(row['time_s'], f'{case_id} frame time') for row in frames]
+    except (KeyError, TypeError, ValueError) as error:
+        raise QualificationError(f'Motor-off trace {case_id} has invalid frame times') from error
+    if (not all(math.isfinite(value) for value in times)
+            or times != sorted(set(times)) or times[0] != 0
+            or times[-1] < onset + case['minimum_observation_s'] - timestep):
+        raise QualificationError(f'Motor-off trace {case_id} does not cover its declared observation')
+    before = [row for row in frames if onset - .1 <= row['time_s'] < onset]
+    after = [row for row in frames if row['time_s'] >= onset + timestep * .5]
+    if len(before) < 2 or len(after) < 2:
+        raise QualificationError(f'Motor-off trace {case_id} lacks a held pre-fault window or post-fault samples')
+    expected_pairs = {tuple(row) for row in case['contact_pairs']}
+    workpiece = case['workpiece_body']
+    free_geoms = set(workpiece_geoms)
+    if not free_geoms or not {pair[1] for pair in expected_pairs} <= free_geoms:
+        raise QualificationError(f'Motor-off trace {case_id} has an incomplete source workpiece geometry inventory')
+    drives = control.get('drives') if isinstance(control, dict) else None
+    if not isinstance(drives, list) or not drives:
+        raise QualificationError(f'Motor-off trace {case_id} lacks controlled drive inventory')
+    rack_active = control.get('rack') is not None
+
+    def workpiece_contacts(frame):
+        pairs = set()
+        for contact in frame['contacts']:
+            names = contact['geoms']
+            if (not isinstance(names, list) or len(names) != 2
+                    or any(not isinstance(name, str) for name in names)):
+                raise QualificationError(f'Motor-off trace {case_id} has invalid contact names')
+            if any(name in free_geoms for name in names):
+                free_geom = names[0] if names[0] in free_geoms else names[1]
+                moving = names[1] if names[0] == free_geom else names[0]
+                if _number(contact.get('normal_N'), f'{case_id} contact normal') <= 0:
+                    raise QualificationError(f'Motor-off trace {case_id} lacks loaded holder contact')
+                pairs.add((moving, free_geom))
+        return pairs
+
+    try:
+        if any(workpiece_contacts(frame) != expected_pairs for frame in before):
+            raise QualificationError(f'Motor-off trace {case_id} was not initially held only by source contacts')
+        if any(not workpiece_contacts(frame) <= expected_pairs for frame in after):
+            raise QualificationError(f'Motor-off trace {case_id} gained an unplanned workpiece support contact')
+        gravity = [float(value) for value in case['gravity_vector_m_s2']]
+        magnitude = math.sqrt(sum(value * value for value in gravity))
+        if len(gravity) != 3 or not math.isfinite(magnitude) or magnitude <= 0:
+            raise QualificationError(f'Motor-off trace {case_id} has invalid source gravity')
+        direction = [value / magnitude for value in gravity]
+        def projected_position(frame):
+            position = frame['bodies'][workpiece]['position_m']
+            if len(position) != 3 or any(not math.isfinite(float(value)) for value in position):
+                raise QualificationError(f'Motor-off trace {case_id} has invalid workpiece state')
+            return sum(float(value)*axis for value, axis in zip(position, direction))
+        pre_positions = [projected_position(frame) for frame in before]
+        if max(pre_positions) - min(pre_positions) > case['maximum_downward_drop_m']:
+            raise QualificationError(f'Motor-off trace {case_id} was not held steady before power loss')
+        initial_position = pre_positions[-1]
+        drop = max(0., *(projected_position(frame) - initial_position for frame in after))
+        if any(frame.get('mode') != 'EMERGENCY' or frame.get('reason') != 'power-loss'
+               for frame in after):
+            raise QualificationError(f'Motor-off trace {case_id} restored drive after power loss')
+        currents, torques = [], []
+        for frame in after:
+            motors = frame['motors']
+            if not isinstance(motors, list) or len(motors) != len(drives):
+                raise QualificationError(f'Motor-off trace {case_id} lacks every motor state')
+            for motor in motors:
+                currents.append(abs(float(motor['current_A'])))
+                torques.append(abs(float(motor['torque_Nm'])))
+            rack = frame.get('rack_motor')
+            if rack_active and not isinstance(rack, dict):
+                raise QualificationError(f'Motor-off trace {case_id} lacks rack motor state')
+            if rack is not None:
+                currents.append(abs(float(rack['current_A'])))
+                torques.append(abs(float(rack['torque_Nm'])))
+        if not all(math.isfinite(value) for value in currents+torques):
+            raise QualificationError(f'Motor-off trace {case_id} has nonfinite drive telemetry')
+    except (KeyError, TypeError, ValueError, IndexError) as error:
+        if isinstance(error, QualificationError):
+            raise
+        raise QualificationError(f'Motor-off trace {case_id} lacks required recorded states') from error
+    maximum_current, maximum_torque = max(currents), max(torques)
+    if maximum_current != 0 or maximum_torque != 0:
+        raise QualificationError(f'Motor-off trace {case_id} still commands or carries motor output')
+    free_metrics = trace.get('metrics', {}).get('free_bodies', {}).get(workpiece)
+    if (not isinstance(free_metrics, dict)
+            or _number(free_metrics.get('max_imposed_generalized_force'),
+                       f'{case_id} imposed workpiece force') != 0
+            or _number(free_metrics.get('max_applied_wrench_component'),
+                       f'{case_id} applied workpiece wrench') != 0):
+        raise QualificationError(f'Motor-off trace {case_id} uses an unmodeled workpiece support force')
+    return dict(case_id=case_id, source_sha256=digest(source_files),
+                model_sha256=model_sha256, workpiece_body=workpiece,
+                workpiece_mass_kg=case['workpiece_mass_kg'], power_removed=True,
+                actuators_off=case['actuators_off'], gravity_vector_m_s2=gravity,
+                initial_contact_pairs=case['contact_pairs'],
+                initially_suspended_only_by_holder_contacts=True,
+                other_supports_absent=True, commanded_current_A=0.,
+                commanded_torque_Nm=0., maximum_measured_current_A=maximum_current,
+                maximum_measured_torque_Nm=maximum_torque,
+                observation_s=times[-1] - onset, maximum_downward_drop_m=drop,
+                trace_sha256=trace_sha256)
+
+
+def _verify_held_workpiece_fault_cases(physical_model, control, run, report,
+                                      source_files, plan, trust_policy,
+                                      fault_profile, *, project_directory,
+                                      evidence_directory):
+    """Bind source-selected cases, external limits and real saved fault frames."""
+    from .held_workpiece_fault import (HeldWorkpieceFaultError,
+        held_free_workpieces, require_motor_off_fault_cases,
+        validate_motor_off_fault_simulations)
+
+    root = getattr(physical_model, 'root', None)
+    if root is None:
+        raise QualificationError('Qualified release needs a parsed physical body and contact tree')
+    try:
+        held = held_free_workpieces(root)
+    except HeldWorkpieceFaultError as error:
+        raise QualificationError(f'Held-workpiece physical contact tree fails: {error}') from error
+    policy = _read_json(trust_policy) if held else None
+    profile_path = None
+    profile = None
+    if fault_profile is not None:
+        profile_path = Path(fault_profile).resolve()
+        if any(profile_path.is_relative_to(directory) for directory in
+               (Path(run).resolve(), Path(project_directory).resolve(),
+                Path(evidence_directory).resolve())):
+            raise QualificationError('Motor-off acceptance profile must be supplied outside source, run and evidence')
+        profile = _read_json(profile_path)
+    try:
+        requirements = require_motor_off_fault_cases(root,
+            source_sha256=digest(source_files), model_sha256=report['model_sha256'],
+            external_profile=profile, trust_policy=policy,
+            planned_cases=plan.get('motor_off_fault_cases'))
+    except HeldWorkpieceFaultError as error:
+        raise QualificationError(f'Held-workpiece motor-off requirement fails: {error}') from error
+    if not requirements['cases']:
+        return None
+    control_actuators = [row.get('actuator') for row in control.get('drives', ())]
+    rack = control.get('rack')
+    if rack is not None:
+        control_actuators.append(rack.get('actuator'))
+    if (not control_actuators or any(not isinstance(name, str) or not name
+                                    for name in control_actuators)
+            or len(set(control_actuators)) != len(control_actuators)):
+        raise QualificationError('Motor-off release needs a complete unique controlled actuator inventory')
+    results, traces = {}, {}
+    for case_id, case in requirements['cases'].items():
+        _safe_id(case_id, 'Motor-off case ID')
+        reserved = {'CON', 'PRN', 'AUX', 'NUL'} | {
+            f'{prefix}{number}' for prefix in ('COM', 'LPT') for number in range(1, 10)}
+        if case_id.endswith('.') or case_id.upper().split('.', 1)[0] in reserved:
+            raise QualificationError('Motor-off case ID is not a portable output directory name')
+        if sorted(control_actuators) != case['actuators_off']:
+            raise QualificationError(f'Motor-off case {case_id} lacks exact controlled actuator coverage')
+        workpiece_body = next(body for body in root.iter('body')
+                              if body.get('name') == case['workpiece_body'])
+        workpiece_geoms = [geom.get('name') for geom in workpiece_body.iter('geom')]
+        if not workpiece_geoms or any(not name for name in workpiece_geoms):
+            raise QualificationError(f'Motor-off case {case_id} has unnamed or absent workpiece geometry')
+        candidate = Path(run) / 'faults' / case_id / 'trace.json.gz'
+        path = candidate.resolve()
+        if (not path.is_relative_to(Path(run).resolve()) or not path.is_file()
+                or any(item.is_symlink() for item in (candidate, *candidate.parents)
+                       if item.is_relative_to(Path(run).resolve()))):
+            raise QualificationError(f'Motor-off case {case_id} lacks a contained recorded simulation trace')
+        trace_sha = _sha(path)
+        try:
+            with gzip.open(path, 'rt', encoding='utf-8') as stream:
+                trace = json.load(stream)
+        except (OSError, ValueError) as error:
+            raise QualificationError(f'Motor-off case {case_id} trace is not valid gzip JSON') from error
+        results[case_id] = _fault_trace_observation(trace, case_id=case_id,
+            case=case, trace_sha256=trace_sha, source_files=source_files,
+            model_sha256=report['model_sha256'],
+            control_sha256=report['control_sha256'],
+            runtime_implementation=report['simulation']['runtime_implementation'],
+            control=control, workpiece_geoms=workpiece_geoms)
+        traces[case_id] = dict(path=path, sha256=trace_sha)
+    try:
+        validate_motor_off_fault_simulations(requirements,
+            source_sha256=digest(source_files), model_sha256=report['model_sha256'],
+            results=results)
+    except HeldWorkpieceFaultError as error:
+        raise QualificationError(f'Held-workpiece motor-off simulation fails: {error}') from error
+    return dict(requirements=requirements, profile_path=profile_path,
+                profile_sha256=_sha(profile_path), trace_sha256={name: row['sha256']
+                    for name, row in traces.items()}, trace_paths={name: row['path']
+                    for name, row in traces.items()}, observations=results)
+
+
 def _artifact(root, relative):
     if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
         raise QualificationError('Evidence document must use a contained relative path')
@@ -790,7 +1030,7 @@ def _artifact(root, relative):
 
 
 def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256,
-                     modeled_interface_demands=None):
+                     modeled_interface_demands=None, held_fault=None):
     """Verify detached Ed25519 signatures under an externally supplied trust policy."""
     _require_release_service_cases(plan)
     try:
@@ -811,7 +1051,9 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
                 | {('interface_test', name) for name in plan['interfaces']}
                 | {('load_test', name) for name in plan['loads']}
                 | {('assembly_test', 'complete_assembly')}
-                | {('system_service_envelope', 'complete_assembly')})
+                | {('system_service_envelope', 'complete_assembly')}
+                | ({('fault_test', name) for name in held_fault['requirements']['cases']}
+                   if held_fault is not None else set()))
     seen = {}
     for row in envelope['records']:
         if not isinstance(row, dict):
@@ -909,6 +1151,21 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
     if (len(set(inspected_serials.values())) != len(inspected_serials)
             or assembled_part_serials != inspected_serials):
         raise QualificationError('Assembled-unit BOM differs from the unique inspected part serials')
+    if held_fault is not None:
+        from .held_workpiece_fault import (HeldWorkpieceFaultError,
+            validate_motor_off_fault_observations)
+
+        requirements = held_fault['requirements']
+        observations = {name: seen['fault_test', name]
+                        for name in requirements['cases']}
+        try:
+            validate_motor_off_fault_observations(requirements,
+                source_sha256=requirements['source_sha256'],
+                model_sha256=requirements['model_sha256'],
+                assembled_serial=assembled_serial,
+                part_serials=inspected_serials, observations=observations)
+        except HeldWorkpieceFaultError as error:
+            raise QualificationError(f'Signed motor-off assembled-unit test fails: {error}') from error
     for name, interface in plan['interfaces'].items():
         row = _object(seen['interface_test', name], 'Interface measurements')
         pair_serials = {part: inspected_serials[part] for part in interface['parts']}
@@ -1437,8 +1694,9 @@ def _physical_body_is_static(model, name):
     return True
 
 
-def _require_physical_mass_binding(model, native_mass, body_mapping=None):
-    """Bind every moving CAD inertia; keep true fixed hardware source-bound.
+def _require_physical_mass_binding(model, native_mass, body_mapping=None,
+                                   *, external_free_workpieces=()):
+    """Bind moving body mass to CAD; keep true fixed hardware source-bound.
 
     A static body's exact STEP mass is still recomputed, but it is not a
     fictitious MuJoCo inertia. A missing record is accepted only when the
@@ -1449,6 +1707,18 @@ def _require_physical_mass_binding(model, native_mass, body_mapping=None):
     mapping = _qualified_body_mapping(body_mapping, native_mass)
     if not isinstance(records, dict) or not set(records) <= set(mapping.values()):
         raise QualificationError('Physical model mass inventory differs from qualified native CAD bodies')
+    external = set(external_free_workpieces)
+    if any(not isinstance(name, str) or name not in model.bodies
+           or model.bodies[name].find('freejoint') is None for name in external):
+        raise QualificationError('External workpiece exemption requires a source freejoint body')
+    mapped = set(mapping.values())
+    for name in model.bodies:
+        # A compiler may infer mass from geoms even without an explicit
+        # inertial. Every moving body therefore needs a native binding or a
+        # source-bound external free-workpiece case.
+        if (not _physical_body_is_static(model, name)
+                and name not in mapped and name not in external):
+            raise QualificationError(f'Unmapped moving physical body {name} lacks qualified mass')
     for body, native in native_mass.items():
         physical_name = mapping[body]
         if physical_name not in records:
@@ -1464,7 +1734,8 @@ def _require_physical_mass_binding(model, native_mass, body_mapping=None):
             raise QualificationError(f'Physical model body {body} inertia differs from qualified native CAD')
 
 
-def release_project(source, run_directory, evidence_package, trust_policy, output):
+def release_project(source, run_directory, evidence_package, trust_policy, output,
+                    *, fault_profile=None):
     """Copy qualified native STEP only after every source and physical gate passes.
 
     Evidence signatures prove origin under the *caller configured* trust policy;
@@ -1515,7 +1786,7 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
             or record.get('plan_sha256') != plan.sha256
             or record.get('qualification_intent_sha256') !=
                (source_intent.sha256 if source_intent is not None else None)
-            or record.get('qualification_service_sha256') != _sha(__file__)
+            or record.get('qualification_service_sha256') != _qualification_service_sha256()
             or set(record.get('placements', ())) != set(plan.document['parts'])
             or set(record.get('interface_names', ())) != set(plan.document['interfaces'])):
         raise QualificationError('Native CAD was not constructed through the current qualification policy')
@@ -1565,12 +1836,17 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
     for key, value in report['simulation'].items():
         if key in simulation and simulation[key] != value:
             raise QualificationError(f'Simulation {key} differs from its accepted engineering report')
+    held_fault = _verify_held_workpiece_fault_cases(physical_model, control, run,
+        report, source_files, plan.document, trust, fault_profile,
+        project_directory=project_dir, evidence_directory=package)
     body_mapping = _qualified_body_mapping_receipt(record, plan.document['parts'])
     startup_poses = _physical_startup_poses_mm(physical_model, control, plan.document['parts'],
                                                body_mapping)
     native_mass = _recheck_qualified_native_steps(native, placements, interfaces,
         receipt, plan.document, record, spring_record, startup_poses=startup_poses)
-    _require_physical_mass_binding(physical_model, native_mass, body_mapping)
+    _require_physical_mass_binding(physical_model, native_mass, body_mapping,
+        external_free_workpieces=(case['workpiece_body'] for case in
+            held_fault['requirements']['cases'].values()) if held_fault is not None else ())
     _require_current_causal_runtime(simulation['runtime_implementation'])
     modeled_interface_demands = {}
     _require_connector_demand_binding(plan, physical_model, simulation,
@@ -1613,6 +1889,11 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
                  integration_trace_sha256=_sha(run / 'simulation' / 'trace.json.gz'),
                  runtime_sha256=digest(dict(runtime=simulation['runtime_implementation'],
                                             mujoco_version=simulation['mujoco_version'], options=simulation['options'])))
+    if held_fault is not None:
+        basis['held_workpiece_motor_off'] = dict(
+            requirements_sha256=digest(held_fault['requirements']),
+            external_profile_sha256=held_fault['profile_sha256'],
+            simulation_trace_sha256=held_fault['trace_sha256'])
     step_hashes = {}
     for row in placements['records']:
         name = f"{row['body']}__{row['name']}"
@@ -1624,7 +1905,7 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
             raise QualificationError(f'Native STEP changed before release: {name}')
         step_hashes[name] = _sha(path)
     evidence = _verify_evidence(package, trust, digest(basis), plan.document,
-                                step_hashes, modeled_interface_demands)
+                                step_hashes, modeled_interface_demands, held_fault)
     # A failed copy never leaves a partially populated product directory.
     destination.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix='.' + destination.name + '-stage-', dir=destination.parent))
@@ -1652,6 +1933,20 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
             shutil.copyfile(source_document, target)
             if _sha(target) != expected:
                 raise QualificationError('A physical evidence report changed during release copy')
+        if held_fault is not None:
+            fault_dir = staging / 'faults'
+            fault_dir.mkdir()
+            copied_profile = fault_dir / 'motor-off-acceptance-profile.json'
+            shutil.copyfile(held_fault['profile_path'], copied_profile)
+            if _sha(copied_profile) != held_fault['profile_sha256']:
+                raise QualificationError('Motor-off acceptance profile changed during release copy')
+            for name, source_trace in held_fault['trace_paths'].items():
+                target_dir = fault_dir / name
+                target_dir.mkdir()
+                target_trace = target_dir / 'trace.json.gz'
+                shutil.copyfile(source_trace, target_trace)
+                if _sha(target_trace) != held_fault['trace_sha256'][name]:
+                    raise QualificationError(f'Motor-off trace {name} changed during release copy')
         from .engineering_source import assert_project_source_identity
         assert_project_source_identity(source, source_files)
         _require_current_causal_runtime(simulation['runtime_implementation'])
@@ -1662,7 +1957,11 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
                 or digest(_read_json(run / 'physical-source.json')) != basis['model_sha256']
                 or digest(_read_json(run / 'control-source.json')) != basis['control_sha256']
                 or _sha(trust) != evidence['trust_policy_sha256']
-                or _sha(__file__) != record['qualification_service_sha256']):
+                or (held_fault is not None and
+                    (_sha(held_fault['profile_path']) != held_fault['profile_sha256']
+                     or any(_sha(path) != held_fault['trace_sha256'][name]
+                            for name, path in held_fault['trace_paths'].items())))
+                or _qualification_service_sha256() != record['qualification_service_sha256']):
             raise QualificationError('Engineering source or run changed during release copy')
         manifest = dict(schema='cybrgeo-qualified-manufacturing-release/1',
                         status='qualified_for_declared_envelope_under_external_evidence',

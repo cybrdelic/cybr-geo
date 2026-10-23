@@ -52,6 +52,16 @@ def attach_rotating_pinion(physical, travel):
     if (not math.isclose(coordinates[7], home_gap, abs_tol=1e-12)
             or not travel.slide_min_mm/1000. < home_gap < travel.slide_max_mm/1000.):
         raise ValueError('Both source jaws must have the same interior home opening')
+    pitch = travel.pitch_radius_m
+    source_gripper = load('P2-baseline-parameters.json')['gripper']
+    rail_friction = float(source_gripper['rail_friction_force_N_each'])
+    motor_no_load_torque = (float(source_gripper['no_load_current_A']) *
+                            float(source_gripper['output_torque_per_current_Nm_A']))
+    if (not all(math.isfinite(value) and value >= 0 for value in
+                (rail_friction, motor_no_load_torque)) or pitch <= 0):
+        raise ValueError('Source gripper rail and motor no-load losses must be finite')
+    reflected_slide_armatures = []
+    reflected_slide_friction = []
     for name, sign in (('jaw_left', 1), ('jaw_right', -1)):
         body = tool.find(f"body[@name='{name}']")
         joint = None if body is None else body.find(f"joint[@name='{name}']")
@@ -62,6 +72,26 @@ def attach_rotating_pinion(physical, travel):
                 or any(not math.isclose(a, b, abs_tol=1e-12)
                        for a, b in zip(origin, (0., JAW_ORIGIN_Y_MM/1000., 0.)))):
             raise ValueError('Source jaw frame differs from native rack placement')
+        # The P5 tendon motor has moved to the pinion. Retain the source
+        # effective drive inertia without leaving it on the two jaw slides:
+        # v_jaw = pitch * omega makes I_pinion = sum(m_slide) * pitch**2.
+        # Native CAD jaw and pinion inertias remain separate.
+        armature = float(joint.get('armature', '0'))
+        if not math.isfinite(armature) or armature < 0:
+            raise ValueError('Source jaw reflected armature must be finite and nonnegative')
+        reflected_slide_armatures.append(armature)
+        joint.set('armature', '0')
+        # The old ideal tendon also split the motor's no-load Coulomb loss
+        # across the jaws. Keep real rail friction on each slide, and react
+        # the motor loss through its new physical pinion hinge instead.
+        old_friction = float(joint.get('frictionloss', '0'))
+        expected_friction = rail_friction + motor_no_load_torque/(2*pitch)
+        if (not math.isfinite(old_friction) or
+                not math.isclose(old_friction, expected_friction,
+                                 rel_tol=1e-9, abs_tol=1e-12)):
+            raise ValueError('Source slide friction does not match rail plus split motor no-load loss')
+        reflected_slide_friction.append(old_friction)
+        joint.set('frictionloss', f'{rail_friction:.15g}')
         # ``ref`` changes qpos0 but not the body's authored initial placement.
         # Shift the body by its source home opening to preserve world geometry
         # at q=.038 m while making the new pinion angle zero at home.
@@ -69,11 +99,23 @@ def attach_rotating_pinion(physical, travel):
         joint.set('ref', f'{home_gap:.15g}')
     shaft = ET.SubElement(tool, 'body', name='gripper_pinion',
                           pos=f'0 {PINION_CENTER_Y_MM/1000.:.15g} 0')
-    pitch = travel.pitch_radius_m
+    reflected_pinion_armature = sum(reflected_slide_armatures) * pitch * pitch
+    reflected_pinion_friction = (sum(reflected_slide_friction) -
+                                  2*rail_friction) * pitch
+    motor_reflected_inertia = (float(source_gripper['motor_rotor_inertia_kg_m2']) *
+                               float(source_gripper['gear_ratio'])**2)
+    if (not math.isfinite(motor_reflected_inertia) or motor_reflected_inertia <= 0
+            or not math.isclose(reflected_pinion_armature, motor_reflected_inertia,
+                                rel_tol=1e-9, abs_tol=1e-15)
+            or not math.isclose(reflected_pinion_friction, motor_no_load_torque,
+                                rel_tol=1e-9, abs_tol=1e-12)):
+        raise ValueError('Source jaw drivetrain inertia/loss does not match the gripper motor reflected to the pinion')
     ET.SubElement(shaft, 'joint', name='gripper_pinion', type='hinge', axis='0 0 1',
                   range=f'{(travel.slide_min_mm/1000.-home_gap)/pitch:.15g} '
                         f'{(travel.slide_max_mm/1000.-home_gap)/pitch:.15g}',
-                  limited='true', damping='0', frictionloss='0', armature='0')
+                  limited='true', damping='0',
+                  frictionloss=f'{reflected_pinion_friction:.15g}',
+                  armature=f'{reflected_pinion_armature:.15g}')
     original = equality.find("joint[@name='opposed_rack_synchronization']")
     if original is None or motor.get('tendon') != 'rack_pinion_angle':
         raise ValueError('Source jaw equality or motor transmission changed')
@@ -95,8 +137,23 @@ def attach_rotating_pinion(physical, travel):
         kind='derived CAD-bound hinge', source_commit=SOURCE_COMMIT,
         pitch_radius_m=pitch, home_jaw_opening_m=home_gap,
         cad_body='pinion', physical_body='gripper_pinion',
+        source_slide_reflected_armatures_kg=reflected_slide_armatures,
+        transferred_pinion_armature_kg_m2=reflected_pinion_armature,
+        source_motor_reflected_inertia_kg_m2=motor_reflected_inertia,
+        source_slide_friction_N=reflected_slide_friction,
+        retained_rail_friction_N_each=rail_friction,
+        transferred_pinion_friction_Nm=reflected_pinion_friction,
+        source_motor_no_load_torque_Nm=motor_no_load_torque,
+        transmission_transfer='Preserve source motor rotor kinetic energy with I=sum(m)*pitch_radius**2 = motor_rotor_inertia*gear_ratio**2 and dissipative power with torque=(sum(F)-2*rail_friction)*pitch_radius = no_load_current*torque_per_current; native CAD jaw and pinion inertias remain separate',
         scope='Ideal pitch coupling; rolling tooth contact, backlash, brake and shaft fit are unresolved')
-    return dict(home_jaw_opening_m=home_gap, pitch_radius_m=pitch)
+    return dict(home_jaw_opening_m=home_gap, pitch_radius_m=pitch,
+                source_slide_reflected_armatures_kg=reflected_slide_armatures,
+                transferred_pinion_armature_kg_m2=reflected_pinion_armature,
+                source_motor_reflected_inertia_kg_m2=motor_reflected_inertia,
+                source_slide_friction_N=reflected_slide_friction,
+                retained_rail_friction_N_each=rail_friction,
+                transferred_pinion_friction_Nm=reflected_pinion_friction,
+                source_motor_no_load_torque_Nm=motor_no_load_torque)
 
 
 def load(name, directory=DATA):
