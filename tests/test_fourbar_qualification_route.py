@@ -74,11 +74,16 @@ class _Shape:
         return 1.
 
 
-def _source_root(tmp_path):
+def _source_root(tmp_path, *, hypothetical_design_resolved=False):
     data = tmp_path / 'data'
     data.mkdir()
-    (data / 'qualification-intent.json').write_bytes(
-        (SOURCE / 'data/qualification-intent.json').read_bytes())
+    intent = json.loads((SOURCE / 'data/qualification-intent.json').read_text())
+    if hypothetical_design_resolved:
+        # Exercise only the future strict routing branch. The published source
+        # still names real unresolved keepers, bearings and motion coverage.
+        intent['unresolved_requirements'] = [row for row in intent['unresolved_requirements']
+                                             if row['category'] != 'design']
+    (data / 'qualification-intent.json').write_text(json.dumps(intent))
     return tmp_path
 
 
@@ -89,7 +94,7 @@ def test_source_plan_selects_posed_strict_constructor_without_diagnostic_templat
     original_intent = QualificationIntentPlan(json.loads(
         (SOURCE / 'data/qualification-intent.json').read_text()))
     plan = _test_only_resolved_plan(original_intent.document, client.DENSITIES)
-    local = _source_root(tmp_path)
+    local = _source_root(tmp_path, hypothetical_design_resolved=True)
     (local / 'data/qualification-plan.json').write_text(json.dumps(plan))
     monkeypatch.setattr(client, 'HERE', local)
     expected = client.layout(spec)
@@ -123,6 +128,22 @@ def test_source_plan_selects_posed_strict_constructor_without_diagnostic_templat
     assert calls['kwargs']['physical_body_mapping'] == {body: body for body in expected['frames']}
     for body, matrix in expected['frames'].items():
         assert np.array_equal(calls['kwargs']['initial_body_poses_mm'][body], matrix)
+
+
+def test_complete_numeric_plan_cannot_erase_current_fourbar_design_gaps(tmp_path, monkeypatch):
+    client = _client(monkeypatch)
+    spec = client.specification()
+    intent = QualificationIntentPlan(json.loads(
+        (SOURCE / 'data/qualification-intent.json').read_text()))
+    local = _source_root(tmp_path)
+    (local / 'data/qualification-plan.json').write_text(
+        json.dumps(_test_only_resolved_plan(intent.document, client.DENSITIES)))
+    monkeypatch.setattr(client, 'HERE', local)
+    monkeypatch.setattr(client, 'native_rows', lambda _: (_ for _ in ()).throw(
+        AssertionError('Unresolved design must stop before CAD construction')))
+    with pytest.raises(QualificationError, match='unresolved design requirements'):
+        client.build(spec, tmp_path / 'strict-output')
+    assert not (tmp_path / 'strict-output').exists()
 
 
 def test_incomplete_source_plan_fails_before_any_native_export(tmp_path, monkeypatch):

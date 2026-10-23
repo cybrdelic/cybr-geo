@@ -873,10 +873,26 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     (project_dir/'data').mkdir(parents=True)
     plan_file = project_dir/'data'/'qualification-plan.json'
     plan_file.write_text(json.dumps(plan), encoding='utf-8')
-    source_files = {'data/qualification-plan.json': hashlib.sha256(plan_file.read_bytes()).hexdigest()}
+    intent = dict(schema='cybrgeo-qualification-intent/1',
+        parts={name: dict(material=part['material'], process=part['process'],
+            nominal_minimum_wall_mm=part['nominal_minimum_wall_mm'],
+            required_dimensional_tolerance_mm=part['required_dimensional_tolerance_mm'],
+            maximum_volume_mm3=part['maximum_volume_mm3'])
+            for name, part in plan['parts'].items()},
+        interfaces={'pin_fit': dict(parts=plan['interfaces']['pin_fit']['parts'],
+            role='clearance', required_service_gap_mm=.2,
+            first_variation_mm=.1, second_variation_mm=.1, force_demand_N=5.)},
+        loads={'output': dict(part='moving__b', source_demand_limit_Nm=1.)},
+        unresolved_requirements=[dict(category='external', kind='witnessed_fabrication',
+            subject='synthetic_unit', reason='Unit-test evidence fixture only')])
+    intent_file = project_dir/'data'/'qualification-intent.json'
+    intent_file.write_text(json.dumps(intent), encoding='utf-8')
+    source_files = {f'data/{path.name}': hashlib.sha256(path.read_bytes()).hexdigest()
+                    for path in (plan_file, intent_file)}
     native = tmp_path/'native'
     builder = QualifiedNativeConstruction(native, {'alloy': 2700.},
-        qualification_plan=plan, initial_body_poses_mm=_initial_poses(),
+        qualification_plan=plan, qualification_intent=intent,
+        initial_body_poses_mm=_initial_poses(),
         provenance={'input_spec_sha256': digest({'test': True})})
     first = cq.Workplane('XY').box(4, 4, 4).translate((-2.25, 0, 0))
     second = cq.Workplane('XY').box(4, 4, 4).translate((2.25, 0, 0))
@@ -902,6 +918,7 @@ def test_signed_release_copies_real_qualified_native_steps_atomically(tmp_path, 
     placed_document = json.loads((native/'placed-native-parts.json').read_text(encoding='utf-8'))
     fit_document = json.loads((native/'native-interface-requirements.json').read_text(encoding='utf-8'))
     construction_record = json.loads((native/'qualification-construction.json').read_text(encoding='utf-8'))
+    assert construction_record['qualification_intent_sha256'] == digest(intent)
     bad_material_placements = deepcopy(placed_document)
     bad_material_placements['records'][0]['material'] = 'other-material'
     with pytest.raises(QualificationError, match='material differs from plan'):

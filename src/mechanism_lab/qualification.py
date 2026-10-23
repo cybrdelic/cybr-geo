@@ -406,7 +406,8 @@ class QualificationPlan:
         row = self.document
         fields = {'schema', 'parts', 'materials', 'processes', 'interfaces', 'loads',
                   'assembly_requirements'}
-        if not fields <= set(row) or set(row) - fields - {'solver_connectors', 'spring_load_paths'}:
+        if (not fields <= set(row) or set(row) - fields -
+                {'solver_connectors', 'spring_load_paths', 'service_cases', 'unloaded_clearances'}):
             raise QualificationError('Qualification plan fields must include the construction contract and only supported load-path mappings')
         if row['schema'] != 'cybrgeo-qualification-plan/1':
             raise QualificationError('Expected cybrgeo-qualification-plan/1')
@@ -540,6 +541,16 @@ class QualificationPlan:
         _number(assembly['maximum_measured_backlash_mm'], 'Assembly backlash limit', positive=True)
         if tested_temperature < max(load['service_temperature_C'] for load in loads.values()):
             raise QualificationError('Assembly thermal test requirement must cover the load service temperature')
+        if 'service_cases' in row:
+            from .load_path_routes import LoadPathRouteError, validate_service_case_plan
+            try:
+                validate_service_case_plan(row['service_cases'], parts=parts,
+                    interfaces=interfaces,
+                    unloaded_clearances=row.get('unloaded_clearances', ()), loads=loads)
+            except LoadPathRouteError as error:
+                raise QualificationError(f'Source service-case plan is invalid: {error}') from error
+        elif row.get('unloaded_clearances'):
+            raise QualificationError('Nonload clearances require source-bound service cases')
 
     @property
     def sha256(self):
@@ -575,10 +586,12 @@ class QualifiedNativeConstruction(NativeConstruction):
         document = (qualification_plan.document if isinstance(qualification_plan, QualificationPlan)
                     else qualification_plan)
         self.qualification_plan = QualificationPlan(deepcopy(document))
+        self.source_intent_sha256 = None
         if qualification_intent is not None:
             source_intent = (qualification_intent if isinstance(qualification_intent, QualificationIntentPlan)
                              else QualificationIntentPlan(deepcopy(qualification_intent)))
             source_intent.require_resolved_by(self.qualification_plan)
+            self.source_intent_sha256 = source_intent.sha256
         self.initial_body_poses_mm = _qualified_body_poses(
             initial_body_poses_mm, self.qualification_plan.document['parts'])
         self.physical_body_mapping = _qualified_body_mapping(
@@ -689,6 +702,7 @@ class QualifiedNativeConstruction(NativeConstruction):
             raise QualificationError('Qualification construction receipt is reserved')
         records['qualification-construction.json'] = dict(
             schema='cybrgeo-qualification-construction/2', plan_sha256=self.qualification_plan.sha256,
+            qualification_intent_sha256=self.source_intent_sha256,
             qualification_service_sha256=_sha(__file__),
             placements=sorted(self._qualified_placements), interface_names=sorted(plan['interfaces']),
             initial_body_poses_mm=self.initial_body_poses_mm,
@@ -770,27 +784,16 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
     service = _object(seen['system_service_envelope', 'complete_assembly'], 'Signed service envelope')
     if service.get('load_paths_reviewed') is not True:
         raise QualificationError('An independent source-bound load-path review is required')
-    paths = _object(service.get('mechanical_load_paths'), 'Signed mechanical load paths')
-    if set(paths) != set(plan['loads']):
-        raise QualificationError('Signed load paths must cover every declared active load')
-    covered_interfaces = set()
-    for load_name, path in paths.items():
-        path = _object(path, f'{load_name} signed load path')
-        _keys(path, ('parts', 'interfaces'), f'{load_name} signed load path')
-        members, mates = path['parts'], path['interfaces']
-        if (not isinstance(members, list) or not isinstance(mates, list)
-                or len(members) < 2 or len(mates) != len(members)-1
-                or len(set(members)) != len(members) or len(set(mates)) != len(mates)
-                or members[0] != plan['loads'][load_name]['part']
-                or not set(members) <= set(plan['parts'])
-                or not set(mates) <= set(plan['interfaces'])):
-            raise QualificationError(f'Signed {load_name} path is missing a distinct reaction part or has invalid members')
-        for first, second, mate in zip(members, members[1:], mates):
-            if set(plan['interfaces'][mate]['parts']) != {first, second}:
-                raise QualificationError(f'Signed {load_name} path is disconnected at {mate}')
-        covered_interfaces.update(mates)
-    if covered_interfaces != set(plan['interfaces']):
-        raise QualificationError('Signed load paths omit a declared load-bearing interface')
+    from .load_path_routes import LoadPathRouteError, validate_mechanical_load_paths
+    try:
+        validate_mechanical_load_paths(
+            service.get('mechanical_load_paths'), loads=plan['loads'],
+            parts=plan['parts'], interfaces=plan['interfaces'],
+            source_cases=plan.get('service_cases'),
+            unloaded_clearances=plan.get('unloaded_clearances', ()),
+            modeled_interface_demands=modeled_interface_demands)
+    except LoadPathRouteError as error:
+        raise QualificationError(f'Signed mechanical load paths are invalid: {error}') from error
     actuator_demands = _object(service.get('actuator_demand_Nm'), 'Signed actuator demands')
     interface_demands = _object(service.get('interface_demand_N'), 'Signed interface demands')
     if set(actuator_demands) != set(plan['loads']) or set(interface_demands) != set(plan['interfaces']):
@@ -1417,10 +1420,12 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
         raise QualificationError('Project lacks a source-bound qualification construction plan')
     plan = QualificationPlan(_read_json(plan_path))
     intent_path = project_dir / 'data' / 'qualification-intent.json'
+    source_intent = None
     if intent_path.is_file() or 'data/qualification-intent.json' in source_files:
         if not intent_path.is_file() or 'data/qualification-intent.json' not in source_files:
             raise QualificationError('Source-bound construction intent is missing or stale')
-        QualificationIntentPlan(_read_json(intent_path)).require_resolved_by(plan)
+        source_intent = QualificationIntentPlan(_read_json(intent_path))
+        source_intent.require_resolved_by(plan)
     report = _read_json(run / 'engineering.json')
     if (report.get('schema') != 'cybrgeo-engineering-result/2' or report.get('passed') is not True
             or report.get('source_files') != source_files or report.get('name') != project.name):
@@ -1436,6 +1441,8 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
             or receipt['files_sha256']['qualification-construction.json'] != _sha(native / 'qualification-construction.json')
             or record.get('schema') != 'cybrgeo-qualification-construction/2'
             or record.get('plan_sha256') != plan.sha256
+            or record.get('qualification_intent_sha256') !=
+               (source_intent.sha256 if source_intent is not None else None)
             or record.get('qualification_service_sha256') != _sha(__file__)
             or set(record.get('placements', ())) != set(plan.document['parts'])
             or set(record.get('interface_names', ())) != set(plan.document['interfaces'])):

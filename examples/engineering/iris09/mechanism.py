@@ -338,6 +338,7 @@ def build(spec, output):
     else:
         native = QualifiedNativeConstruction(
             output, DENSITIES, provenance=source, qualification_plan=plan,
+            qualification_intent=intent,
             initial_body_poses_mm={body: frame.tolist() for body, frame in info['frames'].items()},
             physical_body_mapping={body: body for body in info['frames']})
     # The new bearing flange is one nominal piece with the source retainer;

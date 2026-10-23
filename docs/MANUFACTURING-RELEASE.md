@@ -143,11 +143,19 @@ different supported release host need not match that machine exactly.
 An independent signed system service-envelope review must cover every
 actuator torque and interface force demand, the thermal and endurance
 requirements, allowable backlash and a structured physical load-path graph.
-Each active actuator load starts at its declared loaded part, traverses exact
-planned part/interface pairs, and ends at a distinct reaction part; all
-declared interfaces must appear in the reviewed paths. This verifies coverage
-and connectivity of the signed claim, not stress transfer or strength by
-software alone. The signed demands cannot be weakened in the construction plan.
+For branched assemblies, the source plan may declare `service_cases` with an
+exact source part, distinct reaction part, physical load mode and demand.
+Each signed case repeats those fields and supplies one or more connected
+`routes` of exact placed parts and interfaces. A case may represent actuator
+torque, bearing force or a separate retention load; torque is never silently
+converted into force. Every active actuator needs a matching source torque
+case. Each interface must occur on a reviewed route or be explicitly listed in
+the source plan's `unloaded_clearances`. That exclusion is permitted only for a
+clearance pair with no modeled connector or spring force; a clearance bearing
+is not presumed unloaded. Earlier simple paths remain readable for older
+plans without source cases. These checks establish source identity and route
+connectivity, not actual stress transfer or hardware strength. Signed demands
+cannot be weakened in the construction plan.
 The plan must also cover every actuator's peak torque observed in the bound
 MuJoCo run. Rotary drive requests that exceed the source belt or gear limit,
 and opposed-rack requests clipped by the source output limit, block release

@@ -236,7 +236,7 @@ def build(spec, output):
                                     qualification_intent=intent)
     else:
         native = QualifiedNativeConstruction(output, DENSITIES, provenance=provenance,
-            qualification_plan=strict_plan,
+            qualification_plan=strict_plan, qualification_intent=intent,
             initial_body_poses_mm=info['frames'],
             physical_body_mapping={body: body for body in info['frames']})
     for body, name, shape, material in rows:
