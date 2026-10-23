@@ -286,6 +286,131 @@ def test_declared_rack_reports_output_clipping_and_complete_actuator_coverage(
     assert (rack['output_demand_limit_s'] > 0) is clipped
 
 
+def rotating_pinion_fixture(*, brake=True):
+    """A small physical hinge/rack/coil-loss fixture, separate from ARX CAD."""
+    xml = '''<mujoco model="rotating_pinion_fixture">
+      <compiler angle="radian"/><option timestep=".0005" gravity="0 0 0"/>
+      <worldbody>
+        <body name="drive"><joint name="swing" type="hinge" axis="0 0 1"/>
+          <inertial pos="0 0 0" mass=".02" diaginertia=".00001 .00001 .00001"/></body>
+        <body name="pinion"><joint name="gripper_pinion" type="hinge" axis="0 0 1"/>
+          <inertial pos="0 0 0" mass=".01" diaginertia=".000003 .000003 .000003"/></body>
+        <body name="jaw_left"><joint name="jaw_left" type="slide" axis="1 0 0"
+            ref=".03" range=".01 .04" stiffness="100" springref=".01"/>
+          <inertial pos="0 0 0" mass=".02" diaginertia=".00001 .00001 .00001"/></body>
+        <body name="jaw_right"><joint name="jaw_right" type="slide" axis="-1 0 0"
+            ref=".03" range=".01 .04" stiffness="100" springref=".01"/>
+          <inertial pos="0 0 0" mass=".02" diaginertia=".00001 .00001 .00001"/></body>
+      </worldbody>
+      <equality>
+        <joint name="mesh_left" joint1="jaw_left" joint2="gripper_pinion" polycoef="0 .01 0 0 0"
+          solref=".0005 1" solimp=".9999 .99999 .000001"/>
+        <joint name="mesh_right" joint1="jaw_right" joint2="gripper_pinion" polycoef="0 .01 0 0 0"
+          solref=".0005 1" solimp=".9999 .99999 .000001"/>
+      </equality>
+      <actuator><motor name="motor" joint="swing"/>
+        <motor name="rack_motor" joint="gripper_pinion"/></actuator>
+    </mujoco>'''
+    cfg = control()
+    cfg.pop('initial_keyframe')
+    cfg.update(inertial_feedforward=False, gravity_and_coriolis_feedforward=False)
+    cfg['drives'][0].pop('brake')
+    rack = dict(joints=['jaw_left', 'jaw_right'], actuator='rack_motor',
+        pinion_joint='gripper_pinion', pinion_body='pinion',
+        motor=deepcopy(cfg['drives'][0]['motor']), pinion_pitch_radius_m=.01,
+        maximum_coupling_error_m=.0001,
+        max_jaw_velocity_m_s=.1, position_to_velocity_gain_per_s=10.,
+        velocity_force_gain_N_s_m=1., output_torque_limit_Nm=.05,
+        output_torque_per_current_Nm_A=.5, no_load_current_A=.01,
+        current_budget=dict(continuous_current_A=1., peak_current_A=2., peak_budget_s=.1))
+    if brake:
+        rack['pinion_brake'] = dict(delay_s=.002, ramp_s=.003,
+            holding_torque_Nm=.03, screening_dynamic_torque_Nm=.025)
+    cfg['rack'] = rack
+    return xml, cfg
+
+
+def test_rotating_pinion_brake_opposes_a_native_spring_without_motor_power():
+    xml, cfg = rotating_pinion_fixture()
+    reference = lambda t: dict(q=[0.], qd=[0.], qdd=[0.], gap=.03)
+    held = make({'power': False}, ctrl=cfg, xml=xml, ref=reference)
+    free = make({'power': False, 'brakes': False}, ctrl=cfg, xml=xml, ref=reference)
+    a, b = held.run(.05, output_hz=100), free.run(.05, output_hz=100)
+    assert held.rack_pinion_joint == held.model.joint('gripper_pinion').id
+    assert held.safety.reason == free.safety.reason == 'power-loss'
+    assert held.rack_motor.state.current_A == free.rack_motor.state.current_A == 0
+    assert .025 <= held.rack_brake_capacity <= .03
+    assert held.rack_brake_energy > 0
+    assert any(abs(frame['rack_brake']['native_constraint_torque_Nm']) > 0
+               for frame in a['frames'])
+    assert all(frame['rack_brake']['capacity_Nm'] == 0 for frame in b['frames'])
+    assert a['metrics']['rack_brake']['engaged_steps'] > 0
+    assert a['frames'][-1]['qpos'][held.rack_qadr[0]] > b['frames'][-1]['qpos'][free.rack_qadr[0]]
+
+
+def test_rotating_pinion_motor_moves_both_physically_coupled_jaws():
+    xml, cfg = rotating_pinion_fixture(brake=False)
+    xml = xml.replace('stiffness="100"', 'stiffness="0"')
+    cfg['rack']['velocity_force_gain_N_s_m'] = 50.
+    sim = make(ctrl=cfg, xml=xml,
+        ref=lambda t: dict(q=[0.], qd=[0.], qdd=[0.], gap=.035))
+    initial = sim.data.qpos.copy()
+    result = sim.run(.04, output_hz=50)
+    assert sim.rack_motor.state.current_A != 0
+    assert sim.data.qpos[sim.rack_qadr[0]] > initial[sim.rack_qadr[0]]
+    assert sim.data.qpos[sim.rack_qadr[1]] > initial[sim.rack_qadr[1]]
+    for jaw in sim.rack_qadr:
+        assert sim.data.qpos[jaw] - sim.model.qpos0[jaw] == pytest.approx(
+            .01 * (sim.data.qpos[sim.rack_pinion_qadr] - sim.model.qpos0[sim.rack_pinion_qadr]),
+            abs=1e-5)
+    assert result['metrics']['rack_brake'] is None
+    assert result['metrics']['rack_coupling']['peak_absolute_error_m'] < .0001
+
+
+def test_rotating_pinion_soft_mesh_cannot_report_coherent_motion():
+    xml, cfg = rotating_pinion_fixture(brake=False)
+    xml = xml.replace('solref=".0005 1" solimp=".9999 .99999 .000001"',
+                      'solref=".02 1" solimp=".9 .95 .00001"')
+    xml = xml.replace('stiffness="100"', 'stiffness="0"')
+    cfg['rack']['velocity_force_gain_N_s_m'] = 50.
+    sim = make(ctrl=cfg, xml=xml,
+        ref=lambda t: dict(q=[0.], qd=[0.], qdd=[0.], gap=.035))
+    with pytest.raises(RuntimeError, match='mesh exceeds source-authored dynamic coupling limit'):
+        sim.run(.04)
+    assert sim.rack_coupling_monitor['peak_absolute_error_m'] > .0001
+
+
+@pytest.mark.parametrize('corruption,problem', [
+    ('no_second_mesh', 'Each jaw must be actively coupled'),
+    ('inactive_mesh', 'Each jaw must be actively coupled'),
+    ('wrong_radius', 'pitch radius'),
+    ('wrong_body', 'separate inertial hinge body'),
+    ('brake_without_hinge', 'separately rotating pinion hinge'),
+    ('wrong_start', 'Initial keyframe violates'),
+])
+def test_rotating_pinion_brake_rejects_unconnected_or_forged_transmission(corruption, problem):
+    xml, cfg = rotating_pinion_fixture()
+    if corruption == 'no_second_mesh':
+        xml = xml.replace('name="mesh_right" joint1="jaw_right" joint2="gripper_pinion"',
+                          'name="mesh_right" joint1="jaw_right" joint2="jaw_left"')
+    elif corruption == 'inactive_mesh':
+        xml = xml.replace('name="mesh_right" joint1="jaw_right"',
+                          'name="mesh_right" active="false" joint1="jaw_right"')
+    elif corruption == 'wrong_radius':
+        xml = xml.replace('polycoef="0 .01 0 0 0"', 'polycoef="0 .02 0 0 0"', 1)
+    elif corruption == 'wrong_body':
+        cfg['rack']['pinion_body'] = 'drive'
+    elif corruption == 'brake_without_hinge':
+        cfg['rack'].pop('pinion_joint')
+        cfg['rack'].pop('pinion_body')
+    elif corruption == 'wrong_start':
+        xml = xml.replace('</mujoco>',
+            '<keyframe><key name="bad" qpos="0 0 .035 .03"/></keyframe></mujoco>')
+        cfg['initial_keyframe'] = 'bad'
+    with pytest.raises(ValueError, match=problem):
+        make(ctrl=cfg, xml=xml, ref=lambda t: dict(q=[0.], qd=[0.], qdd=[0.], gap=.03))
+
+
 def test_all_scalar_joint_extrema_cover_unsaved_steps_and_repeated_runs():
     oracle, sparse = passive_sim(), passive_sim()
     positions = [oracle.data.qpos.copy()]

@@ -121,6 +121,12 @@ class CausalSimulation:
         self.brake_energy = np.zeros(len(self.drives))
         self.brake_torque = np.zeros(len(self.drives))
         self.rack = self.control.get('rack')
+        self.rack_pinion_joint = None
+        self.rack_pinion_qadr = self.rack_pinion_vadr = None
+        self.rack_brake = None
+        self.rack_brake_capacity = self.rack_brake_torque = self.rack_brake_energy = 0.
+        self.rack_brake_release_commanded_steps = self.rack_brake_engaged_steps = 0
+        self.rack_coupling_monitor = None
         if self.rack:
             ids = [self.model.joint(name).id for name in self.rack['joints']]
             if (len(ids) != 2 or len(set(ids)) != 2 or set(ids) & set(self.joint_ids)
@@ -136,7 +142,19 @@ class CausalSimulation:
                 _finite(self.rack[key], key, 0)
             if self.rack['pinion_pitch_radius_m'] <= 0:
                 raise ValueError('Pinion radius must be positive')
+            if self.rack.get('pinion_brake') is not None and self.rack.get('pinion_joint') is None:
+                raise ValueError('A rack brake requires a separately rotating pinion hinge')
             self._check_rack_transmission(ids)
+            if self.rack_pinion_joint is not None:
+                limit = _finite(self.rack['maximum_coupling_error_m'],
+                                'maximum_coupling_error_m', 0)
+                if limit <= 0:
+                    raise ValueError('Rotating pinion coupling error limit must be positive')
+                self.rack_coupling_monitor = dict(limit_m=limit, peak_absolute_error_m=0.,
+                                                  samples=0, exceeded_steps=0)
+            if self.rack.get('pinion_brake') is not None:
+                self.rack_brake = DelayedBrake(self.rack['pinion_brake'])
+                self.rack_base_friction = float(self.model.dof_frictionloss[self.rack_pinion_vadr])
             self.rack_motor = GearedDCMotor(self.rack['motor'])
             self.rack_budget = CurrentBudget(self.rack['current_budget'])
         configured = set(self.actuator_ids) | ({self.rack_actuator} if self.rack else set())
@@ -148,7 +166,16 @@ class CausalSimulation:
         key = self.control.get('initial_keyframe')
         if key is not None:
             mj.mj_resetDataKeyframe(self.model, self.data, self.model.key(key).id)
+        if self.rack_pinion_joint is not None:
+            radius = self.rack['pinion_pitch_radius_m']
+            for qadr in self.rack_qadr:
+                jaw_shift = float(self.data.qpos[qadr] - self.model.qpos0[qadr])
+                pinion_shift = float(self.data.qpos[self.rack_pinion_qadr]
+                                     - self.model.qpos0[self.rack_pinion_qadr])
+                if not math.isclose(jaw_shift, radius * pinion_shift, rel_tol=0, abs_tol=1e-9):
+                    raise ValueError('Initial keyframe violates the physical pinion-to-jaw coupling')
         mj.mj_forward(self.model, self.data)
+        self._observe_rack_coupling(0.)
         estimated = self._spring_torques(self.data.qpos[self.qadr], estimated=True)
         for i, motor in enumerate(self.motors):
             cfg = motor.config
@@ -407,6 +434,23 @@ class CausalSimulation:
             row['peak_output_torque_Nm'] = max(row['peak_output_torque_Nm'], abs(state.torque_Nm))
             self._extrema(row, None, None, 'peak_absolute_current', dict(value=state.current_A, time_s=time_s))
 
+    def _observe_rack_coupling(self, time_s):
+        if self.rack_coupling_monitor is None:
+            return
+        m, d, row = self.model, self.data, self.rack_coupling_monitor
+        pinion_delta = float(d.qpos[self.rack_pinion_qadr] - m.qpos0[self.rack_pinion_qadr])
+        expected = self.rack['pinion_pitch_radius_m'] * pinion_delta
+        errors = [float(d.qpos[adr] - m.qpos0[adr] - expected) for adr in self.rack_qadr]
+        if not all(math.isfinite(value) for value in errors):
+            raise RuntimeError('Nonfinite rack/pinion mesh displacement')
+        peak = max(abs(value) for value in errors)
+        row['samples'] += 1
+        row['peak_absolute_error_m'] = max(row['peak_absolute_error_m'], peak)
+        row['last_error_m'] = errors
+        if peak > row['limit_m']:
+            row['exceeded_steps'] += 1
+            raise RuntimeError(f'Pinion/jaw mesh exceeds source-authored dynamic coupling limit at {time_s:.9g} s')
+
     def _check_direct_actuator(self, actuator, kind, target, gear):
         m, mj = self.model, self.mj
         if (m.actuator_trntype[actuator] != kind or m.actuator_trnid[actuator, 0] != target
@@ -421,6 +465,38 @@ class CausalSimulation:
 
     def _check_rack_transmission(self, joint_ids):
         m, mj, actuator = self.model, self.mj, self.rack_actuator
+        pinion_name = self.rack.get('pinion_joint')
+        if pinion_name is not None:
+            body_name = self.rack.get('pinion_body')
+            if (not isinstance(pinion_name, str) or not pinion_name
+                    or not isinstance(body_name, str) or not body_name):
+                raise ValueError('A rotating rack pinion needs exact joint and body identities')
+            pinion = m.joint(pinion_name).id
+            body = m.body(body_name).id
+            if (pinion in self.joint_ids or pinion in joint_ids
+                    or m.jnt_type[pinion] != mj.mjtJoint.mjJNT_HINGE
+                    or m.jnt_bodyid[pinion] != body or m.body_mass[body] <= 0):
+                raise ValueError('The declared rack pinion must be a separate inertial hinge body')
+            self._check_direct_actuator(actuator, mj.mjtTrn.mjTRN_JOINT, pinion, 1.)
+            radius = self.rack['pinion_pitch_radius_m']
+            # The active equalities transmit torque to both jaws. A hinge
+            # alongside unconstrained slides would make its brake ineffective.
+            for jaw in joint_ids:
+                matches = [i for i in range(m.neq)
+                           if m.eq_type[i] == mj.mjtEq.mjEQ_JOINT
+                           and m.eq_obj1id[i] == jaw and m.eq_obj2id[i] == pinion]
+                if (len(matches) != 1 or not m.eq_active0[matches[0]]
+                        or not np.allclose(m.eq_data[matches[0], :5],
+                                           [0., radius, 0., 0., 0.], rtol=1e-10, atol=1e-12)):
+                    raise ValueError('Each jaw must be actively coupled to the pinion at its pitch radius')
+            self.rack_pinion_joint = pinion
+            self.rack_pinion_qadr = int(m.jnt_qposadr[pinion])
+            self.rack_pinion_vadr = int(m.jnt_dofadr[pinion])
+            return
+        if self.rack.get('pinion_body') is not None:
+            raise ValueError('A pinion body cannot be declared without its hinge')
+        if m.actuator_trntype[actuator] != mj.mjtTrn.mjTRN_TENDON:
+            raise ValueError('A rack without a rotating pinion needs an explicit tendon transmission')
         tendon = int(m.actuator_trnid[actuator, 0])
         self._check_direct_actuator(actuator, mj.mjtTrn.mjTRN_TENDON, tendon, 1.)
         start, count = int(m.tendon_adr[tendon]), int(m.tendon_num[tendon])
@@ -483,6 +559,15 @@ class CausalSimulation:
             self.brake_capacity[i] = 0 if brake is None else brake.capacity(t, self.safety.fault_time_s, float(qd[i]),
                 delay_scale=o['brakeDelayScale'], strength=o['brakeScale'], enabled=o['brakes'])
             m.dof_frictionloss[self.vadr[i]] = self.base_friction[i] + self.brake_capacity[i]
+        pinion_speed_before = None
+        if self.rack_brake is not None:
+            pinion_speed_before = float(d.qvel[self.rack_pinion_vadr])
+            self.rack_brake_capacity = self.rack_brake.capacity(
+                t, self.safety.fault_time_s, pinion_speed_before,
+                delay_scale=o['brakeDelayScale'], strength=o['brakeScale'], enabled=o['brakes'])
+            m.dof_frictionloss[self.rack_pinion_vadr] = self.rack_base_friction + self.rack_brake_capacity
+            self.rack_brake_release_commanded_steps += int(bool(powered and o['brakes']))
+            self.rack_brake_engaged_steps += int(self.rack_brake_capacity > 0)
         if self.control.get('inertial_feedforward', True):
             mj.mj_fullM(m, d, self.mass)
         for i, row in enumerate(self.drives):
@@ -499,7 +584,8 @@ class CausalSimulation:
         if self.rack:
             r = self.rack
             gap = float(np.mean(d.qpos[self.rack_qadr]))
-            speed = float(np.mean(d.qvel[self.rack_vadr]))
+            speed = (float(d.qvel[self.rack_pinion_vadr]) * r['pinion_pitch_radius_m']
+                     if self.rack_pinion_joint is not None else float(np.mean(d.qvel[self.rack_vadr])))
             requested_speed = np.clip(r['position_to_velocity_gain_per_s'] * (target['gap'] - gap),
                                       -r['max_jaw_velocity_m_s'], r['max_jaw_velocity_m_s'])
             force = r['velocity_force_gain_N_s_m'] * (requested_speed - speed)
@@ -518,9 +604,19 @@ class CausalSimulation:
             d.ctrl[self.rack_actuator] = state['torque_Nm']
         mj.mj_step(m, d)
         self.steps += 1
+        self._observe_rack_coupling(self.steps * dt)
         self.brake_torque[:] = 0
+        self.rack_brake_torque = 0.
         for k in range(d.nefc):
             if d.efc_type[k] == mj.mjtConstraint.mjCNSTR_FRICTION_DOF:
+                if (self.rack_brake is not None and self.rack_brake_capacity > 0
+                        and d.efc_id[k] == self.rack_pinion_vadr):
+                    work = DelayedBrake.constraint_work(
+                        float(d.efc_force[k]), self.rack_brake_capacity,
+                        self.rack_base_friction, pinion_speed_before,
+                        float(d.qvel[self.rack_pinion_vadr]), dt)
+                    self.rack_brake_torque = work['torque_Nm']
+                    self.rack_brake_energy += work['energy_increment_J']
                 found = np.flatnonzero(self.vadr == d.efc_id[k])
                 if len(found):
                     i = int(found[0])
@@ -572,6 +668,13 @@ class CausalSimulation:
             brake_capacity_Nm=self.brake_capacity.tolist(), brake_torque_Nm=self.brake_torque.tolist(),
             brake_energy_J=self.brake_energy.tolist(),
             rack_motor=asdict(self.rack_motor.state) if self.rack else None,
+            rack_brake=(dict(pinion_joint=self.rack['pinion_joint'],
+                             release_coil_commanded=bool(self.options['power'] and self.safety.mode != 'EMERGENCY'
+                                                         and self.options['brakes']),
+                             capacity_Nm=self.rack_brake_capacity,
+                             native_constraint_torque_Nm=self.rack_brake_torque,
+                             dissipated_energy_J=self.rack_brake_energy)
+                        if self.rack_brake is not None else None),
             external_applied_force_N=d.xfrc_applied.tolist(),
             external_wrench_units=['N', 'N', 'N', 'Nm', 'Nm', 'Nm'])
 
@@ -620,6 +723,16 @@ class CausalSimulation:
             joints=deepcopy(self.joint_monitor), constraints=deepcopy(self.constraint_monitor),
             contacts=dict(deepcopy(self.contact_monitor), pairs=deepcopy(list(self.contact_pairs.values()))),
             rack_motor=deepcopy(self.rack_monitor),
+            rack_coupling=deepcopy(self.rack_coupling_monitor),
+            rack_brake=(dict(pinion_joint=self.rack['pinion_joint'],
+                             declared_brake=deepcopy(self.rack['pinion_brake']),
+                             native_constraint='finite MuJoCo hinge frictionloss after source fault',
+                             engaged_steps=self.rack_brake_engaged_steps,
+                             release_coil_commanded_steps=self.rack_brake_release_commanded_steps,
+                             electrical_release_scope='Binary command; coil current and armature travel are not integrated',
+                             dissipated_energy_J=self.rack_brake_energy,
+                             last_native_constraint_torque_Nm=self.rack_brake_torque)
+                        if self.rack_brake is not None else None),
             monitoring_interval=dict(start_time_s=0., end_time_s=self.steps*dt, integration_steps=self.steps),
             constraint_sampling='Native solver residuals and efc_force equality multipliers from every mj_step; '
                 'pre-integration for Euler/implicit, last internal stage for RK4. Missing rows are not zero '
