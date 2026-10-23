@@ -49,6 +49,17 @@ make the design. This remains a diagnostic build: it has neither an externally
 supported qualification plan nor the physical tests required by `lab release`.
 The 119 interface identities include unmeasured retention and support paths;
 they do not expand the scope of the existing native clearance measurements.
+If the project owner supplies a complete `data/qualification-plan.json`, the
+same `lab mechanism iris09` entry point validates that plan against the intent
+before export and uses `QualifiedNativeConstruction`. It places the same
+body-local CAD and inertias, then checks exact imported STEP part pairs at the
+source-derived initial `fixed`, rotor, leaf and rod poses. The native-to-physical
+body mapping is explicit and source-bound. This path omits the diagnostic
+template exports and fixture/envelope-only fit checks; the qualified constructor
+generates its own exact posed-pair receipt. A passing construction receipt still
+requires independently signed, serial-bound material, process, interface,
+actuator and assembled-hardware tests before `lab release` can produce a
+qualified product. No resolved plan or such physical evidence is bundled.
 
 ## What was added, and what remains assumed
 

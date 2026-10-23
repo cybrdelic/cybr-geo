@@ -785,6 +785,10 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
     if case == 'incomplete_connector':
         reaction['missing_row_steps'] = 1
     root = ET.Element('mujoco')
+    world = ET.SubElement(root, 'worldbody')
+    fixed_body = ET.SubElement(world, 'body', name='fixed')
+    moving_body = ET.SubElement(world, 'body', name='moving')
+    ET.SubElement(moving_body, 'joint', name='motion', type='hinge')
     if connector_case:
         attributes = dict(name='bearing_joint', body1=(
             'other' if case == 'unrelated_connector' else 'fixed'))
@@ -817,12 +821,20 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
                         lambda *args, **kwargs: receipt)
     monkeypatch.setattr(engineering_source, 'verify_native_source_binding',
                         lambda *args, **kwargs: binding)
+    # The release now binds exact native mass to moving physical bodies before
+    # checking demand telemetry. Give this synthetic downstream-load fixture a
+    # valid CAD/physical mass pair; never stub out the production mass gate.
+    matched_mass = dict(mass_kg=1., com_m=[0., 0., 0.],
+                        inertia_tensor_kg_m2=[[.1, 0., 0.], [0., .1, 0.], [0., 0., .1]])
     monkeypatch.setattr(qualification, '_recheck_qualified_native_steps',
-                        lambda *args, **kwargs: {})
+                        lambda *args, **kwargs: {'fixed': deepcopy(matched_mass),
+                                                  'moving': deepcopy(matched_mass)})
     monkeypatch.setattr(qualification, '_physical_startup_poses_mm',
                         lambda model, control, parts, mapping: _initial_poses())
     monkeypatch.setattr(physical_model.PhysicalModel, 'from_source',
-                        lambda *_: SimpleNamespace(mass_records={}, root=root))
+                        lambda *_: SimpleNamespace(mass_records={'moving': deepcopy(matched_mass)},
+                                                   bodies={'fixed': fixed_body, 'moving': moving_body},
+                                                   root=root))
     class LoadGatePassed(Exception):
         pass
     original_sha = qualification._sha

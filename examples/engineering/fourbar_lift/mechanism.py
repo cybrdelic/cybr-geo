@@ -17,6 +17,7 @@ from mechanism_lab.fit_construction import PinBoreFit
 from mechanism_lab.linkages import PinnedLink
 from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
+from mechanism_lab.qualification import QualificationPlan, QualifiedNativeConstruction
 from mechanism_lab.physical_model import PhysicalModel, digest
 from mechanism_lab.qualification import QualificationIntentPlan
 
@@ -218,33 +219,56 @@ def build(spec, output):
     spec, identity = read_specification(spec)
     spec = validate(spec)
     intent = qualification_intent(spec)
+    # A sourced complete plan opts this same mechanism into strict construction.
+    # Incomplete lots, process capability, interfaces or loads fail before any
+    # native STEP/template is exported. Without it, the intent-backed build
+    # remains explicitly diagnostic and never emits a qualified receipt.
+    plan_path = HERE / 'data' / 'qualification-plan.json'
+    strict_plan = QualificationPlan(json.loads(plan_path.read_text(encoding='utf-8'))) if plan_path.is_file() else None
+    if strict_plan is not None:
+        intent.require_resolved_by(strict_plan)
     rows, info = native_rows(spec)
-    native = NativeConstruction(output, DENSITIES, provenance=dict(identity,
+    provenance = dict(identity,
         scope='New gravity-loaded four-bar using shared native CAD, full inertia and pinned-link construction',
-        assumptions=spec['assumptions']), qualification_intent=intent)
+        assumptions=spec['assumptions'])
+    if strict_plan is None:
+        native = NativeConstruction(output, DENSITIES, provenance=provenance,
+                                    qualification_intent=intent)
+    else:
+        native = QualifiedNativeConstruction(output, DENSITIES, provenance=provenance,
+            qualification_plan=strict_plan,
+            initial_body_poses_mm=info['frames'],
+            physical_body_mapping={body: body for body in info['frames']})
     for body, name, shape, material in rows:
-        # Templates are diagnostic artifacts; reject an unexpected placement
-        # before even its template STEP/STL can be exported.
+        # The same authored parts and layout feed either construction stage.
+        # Diagnostic templates remain useful but cannot be a qualified part.
         intent.check_placement(body, name, material, shape, DENSITIES)
-        native.addpart(body+'__'+name, shape, material, 'New nominal machined geometry; no measured process qualification')
+        if strict_plan is None:
+            native.addpart(body+'__'+name, shape, material,
+                'New nominal machined geometry; no measured process qualification')
         native.place(body, name, shape, material)
     fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
-    pin_bore_variations = dict(first_mm=fit.bore_declared_radial_variation_mm,
-                               second_mm=fit.pin_declared_radial_variation_mm)
-    requirements = NativeInterfaceRequirements(dict(scope='Nominal bored shaft/pin/keeper interfaces and separated axial layers'))
-    for body, length in (('crank', spec['crank_length_mm']), ('rocker', spec['rocker_length_mm'])):
-        shape = next(shape for b,n,shape,m in rows if b==body and n.endswith('_shaft_link_and_pin'))
-        requirements.noninterference(body+'_shaft_bushing', shape, annulus(3.05, 6., -8., 0.))
-        requirements.noninterference(body+'_rear_keeper_groove', shape, keeper(2.8, 5., -15.7, -14.7))
-        requirements.noninterference(body+'_pin_keeper_groove', shape, keeper(2.3, 4., 10.8, 11.8, (length, 0.)))
-    coupler = info['link'].native_shape()
-    for label, x in (('input', 0.), ('output', info['link'].length_mm)):
-        requirements.clearance(label+'_pin_bore', coupler, cylinder(2.5, -2., 2., (x, 0.)),
-                               minimum_distance_mm=fit.required_service_radial_gap_mm,
-                               kernel_allowance_mm=1e-8,
-                               declared_design_variations_mm=pin_bore_variations)
-        for position, lo, hi in (('lower_shoulder', -4.5, -2.3), ('upper_keeper', 2.3, 3.3)):
-            requirements.noninterference(label+'_'+position, coupler, cylinder(4., lo, hi, (x, 0.)))
+    requirements = None
+    if strict_plan is None:
+        # These historical checks use local fixtures, not exact placed STEP
+        # pairs. QualifiedNativeConstruction creates its own requirements from
+        # the imported, startup-posed part pairs named in the strict plan.
+        pin_bore_variations = dict(first_mm=fit.bore_declared_radial_variation_mm,
+                                   second_mm=fit.pin_declared_radial_variation_mm)
+        requirements = NativeInterfaceRequirements(dict(scope='Nominal bored shaft/pin/keeper interfaces and separated axial layers'))
+        for body, length in (('crank', spec['crank_length_mm']), ('rocker', spec['rocker_length_mm'])):
+            shape = next(shape for b,n,shape,m in rows if b==body and n.endswith('_shaft_link_and_pin'))
+            requirements.noninterference(body+'_shaft_bushing', shape, annulus(3.05, 6., -8., 0.))
+            requirements.noninterference(body+'_rear_keeper_groove', shape, keeper(2.8, 5., -15.7, -14.7))
+            requirements.noninterference(body+'_pin_keeper_groove', shape, keeper(2.3, 4., 10.8, 11.8, (length, 0.)))
+        coupler = info['link'].native_shape()
+        for label, x in (('input', 0.), ('output', info['link'].length_mm)):
+            requirements.clearance(label+'_pin_bore', coupler, cylinder(2.5, -2., 2., (x, 0.)),
+                                   minimum_distance_mm=fit.required_service_radial_gap_mm,
+                                   kernel_allowance_mm=1e-8,
+                                   declared_design_variations_mm=pin_bore_variations)
+            for position, lo, hi in (('lower_shoulder', -4.5, -2.3), ('upper_keeper', 2.3, 3.3)):
+                requirements.noninterference(label+'_'+position, coupler, cylinder(4., lo, hi, (x, 0.)))
     return native.finish('Generated nominal CAD density and full inertia, no mass overrides or hardware qualification',
         {'mechanism-layout.json': dict(frames={name:value.tolist() for name,value in info['frames'].items()},
             links=[info['link'].source()], gravity_m_s2=[0., -9.81, 0.],

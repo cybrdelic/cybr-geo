@@ -20,7 +20,9 @@ from mechanism_lab.linkages import PinnedLink
 from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
 from mechanism_lab.physical_model import PhysicalModel, digest
-from mechanism_lab.qualification import QualificationIntentPlan
+from mechanism_lab.qualification import (
+    QualificationIntentPlan, QualificationPlan, QualifiedNativeConstruction,
+)
 from . import design
 from .leaf_geometry import build_leaf
 
@@ -317,14 +319,27 @@ def build(spec, output):
     # against it before exporting CAD while retaining the diagnostic path.
     intent_document = json.loads((HERE / 'data' / 'qualification-intent.json').read_text(encoding='utf-8'))
     intent = QualificationIntentPlan(intent_document)
+    plan_path = HERE / 'data' / 'qualification-plan.json'
+    plan = None
+    if plan_path.exists():
+        # A resolved plan must be complete and cannot weaken the authored
+        # source intent. Validate both before native construction exports CAD.
+        plan = QualificationPlan(json.loads(plan_path.read_text(encoding='utf-8')))
+        intent.require_resolved_by(plan)
     rows, info, leaf_report = moving_geometry(spec)
     source = dict(spec['source_geometry']['source'])
     source.update(identity, adapted_recipe_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                   qualification_intent_sha256=digest(intent.document),
                   scope='New rigid pinned-link mechanism derived from source optical geometry; no hardware qualification',
                   assumptions=spec['assumptions'])
-    native = NativeConstruction(output, DENSITIES, provenance=source,
-                                qualification_intent=intent)
+    if plan is None:
+        native = NativeConstruction(output, DENSITIES, provenance=source,
+                                    qualification_intent=intent)
+    else:
+        native = QualifiedNativeConstruction(
+            output, DENSITIES, provenance=source, qualification_plan=plan,
+            initial_body_poses_mm={body: frame.tolist() for body, frame in info['frames'].items()},
+            physical_body_mapping={body: body for body in info['frames']})
     # The new bearing flange is one nominal piece with the source retainer;
     # fixed source material is partitioned before adding it to mass accounting.
     bearing = fixed_leaf_bearing(spec, info['count'])
@@ -372,12 +387,27 @@ def build(spec, output):
         rows.append(('fixed', name, shape, MATERIALS[material]))
     for body, name, shape, material in rows:
         unique = body + '__' + name
-        # The diagnostic template exporter precedes native.place. Preflight
-        # here too so an unexpected part/material cannot emit even a template
-        # STEP/STL before the shared construction intent rejects it.
-        intent.check_placement(body, name, material, shape, DENSITIES)
-        native.addpart(unique, shape, material, 'New derived mechanism' if body != 'fixed' else 'Source housing with disclosed new bearing and reaction features')
+        if plan is None:
+            # The diagnostic template exporter precedes native.place. Preflight
+            # here too so an unexpected part/material cannot emit even a
+            # template STEP/STL before the shared intent rejects it.
+            intent.check_placement(body, name, material, shape, DENSITIES)
+            native.addpart(unique, shape, material, 'New derived mechanism' if body != 'fixed' else 'Source housing with disclosed new bearing and reaction features')
+        # QualifiedNativeConstruction checks the exact part, material and
+        # process contract before its direct placed-STEP export. It rejects
+        # diagnostic CAD templates and computes fit from posed STEP pairs.
         native.place(body, name, shape, material)
+    layout_receipt = dict(frames={k:v.tolist() for k,v in info['frames'].items()},
+        links=[link.source() for link in info['links']], phi0=info['phi0'], phi1=info['phi1'],
+        leaf_geometry=leaf_report, fixed_support_attachments=attachments, axial_stack=stack,
+        pin_bore_fit_design=fit.report(),
+        rotor_radial_bearing_fit_design=radial_fit.report(),
+        assumptions=spec['assumptions'])
+    body_status = 'CAD density and exact full inertia; source foil and new motor assumptions, no hardware qualification'
+    if plan is not None:
+        # No fixture/envelope-only native requirements may stand in for exact
+        # placed part-pair checks on the qualified construction route.
+        return native.finish(body_status, {'mechanism-layout.json': layout_receipt})
     requirements = NativeInterfaceRequirements(dict(scope='Nominal mating CAD and a solved initial closure; ideal bearings in dynamics'))
     # This full radial disk bounds the upper axial extent relevant to the
     # lip, at every planar angle. Lower pin/keeper material lies below it.
@@ -441,13 +471,8 @@ def build(spec, output):
         if 'keeper' in name or 'collar' in name:
             mating = rotor_shape if body == 'rotor' else next(s for b,n,s,_ in rows if b==body and n=='leaf_shaft_crank')
             requirements.noninterference(body+'_'+name+'_groove_fit', mating, shape)
-    return native.finish('CAD density and exact full inertia; source foil and new motor assumptions, no hardware qualification',
-        {'mechanism-layout.json': dict(frames={k:v.tolist() for k,v in info['frames'].items()},
-            links=[link.source() for link in info['links']], phi0=info['phi0'], phi1=info['phi1'],
-            leaf_geometry=leaf_report, fixed_support_attachments=attachments, axial_stack=stack,
-            pin_bore_fit_design=fit.report(),
-            rotor_radial_bearing_fit_design=radial_fit.report(),
-            assumptions=spec['assumptions'])}, native_requirements=requirements)
+    return native.finish(body_status, {'mechanism-layout.json': layout_receipt},
+                         native_requirements=requirements)
 
 
 def physical_from_records(spec, masses):

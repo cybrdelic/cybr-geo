@@ -39,6 +39,18 @@ export and writes a source-bound diagnostic intent receipt. The plan keeps
 unknown process, capacity, service-force and fabrication values as `null` and
 names their unresolved design or external evidence requirements. It does not
 emit a qualified-construction receipt or authorize `lab release`.
+If a sourced `data/qualification-plan.json` is added, the same `lab mechanism`
+command selects shared `QualifiedNativeConstruction`. It must resolve the
+intent's exact part/material inventory, placed interface pairs, process and
+service targets before CAD export; an incomplete or weakened plan fails.
+The qualified constructor uses the mechanism's initial body frames to measure
+interfaces between the actual placed STEP parts in one assembly pose. It does
+not substitute the diagnostic template or fixture-only clearance checks.
+This example supplies no such plan because supplier lots, process capability,
+tested loads and the installed retention/fastener design are not established.
+Even a valid plan and a passing software build would still require the
+independently reviewed, serial-bound fabrication and hardware evidence in the
+[release contract](../../../docs/MANUFACTURING-RELEASE.md).
 The strict Grashof and pin-wall rules reject unreachable or unmated edits
 before construction. The full-turn rocker extreme supplies conservative
 swept bounds for the extended rocker and load lobe against the input
