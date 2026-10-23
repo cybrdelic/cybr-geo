@@ -1,11 +1,15 @@
 """The normal engineering output binds its design budgets to source artifacts."""
 import hashlib
 import json
+from types import SimpleNamespace
 
 import pytest
 
 from mechanism_lab.engineering_pipeline import _native_design_screens
 from mechanism_lab.design_envelope import connector_force_screens
+from mechanism_lab.physical_model import PhysicalModel, digest
+from mechanism_lab.planar_linkage import PlanarFourBar
+from mechanism_lab.planar_native_envelope import PlanarBody, PlanarNativePath
 
 
 def _screen(tmp_path, *, gap=.2, demand=.4, limit=1., variations=None):
@@ -28,6 +32,40 @@ def _screen(tmp_path, *, gap=.2, demand=.4, limit=1., variations=None):
     return receipt, control, simulation
 
 
+def _planar_screen_fixture(tmp_path):
+    """A three-part verified native inventory with one unresolved axial pair."""
+    import cadquery as cq
+
+    native = tmp_path / 'native'
+    placed = native / 'cad' / 'placed'
+    placed.mkdir(parents=True)
+    rows, hashes = [], {}
+    for body, part in (('fixed', 'housing'), ('crank', 'shaft'),
+                       ('rocker', 'bridge')):
+        relative = f'cad/placed/{body}__{part}.step'
+        cq.exporters.export(cq.Workplane('XY').box(1., 1., 1.).val(),
+                            str(native / relative))
+        rows.append(dict(body=body, name=part, step_file=relative))
+        hashes[relative] = hashlib.sha256((native / relative).read_bytes()).hexdigest()
+    manifest = native / 'placed-native-parts.json'
+    manifest.write_text(json.dumps(dict(units='mm', records=rows)), encoding='utf-8')
+    hashes[manifest.name] = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    masses = native / 'mass_properties.json'
+    masses.write_text(json.dumps({body: dict(mass_kg=1., com_m=[0., 0., 0.])
+                                  for body in ('fixed', 'crank', 'rocker')}), encoding='utf-8')
+    hashes[masses.name] = hashlib.sha256(masses.read_bytes()).hexdigest()
+    linkage = PlanarFourBar((0., 0.), (4., 0.), 1., 4., 3.)
+    path = PlanarNativePath(dict(fixed=PlanarBody('ground'),
+        crank=PlanarBody('crank', linkage),
+        rocker=PlanarBody('rocker', linkage, z_mm=5.)), 0., 1.,
+        source_identity='normal-three-part-engineering-design-screen')
+    project = SimpleNamespace(specification={}, planar_path=lambda _spec, _sources: path)
+    simulation = dict(model_sha256='model', steps=1, metrics={},
+        physical_source=PhysicalModel.from_xml(
+            '<mujoco><option gravity="0 -9.81 0"/></mujoco>').to_source())
+    return native, dict(files_sha256=hashes), dict(drives=[]), simulation, project
+
+
 def test_design_budget_is_bound_and_unqualified_without_part_variation(tmp_path):
     receipt, control, simulation = _screen(tmp_path)
     screen = _native_design_screens(tmp_path, receipt, {'design.py': 'source'},
@@ -41,6 +79,40 @@ def test_design_budget_is_bound_and_unqualified_without_part_variation(tmp_path)
     assert screen['drives']['motor']['complete_demand_telemetry']
     assert not screen['drives']['motor']['hardware_capacity_qualified']
     assert not screen['manufacturing_qualified']
+    assert screen['planar_kinematics'] is None
+
+
+def test_planar_design_screen_runs_full_native_axial_broadphase_by_default(tmp_path):
+    native, receipt, control, simulation, project = _planar_screen_fixture(tmp_path)
+    screen = _native_design_screens(native, receipt, {'design.py': 'source'},
+                                    control, simulation, project=project)
+    planar = screen['planar_kinematics']
+    axial = planar['native_axial_broadphase']
+    assert axial['full_native_inventory_selected']
+    assert axial['native_step_import']['externally_verified']
+    assert axial['source_binding']['native_build_sha256'] == digest(receipt)
+    assert axial['source_binding']['planar_source_sha256'] == planar['source_sha256']
+    assert planar['axially_separated_pair_count'] == axial['axially_separated_pair_count'] == 2
+    assert planar['unresolved_pair_count'] == axial['unresolved_pair_count'] == 1
+    assert axial['unresolved_pairs'][0]['parts'] == ['crank__shaft', 'fixed__housing']
+    assert planar['continuous_native_clearance_status'] == 'unresolved_without_pair_complete_BREP_certificate'
+    assert not axial['full_native_noncontact_pair_coverage']
+    assert not screen['manufacturing_qualified']
+    # Media readback compares its recomputed object with the saved JSON object.
+    assert json.loads(json.dumps(screen, allow_nan=False)) == screen
+
+
+def test_planar_design_screen_fails_on_missing_receipt_or_changed_step(tmp_path):
+    native, receipt, control, simulation, project = _planar_screen_fixture(tmp_path)
+    incomplete = json.loads(json.dumps(receipt))
+    del incomplete['files_sha256']['cad/placed/rocker__bridge.step']
+    with pytest.raises(ValueError, match='verified receipt'):
+        _native_design_screens(native, incomplete, {'design.py': 'source'},
+                               control, simulation, project=project)
+    (native / 'cad/placed/rocker__bridge.step').write_bytes(b'changed')
+    with pytest.raises(ValueError, match='verified receipt'):
+        _native_design_screens(native, receipt, {'design.py': 'source'},
+                               control, simulation, project=project)
 
 
 def test_native_interface_tamper_cannot_relabel_design_budget(tmp_path):

@@ -19,6 +19,9 @@ import numpy as np
 
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification, transform_shape, shape_mass_properties
 
+from .rack_contract import (PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM,
+    arx_rack_report, rack_travel_from_source)
+
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
 SOURCE_GENERATOR_SHA256 = 'ae3b03b11f533c59a3507d18d93f9b0f7df7a804a8e52ced44b1d3f577d55e37'
 
@@ -111,6 +114,10 @@ def build(spec, output):
     """
     SPEC, specification_identity = read_specification(spec)
     validate_native_spec(SPEC)
+    # The same tooth pitch, rack offset and opposed MJCF slide limits determine
+    # whether the nominal pinion remains within both racks throughout travel.
+    rack_travel = rack_travel_from_source(SPEC)
+    rack_frame = rack_travel.opposed_pitch_line_y(PINION_CENTER_Y_MM, JAW_ORIGIN_Y_MM)
     RHO = {'aluminum':2700., 'steel':7850., 'polymer':1150., 'rubber':1100.}
     construction = NativeConstruction(output, RHO,
         body_ids=['fixed','turret','upper','fore','roll','bend','tool','jaw'],
@@ -388,7 +395,7 @@ def build(spec, output):
         if len(root_edges)!=2*z:raise RuntimeError('Unexpected pinion root topology')
         s=s.newObject(root_edges).fillet(.06)
         return s
-    pin=spur_gear().translate((0,0,-3)).union(cyl(3.5,-7,-3)).union(cyl(1.5,3,10))
+    pin=spur_gear(m=rack_travel.module_mm,z=rack_travel.pinion_teeth).translate((0,0,-3)).union(cyl(3.5,-7,-3)).union(cyl(1.5,3,10))
     # Blind shaft socket: manufacturer3mmDprofile must be gauged before broaching.
     # Physical blind D socket, 3 mm nominal shaft and 2.50 mm across-flat.
     # +0.025 radial clearance; factory shaft gauge remains a release gate.
@@ -397,7 +404,7 @@ def build(spec, output):
     pin=drill(pin,[(0,-2,-5)],(0,1,0),1.6,L=5)
     addpart('gripper_pinion_m0p3_z20',pin,'steel','Sampled involute with 0.06mm root blend, physical 3.05mm/2.55mm D socket and front journal; active flank metrology, shaft tolerance and process qualification required')
     def rack():
-        m=.3;p=math.pi*m;h=m;hf=1.25*m;face=6.;n=50;L=n*p
+        m=rack_travel.module_mm;p=rack_travel.pitch_mm;h=m;hf=1.25*m;face=6.;n=rack_travel.rack_teeth;L=rack_travel.toothed_length_mm
         s=cq.Workplane('XY').box(L,2.6,face).translate((0,-2.6/2-hf,face/2))
         pitchhalf=p/4;dh=h*math.tan(math.radians(20));df=hf*math.tan(math.radians(20))
         for i in range(n):
@@ -781,20 +788,20 @@ def build(spec, output):
     ppart('bend','wrist_bend_cradle');ppart('bend','wrist_idle_trunnion')
     ppart('tool','gripper_bridge')
     place('tool','gripper_motor',cq.Workplane('XY').box(12,10,32).translate((0,201.5,-24)),mass=.012,note='Pololu envelope; mass engineering allowance')
-    ppart('tool','gripper_pinion_m0p3_z20',(0,201.5,0))
-    ppart('tool','pinion_front_bushing',(0,201.5,0))
+    ppart('tool','gripper_pinion_m0p3_z20',(0,PINION_CENTER_Y_MM,0))
+    ppart('tool','pinion_front_bushing',(0,PINION_CENTER_Y_MM,0))
     for z in [-10,10]:place('tool','guide_rod_'+str(z),trans_shape(cyl(2,-53,53),(0,193,z),(1,0,0)),'steel')
     # Canonical right jaw frame: inner contact planeX=0, pad centerY=0.
     ppart('jaw','right_jaw_carriage',(0,-219.2,0));ppart('jaw','finger_pad',(0,-219.2,0))
     for z in [-10,10]:ppart('jaw','jaw_guide_bushing',(5.8,193-219.2,z),(1,0,0))
-    rack_right=PARTS['gripper_rack_m0p3'].mirror('XZ').translate((2-50*math.pi*.3/2,204.5-219.2,-3))
+    rack_right=PARTS['gripper_rack_m0p3'].mirror('XZ').translate((rack_travel.right_rack_x_offset_mm,rack_frame['right_local_y_mm'],-3))
     place('jaw','upper_rack',rack_right,'steel')
     # Retain the separately authored handed jaw. Its mass is integrated from
     # these actual components below, rather than assuming a mirrored carriage.
     leftjaw=cq.Assembly(name='left_jaw')
     leftjaw.add(PARTS['left_jaw_carriage'],name='carriage')
     leftjaw.add(PARTS['finger_pad'].mirror('YZ'),name='pad')
-    leftjaw.add(PARTS['gripper_rack_m0p3'].mirror('YZ').translate((50*math.pi*.3/2-2,198.5,-3)),name='lower_rack')
+    leftjaw.add(PARTS['gripper_rack_m0p3'].mirror('YZ').translate((rack_travel.left_rack_x_offset_mm,rack_frame['left_preoffset_y_mm'],-3)),name='lower_rack')
     for z in [-10,10]:leftjaw.add(trans_shape(PARTS['jaw_guide_bushing'],(-5.8,193,z),(1,0,0)),name='guide_bushing_'+str(z))
     construction.save_auxiliary_assembly('left_jaw', leftjaw)
     construction.place_assembly('jaw_opposed', leftjaw, {
@@ -849,6 +856,7 @@ def build(spec, output):
         {
             'packaging_envelopes.json': primitive_records,
             'folded-transmissions.json': TRANSMISSIONS,
+            'gripper-rack-travel.json': arx_rack_report(rack_travel),
             'p5_collision_proxies.json': {
                 'records': P5_PROXIES,
                 'joint_extra_armature_kg_m2': [r['extra_joint_armature_kg_m2'] for r in TRANSMISSIONS],

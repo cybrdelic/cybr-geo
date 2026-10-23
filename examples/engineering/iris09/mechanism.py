@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 import cadquery as cq
 import numpy as np
 
-from mechanism_lab.fit_construction import PinBoreFit
+from mechanism_lab.fit_construction import DirectedFaceGap, PinBoreFit
 from mechanism_lab.linkages import PinnedLink
 from mechanism_lab.planar_linkage import PlanarFourBar
 from mechanism_lab.native_construction import NativeConstruction, NativeInterfaceRequirements, read_specification
@@ -64,6 +64,9 @@ def validate(spec):
             raise ValueError(f'{key} is fixed at {value} in this authored radial housing/shaft layout; redesign its mating geometry first')
     if spec['rod_width_mm'] < fit.nominal_bore_diameter_mm + 2*spec['minimum_wall_mm']:
         raise ValueError('Derived rod bores violate the required nominal wall')
+    radial_fit = rotor_radial_fit(spec)
+    if 66.8-radial_fit.second_face_after(64.) < spec['minimum_wall_mm']:
+        raise ValueError('Derived rotor radial bearing violates the required nominal wall')
     # The source optical hinge range must admit one continuous pin-and-rod
     # construction branch. A few sampled poses cannot establish this.
     linkage(spec).angular_rate_bounds(-spec['hinge_range_rad'][1], -spec['hinge_range_rad'][0])
@@ -84,9 +87,36 @@ def ring_angle(q, spec):
     return linkage(spec).solve(-q)['rocker_angle_rad']
 
 
+def rotor_radial_fit(spec):
+    """Derive the fixed sleeve inner radius from the moving rotor outer face."""
+    document = spec.get('rotor_radial_bearing_fit')
+    if not isinstance(document, dict) or set(document) != {
+            'required_service_gap_mm', 'first_declared_variation_mm',
+            'second_declared_variation_mm', 'design_reserve_mm'}:
+        raise ValueError('Rotor radial bearing requires service gap, two variations and positive reserve')
+    return DirectedFaceGap.from_document(document['required_service_gap_mm'],
+        {key: document[key] for key in ('first_declared_variation_mm',
+                                         'second_declared_variation_mm', 'design_reserve_mm')})
+
+
+def axial_fits(spec):
+    """Bind three ordered-face fits to the authored IRIS support design."""
+    designs = spec.get('axial_fit_design')
+    fields = {
+        'moving_pin_to_fixed_lip': 'moving_pin_to_fixed_lip_clearance_mm',
+        'output_keeper_to_radial_bearing': 'keeper_to_radial_bearing_clearance_mm',
+        'rotor_capture': 'rotor_capture_axial_clearance_mm',
+    }
+    if not isinstance(designs, dict) or set(designs) != set(fields):
+        raise ValueError('IRIS axial fits require exact moving-pin, keeper and rotor-capture designs')
+    return {name: DirectedFaceGap.from_document(spec['axial_stack'][service], designs[name])
+            for name, service in fields.items()}
+
+
 def axial_stack(spec):
     """One mating stack for rods, captured pins and the fixed rotor lips."""
     cfg = spec['axial_stack']
+    fits = axial_fits(spec)
     for name, value in cfg.items():
         if isinstance(value, bool) or not math.isfinite(value) or value <= 0:
             raise ValueError(f'axial_stack.{name} must be finite and positive')
@@ -98,9 +128,9 @@ def axial_stack(spec):
     input_pin_bottom = input_keeper[0]-cfg['pin_tip_extension_mm']
     output_pin_top = output_keeper[1]+cfg['pin_tip_extension_mm']
     moving_upper_envelope = max(top, output_keeper[1], output_pin_top)
-    lower_lip_bottom = moving_upper_envelope+cfg['moving_pin_to_fixed_lip_clearance_mm']
+    lower_lip_bottom = fits['moving_pin_to_fixed_lip'].second_face_after(moving_upper_envelope)
     lower_lip_top = lower_lip_bottom+cfg['capture_lip_thickness_mm']
-    rotor_bottom = lower_lip_top+cfg['rotor_capture_axial_clearance_mm']
+    rotor_bottom = fits['rotor_capture'].second_face_after(lower_lip_top)
     rotor_top = cfg['rotor_top_mm']
     if rotor_bottom+cfg['pin_root_overlap_mm'] >= rotor_top:
         raise ValueError('Axial mating stack leaves no annular rotor thickness')
@@ -108,12 +138,16 @@ def axial_stack(spec):
         raise ValueError('Axial mating stack lies outside the authored crank and handle support envelope')
     if min(gap, cfg['pin_tip_extension_mm']) <= cfg['keeper_groove_clearance_mm']:
         raise ValueError('Axial keeper groove must retain positive shoulder and pin-tip material')
-    radial_bearing = (32.5, 35.5)
+    radial_bearing = (fits['output_keeper_to_radial_bearing'].second_face_after(output_keeper[1]), 35.5)
     # The authored radial bearing also surrounds the outward-sweeping keeper.
     # Checking only the inner capture lip would miss this second mating face.
     keeper_clearance = cfg['keeper_to_radial_bearing_clearance_mm']
     if output_keeper[1]+keeper_clearance > radial_bearing[0]+1e-10:
         raise ValueError('Axial keeper stack violates the authored radial-bearing clearance; redesign its mating support first')
+    # Three fixed posts run from the source face ring only to Z=33.5 mm. The
+    # derived bearing/lip must still have positive material overlap with them.
+    if radial_bearing[0] >= 33.5 or lower_lip_bottom >= 33.5:
+        raise ValueError('Axial bearing/lip stack disconnects the authored fixed support posts')
     if min(lower_lip_top, radial_bearing[1]) <= max(lower_lip_bottom, radial_bearing[0]):
         raise ValueError('Lower capture lip must overlap the authored radial bearing in Z')
     return dict(rod_bottom_mm=bottom, rod_top_mm=top,
@@ -123,8 +157,9 @@ def axial_stack(spec):
         lower_lip_mm=(lower_lip_bottom, lower_lip_top),
         rotor_mm=(rotor_bottom, rotor_top),
         pin_root_top_mm=rotor_bottom+cfg['pin_root_overlap_mm'],
-        upper_lip_mm=(rotor_top+cfg['rotor_capture_axial_clearance_mm'],
-                      rotor_top+cfg['rotor_capture_axial_clearance_mm']+cfg['capture_lip_thickness_mm']))
+        upper_lip_mm=(fits['rotor_capture'].second_face_after(rotor_top),
+                      fits['rotor_capture'].second_face_after(rotor_top)+cfg['capture_lip_thickness_mm']),
+        axial_fit_designs={name: fit.report() for name, fit in fits.items()})
 
 
 def layout(spec):
@@ -263,12 +298,15 @@ def build(spec, output):
     bearing = fixed_leaf_bearing(spec, info['count'])
     h = spec['source_geometry']['leaf']['hinge_radius'] * spec['scene_unit_mm']
     fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
+    axial = axial_fits(spec)
+    radial_fit = rotor_radial_fit(spec)
     pin_bore_variations = dict(first_mm=fit.bore_declared_radial_variation_mm,
                                second_mm=fit.pin_declared_radial_variation_mm)
     stack = info['axial_stack']
-    radial_bearing = _annulus(64.05, 66.8, *stack['radial_bearing_mm'])
+    radial_bearing_sleeve = _annulus(radial_fit.second_face_after(64.), 66.8,
+                                      *stack['radial_bearing_mm'])
     lower_lip = _annulus(63., 66.8, *stack['lower_lip_mm'])
-    radial_bearing = radial_bearing.fuse(lower_lip, _annulus(63., 66.8, *stack['upper_lip_mm']))
+    radial_bearing = radial_bearing_sleeve.fuse(lower_lip, _annulus(63., 66.8, *stack['upper_lip_mm']))
     motor_stator = _annulus(64.4, 69., 35.5, 38.5)
     fixed_drive = radial_bearing.fuse(motor_stator)
     for index in range(3):
@@ -310,12 +348,31 @@ def build(spec, output):
     moving_envelope = _cylinder(h+spec['leaf_crank_length_mm']+spec['rod_width_mm'],
                                stack['rod_bottom_mm'], stack['moving_upper_envelope_mm'])
     row = requirements.clearance('moving_pin_envelope_to_lower_rotor_lip', moving_envelope, lower_lip,
-        minimum_distance_mm=spec['axial_stack']['moving_pin_to_fixed_lip_clearance_mm'], kernel_allowance_mm=1e-8)
+        minimum_distance_mm=axial['moving_pin_to_fixed_lip'].required_service_gap_mm,
+        kernel_allowance_mm=1e-8,
+        declared_design_variations_mm=axial['moving_pin_to_fixed_lip'].declared_design_variations_mm())
     row['scope'] = 'Continuous planar axial envelope; not a whole-assembly continuous clearance proof'
     keeper_envelope = _cylinder(h+spec['leaf_crank_length_mm']+1.6, *stack['output_keeper_mm'])
     row = requirements.clearance('output_keeper_envelope_to_radial_bearing', keeper_envelope, radial_bearing,
-        minimum_distance_mm=spec['axial_stack']['keeper_to_radial_bearing_clearance_mm'], kernel_allowance_mm=1e-8)
+        minimum_distance_mm=axial['output_keeper_to_radial_bearing'].required_service_gap_mm,
+        kernel_allowance_mm=1e-8,
+        declared_design_variations_mm=axial['output_keeper_to_radial_bearing'].declared_design_variations_mm())
     row['scope'] = 'Continuous planar keeper envelope against radial bearing only; support posts require separate clearance assessment'
+    rotor_ring = _annulus(58., 64., *stack['rotor_mm'])
+    row = requirements.clearance('rotor_to_fixed_radial_bearing', rotor_ring, radial_bearing_sleeve,
+        minimum_distance_mm=radial_fit.required_service_gap_mm,
+        kernel_allowance_mm=1e-8,
+        declared_design_variations_mm=radial_fit.declared_design_variations_mm())
+    row['scope'] = 'Constructed annular rotor/sleeve radial gap across their overlapping heights; other rotor features require separate clearance assessment'
+    for name, first, second in (
+            ('lower_lip_to_rotor_capture_axial', lower_lip, rotor_ring),
+            ('rotor_to_upper_lip_capture_axial', rotor_ring,
+             _annulus(63., 66.8, *stack['upper_lip_mm']))):
+        row = requirements.clearance(name, first, second,
+            minimum_distance_mm=axial['rotor_capture'].required_service_gap_mm,
+            kernel_allowance_mm=1e-8,
+            declared_design_variations_mm=axial['rotor_capture'].declared_design_variations_mm())
+        row['scope'] = 'Constructed axial rotor/capture-lip face gap; not full rotor/fixed-support motion clearance'
     for index, link in enumerate(info['links']):
         pin = _cylinder(spec['pin_diameter_mm']/2, -.6, .6)
         requirements.clearance(f'rod_{index:02}_input_pin_clearance', link.native_shape(), pin,
@@ -349,6 +406,7 @@ def build(spec, output):
             links=[link.source() for link in info['links']], phi0=info['phi0'], phi1=info['phi1'],
             leaf_geometry=leaf_report, fixed_support_attachments=attachments, axial_stack=stack,
             pin_bore_fit_design=fit.report(),
+            rotor_radial_bearing_fit_design=radial_fit.report(),
             assumptions=spec['assumptions'])}, native_requirements=requirements)
 
 

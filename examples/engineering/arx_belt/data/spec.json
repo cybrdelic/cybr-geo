@@ -1,6 +1,14 @@
 {
   "revision": "P5-compact-folded-drives",
   "status": "Executable engineering prototype; supplier interfaces and physical safety qualification remain open",
+  "gripper_rack_travel": {
+    "module_mm": 0.3,
+    "pinion_teeth": 20,
+    "rack_teeth": 50,
+    "toothed_end_local_x_mm": 2.0,
+    "required_edge_pitch_count": 1.0,
+    "design_reserve_pitch_count": 1.0
+  },
   "baseline_source_zip_sha256": "1da69bb3febdabe38822fea7b3a342e3023cbb872aa066f131c838915b41da50",
   "baseline_cad_zip_sha256": "09d5bf725c5e15fe048b9d82f8f8950aae715ca2f1549f07c48f59f8d3bc7c15",
   "brakes": {

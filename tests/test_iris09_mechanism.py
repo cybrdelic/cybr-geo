@@ -114,15 +114,15 @@ def test_axial_stack_derives_pin_tip_clearance_and_rejects_unattached_edits(clie
     spec = project.specification
     stack = module.axial_stack(spec)
     assert stack['output_pin_top_mm'] == pytest.approx(32.6)
-    assert stack['lower_lip_mm'] == pytest.approx([32.8, 33.1])
-    assert stack['rotor_mm'][0] == pytest.approx(33.3)
-    assert stack['lower_lip_mm'][0]-stack['output_pin_top_mm'] == pytest.approx(.2)
+    assert stack['lower_lip_mm'] == pytest.approx([32.815, 33.115])
+    assert stack['rotor_mm'][0] == pytest.approx(33.33)
+    assert stack['lower_lip_mm'][0]-stack['output_pin_top_mm'] == pytest.approx(.215)
     # The repaired lip clears the whole swept disk, including outward crank
     # positions that the previous initial-pose check missed.
     envelope = module._cylinder(67., stack['rod_bottom_mm'], stack['moving_upper_envelope_mm'])
     lip = module._annulus(63., 66.8, *stack['lower_lip_mm'])
     assert envelope.intersect(lip).Volume() == pytest.approx(0., abs=1e-9)
-    assert envelope.distance(lip) == pytest.approx(.2)
+    assert envelope.distance(lip) == pytest.approx(.215)
     changed = deepcopy(spec)
     changed['rotor_pin_radius_mm'] = 45.
     with pytest.raises(ValueError, match='authored radial'):
@@ -134,24 +134,37 @@ def test_axial_stack_derives_pin_tip_clearance_and_rejects_unattached_edits(clie
     for thickness in (1.2, 1.4):
         changed = deepcopy(spec)
         changed['rod_thickness_mm'] = thickness
-        with pytest.raises(ValueError, match='radial-bearing clearance'):
-            module.layout(changed)
+        # This only proves the scalar mating layout can adapt. A changed
+        # native part/support needs a fresh full CAD interface build.
+        moved = module.axial_stack(changed)
+        assert moved['radial_bearing_mm'][0]-moved['output_keeper_mm'][1] == pytest.approx(.115)
+        assert moved['lower_lip_mm'][0] < 33.5
     for group, key, value in ((None, 'rod_height_mm', 32.),
                               ('axial_stack', 'keeper_thickness_mm', .4),
                               ('axial_stack', 'rod_keeper_clearance_mm', .4)):
         changed = deepcopy(spec)
         (changed[group] if group else changed)[key] = value
-        with pytest.raises(ValueError, match='radial-bearing clearance'):
-            module.layout(changed)
+        moved = module.axial_stack(changed)
+        assert moved['radial_bearing_mm'][0]-moved['output_keeper_mm'][1] == pytest.approx(.115)
+        assert moved['lower_lip_mm'][0] < 33.5
+    changed = deepcopy(spec)
+    changed['axial_fit_design']['moving_pin_to_fixed_lip']['design_reserve_mm'] = 2.
+    with pytest.raises(ValueError, match='support posts'):
+        module.layout(changed)
+    changed = deepcopy(spec)
+    changed['rotor_radial_bearing_fit']['design_reserve_mm'] = 3.
+    with pytest.raises(ValueError, match='nominal wall'):
+        module.layout(changed)
     # Independent BREP regression at maximum outward crank reach: the
     # default keeper clears the radial-bearing face by its declared gap.
     from mechanism_lab.core import pose_cad
     xy = (20*math.cos(.45), 20*math.sin(.45))
     keeper = module._split_keeper(.82, 1.6, *stack['output_keeper_mm'], xy)
     posed = pose_cad(keeper, module.design.leaf_frame(0, .45, 50.))
-    radial = module._annulus(64.05, 66.8, *stack['radial_bearing_mm'])
+    radial = module._annulus(module.rotor_radial_fit(spec).second_face_after(64.),
+                             66.8, *stack['radial_bearing_mm'])
     assert posed.intersect(radial).Volume() == pytest.approx(0., abs=1e-9)
-    assert posed.distance(radial) == pytest.approx(.1)
+    assert posed.distance(radial) == pytest.approx(.115)
     changed = deepcopy(spec)
     changed['rod_height_mm'] = 31.2
     changed['axial_stack'].update(rod_keeper_clearance_mm=.1, keeper_thickness_mm=.1,

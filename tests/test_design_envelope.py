@@ -11,7 +11,7 @@ from mechanism_lab.design_envelope import (
     radial_clearance_mm,
     validate_load_paths,
 )
-from mechanism_lab.fit_construction import PinBoreFit
+from mechanism_lab.fit_construction import DirectedFaceGap, PinBoreFit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,9 +33,9 @@ def native_gap(name, measured, required, *, kernel=0.0):
     }
 
 
-def test_iris_zero_slack_cannot_absorb_unmeasured_variation():
-    # The source-authored IRIS pin-to-lip requirement is 0.20 mm; equal nominal
-    # separation leaves no positive dimensional-variation budget.
+def test_zero_slack_face_fit_cannot_absorb_unmeasured_variation():
+    # This adverse zero-slack case must remain impossible to qualify even after
+    # the constructed IRIS default acquires a positive nominal design reserve.
     source = json.loads((ROOT / 'examples/engineering/iris09/data/mechanism.json').read_text())
     assert source['axial_stack']['moving_pin_to_fixed_lip_clearance_mm'] == 0.2
     native = native_gap('iris-pin-to-lip', 0.2, 0.2, kernel=1e-8)
@@ -56,6 +56,44 @@ def test_iris_zero_slack_cannot_absorb_unmeasured_variation():
     assert declared['fits'][0]['worst_case_declared_gap_mm'] == pytest.approx(0.198)
     assert not declared['declared_stack_screen_passed']
     assert not declared['manufacturing_fit_qualified']
+
+
+def test_shared_directed_face_fit_constructs_positive_axial_and_radial_reserve():
+    from examples.engineering.iris09 import mechanism
+
+    spec = mechanism.specification()
+    stack = mechanism.axial_stack(spec)
+    fits = mechanism.axial_fits(spec)
+    for name, measured in (
+            ('moving_pin_to_fixed_lip', stack['lower_lip_mm'][0]-stack['output_pin_top_mm']),
+            ('output_keeper_to_radial_bearing',
+             stack['radial_bearing_mm'][0]-stack['output_keeper_mm'][1]),
+            ('rotor_capture', stack['rotor_mm'][0]-stack['lower_lip_mm'][1]),
+            ('rotor_capture', stack['upper_lip_mm'][0]-stack['rotor_mm'][1])):
+        fit = fits[name]
+        assert measured == pytest.approx(fit.nominal_gap_mm)
+        assert measured-sum(fit.declared_design_variations_mm().values()) > fit.required_service_gap_mm
+        assert fit.worst_declared_gap_mm-fit.required_service_gap_mm == pytest.approx(fit.design_reserve_mm)
+        assert not fit.report()['process_capability_verified']
+
+    radial = mechanism.rotor_radial_fit(spec)
+    assert radial.nominal_gap_mm == pytest.approx(.05)
+    assert radial.second_face_after(64.) == pytest.approx(64.05)
+    assert radial.worst_declared_gap_mm > radial.required_service_gap_mm
+    assert stack['lower_lip_mm'][0] < 33.5  # retained fixed-support post extent
+    assert stack['radial_bearing_mm'][0] < 33.5
+
+    with pytest.raises(ValueError, match='positive'):
+        DirectedFaceGap.from_document(.1, dict(first_declared_variation_mm=.005,
+            second_declared_variation_mm=.005, design_reserve_mm=0.))
+    changed = json.loads(json.dumps(spec))
+    changed['axial_fit_design']['moving_pin_to_fixed_lip']['design_reserve_mm'] = 2.
+    with pytest.raises(ValueError, match='support posts'):
+        mechanism.validate(changed)
+    changed = json.loads(json.dumps(spec))
+    changed['rotor_radial_bearing_fit']['design_reserve_mm'] = 3.
+    with pytest.raises(ValueError, match='nominal wall'):
+        mechanism.validate(changed)
 
 
 def test_fourbar_diameter_converts_to_radial_gap_and_stacks_two_parts():

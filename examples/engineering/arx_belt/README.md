@@ -27,6 +27,24 @@ mass fallback. Only the free puck and four model-bound nest solids are scene
 additions. `lab replay` saves full-resolution PNG/MP4 with consumer/source and
 actual frame-selection receipts.
 
+The shared `RackPinionTravel` constructor places both P5 gripper racks from
+one module, 50-tooth span and pinion offset, and rejects a slide range that
+would lose its declared tooth-span edge margin. The source permits 10–40 mm
+travel; at 40 mm the nominal pinion pitch point remains 4.888 mm from the
+outermost usable pitch-line flank. This accounts for the quarter-pitch inset
+of the first and last sampled teeth from the rack blank edges. The default
+authoring target is one full 0.9425 mm pitch plus one further pitch of
+geometric reserve, leaving 3.003 mm beyond that target.
+The reserve is a design assumption, not a supplier rating. The compiled
+opposed-jaw equality, tendon pitch conversion and controller radius must match
+the constructed pinion; the source-bound native receipt records this contract.
+Rack pitch-line Y placements also derive from the 3 mm pinion pitch radius.
+The P5 example pins module 0.3, 20 pinion teeth, 50 rack teeth and its 2 mm
+end datum because the existing bridge, jaw passages and supports were built
+around them; changing those values requires a coupled design revision. This
+proves nominal tooth-span coverage only, not rolling flank contact, gear
+strength, backlash, bushing fit or production capability.
+
 Every default generation rebuilds geometry and its mass properties. Explicit
 `--reuse-native` requires the source binding issued by a successful fresh
 construction: all project Python/data files, shared construction code, CAD

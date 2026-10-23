@@ -174,14 +174,21 @@ def _native_design_screens(native, receipt, source_files, control, simulation, *
             raise ValueError('Planar gravity screen requires explicit physical-model gravity')
         gravity = [float(value) for value in option.get('gravity').split()]
         budget = path.gravity_budget(native, receipt, gravity, (0., 0., 1.))
+        # Every planar project screens the complete verified native inventory.
+        # Disjoint axial slabs prove only those cross-body pairs clear for the
+        # ideal rigid path; tight/overlapping pairs remain unresolved.
+        axial = path.axial_clearance_broadphase(native, receipt)
         planar = dict(schema='cybrgeo-planar-design-screen/1',
             source_sha256=path.source_sha256,
             implementation_sha256=path.implementation_sha256,
             input_interval_rad=[path.input_start_rad, path.input_end_rad],
             full_interval_branch_bounds=list(path.angular_bounds.values()),
             quasi_static_gravity=budget,
+            native_axial_broadphase=axial,
+            axially_separated_pair_count=axial['axially_separated_pair_count'],
+            unresolved_pair_count=axial['unresolved_pair_count'],
             continuous_native_clearance_status='unresolved_without_pair_complete_BREP_certificate',
-            scope='Full-input ideal rigid branch and CAD-mass gravity only; actual MuJoCo trajectory and moving native-part clearance need separate bound evidence')
+            scope='Full-input ideal rigid branch, CAD-mass gravity, and native axial separation only; unresolved pairs, actual MuJoCo trajectory, and part variation need separate bound evidence')
     return dict(schema='cybrgeo-native-design-envelope/1',
         source_files_sha256=source_sha256,
         native_build_sha256=digest(receipt),

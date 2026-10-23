@@ -8,12 +8,14 @@ the maintained task policy has separate source-bound fault evidence.
 """
 from copy import deepcopy
 import json
+import math
 from pathlib import Path
 
 from mechanism_lab.physical_model import PhysicalModel, digest
 from mechanism_lab.contact_geometry import tabletop_tiles
 
 from .contacts import build as build_contacts
+from .rack_contract import arx_rack_report, rack_travel_from_source
 
 DATA = Path(__file__).with_name('data')
 SOURCE_COMMIT = 'aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2'
@@ -38,6 +40,12 @@ def compile_model(spec=None, *, native_directory=None):
         repository='https://github.com/cybrdelic/cybr-arx6-belt', commit=SOURCE_COMMIT,
         design_spec_sha256=digest(spec), native_records='freshly generated' if native_directory else 'shipped source records',
         hardware_qualification='not qualified'))
+    travel = rack_travel_from_source(spec, model_root=physical.root)
+    if native_directory:
+        recorded = load('gripper-rack-travel.json', records)
+        if recorded != arx_rack_report(travel):
+            raise ValueError('Native rack construction disagrees with the compiled physical slide and tendon')
+        physical.provenance['gripper_rack_travel'] = recorded
     physical.root.set('model', 'ARX6_P5_compact_belt_drives')
     physical.bind_inertias(props, {name: name for name in ('turret', 'upper', 'fore', 'roll', 'bend', 'tool')})
     for name in ('jaw_left', 'jaw_right'):
@@ -67,6 +75,12 @@ def compile_model(spec=None, *, native_directory=None):
         import xml.etree.ElementTree as ET
         ET.SubElement(contact, 'exclude', body1=row['body1'], body2=row['body2'])
     p = load('P2-baseline-parameters.json')
+    if (not math.isclose(p['gripper']['pinion_pitch_radius_m'], travel.pitch_radius_m,
+                         rel_tol=1e-12, abs_tol=1e-12)
+            or not math.isclose(p['gripper']['module_m'], travel.module_mm/1000.,
+                                rel_tol=1e-12, abs_tol=1e-12)
+            or p['gripper']['pinion_teeth'] != travel.pinion_teeth):
+        raise ValueError('Configured gripper drive differs from the constructed rack pitch')
     # The baseline includes historical inertias for its browser controller.
     # Carry only the masses actually bound into this physical tree, so exported
     # task metadata cannot advertise stale CAD values beside the new model.

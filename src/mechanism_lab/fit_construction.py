@@ -76,3 +76,68 @@ class PinBoreFit:
                     worst_declared_radial_gap_mm=self.worst_declared_radial_gap_mm,
                     process_capability_verified=False,
                     scope='Constructed nominal pin/bore geometry, authored variation budget and positive design reserve only; no measured process capability')
+
+
+@dataclass(frozen=True)
+class DirectedFaceGap:
+    """Construct ordered, parallel mating faces with a positive design reserve.
+
+    ``first`` and ``second`` identify physical parts, rather than a tolerance
+    applied to a generic clearance check after construction. Both authored
+    variations may close the gap. Coordinates are along the caller's declared
+    increasing axis; the caller must also check that the constructed parts
+    remain attached to their supports.
+    """
+
+    required_service_gap_mm: float
+    first_declared_variation_mm: float
+    second_declared_variation_mm: float
+    design_reserve_mm: float
+
+    def __post_init__(self):
+        for name in self.__dataclass_fields__:
+            _positive(getattr(self, name), name)
+        if not math.isfinite(self.nominal_gap_mm):
+            raise ValueError('Derived nominal face gap must be finite')
+
+    @classmethod
+    def from_document(cls, required_service_gap_mm, document):
+        fields = {'first_declared_variation_mm',
+                  'second_declared_variation_mm', 'design_reserve_mm'}
+        if not isinstance(document, dict) or set(document) != fields:
+            raise ValueError('Face gap needs two declared variations and a positive design reserve')
+        return cls(required_service_gap_mm, **document)
+
+    @property
+    def nominal_gap_mm(self):
+        return (self.required_service_gap_mm + self.first_declared_variation_mm
+                + self.second_declared_variation_mm + self.design_reserve_mm)
+
+    @property
+    def worst_declared_gap_mm(self):
+        return self.nominal_gap_mm - self.first_declared_variation_mm - self.second_declared_variation_mm
+
+    def second_face_after(self, first_face_mm):
+        if isinstance(first_face_mm, bool) or not isinstance(first_face_mm, (int, float)) or not math.isfinite(first_face_mm):
+            raise ValueError('First face coordinate must be finite')
+        return float(first_face_mm) + self.nominal_gap_mm
+
+    def first_face_before(self, second_face_mm):
+        if isinstance(second_face_mm, bool) or not isinstance(second_face_mm, (int, float)) or not math.isfinite(second_face_mm):
+            raise ValueError('Second face coordinate must be finite')
+        return float(second_face_mm) - self.nominal_gap_mm
+
+    def declared_design_variations_mm(self):
+        return dict(first_mm=self.first_declared_variation_mm,
+                    second_mm=self.second_declared_variation_mm)
+
+    def report(self):
+        return dict(schema='cybrgeo-directed-face-gap-design/1',
+                    required_service_gap_mm=self.required_service_gap_mm,
+                    first_declared_variation_mm=self.first_declared_variation_mm,
+                    second_declared_variation_mm=self.second_declared_variation_mm,
+                    design_reserve_mm=self.design_reserve_mm,
+                    nominal_gap_mm=self.nominal_gap_mm,
+                    worst_declared_gap_mm=self.worst_declared_gap_mm,
+                    process_capability_verified=False,
+                    scope='Ordered nominal face construction with authored variation and positive reserve; no measured process capability or support-strength proof')

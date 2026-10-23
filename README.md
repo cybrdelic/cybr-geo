@@ -110,9 +110,12 @@ design variation budget; a passing torque screen is only a source-model result. 
 drive screen requires both belt and gear demand-limit telemetry: a controller
 that clipped requested torque fails its source-model screen even when the
 delivered peak stays at the declared limit. Missing telemetry is unresolved.
-The report's continuous-clearance field stays unresolved until its named native
-part-pair scope is certified. Inspect both `engineering.json` and
-`design-envelope.json` before using a diagnostic design.
+For planar projects, default generation also reopens the complete verified
+native STEP inventory and records full-range axial separation for cross-body
+pairs in `design-envelope.json`. It lists every overlapping or close pair as
+unresolved; the continuous-clearance field remains unresolved until those
+pairs have their own motion and mating evidence. Inspect both
+`engineering.json` and `design-envelope.json` before using a diagnostic design.
 For a qualified release, the opposed rack drive has its own source output
 torque limit and requested-output clipping history; missing or clipped rack
 telemetry is rejected independently of the six rotary belt/gear screens.
@@ -140,9 +143,8 @@ counts every unexamined pair. ARX's recorded contact motion and unsampled
 MuJoCo states need their own explicitly scoped checks. No example currently
 has a complete, production-toleranced moving-assembly clearance certificate.
 
-For IRIS, the reusable axial broad phase can cheaply classify every
-cross-body pair whose native STEP Z slabs stay separated over the complete
-ideal planar path:
+For IRIS, the default engineering envelope already runs that axial broad
+phase. To write its report separately, use:
 
 ```sh
 python -m examples.analysis.iris09_axial_broadphase --native outputs/iris09/native --output outputs/iris09/axial-broadphase.json

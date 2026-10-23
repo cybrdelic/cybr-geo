@@ -60,21 +60,33 @@ required service radial gap, authored 0.005 mm radial variation budgets for
 each of the pin and bore and a further 0.0025 mm design reserve. The resulting
 nominal radial gap is 0.0375 mm; the worst gap under those *declared design
 targets* is 0.0275 mm, leaving positive reserve beyond service. No process or
-supplier has demonstrated the variation budget or reserve. The axial keeper and
-bearing stacks have separate nominal clearances and no demonstrated production
-tolerance stack. Changing any fit input invalidates prior CAD, mass/inertia,
+supplier has demonstrated these or the axial/radial variation budgets below.
+Some axial fits now have authored positive reserves; other keeper/collar fits
+remain unallocated and no production tolerance stack is demonstrated. Changing
+any fit input invalidates prior CAD, mass/inertia,
 interface, simulation and media receipts until regenerated.
 
 The pin, keeper, bearing lip and rotor heights share one `axial_stack`
-construction. The lower fixed lip starts 0.2 mm above the moving pin/keeper
-envelope; the rotor starts another 0.2 mm above that lip. A native interface
-requirement measures the complete radial moving envelope against the lip. This
-specific planar envelope applies throughout the declared motion, while the
-independent whole-assembly audit remains limited to its recorded sample poses.
-The same stack rejects a keeper that enters the authored radial bearing, and a
-second native envelope check retains at least 0.1 mm nominal separation there.
-These parameter guards require a mating-support redesign when the declared
-stack no longer fits; they do not silently accept arbitrary rod dimensions.
+construction. GEO's reusable `DirectedFaceGap` derives each mating surface
+from its required service gap, two authored part-variation budgets and a
+positive design reserve. With the supplied 0.005 mm variation per side and
+0.005 mm reserve, the lower fixed lip starts **0.215 mm** above the moving
+pin/keeper envelope; the rotor starts another **0.215 mm** above the lip and
+the upper capture lip has the same constructed gap. The fixed radial bearing
+starts **0.115 mm** above the moving output keeper. Native requirements measure
+those face gaps and carry the authored budgets into the design screen. The
+lip/keeper axial envelopes apply throughout planar motion; the independent
+whole-assembly audit still has its stated limited pair coverage.
+
+The rotor's nominal 64 mm outer radius also constructs the fixed sleeve's
+64.05 mm inner radius through the same shared face-fit rule: 0.03 mm required
+service gap, 0.005 mm variation per side and 0.01 mm design reserve. A native
+annular interface measures that radial gap where rotor and sleeve overlap in
+height. The fixed post overlap and bearing-wall guards reject fits that would
+disconnect their authored support. These budgets are design targets, not
+demonstrated process capability, bearing pressure, sleeve strength or a
+whole-assembly clearance certificate. Other keeper, collar and optical-leaf
+fits remain unresolved for manufacturing qualification.
 
 The **50 mm per scene unit conversion remains an assumption**. It preserves the
 source's **0.0325 mm foil thickness**, whose stiffness, buckling, attachment to the
