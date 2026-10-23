@@ -22,14 +22,47 @@ from mechanism_lab.native_pose_envelope import certify_native_parametric_path
 from mechanism_lab.physical_model import digest
 
 
-SELECTED_NATIVE_PARTS = (
-    'jaw__finger_pad_1',
-    'jaw__right_jaw_carriage_0',
-    'jaw_opposed__finger_pad',
-    'jaw_opposed__left_jaw_carriage',
-    'tool__gripper_motor',
-    'tool__gripper_cable_clamp_mount_16',
+SELECTED_LOGICAL_PARTS = (
+    ('jaw', 'finger_pad'),
+    ('jaw', 'right_jaw_carriage'),
+    ('jaw_opposed', 'finger_pad'),
+    ('jaw_opposed', 'left_jaw_carriage'),
+    ('tool', 'gripper_motor'),
+    ('tool', 'gripper_cable_clamp_mount'),
 )
+
+
+def selected_native_parts(native_directory, expected_file_hashes):
+    """Resolve six source part roles from a verified native placement manifest.
+
+    Assembly enumeration may change a numeric instance suffix when an upstream
+    component moves to another body. A missing or ambiguous role fails closed.
+    """
+    native = Path(native_directory).resolve()
+    manifest = native / 'placed-native-parts.json'
+    if (not manifest.is_file() or manifest.is_symlink()
+            or not isinstance(expected_file_hashes, dict)
+            or expected_file_hashes.get(manifest.name) !=
+               hashlib.sha256(manifest.read_bytes()).hexdigest()):
+        raise ValueError('Native placed-part manifest differs from verified receipt')
+    inventory = json.loads(manifest.read_text(encoding='utf-8'))
+    if inventory.get('units') != 'mm' or not isinstance(inventory.get('records'), list):
+        raise ValueError('Native placed-part manifest has invalid inventory')
+    selected = []
+    for body, base in SELECTED_LOGICAL_PARTS:
+        matches = []
+        for row in inventory['records']:
+            if not isinstance(row, dict):
+                raise ValueError('Native placed-part manifest has invalid record')
+            name = row.get('name')
+            if (row.get('body') == body and isinstance(name, str)
+                    and (name == base or
+                         (name.startswith(base + '_') and name[len(base)+1:].isdecimal()))):
+                matches.append(f'{body}__{name}')
+        if len(matches) != 1:
+            raise ValueError(f'Native gripper role {body}__{base} is missing or ambiguous')
+        selected.extend(matches)
+    return tuple(selected)
 
 
 def _triple(raw, label):
@@ -79,7 +112,7 @@ def source_slide_contract(xml_path):
         scope='Nominal synchronized 10–40 mm slide coordinates in source tool frame; no tooth, bushing or hardware load evidence')
 
 
-def gripper_path(contract):
+def gripper_path(contract, selected_names):
     """Pose and rigorous point-speed bound for every point of six rigid parts."""
     left, right = contract['jaws']['jaw_left'], contract['jaws']['jaw_right']
     if (left['range_m'] != right['range_m']
@@ -100,7 +133,7 @@ def gripper_path(contract):
         return poses
 
     def point_speed_bound(part_name, _lo, _hi):
-        if part_name not in SELECTED_NATIVE_PARTS:
+        if part_name not in selected_names:
             raise ValueError('Point-speed bound has no such selected native part')
         return 0. if part_name.startswith('tool__') else (end-start)*1000.
 
@@ -118,14 +151,15 @@ def certify(native_directory):
     receipt = verify_native_build(native, project.specification, source_files=source_files)
     binding = verify_native_source_binding(native, project.specification,
                                           source_files, receipt=receipt)
-    pose_at, speed = gripper_path(contract)
+    selected_names = selected_native_parts(native, receipt['files_sha256'])
+    pose_at, speed = gripper_path(contract, selected_names)
     client_sha256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     checker_sha256 = hashlib.sha256(Path(pose_service.__file__).read_bytes()).hexdigest()
     report = certify_native_parametric_path(native, pose_at, speed,
         source_identity=(f'ARX source gripper joint {contract["xml_sha256"]}; '
             f'native {digest(receipt)}; client {client_sha256}; checker {checker_sha256}'),
         expected_file_hashes=receipt['files_sha256'],
-        selected_names=SELECTED_NATIVE_PARTS,
+        selected_names=selected_names,
         required_clearance_mm=0., distance_margin_mm=1e-4,
         max_depth=14, max_pair_intervals=16383)
     report['arx_gripper_contract'] = contract
@@ -134,9 +168,9 @@ def certify(native_directory):
     report['project_source_files_sha256'] = digest(source_files)
     report['client_source_sha256'] = client_sha256
     report['checker_source_sha256'] = checker_sha256
-    report['selected_part_count'] = len(SELECTED_NATIVE_PARTS)
+    report['selected_part_count'] = len(selected_names)
     report['unexamined_native_part_count'] = (
-        report['native_step_import']['native_inventory_count']-len(SELECTED_NATIVE_PARTS))
+        report['native_step_import']['native_inventory_count']-len(selected_names))
     report['noncontact_cross_body_pair_count'] = len(report['clearance_pairs'])
     if report['noncontact_cross_body_pair_count'] != 12:
         raise ValueError('Selected ARX gripper bodies no longer define twelve cross-body pairs')

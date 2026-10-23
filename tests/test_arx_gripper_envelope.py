@@ -6,17 +6,30 @@ import json
 import pytest
 
 from examples.analysis.arx_belt_gripper_envelope import (
-    SELECTED_NATIVE_PARTS, gripper_path, source_slide_contract)
+    SELECTED_LOGICAL_PARTS, gripper_path, selected_native_parts,
+    source_slide_contract)
 from mechanism_lab.native_pose_envelope import load_placed_native_parts
 
 
 SOURCE = Path(__file__).resolve().parents[1] / 'examples' / 'engineering' / 'arx_belt' / 'data' / 'P2-baseline.xml'
+INTENT = SOURCE.with_name('qualification-intent.json')
 
 
-def test_source_bound_opposed_slide_poses_cover_entire_authored_range():
+def _source_selection(tmp_path):
+    parts = json.loads(INTENT.read_text(encoding='utf-8'))['parts']
+    rows = [dict(body=name.split('__', 1)[0], name=name.split('__', 1)[1])
+            for name in parts]
+    manifest = tmp_path / 'placed-native-parts.json'
+    manifest.write_text(json.dumps(dict(units='mm', records=rows)), encoding='utf-8')
+    hashes = {manifest.name: hashlib.sha256(manifest.read_bytes()).hexdigest()}
+    return selected_native_parts(tmp_path, hashes), manifest, rows
+
+
+def test_source_bound_opposed_slide_poses_cover_entire_authored_range(tmp_path):
     contract = source_slide_contract(SOURCE)
-    pose_at, bound = gripper_path(contract)
-    assert len(SELECTED_NATIVE_PARTS) == 6
+    selected, _, _ = _source_selection(tmp_path)
+    pose_at, bound = gripper_path(contract, selected)
+    assert len(SELECTED_LOGICAL_PARTS) == len(selected) == 6
     for parameter, expected in ((0., 10.), (.5, 25.), (1., 40.)):
         poses = pose_at(parameter)
         assert set(poses) == {'tool', 'jaw', 'jaw_opposed'}
@@ -39,12 +52,36 @@ def test_changed_gripper_range_or_synchronization_rejects_stale_path(tmp_path):
         source_slide_contract(changed)
 
 
-def test_non_source_part_or_parameter_cannot_receive_an_implicit_pose():
-    pose_at, bound = gripper_path(source_slide_contract(SOURCE))
+def test_non_source_part_or_parameter_cannot_receive_an_implicit_pose(tmp_path):
+    selected, _, _ = _source_selection(tmp_path)
+    pose_at, bound = gripper_path(source_slide_contract(SOURCE), selected)
     with pytest.raises(ValueError, match='source travel interval'):
         pose_at(1.01)
     with pytest.raises(ValueError, match='selected native part'):
         bound('unknown__part', 0., 1.)
+
+
+def test_native_selection_survives_instance_ordinal_drift_but_not_ambiguity(tmp_path):
+    selected, manifest, rows = _source_selection(tmp_path)
+    mount = [row for row in rows if row['body'] == 'tool'
+             and row['name'].startswith('gripper_cable_clamp_mount_')]
+    assert len(mount) == 1
+    original = mount[0]['name']
+    assert f'tool__{original}' in selected
+    mount[0]['name'] = 'gripper_cable_clamp_mount_73'
+    manifest.write_text(json.dumps(dict(units='mm', records=rows)), encoding='utf-8')
+    hashes = {manifest.name: hashlib.sha256(manifest.read_bytes()).hexdigest()}
+    changed = selected_native_parts(tmp_path, hashes)
+    assert len(changed) == 6
+    assert 'tool__gripper_cable_clamp_mount_73' in changed
+    assert f'tool__{original}' not in changed
+    rows.append(dict(body='tool', name='gripper_cable_clamp_mount_74'))
+    manifest.write_text(json.dumps(dict(units='mm', records=rows)), encoding='utf-8')
+    hashes[manifest.name] = hashlib.sha256(manifest.read_bytes()).hexdigest()
+    with pytest.raises(ValueError, match='missing or ambiguous'):
+        selected_native_parts(tmp_path, hashes)
+    with pytest.raises(ValueError, match='verified receipt'):
+        selected_native_parts(tmp_path, {manifest.name: '0'*64})
 
 
 def test_selected_native_import_keeps_full_inventory_and_receipt_binding(tmp_path):
