@@ -103,3 +103,21 @@ def test_missing_solver_reaction_row_cannot_become_zero_load():
     assert not incomplete['complete_solver_coverage']
     assert incomplete['peak_modeled_anchor_force_N'] is None
     assert incomplete['observed_peak_if_incomplete_N'] == 12.5
+
+
+def test_zero_step_diagnostic_never_claims_solver_coverage():
+    empty = connector_force_screens({}, 0)
+    assert empty['connectors'] == {}
+    assert empty['complete_solver_coverage'] is False
+    # Zero matching counters and a synthetic zero peak must not look like
+    # measured every-step connector demand in an unintegrated run.
+    connector = dict(type='connect', active_steps=0, missing_row_steps=0,
+        incomplete_reaction_row_steps=0,
+        reaction_vector_norms=dict(anchor_force=dict(samples=0,
+            peak_absolute=dict(value=0.))))
+    record = connector_force_screens({'pin': connector}, 0)
+    assert record['complete_solver_coverage'] is False
+    assert record['connectors']['pin']['complete_solver_coverage'] is False
+    assert record['connectors']['pin']['peak_modeled_anchor_force_N'] is None
+    with pytest.raises(ValueError, match='nonnegative integration-step count'):
+        connector_force_screens({}, -1)

@@ -166,8 +166,8 @@ class PlanarFourBar:
         sin_lower *= 1 - 1e-12
         return dict(schema='cybrgeo-planar-fourbar-motion-bound/1',
                     source_sha256=self.source_sha256,
-                    input_interval_rad=(start, end), branch=self.branch,
-                    output_pivot_distance_interval_mm=(distance_min, distance_max),
+                    input_interval_rad=[start, end], branch=self.branch,
+                    output_pivot_distance_interval_mm=[distance_min, distance_max],
                     minimum_coupler_rocker_sine_lower_bound=sin_lower,
                     maximum_rocker_angular_rate_rad_per_input_rad=a/(c*sin_lower),
                     maximum_coupler_angular_rate_rad_per_input_rad=a/(b*sin_lower),

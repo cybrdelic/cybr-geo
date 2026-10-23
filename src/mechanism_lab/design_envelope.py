@@ -245,11 +245,14 @@ def connector_force_screens(constraint_metrics, integration_steps):
     An equality solver multiplier is a modeled ideal connector reaction. It is
     not a bearing pressure, pin shear, stress concentration or hardware rating.
     A missing/incomplete solver row never becomes a zero-force measurement.
+    A diagnostic run with no integration steps may still be recorded, but
+    cannot report complete reaction coverage even if a malformed record
+    advertises zero active steps and zero samples.
     """
     if (not isinstance(constraint_metrics, dict)
             or isinstance(integration_steps, bool) or not isinstance(integration_steps, int)
-            or integration_steps < 1):
-        raise ValueError('Connector screens require named constraints and integration-step count')
+            or integration_steps < 0):
+        raise ValueError('Connector screens require named constraints and a nonnegative integration-step count')
     rows = {}
     for name, record in constraint_metrics.items():
         if not isinstance(name, str) or not name or not isinstance(record, dict):
@@ -261,7 +264,8 @@ def connector_force_screens(constraint_metrics, integration_steps):
         observed = peak.get('value') if isinstance(peak, dict) else None
         if observed is not None:
             observed = _number(observed, f'{name} modeled connector force')
-        complete = (record.get('active_steps') == integration_steps
+        complete = (integration_steps > 0
+                    and record.get('active_steps') == integration_steps
                     and record.get('missing_row_steps') == 0
                     and record.get('incomplete_reaction_row_steps') == 0
                     and reaction.get('samples') == integration_steps

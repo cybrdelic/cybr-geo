@@ -1,4 +1,5 @@
 """The same analytic closure must support whole-interval motion bounds."""
+import json
 import math
 import random
 
@@ -22,6 +23,9 @@ def _cross(left, right):
 def test_authored_fourbar_closes_and_bounds_full_crank_turn():
     fourbar = PlanarFourBar((0, 0), (100, 0), 25, 90, 60)
     bound = fourbar.angular_rate_bounds(0, math.tau)
+    assert json.loads(json.dumps(bound)) == bound
+    point_bound = fourbar.point_motion_bound('coupler', 20., 0, math.tau)
+    assert json.loads(json.dumps(point_bound)) == point_bound
     assert bound['source_sha256'] == fourbar.source_sha256
     assert bound['output_pivot_distance_interval_mm'] == pytest.approx((75, 125))
     assert bound['minimum_coupler_rocker_sine_lower_bound'] == pytest.approx(
@@ -110,7 +114,7 @@ def test_source_bound_point_travel_for_each_rigid_body():
     for body in ('crank', 'coupler', 'rocker'):
         bound = mechanism.point_motion_bound(body, radius, *angle_interval)
         assert bound['source_sha256'] == mechanism.source_sha256
-        assert bound['input_interval_rad'] == angle_interval
+        assert bound['input_interval_rad'] == list(angle_interval)
         assert bound['maximum_point_radius_mm'] == radius
         for sample in range(80):
             theta = angle_interval[0] + (angle_interval[1] - angle_interval[0]) * sample / 80
