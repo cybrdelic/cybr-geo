@@ -167,6 +167,15 @@ def verify(output, *, require_local_native=False):
         authored_face_fit(name,
             spec["axial_stack"]["rotor_capture_axial_clearance_mm"],
             spec["axial_fit_design"]["rotor_capture"])
+    for index in range(count):
+        for end in ("input", "output"):
+            authored_face_fit(f"rod_{index:02}_{end}_axial_keeper_clearance",
+                spec["axial_stack"]["rod_keeper_clearance_mm"],
+                spec["axial_fit_design"]["rod_keeper"])
+        for face in ("lower", "upper"):
+            authored_face_fit(f"leaf_{index:02}_{face}_axial_collar_clearance",
+                spec["axial_stack"]["shaft_collar_clearance_mm"],
+                spec["axial_fit_design"]["shaft_collar"])
     layout = read_json(native / "mechanism-layout.json")
     assert len(layout["links"]) == count
     placements = read_json(native / "placed-native-parts.json")["records"]

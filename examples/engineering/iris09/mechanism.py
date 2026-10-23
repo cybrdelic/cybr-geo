@@ -26,6 +26,7 @@ from .leaf_geometry import build_leaf
 HERE = Path(__file__).resolve().parent
 DENSITIES = dict(aluminum=2700., steel=7850., brass=8500., glass=2500.)
 MATERIALS = {1: 'aluminum', 2: 'aluminum', 3: 'brass', 4: 'steel', 5: 'aluminum', 6: 'glass'}
+FIXED_LEAF_BEARING_Z_MM = (22., 23.5)
 
 
 def specification():
@@ -100,15 +101,17 @@ def rotor_radial_fit(spec):
 
 
 def axial_fits(spec):
-    """Bind three ordered-face fits to the authored IRIS support design."""
+    """Bind all moving retainer and rotor faces to the authored support."""
     designs = spec.get('axial_fit_design')
     fields = {
+        'rod_keeper': 'rod_keeper_clearance_mm',
+        'shaft_collar': 'shaft_collar_clearance_mm',
         'moving_pin_to_fixed_lip': 'moving_pin_to_fixed_lip_clearance_mm',
         'output_keeper_to_radial_bearing': 'keeper_to_radial_bearing_clearance_mm',
         'rotor_capture': 'rotor_capture_axial_clearance_mm',
     }
     if not isinstance(designs, dict) or set(designs) != set(fields):
-        raise ValueError('IRIS axial fits require exact moving-pin, keeper and rotor-capture designs')
+        raise ValueError('IRIS axial fits require exact rod, collar, moving-pin, keeper and rotor-capture designs')
     return {name: DirectedFaceGap.from_document(spec['axial_stack'][service], designs[name])
             for name, service in fields.items()}
 
@@ -122,9 +125,22 @@ def axial_stack(spec):
             raise ValueError(f'axial_stack.{name} must be finite and positive')
     bottom = spec['rod_height_mm'] - spec['rod_thickness_mm']/2
     top = spec['rod_height_mm'] + spec['rod_thickness_mm']/2
-    gap, keeper = cfg['rod_keeper_clearance_mm'], cfg['keeper_thickness_mm']
+    gap, keeper = fits['rod_keeper'].nominal_gap_mm, cfg['keeper_thickness_mm']
     input_keeper = (bottom-gap-keeper, bottom-gap)
     output_keeper = (top+gap, top+gap+keeper)
+    bearing_bottom, bearing_top = FIXED_LEAF_BEARING_Z_MM
+    collar_thickness = cfg['shaft_collar_thickness_mm']
+    lower_collar_top = fits['shaft_collar'].first_face_before(bearing_bottom)
+    upper_collar_bottom = fits['shaft_collar'].second_face_after(bearing_top)
+    lower_collar = (lower_collar_top-collar_thickness, lower_collar_top)
+    upper_collar = (upper_collar_bottom, upper_collar_bottom+collar_thickness)
+    groove_clearance = cfg['keeper_groove_clearance_mm']
+    collar_grooves = tuple((face[0]-groove_clearance, face[1]+groove_clearance)
+                           for face in (lower_collar, upper_collar))
+    # Grooves remain within the continuous shaft between its lower hub and
+    # upper crank; simply widening a face fit must not sever those features.
+    if collar_grooves[0][0] <= 13.1 or collar_grooves[1][1] >= 28.5:
+        raise ValueError('Shaft collar fit leaves its authored shaft/groove support envelope')
     input_pin_bottom = input_keeper[0]-cfg['pin_tip_extension_mm']
     output_pin_top = output_keeper[1]+cfg['pin_tip_extension_mm']
     moving_upper_envelope = max(top, output_keeper[1], output_pin_top)
@@ -152,6 +168,9 @@ def axial_stack(spec):
         raise ValueError('Lower capture lip must overlap the authored radial bearing in Z')
     return dict(rod_bottom_mm=bottom, rod_top_mm=top,
         input_keeper_mm=input_keeper, output_keeper_mm=output_keeper,
+        lower_shaft_collar_mm=lower_collar, upper_shaft_collar_mm=upper_collar,
+        lower_shaft_collar_groove_mm=collar_grooves[0],
+        upper_shaft_collar_groove_mm=collar_grooves[1],
         input_pin_bottom_mm=input_pin_bottom, output_pin_top_mm=output_pin_top,
         moving_upper_envelope_mm=moving_upper_envelope, radial_bearing_mm=radial_bearing,
         lower_lip_mm=(lower_lip_bottom, lower_lip_top),
@@ -203,7 +222,7 @@ def _annulus(inner, outer, bottom, top):
 def fixed_leaf_bearing(spec, count):
     """Cut all fixed leaf-shaft bores at the same fit used by the moving rods."""
     fit = PinBoreFit.from_document(spec['pin_diameter_mm'], spec['pin_bore_fit'])
-    bearing = _annulus(40., 52., 22., 23.5)
+    bearing = _annulus(40., 52., *FIXED_LEAF_BEARING_Z_MM)
     h = spec['source_geometry']['leaf']['hinge_radius'] * spec['scene_unit_mm']
     for index in range(count):
         angle = index*math.tau/count
@@ -245,7 +264,8 @@ def moving_geometry(spec):
     output_pin = _cylinder(pin_radius, 29.9, stack['output_pin_top_mm'], xy)
     output_shoulder = _cylinder(1.8, 29.9, input_keeper[1], xy)
     leaf_body = blade.fuse(hub, shaft, crank, output_pin, output_shoulder).clean()
-    for bottom, top, center in ((21.58, 21.82, (0, 0)), (23.68, 23.92, (0, 0)),
+    for bottom, top, center in ((*stack['lower_shaft_collar_groove_mm'], (0, 0)),
+                               (*stack['upper_shaft_collar_groove_mm'], (0, 0)),
                                (output_keeper[0]-groove_gap, output_keeper[1]+groove_gap, xy)):
         leaf_body = leaf_body.cut(_annulus(.8, 1.01, bottom, top).translate((*center, 0)))
     rotor = _annulus(58., 64., *stack['rotor_mm'])
@@ -278,8 +298,10 @@ def moving_geometry(spec):
         rows.append((f'leaf_{index:02}', 'leaf_shaft_crank', leaf_body, 'steel'))
         rows.append((f'leaf_{index:02}', 'output_pin_keeper',
                      _split_keeper(.82, 1.6, *output_keeper, xy), 'steel'))
-        rows.append((f'leaf_{index:02}', 'lower_shaft_collar', _split_keeper(.82, 1.8, 21.6, 21.8), 'steel'))
-        rows.append((f'leaf_{index:02}', 'upper_shaft_collar', _split_keeper(.82, 1.8, 23.7, 23.9), 'steel'))
+        rows.append((f'leaf_{index:02}', 'lower_shaft_collar',
+                     _split_keeper(.82, 1.8, *stack['lower_shaft_collar_mm']), 'steel'))
+        rows.append((f'leaf_{index:02}', 'upper_shaft_collar',
+                     _split_keeper(.82, 1.8, *stack['upper_shaft_collar_mm']), 'steel'))
         rows.append((link.name, 'bored_connecting_rod', link.native_shape(), 'steel'))
     return rows, info, dict(crop=crop, shaft_keepouts=keepouts)
 
@@ -385,16 +407,20 @@ def build(spec, output):
         upper = _split_keeper(.82, 1.6, *(z-spec['rod_height_mm'] for z in stack['output_keeper_mm']), (link.length_mm, 0))
         for label, keeper in (('input', lower), ('output', upper)):
             requirements.clearance(f'rod_{index:02}_{label}_axial_keeper_clearance', link.native_shape(), keeper,
-                minimum_distance_mm=spec['axial_stack']['rod_keeper_clearance_mm'], kernel_allowance_mm=1e-8)
+                minimum_distance_mm=axial['rod_keeper'].required_service_gap_mm, kernel_allowance_mm=1e-8,
+                declared_design_variations_mm=axial['rod_keeper'].declared_design_variations_mm())
         pivot = _cylinder(1., 21.8, 23.7, (h*math.cos(index*math.tau/info['count']), -h*math.sin(index*math.tau/info['count'])))
         requirements.clearance(f'leaf_{index:02}_bearing_clearance', bearing, pivot,
             minimum_distance_mm=fit.required_service_radial_gap_mm, kernel_allowance_mm=1e-8,
             declared_design_variations_mm=pin_bore_variations)
         xy = (h*math.cos(index*math.tau/info['count']), -h*math.sin(index*math.tau/info['count']))
-        for label, bottom, top in (('lower', 21.6, 21.8), ('upper', 23.7, 23.9)):
-            collar = _split_keeper(.82, 1.8, bottom, top, xy)
+        for label, bounds in (('lower', stack['lower_shaft_collar_mm']),
+                              ('upper', stack['upper_shaft_collar_mm'])):
+            collar = _split_keeper(.82, 1.8, *bounds, xy)
             requirements.clearance(f'leaf_{index:02}_{label}_axial_collar_clearance', bearing, collar,
-                minimum_distance_mm=.19)
+                minimum_distance_mm=axial['shaft_collar'].required_service_gap_mm,
+                kernel_allowance_mm=1e-8,
+                declared_design_variations_mm=axial['shaft_collar'].declared_design_variations_mm())
     rotor_shape = next(shape for body, name, shape, _ in rows if name == 'annular_rotor_and_drive_pins')
     requirements.noninterference('rotor_radial_and_axial_bearing', design._rotate(rotor_shape, info['phi0']), fixed_drive)
     for body, name, shape, _ in rows:

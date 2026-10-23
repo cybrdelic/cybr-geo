@@ -20,6 +20,8 @@
   "axial_stack": {
     "rod_keeper_clearance_mm": 0.2,
     "keeper_thickness_mm": 0.2,
+    "shaft_collar_clearance_mm": 0.19,
+    "shaft_collar_thickness_mm": 0.2,
     "pin_tip_extension_mm": 0.2,
     "moving_pin_to_fixed_lip_clearance_mm": 0.2,
     "keeper_to_radial_bearing_clearance_mm": 0.1,
@@ -30,6 +32,16 @@
     "rotor_top_mm": 38.0
   },
   "axial_fit_design": {
+    "rod_keeper": {
+      "first_declared_variation_mm": 0.005,
+      "second_declared_variation_mm": 0.005,
+      "design_reserve_mm": 0.005
+    },
+    "shaft_collar": {
+      "first_declared_variation_mm": 0.005,
+      "second_declared_variation_mm": 0.005,
+      "design_reserve_mm": 0.005
+    },
     "moving_pin_to_fixed_lip": {
       "first_declared_variation_mm": 0.005,
       "second_declared_variation_mm": 0.005,

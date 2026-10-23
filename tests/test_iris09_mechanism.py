@@ -113,9 +113,9 @@ def test_axial_stack_derives_pin_tip_clearance_and_rejects_unattached_edits(clie
     project, module, *_ = client
     spec = project.specification
     stack = module.axial_stack(spec)
-    assert stack['output_pin_top_mm'] == pytest.approx(32.6)
-    assert stack['lower_lip_mm'] == pytest.approx([32.815, 33.115])
-    assert stack['rotor_mm'][0] == pytest.approx(33.33)
+    assert stack['output_pin_top_mm'] == pytest.approx(32.615)
+    assert stack['lower_lip_mm'] == pytest.approx([32.83, 33.13])
+    assert stack['rotor_mm'][0] == pytest.approx(33.345)
     assert stack['lower_lip_mm'][0]-stack['output_pin_top_mm'] == pytest.approx(.215)
     # The repaired lip clears the whole swept disk, including outward crank
     # positions that the previous initial-pose check missed.

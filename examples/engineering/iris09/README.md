@@ -61,8 +61,9 @@ each of the pin and bore and a further 0.0025 mm design reserve. The resulting
 nominal radial gap is 0.0375 mm; the worst gap under those *declared design
 targets* is 0.0275 mm, leaving positive reserve beyond service. No process or
 supplier has demonstrated these or the axial/radial variation budgets below.
-Some axial fits now have authored positive reserves; other keeper/collar fits
-remain unallocated and no production tolerance stack is demonstrated. Changing
+The rod keepers, shaft collars, rotor capture lips and radial bearing now have
+authored positive reserves, while no production process capability has been
+measured. Changing
 any fit input invalidates prior CAD, mass/inertia,
 interface, simulation and media receipts until regenerated.
 
@@ -78,6 +79,15 @@ those face gaps and carry the authored budgets into the design screen. The
 lip/keeper axial envelopes apply throughout planar motion; the independent
 whole-assembly audit still has its stated limited pair coverage.
 
+The same construction sets each rod keeper **0.215 mm** from its rod face.
+It positions the two split shaft collars **0.205 mm** from the fixed bearing's
+opposing faces and derives their shaft grooves from those collar locations,
+retaining the existing 0.020 mm nominal groove spacing. Each face gap includes
+0.005 mm authored variation per participating part and 0.005 mm reserve after
+the specified service gap. Native B-rep measurements must match every one of
+the 36 repeated keeper/collar interfaces; clamp retention, groove wear and
+process capability remain untested.
+
 The rotor's nominal 64 mm outer radius also constructs the fixed sleeve's
 64.05 mm inner radius through the same shared face-fit rule: 0.03 mm required
 service gap, 0.005 mm variation per side and 0.01 mm design reserve. A native
@@ -85,7 +95,7 @@ annular interface measures that radial gap where rotor and sleeve overlap in
 height. The fixed post overlap and bearing-wall guards reject fits that would
 disconnect their authored support. These budgets are design targets, not
 demonstrated process capability, bearing pressure, sleeve strength or a
-whole-assembly clearance certificate. Other keeper, collar and optical-leaf
+whole-assembly clearance certificate. Other radial keeper/groove and optical-leaf
 fits remain unresolved for manufacturing qualification.
 
 The **50 mm per scene unit conversion remains an assumption**. It preserves the

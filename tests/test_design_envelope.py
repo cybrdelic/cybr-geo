@@ -65,6 +65,10 @@ def test_shared_directed_face_fit_constructs_positive_axial_and_radial_reserve()
     stack = mechanism.axial_stack(spec)
     fits = mechanism.axial_fits(spec)
     for name, measured in (
+            ('rod_keeper', stack['rod_bottom_mm']-stack['input_keeper_mm'][1]),
+            ('rod_keeper', stack['output_keeper_mm'][0]-stack['rod_top_mm']),
+            ('shaft_collar', 22.-stack['lower_shaft_collar_mm'][1]),
+            ('shaft_collar', stack['upper_shaft_collar_mm'][0]-23.5),
             ('moving_pin_to_fixed_lip', stack['lower_lip_mm'][0]-stack['output_pin_top_mm']),
             ('output_keeper_to_radial_bearing',
              stack['radial_bearing_mm'][0]-stack['output_keeper_mm'][1]),
@@ -82,6 +86,12 @@ def test_shared_directed_face_fit_constructs_positive_axial_and_radial_reserve()
     assert radial.worst_declared_gap_mm > radial.required_service_gap_mm
     assert stack['lower_lip_mm'][0] < 33.5  # retained fixed-support post extent
     assert stack['radial_bearing_mm'][0] < 33.5
+    groove = spec['axial_stack']['keeper_groove_clearance_mm']
+    for collar, recess in (
+            (stack['lower_shaft_collar_mm'], stack['lower_shaft_collar_groove_mm']),
+            (stack['upper_shaft_collar_mm'], stack['upper_shaft_collar_groove_mm'])):
+        assert recess == pytest.approx((collar[0]-groove, collar[1]+groove))
+        assert collar[1]-collar[0] == pytest.approx(spec['axial_stack']['shaft_collar_thickness_mm'])
 
     with pytest.raises(ValueError, match='positive'):
         DirectedFaceGap.from_document(.1, dict(first_declared_variation_mm=.005,
@@ -89,6 +99,10 @@ def test_shared_directed_face_fit_constructs_positive_axial_and_radial_reserve()
     changed = json.loads(json.dumps(spec))
     changed['axial_fit_design']['moving_pin_to_fixed_lip']['design_reserve_mm'] = 2.
     with pytest.raises(ValueError, match='support posts'):
+        mechanism.validate(changed)
+    changed = json.loads(json.dumps(spec))
+    changed['axial_fit_design']['shaft_collar']['design_reserve_mm'] = 7.
+    with pytest.raises(ValueError, match='shaft/groove support envelope'):
         mechanism.validate(changed)
     changed = json.loads(json.dumps(spec))
     changed['rotor_radial_bearing_fit']['design_reserve_mm'] = 3.
