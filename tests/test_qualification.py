@@ -12,6 +12,7 @@ from cryptography.hazmat.primitives import serialization
 
 from mechanism_lab.qualification import (
     QualificationError, QualificationPlan, QualifiedNativeConstruction,
+    _check_placed_interface,
     _recheck_qualified_native_steps, _require_physical_mass_binding,
     _require_connector_demand_binding, _simulated_loads, _verify_evidence,
     release_project,
@@ -36,6 +37,15 @@ def _plan():
                 assembly_requirements=dict(minimum_endurance_cycles=1000,
                                            minimum_thermal_test_C=60.,
                                            maximum_measured_backlash_mm=.3))
+
+
+def _retained_contact_plan():
+    plan = _plan()
+    plan['interfaces']['pin_fit'] = dict(role='tested_retention_contact',
+        parts=['fixed__a', 'moving__b'], nominal_maximum_distance_mm=0.,
+        first_tolerance_mm=.1, second_tolerance_mm=.1,
+        maximum_service_play_mm=.2, demand_N=5., design_capacity_N=10.)
+    return plan
 
 
 def test_qualified_connector_mapping_needs_known_interface_and_covers_model_demand():
@@ -149,6 +159,55 @@ def test_plan_rejects_unsupported_material_process_fit_and_load():
         mutate(plan)
         with pytest.raises(QualificationError):
             QualificationPlan(plan)
+
+
+def test_retained_contact_is_distinct_from_clearance_and_bounds_part_variation():
+    plan = _retained_contact_plan()
+    QualificationPlan(plan)
+    fit = _check_placed_interface('pin_fit', plan['interfaces']['pin_fit'], 0., 0.)
+    assert fit == dict(role='tested_retention_contact', worst_case_closest_gap_mm=.2)
+    with pytest.raises(QualificationError, match='contact proximity/play'):
+        _check_placed_interface('pin_fit', plan['interfaces']['pin_fit'], .01, 0.)
+    with pytest.raises(QualificationError, match='overlap'):
+        _check_placed_interface('pin_fit', plan['interfaces']['pin_fit'], 0., .01)
+    changed = deepcopy(plan)
+    changed['interfaces']['pin_fit']['maximum_service_play_mm'] = .19
+    with pytest.raises(QualificationError, match='tolerance or load'):
+        QualificationPlan(changed)
+    changed = deepcopy(plan)
+    changed['interfaces']['pin_fit'].pop('role')
+    with pytest.raises(QualificationError, match='fields must be exactly'):
+        QualificationPlan(changed)
+    # The legacy clearance mode still rejects nominal zero with real positive
+    # part variation; it cannot borrow the contact role's physical-test path.
+    changed = _plan()
+    changed['interfaces']['pin_fit'].update(nominal_clearance_mm=0., required_clearance_mm=0.)
+    with pytest.raises(QualificationError, match='tolerance or load'):
+        QualificationPlan(changed)
+
+
+@pytest.mark.parametrize('fault', ('none', 'missing_retention', 'failed_retention',
+                                   'missing_play', 'excess_play', 'weak_capacity',
+                                   'wrong_serial', 'stale_basis'))
+def test_retained_contact_needs_serial_bound_physical_retention_and_play(tmp_path, fault):
+    package, policy, _old_plan, records, private = _signed_fixture(tmp_path)
+    plan = _retained_contact_plan()
+    contact = records[5]['measurements']
+    contact.pop('measured_minimum_clearance_mm')
+    contact.update(retention_passed_under_load=True, measured_maximum_play_mm=.1)
+    if fault == 'missing_retention': contact.pop('retention_passed_under_load')
+    elif fault == 'failed_retention': contact['retention_passed_under_load'] = False
+    elif fault == 'missing_play': contact.pop('measured_maximum_play_mm')
+    elif fault == 'excess_play': contact['measured_maximum_play_mm'] = .3
+    elif fault == 'weak_capacity': contact['tested_capacity_N'] = 9.
+    elif fault == 'wrong_serial': contact['part_serials']['fixed__a'] = 'OTHER'
+    elif fault == 'stale_basis': records[5]['basis_sha256'] = '0'*64
+    _resign(package, records, private)
+    if fault == 'none':
+        assert _check(package, policy, plan)['evidence_count'] == 8
+    else:
+        with pytest.raises(QualificationError):
+            _check(package, policy, plan)
 
 
 def test_plan_rejects_cross_platform_step_name_collisions():
@@ -287,6 +346,8 @@ def test_examples_cannot_release_without_preconstruction_policy(tmp_path):
     ('understated_connector', 'belt', 0., 'understates modeled connector force'),
     ('unrelated_connector', 'belt', 0., 'unrelated native interface bodies'),
     ('missing_body_endpoint_connector', 'belt', 0., 'requires two distinct named body endpoints'),
+    ('retained_contact', 'belt', 0., None),
+    ('forged_contact_fit', 'belt', 0., 'fails its exact part-pair plan'),
 ])
 def test_release_rejects_unbounded_drivetrain_or_connector_demand(
         tmp_path, monkeypatch, case, limit, duration, expected):
@@ -301,7 +362,8 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
     from mechanism_lab.causal_runtime import _runtime_identity
     from mechanism_lab.physical_model import digest
 
-    plan = _plan()
+    plan = (_retained_contact_plan() if case in ('retained_contact', 'forged_contact_fit')
+            else _plan())
     connector_case = case.endswith('_connector')
     if connector_case and case != 'unmapped_connector':
         plan['solver_connectors'] = {'bearing_joint': 'pin_fit'}
@@ -315,13 +377,17 @@ def test_release_rejects_unbounded_drivetrain_or_connector_demand(
     source_files = {'data/qualification-plan.json': hashlib.sha256(plan_path.read_bytes()).hexdigest()}
     native = tmp_path/'native'
     native.mkdir()
+    pair_fit = dict(parts=['fixed__a', 'moving__b'], intersection_volume_mm3=0.,
+                    minimum_distance_mm=.5, worst_case_clearance_mm=.3)
+    if case in ('retained_contact', 'forged_contact_fit'):
+        pair_fit = dict(parts=['fixed__a', 'moving__b'], intersection_volume_mm3=0.,
+                        minimum_distance_mm=0., role='tested_retention_contact',
+                        worst_case_closest_gap_mm=.2 if case == 'retained_contact' else .3)
     qualified_record = dict(schema='cybrgeo-qualification-construction/1',
                             plan_sha256=QualificationPlan(plan).sha256,
                             qualification_service_sha256=qualification._sha(qualification.__file__),
                             placements=['fixed__a', 'moving__b'], interface_names=['pin_fit'],
-                            exact_placed_interface_checks={'pin_fit': dict(
-                                parts=['fixed__a', 'moving__b'], intersection_volume_mm3=0.,
-                                minimum_distance_mm=.5, worst_case_clearance_mm=.3)})
+                            exact_placed_interface_checks={'pin_fit': pair_fit})
     record_path = native/'qualification-construction.json'
     record_path.write_text(json.dumps(qualified_record), encoding='utf-8')
     receipt = dict(files_sha256={'qualification-construction.json': hashlib.sha256(

@@ -25,8 +25,16 @@ smallest supported feature, achievable tolerance and maximum part volume.
 Part IDs use one portable `body__part` export stem: duplicate or
 case-insensitive-colliding names, extra `__` separators and Windows device
 names are rejected before STEP export.
-Interfaces specify two exact parts, nominal clearance, two dimensional
-allowances, required worst-case clearance, load demand and design capacity.
+Each interface specifies two exact parts, dimensional allowances, load demand
+and design capacity. A clearance interface declares a nominal gap and required
+worst-case service gap. An intentional retained contact instead uses
+`role: tested_retention_contact`, a maximum nominal closest-surface distance
+and maximum service play. Its closest distance plus both participating part
+variations must fit the play limit; zero nominal distance is never treated as
+a positive-clearance fit. This role requires a serial-bound physical test of
+retention under load and measured assembled play. CAD proximity alone proves
+neither retention nor contact pressure; interference/press fits need a
+separate supported design and physical evidence path.
 When the physical model has named MuJoCo `connect` or `weld` equalities, the
 plan's `solver_connectors` object must map every such name to a declared
 interface whose two native part body prefixes match the equality's explicit
@@ -45,8 +53,8 @@ instead of `NativeConstruction`, and place every part directly or through
 `place_assembly`. Unbound template STEP, auxiliary CAD, mass-only bodies and
 mass overrides are rejected. It rejects unsupported combinations and
 out-of-volume shapes *before* its `place` method emits STEP, STL, meshes or
-mass records. `finish` requires exact inventory coverage and named native
-interface clearances. It reimports each exact placed STEP, compares its solid
+mass records. `finish` requires exact inventory coverage and role-appropriate
+named native interface checks. It reimports each exact placed STEP, compares its solid
 with the CAD used at placement, and measures interface gaps from those
 exported parts. It writes a hashed construction receipt bound to the
 plan and qualification implementation. A plan is a design contract; its
@@ -101,7 +109,9 @@ a unique fabricated serial, lot and process facility/method/revision match,
 measured wall, dimensional error and exact STEP hash. The assembled-unit
 record must identify every inspected part serial in its signed BOM. Every
 interface test must identify the same assembled unit and the exact two part
-serials while reporting measured clearance and tested load capacity. Every
+serials while reporting tested load capacity. Clearance interfaces require a
+measured minimum gap; retained contacts require an observed under-load
+retention pass and measured maximum play within the declared limit. Every
 load test must identify that assembled unit and its inspected loaded part
 serial while reporting tested torque and temperature. The assembled unit
 also needs witnessed fit, motion, thermal, measured backlash and endurance

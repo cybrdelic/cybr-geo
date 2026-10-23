@@ -83,6 +83,57 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+_CLEARANCE_INTERFACE_FIELDS = {'parts', 'nominal_clearance_mm', 'first_tolerance_mm',
+                               'second_tolerance_mm', 'required_clearance_mm',
+                               'demand_N', 'design_capacity_N'}
+_RETAINED_CONTACT_INTERFACE_FIELDS = {'role', 'parts', 'nominal_maximum_distance_mm',
+                                      'first_tolerance_mm', 'second_tolerance_mm',
+                                      'maximum_service_play_mm', 'demand_N',
+                                      'design_capacity_N'}
+_RETAINED_CONTACT_ROLE = 'tested_retention_contact'
+
+
+def _interface_role(interface):
+    """Keep legacy clearance strict; contact needs an explicitly distinct plan."""
+    if not isinstance(interface, dict):
+        raise QualificationError('Interface must be an object')
+    if 'role' not in interface:
+        _keys(interface, _CLEARANCE_INTERFACE_FIELDS, 'Clearance interface')
+        return 'clearance'
+    if interface.get('role') != _RETAINED_CONTACT_ROLE:
+        raise QualificationError('Unknown qualified interface role')
+    _keys(interface, _RETAINED_CONTACT_INTERFACE_FIELDS, 'Retained contact interface')
+    return _RETAINED_CONTACT_ROLE
+
+
+def _check_placed_interface(name, interface, measured, overlap,
+                            *, distance_kernel_allowance_mm=1e-7,
+                            volume_kernel_allowance_mm3=1e-6):
+    """Check exact placed CAD without treating kernel allowance as a fit.
+
+    Contact proximity does not prove retention. It is only a prerequisite for
+    separately signed, serial-bound assembled play and capacity tests.
+    """
+    distance = _number(measured, f'{name} native distance')
+    intersection = _number(overlap, f'{name} native overlap')
+    if intersection > volume_kernel_allowance_mm3:
+        raise QualificationError(f'Placed CAD parts fail qualified interface {name} overlap')
+    first = interface['first_tolerance_mm']
+    second = interface['second_tolerance_mm']
+    if _interface_role(interface) == 'clearance':
+        worst = distance - first - second
+        if (distance + distance_kernel_allowance_mm < interface['nominal_clearance_mm']
+                or worst + distance_kernel_allowance_mm < interface['required_clearance_mm']):
+            raise QualificationError(f'Placed CAD parts fail qualified interface {name} clearance/tolerance')
+        return dict(worst_case_clearance_mm=worst)
+    largest_closest_gap = distance + first + second
+    if (distance > interface['nominal_maximum_distance_mm'] + distance_kernel_allowance_mm
+            or largest_closest_gap > interface['maximum_service_play_mm'] + distance_kernel_allowance_mm):
+        raise QualificationError(f'Placed CAD parts fail qualified interface {name} contact proximity/play')
+    return dict(role=_RETAINED_CONTACT_ROLE,
+                worst_case_closest_gap_mm=largest_closest_gap)
+
+
 @dataclass(frozen=True)
 class QualificationPlan:
     """Typed construction contract checked before any native placement export.
@@ -147,23 +198,33 @@ class QualificationPlan:
                 raise QualificationError(f'Part {name} exceeds declared process capabilities')
         for name, interface in interfaces.items():
             _safe_id(name, 'Interface ID')
-            _keys(interface, ('parts', 'nominal_clearance_mm', 'first_tolerance_mm',
-                              'second_tolerance_mm', 'required_clearance_mm',
-                              'demand_N', 'design_capacity_N'), f'Interface {name}')
+            role = _interface_role(interface)
             pair = interface['parts']
             if (not isinstance(pair, list) or len(pair) != 2 or pair[0] == pair[1]
                     or not set(pair) <= parts.keys()):
                 raise QualificationError(f'Interface {name} must connect two declared parts')
-            clearance = _number(interface['nominal_clearance_mm'], 'Interface nominal clearance')
             first = _number(interface['first_tolerance_mm'], 'Interface first tolerance')
             second = _number(interface['second_tolerance_mm'], 'Interface second tolerance')
-            required = _number(interface['required_clearance_mm'], 'Interface required clearance')
             demand = _number(interface['demand_N'], 'Interface demand', positive=True)
             capacity = _number(interface['design_capacity_N'], 'Interface capacity', positive=True)
             if (first < parts[pair[0]]['required_dimensional_tolerance_mm']
                     or second < parts[pair[1]]['required_dimensional_tolerance_mm']):
                 raise QualificationError(f'Interface {name} tolerances understate participating part variation')
-            if clearance - first - second < required or capacity < demand:
+            if role == 'clearance':
+                nominal = _number(interface['nominal_clearance_mm'], 'Interface nominal clearance')
+                required = _number(interface['required_clearance_mm'], 'Interface required clearance')
+                admissible = nominal - first - second >= required
+            else:
+                # A contacting surface is never recast as a positive clearance.
+                # Bounded nominal closest approach plus both part variations
+                # must fit the planned service play. Actual assembled retention
+                # and play are still required for each inspected unit.
+                nominal = _number(interface['nominal_maximum_distance_mm'],
+                                  'Contact nominal closest-gap limit')
+                service = _number(interface['maximum_service_play_mm'],
+                                  'Contact maximum service play')
+                admissible = nominal + first + second <= service
+            if not admissible or capacity < demand:
                 raise QualificationError(f'Interface {name} fails its tolerance or load requirement')
         connectors = row.get('solver_connectors', {})
         if not isinstance(connectors, dict):
@@ -309,13 +370,11 @@ class QualifiedNativeConstruction(NativeConstruction):
             if (abs(claimed - measured) > distance_kernel_allowance_mm
                     or abs(claimed_overlap - overlap) > volume_kernel_allowance_mm3):
                 raise QualificationError(f'Native interface {name} receipt measured different solids than its placed part pair')
-            worst = measured - interface['first_tolerance_mm'] - interface['second_tolerance_mm']
-            if (overlap > volume_kernel_allowance_mm3
-                    or measured + distance_kernel_allowance_mm < interface['nominal_clearance_mm']
-                    or worst + distance_kernel_allowance_mm < interface['required_clearance_mm']):
-                raise QualificationError(f'Placed CAD parts fail qualified interface {name} clearance/tolerance')
+            fit = _check_placed_interface(name, interface, measured, overlap,
+                distance_kernel_allowance_mm=distance_kernel_allowance_mm,
+                volume_kernel_allowance_mm3=volume_kernel_allowance_mm3)
             measured_interfaces[name] = dict(parts=list(interface['parts']), minimum_distance_mm=measured,
-                                             intersection_volume_mm3=overlap, worst_case_clearance_mm=worst,
+                                             intersection_volume_mm3=overlap, **fit,
                                              distance_kernel_allowance_mm=distance_kernel_allowance_mm,
                                              volume_kernel_allowance_mm3=volume_kernel_allowance_mm3)
         records = dict(extra_records or {})
@@ -476,9 +535,16 @@ def _verify_evidence(package, trust_policy, basis_sha256, plan, part_step_sha256
         pair_serials = {part: inspected_serials[part] for part in interface['parts']}
         if (row.get('assembled_serial') != assembled_serial
                 or row.get('part_serials') != pair_serials
-                or _number(row.get('measured_minimum_clearance_mm'), 'Measured clearance') < interface['required_clearance_mm']
                 or _number(row.get('tested_capacity_N'), 'Tested interface capacity', positive=True) < interface['design_capacity_N']):
             raise QualificationError(f'Interface {name} unit, part serials, clearance or capacity fail')
+        if _interface_role(interface) == 'clearance':
+            if (_number(row.get('measured_minimum_clearance_mm'), 'Measured clearance')
+                    < interface['required_clearance_mm']):
+                raise QualificationError(f'Interface {name} measured service clearance fails')
+        elif (row.get('retention_passed_under_load') is not True
+              or _number(row.get('measured_maximum_play_mm'), 'Measured retained-contact play')
+              > interface['maximum_service_play_mm']):
+            raise QualificationError(f'Interface {name} needs tested retention and bounded assembled play')
     for name, load in plan['loads'].items():
         row = _object(seen['load_test', name], 'Load measurements')
         if (row.get('assembled_serial') != assembled_serial
@@ -657,15 +723,17 @@ def _recheck_qualified_native_steps(native, placements, interfaces, receipt, pla
         first, second = (solids[part] for part in interface['parts'])
         measured = _number(float(first.distance(second)), f'{name} STEP clearance')
         overlap = _number(float(first.intersect(second).Volume()), f'{name} STEP overlap')
-        worst = measured - interface['first_tolerance_mm'] - interface['second_tolerance_mm']
+        fit = _check_placed_interface(name, interface, measured, overlap)
         prior = record['exact_placed_interface_checks'][name]
         reported = reported_checks[name]
         if (not _numeric_geometry_matches(measured, prior['minimum_distance_mm'])
                 or not _numeric_geometry_matches(overlap, prior['intersection_volume_mm3'])
                 or not _numeric_geometry_matches(measured, reported.get('minimum_distance_mm'))
                 or not _numeric_geometry_matches(overlap, reported.get('intersection_volume_mm3'))
-                or overlap > 1e-6 or measured + 1e-7 < interface['nominal_clearance_mm']
-                or worst + 1e-7 < interface['required_clearance_mm']):
+                or any(not _numeric_geometry_matches(value, prior.get(key))
+                       for key, value in fit.items() if key != 'role')
+                or (_interface_role(interface) != 'clearance'
+                    and prior.get('role') != _RETAINED_CONTACT_ROLE)):
             raise QualificationError(f'Qualified native STEP pair {name} fails independently measured fit')
     return mass
 
@@ -734,10 +802,14 @@ def release_project(source, run_directory, evidence_package, trust_policy, outpu
         raise QualificationError('Qualified native receipt lacks exact placed-part interface measurements')
     for name, measured in exact_interfaces.items():
         declared = plan.document['interfaces'][name]
-        if (measured.get('parts') != declared['parts']
-                or _number(measured.get('intersection_volume_mm3'), 'Qualified CAD overlap') > 1e-6
-                or _number(measured.get('minimum_distance_mm'), 'Qualified CAD gap') + 1e-7 < declared['nominal_clearance_mm']
-                or _number(measured.get('worst_case_clearance_mm'), 'Qualified worst-case gap') + 1e-7 < declared['required_clearance_mm']):
+        if measured.get('parts') != declared['parts']:
+            raise QualificationError(f'Qualified native interface {name} differs from its exact part-pair plan')
+        fit = _check_placed_interface(name, declared,
+            _number(measured.get('minimum_distance_mm'), 'Qualified CAD distance'),
+            _number(measured.get('intersection_volume_mm3'), 'Qualified CAD overlap'))
+        if any((measured.get(key) != value if key == 'role' else
+                not _numeric_geometry_matches(value, measured.get(key)))
+               for key, value in fit.items()):
             raise QualificationError(f'Qualified native interface {name} fails its exact part-pair plan')
     placements = _read_json(native / 'placed-native-parts.json')
     interfaces = _read_json(native / 'native-interface-requirements.json')
