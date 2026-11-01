@@ -52,11 +52,13 @@ def test_step_and_stl_are_real_and_units_explicit(flange,tmp_path):
     import trimesh
     report=export_step(flange,tmp_path/'flange_analytic.step')
     assert len(report['analytic_components'])==2
+    assert json.loads((tmp_path/'flange_analytic.coverage.json').read_text())['manufacturing_validated'] is False
     assert len(cq.importers.importStep(str(tmp_path/'flange_analytic.step')).val().Solids())==2
     export_stls(flange,tmp_path/'stl')
     mesh=trimesh.load_mesh(tmp_path/'stl'/f'{flange.parts[0].name}.stl')
     assert np.allclose(mesh.bounds,flange.parts[0].bounds,atol=1e-5)
     assert 'millimetres' in (tmp_path/'stl/UNITS.txt').read_text()
+    assert json.loads((tmp_path/'stl/DIAGNOSTIC-NOT-FOR-MANUFACTURE.json').read_text())['manufacturing_release'] is False
 
 
 def test_static_glb_roundtrip_metres_yup(flange,tmp_path):

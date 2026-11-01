@@ -1,0 +1,334 @@
+{
+  "schema": "cybrgeo-arx-fault-evidence-packet/1",
+  "files": {
+    "baseline-reproduction.tar.gz": {
+      "bytes": 539717,
+      "sha256": "3e7988191acfc78a46fcffcb47ebad08c70f20cebba1f7bc03d480568b614fe8"
+    },
+    "baseline-shared-power_loss_3.2.json.gz": {
+      "bytes": 11858,
+      "sha256": "257f71ebf41a0501125f5cd22cec50218cbc3ec531599bfc36fc49b12a0542c5"
+    },
+    "baseline-shared-summary.json": {
+      "bytes": 9921,
+      "sha256": "f520addd4f576577a8ffe4f703f336d8832c3cdda1afaf93e06a433f8d57427d"
+    },
+    "baseline-shared-weak_spring_double_delay_3.2.json.gz": {
+      "bytes": 9447,
+      "sha256": "d7aa6b58d16b20134d7d1933f602f494cbedfc4d1cf4b99969e1bff54ab807d4"
+    },
+    "baseline-shared-weak_spring_double_delay_7.2.json.gz": {
+      "bytes": 12598,
+      "sha256": "85ec232f24a8fb0c19b1591c99df4f7d879da1c12b4a9775dd72e9cb277174ef"
+    },
+    "comparative-metrics.json": {
+      "bytes": 73740,
+      "sha256": "1e92179c1f7cd22d64d201456039e0ef35ecdf38db99a97059eb7c55d01d78d2"
+    },
+    "curate_faults_packet.py": {
+      "bytes": 11697,
+      "sha256": "1d6e0afc9be2c6c9f81416ca797f4821341c89c0c66b22af8c4ef04b5df8b941"
+    },
+    "full-suite-gripper-travel.json.gz": {
+      "bytes": 7370,
+      "sha256": "8b6d19774836bf00a9f7fd341cfb8deec49ac8a11ebb7376f375d073f43eced8"
+    },
+    "full-suite-inputs.json.gz": {
+      "bytes": 223064,
+      "sha256": "10b2071e8642353fd2093e27e96562f657344db89bb8a586cf3dffcff63b69ab"
+    },
+    "full-suite-summary.json": {
+      "bytes": 566411,
+      "sha256": "ff16c90ba2603ec467852a16b5febfdc7b7a3b67819e8e5d497b13e4d5e9b2c0"
+    },
+    "full-suite-summary.json.gz": {
+      "bytes": 2627444,
+      "sha256": "92d246e7aa652cbf1cff18327b9af7a26b788f24549807166c2eeaa4ffae2644"
+    },
+    "gripper-travel.json": {
+      "bytes": 817,
+      "sha256": "6396c51f32d6392dfda6269e3bb79855645abbf51caa6740e26a6e4b5de23dd1"
+    },
+    "inspect_fault_evidence.py": {
+      "bytes": 3557,
+      "sha256": "3827048f9a1879b59182526d67afa349e9dedbcadb4d0ddac40856e8eb6e2303"
+    },
+    "readback_final_suite.py": {
+      "bytes": 4196,
+      "sha256": "85bbc7439476fce1addcb31df5541ed17b6e5b1eb11b97090d7c83c84082f8de"
+    },
+    "refined-suite-gripper-travel.json.gz": {
+      "bytes": 2868,
+      "sha256": "655066e4fae8917e4d3a48281161065192be3ddb91ace91073eaf1d6cfcafe52"
+    },
+    "refined-suite-inputs.json.gz": {
+      "bytes": 222149,
+      "sha256": "4fdb159d45f4547b3091dd46639be6c789af146d1043c0d84a28e9c32f8e9287"
+    },
+    "refined-suite-summary.json": {
+      "bytes": 50810,
+      "sha256": "e67817c2466d4b25027cc8115d23bc94fcef03f401d43afa2c42d8d0d120c3fb"
+    },
+    "refined-suite-summary.json.gz": {
+      "bytes": 216515,
+      "sha256": "a3841b42d2d6422275c716478598cbb0d4225a9c2f9e4a74f205e3ecdd576b53"
+    },
+    "upstream-source-power_loss_3.2.json": {
+      "bytes": 8493,
+      "sha256": "15b8021302095fb28ea1a2afc809f36df7d6e57097bb0543c8fe515f8141103d"
+    },
+    "upstream-source-weak_spring_double_delay_3.2.json": {
+      "bytes": 8597,
+      "sha256": "958df21a539496ca4ae14c7415d4ff8c5543f78e762281a898d1db13ddaf8ba3"
+    },
+    "upstream-source-weak_spring_double_delay_7.2.json": {
+      "bytes": 8644,
+      "sha256": "5a6bfa4f1b238783f6b27985879fab255ce881a12f91d8d7f7da17850fd49cf7"
+    },
+    "j4-static-load-receipt.json": {
+      "bytes": 63265,
+      "sha256": "bea3057e3a135a20b4c432844b0c9f00996fc62e063f6f644018d69b32adf106"
+    },
+    "j4-static-load-reproduce.py.gz": {
+      "bytes": 4574,
+      "sha256": "a838063da2bfc8383d03d6b4d29119a1da6fd9138bf71937874993573b63f3b6"
+    },
+    "rejected-slower-timing-summary.json": {
+      "bytes": 3242,
+      "sha256": "4131336fe58300963b026cc093765643c48e76d6e9b7891bfbdc0d7664f16c84"
+    },
+    "rejected-slower-timing-inputs.json.gz": {
+      "bytes": 322593,
+      "sha256": "331ca542f02d518e0a45631a07a478eca5c98ce9b256e308b71aacc82f8b14bd"
+    },
+    "rejected-slower-timing-executed.py.gz": {
+      "bytes": 2529,
+      "sha256": "36aea1c3e8d5c8e03a9e9f1a45db4adc31b773c1f5e32bf371250911ddd28724"
+    },
+    "static-load-snapshot/source_task.py": {
+      "bytes": 5896,
+      "sha256": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826"
+    },
+    "static-load-snapshot/reproduce_historical.py": {
+      "bytes": 14120,
+      "sha256": "b1278ef27b05169861fd241edaf39a0252a1ca14fb1fb548dc0d222a796e660d"
+    },
+    "static-load-snapshot/receipt-historical.json": {
+      "bytes": 63605,
+      "sha256": "e7bb18bbf0a51c2f429fc2b06c748ea987755064e8cac4a8bf29647dc7a78f3d"
+    },
+    "static-load-snapshot/source_reference_clock.py": {
+      "bytes": 14833,
+      "sha256": "da76503101f1b8dfc49c0333010cc24ae70405fbe06829960e0030cdf03f7854"
+    },
+    "static-load-snapshot/source_physical_model.py": {
+      "bytes": 14277,
+      "sha256": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a"
+    }
+  },
+  "raw_receipts": {
+    "full-suite-inputs.json.gz": {
+      "source_path": "outputs/engineering-arx-faults-final/inputs.json",
+      "raw_sha256": "5f001c5938ed697d523929c155e4ca8017fa0b253ef60737a03dead7633dd30b",
+      "raw_bytes": 5270623,
+      "compressed_sha256": "10b2071e8642353fd2093e27e96562f657344db89bb8a586cf3dffcff63b69ab",
+      "compressed_bytes": 223064,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "full-suite-summary.json.gz": {
+      "source_path": "outputs/engineering-arx-faults-final/summary.json",
+      "raw_sha256": "b0be42c2cff32b082d60c8b5c9e7cfc7fb467dccac8839966f8524df3c450b02",
+      "raw_bytes": 20029568,
+      "compressed_sha256": "92d246e7aa652cbf1cff18327b9af7a26b788f24549807166c2eeaa4ffae2644",
+      "compressed_bytes": 2627444,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "full-suite-gripper-travel.json.gz": {
+      "source_path": "outputs/engineering-arx-faults-final/gripper-travel.json",
+      "raw_sha256": "48a0a6ac74e09ac2e34a91b8fb5fa186582edaf820b926c10f8d1e03df976485",
+      "raw_bytes": 140372,
+      "compressed_sha256": "8b6d19774836bf00a9f7fd341cfb8deec49ac8a11ebb7376f375d073f43eced8",
+      "compressed_bytes": 7370,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "refined-suite-inputs.json.gz": {
+      "source_path": "outputs/engineering-arx-faults-refined/inputs.json",
+      "raw_sha256": "47898e492b16c82fbc72e6a6f3732df5c79d3877a9be33cbecae3f0b41c956cb",
+      "raw_bytes": 5252142,
+      "compressed_sha256": "4fdb159d45f4547b3091dd46639be6c789af146d1043c0d84a28e9c32f8e9287",
+      "compressed_bytes": 222149,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "refined-suite-summary.json.gz": {
+      "source_path": "outputs/engineering-arx-faults-refined/summary.json",
+      "raw_sha256": "1edda7baf9e750a80fece278ab5f4e52a12c3b0cb455f52b8fdf63f2bb3c1526",
+      "raw_bytes": 1639053,
+      "compressed_sha256": "a3841b42d2d6422275c716478598cbb0d4225a9c2f9e4a74f205e3ecdd576b53",
+      "compressed_bytes": 216515,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "refined-suite-gripper-travel.json.gz": {
+      "source_path": "outputs/engineering-arx-faults-refined/gripper-travel.json",
+      "raw_sha256": "04a10263636c708151ef7a5d39193d770ff9bf751d179e8f0959c8a7a2976787",
+      "raw_bytes": 13990,
+      "compressed_sha256": "655066e4fae8917e4d3a48281161065192be3ddb91ace91073eaf1d6cfcafe52",
+      "compressed_bytes": 2868,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "baseline-reproduction.tar.gz": {
+      "raw_sha256": "cae60e28883c888e8b849eecbb09c02e3324f4b690aaad7bfffc7b6358e2d91d",
+      "raw_bytes": 11018240,
+      "compressed_sha256": "3e7988191acfc78a46fcffcb47ebad08c70f20cebba1f7bc03d480568b614fe8",
+      "compressed_bytes": 539717,
+      "members": [
+        {
+          "path": "outputs/fault-diagnosis/diagnose_policy.py",
+          "sha256": "3f4b6f54296655d19fe2da85c5b5821ab38d200d0458e115558e3ea1f71a3bdd",
+          "bytes": 8190
+        },
+        {
+          "path": "outputs/fault-diagnosis/diagnose_shared.py",
+          "sha256": "fd75e46971358508e4fdad5c59d2cf27e76a61921ebf606118365eb4e355bf40",
+          "bytes": 13935
+        },
+        {
+          "path": "outputs/fault-diagnosis/diagnose_retiming.py",
+          "sha256": "2d495025902ee9e2073fba1b897dcb0c82b160b1b0574211b685d53cf8d819dc",
+          "bytes": 3993
+        },
+        {
+          "path": "outputs/fault-diagnosis/capture_runtime.py",
+          "sha256": "fc391779cda95d890e3c24d36087e2fad39a9d18dcd4dc4af00d6770c86be06f",
+          "bytes": 1889
+        },
+        {
+          "path": "outputs/fault-diagnosis/baseline-1c216fda.json",
+          "sha256": "11a2216cdff9f496a027c42fcf9d5eef2041b765f5f81d298f25e75682dc2df4",
+          "bytes": 5459260
+        },
+        {
+          "path": "outputs/fault-diagnosis/baseline-pinned-runtime-1c216fda.json",
+          "sha256": "283b977dd6fa6c06d499518598f58962d5e03bab7896991336853cde98c3c811",
+          "bytes": 5459879
+        },
+        {
+          "path": "outputs/fault-diagnosis/baseline_runtime/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "outputs/fault-diagnosis/baseline_runtime/actuation.py",
+          "sha256": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+          "bytes": 17936
+        },
+        {
+          "path": "outputs/fault-diagnosis/baseline_runtime/causal_runtime.py",
+          "sha256": "502a812b26c0d48c9b595d6c074a7862b1e8ef0917d61a3b215be59a5a8e155c",
+          "bytes": 22426
+        },
+        {
+          "path": "outputs/fault-diagnosis/baseline_runtime/physical_model.py",
+          "sha256": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+          "bytes": 14277
+        }
+      ],
+      "encoding": "USTAR with fixed member metadata; gzip mtime=0; original member bytes"
+    },
+    "baseline-shared-power_loss_3.2.json.gz": {
+      "source_path": "outputs/fault-diagnosis/policy-source-transfer-1-descent-1/power_loss_3.2--original-clock/diagnosis.json",
+      "raw_sha256": "cc628096c8c0625452d488380d26b021f52814a068b28ee2d36753ceb1d6963c",
+      "raw_bytes": 43879,
+      "compressed_sha256": "257f71ebf41a0501125f5cd22cec50218cbc3ec531599bfc36fc49b12a0542c5",
+      "compressed_bytes": 11858,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "upstream-source-power_loss_3.2.json": {
+      "source_repository": "cybrdelic/cybr-arx6-belt",
+      "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+      "source_path": "ARX-6-P5-Engineering/integration/results/power_loss_3.2-metrics.json",
+      "raw_bytes": 8493,
+      "raw_sha256": "15b8021302095fb28ea1a2afc809f36df7d6e57097bb0543c8fe515f8141103d"
+    },
+    "baseline-shared-weak_spring_double_delay_3.2.json.gz": {
+      "source_path": "outputs/fault-diagnosis/policy-source-transfer-1-descent-1/weak_spring_double_delay_3.2--original-clock/diagnosis.json",
+      "raw_sha256": "e3983c45a741183ae30ed6dfd294aad50827c1bc957dcab9f8c7cadfaac4122f",
+      "raw_bytes": 44910,
+      "compressed_sha256": "d7aa6b58d16b20134d7d1933f602f494cbedfc4d1cf4b99969e1bff54ab807d4",
+      "compressed_bytes": 9447,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "upstream-source-weak_spring_double_delay_3.2.json": {
+      "source_repository": "cybrdelic/cybr-arx6-belt",
+      "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+      "source_path": "ARX-6-P5-Engineering/integration/results/weak_spring_double_delay_3.2-metrics.json",
+      "raw_bytes": 8597,
+      "raw_sha256": "958df21a539496ca4ae14c7415d4ff8c5543f78e762281a898d1db13ddaf8ba3"
+    },
+    "baseline-shared-weak_spring_double_delay_7.2.json.gz": {
+      "source_path": "outputs/fault-diagnosis/policy-source-transfer-1-descent-1/weak_spring_double_delay_7.2--original-clock/diagnosis.json",
+      "raw_sha256": "3640aba63b67938c5df8a9aba3b7b307f0008caed47a9af21874e5fad318eb6d",
+      "raw_bytes": 45198,
+      "compressed_sha256": "85ec232f24a8fb0c19b1591c99df4f7d879da1c12b4a9775dd72e9cb277174ef",
+      "compressed_bytes": 12598,
+      "encoding": "gzip; mtime=0; exact source bytes"
+    },
+    "upstream-source-weak_spring_double_delay_7.2.json": {
+      "source_repository": "cybrdelic/cybr-arx6-belt",
+      "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+      "source_path": "ARX-6-P5-Engineering/integration/results/weak_spring_double_delay_7.2-metrics.json",
+      "raw_bytes": 8644,
+      "raw_sha256": "5a6bfa4f1b238783f6b27985879fab255ce881a12f91d8d7f7da17850fd49cf7"
+    },
+    "j4-static-load-receipt.json": {
+      "source_path": "outputs/fault-diagnosis/p5-j4-static-load/receipt.json",
+      "raw_sha256": "bea3057e3a135a20b4c432844b0c9f00996fc62e063f6f644018d69b32adf106",
+      "raw_bytes": 63265
+    },
+    "j4-static-load-reproduce.py.gz": {
+      "source_path": "outputs/fault-diagnosis/p5-j4-static-load/reproduce.py",
+      "raw_sha256": "4474e2cabea93ea5b4df039513aa4768d3d5c64a975c44decd0c2191577b98b2",
+      "raw_bytes": 13477,
+      "compressed_sha256": "a838063da2bfc8383d03d6b4d29119a1da6fd9138bf71937874993573b63f3b6",
+      "compressed_bytes": 4574,
+      "encoding": "gzip mtime=0; exact source bytes"
+    },
+    "rejected-slower-timing-summary.json": {
+      "source_path": "outputs/fault-diagnosis/current-timing-slower-transfer/summary.json",
+      "raw_sha256": "4131336fe58300963b026cc093765643c48e76d6e9b7891bfbdc0d7664f16c84",
+      "raw_bytes": 3242
+    },
+    "rejected-slower-timing-inputs.json.gz": {
+      "source_path": "outputs/fault-diagnosis/current-timing-slower-transfer/inputs.json",
+      "raw_sha256": "e625018216b27569a55701a73fe5023cb5ff2e66c0c1dad8efcd5671301d020e",
+      "raw_bytes": 6017612,
+      "compressed_sha256": "331ca542f02d518e0a45631a07a478eca5c98ce9b256e308b71aacc82f8b14bd",
+      "compressed_bytes": 322593,
+      "encoding": "gzip mtime=0; exact source bytes"
+    },
+    "rejected-slower-timing-executed.py.gz": {
+      "source_path": "outputs/fault-diagnosis/current-timing-slower-transfer/executed-diagnostic.py",
+      "raw_sha256": "96c3ad820ebc03d0ee8a8969df887390cde0d273eef525e7920370d766539d57",
+      "raw_bytes": 7486,
+      "compressed_sha256": "36aea1c3e8d5c8e03a9e9f1a45db4adc31b773c1f5e32bf371250911ddd28724",
+      "compressed_bytes": 2529,
+      "encoding": "gzip mtime=0; exact source bytes"
+    }
+  },
+  "full_count": 49,
+  "refined_count": 4,
+  "policy_label": "Retained diagnostic: 17.4-second clock with unchanged source posture. Full suite failed one ordinary case; not a final accepted default.",
+  "suite_acceptance": {
+    "full_suite": false,
+    "refined_suite": false
+  },
+  "source_repository": "cybrdelic/cybr-arx6-belt",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "source_revision_label": "Pinned P5; not latest ARX",
+  "scope": "Exact raw receipts retained losslessly; human-readable summaries are independently reconstruction-checked. No full traces included. Applies to the pinned P5 source only; latest-source integration is separate and pending.",
+  "causal_evidence_scope": "Static saved-pose and sampled reference gravity diagnosis; zero-lateral field is candidate static evidence, separate from dynamic simulation. Rejected slower timing uses unchanged source posture and frozen native-derived physical/control model. None of these files changes source acceptance thresholds.",
+  "static_load_snapshot": {
+    "scope": "Additive historical execution provenance. The runner imports the bundled old task, phase clock and physical-model reader, never the current authored policy. It requires the full retained diagnostic run, whose large traces are not included here.",
+    "original_directory": "outputs/fault-diagnosis/p5-j4-static-load",
+    "receipt": "static-load-snapshot/receipt-historical.json"
+  }
+}

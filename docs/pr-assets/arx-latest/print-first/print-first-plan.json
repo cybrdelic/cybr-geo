@@ -1,0 +1,386 @@
+{
+  "schema": "cybrgeo-print-first-plan/1",
+  "status": "Source-derived geometry test articles; no printing, whole-arm, reducer or load qualification",
+  "parts": [
+    {
+      "name": "upper-frame-proximal",
+      "valid_single_solid": true,
+      "step_roundtrip_valid": true,
+      "step_volume_relative_error": 0.0,
+      "source_bounds_mm": [
+        [
+          -33.00000000000001,
+          -33.0,
+          -25.0
+        ],
+        [
+          33.00000000000001,
+          147.85,
+          22.0
+        ]
+      ],
+      "print_size_mm": [
+        66.00000000000001,
+        180.85,
+        47.0
+      ],
+      "print_translation_mm": [
+        38.00000000000001,
+        38.0,
+        25.0
+      ],
+      "print_occupied_bounds_mm": [
+        [
+          5,
+          5,
+          0
+        ],
+        [
+          71.00000000000001,
+          185.85,
+          47.0
+        ]
+      ]
+    },
+    {
+      "name": "upper-frame-distal",
+      "valid_single_solid": true,
+      "step_roundtrip_valid": true,
+      "step_volume_relative_error": 1.887379141862766e-14,
+      "source_bounds_mm": [
+        [
+          -44.00000000000001,
+          148.14999999999998,
+          -24.0
+        ],
+        [
+          44.00000000000001,
+          324.0,
+          24.0
+        ]
+      ],
+      "print_size_mm": [
+        88.00000000000001,
+        175.85000000000002,
+        48.0
+      ],
+      "print_translation_mm": [
+        49.00000000000001,
+        -143.14999999999998,
+        24.0
+      ],
+      "print_occupied_bounds_mm": [
+        [
+          5,
+          5,
+          0
+        ],
+        [
+          93.00000000000001,
+          180.85000000000002,
+          48.0
+        ]
+      ]
+    },
+    {
+      "name": "upper-frame-lap-coupler",
+      "valid_single_solid": true,
+      "step_roundtrip_valid": true,
+      "step_volume_relative_error": 6.661338147750939e-16,
+      "source_bounds_mm": [
+        [
+          -23.8,
+          108.0,
+          -15.8
+        ],
+        [
+          23.8,
+          188.0,
+          15.8
+        ]
+      ],
+      "print_size_mm": [
+        47.6,
+        80.0,
+        31.6
+      ],
+      "print_translation_mm": [
+        28.8,
+        -103.0,
+        15.8
+      ],
+      "print_occupied_bounds_mm": [
+        [
+          5,
+          5,
+          0
+        ],
+        [
+          52.6,
+          85.0,
+          31.6
+        ]
+      ]
+    },
+    {
+      "name": "fore-frame-reinforced",
+      "valid_single_solid": true,
+      "step_roundtrip_valid": true,
+      "step_volume_relative_error": 8.104628079763643e-15,
+      "source_bounds_mm": [
+        [
+          -36.00000000000001,
+          -33.0,
+          -36.00000000000001
+        ],
+        [
+          43.0,
+          136.0,
+          36.0
+        ]
+      ],
+      "print_size_mm": [
+        79.0,
+        169.0,
+        72.0
+      ],
+      "print_translation_mm": [
+        41.00000000000001,
+        38.0,
+        36.00000000000001
+      ],
+      "print_occupied_bounds_mm": [
+        [
+          5,
+          5,
+          0
+        ],
+        [
+          84.0,
+          174.0,
+          72.0
+        ]
+      ]
+    },
+    {
+      "name": "gripper-pinion-tooth-trial",
+      "valid_single_solid": true,
+      "step_roundtrip_valid": true,
+      "step_volume_relative_error": 2.4091839634365897e-13,
+      "source_bounds_mm": [
+        [
+          -13.2,
+          -13.2,
+          0.0
+        ],
+        [
+          13.2,
+          13.2,
+          12.0
+        ]
+      ],
+      "print_size_mm": [
+        26.4,
+        26.4,
+        12.0
+      ],
+      "print_translation_mm": [
+        18.2,
+        18.2,
+        -0.0
+      ],
+      "print_occupied_bounds_mm": [
+        [
+          5,
+          5,
+          0
+        ],
+        [
+          31.4,
+          31.4,
+          12.0
+        ]
+      ]
+    },
+    {
+      "name": "gripper-rack-tooth-trial",
+      "valid_single_solid": true,
+      "step_roundtrip_valid": true,
+      "step_volume_relative_error": 4.3232084578903596e-13,
+      "source_bounds_mm": [
+        [
+          -30.159289474462014,
+          -6.0,
+          0.0
+        ],
+        [
+          30.159289474462014,
+          1.2000000000000002,
+          12.0
+        ]
+      ],
+      "print_size_mm": [
+        60.31857894892403,
+        7.2,
+        12.0
+      ],
+      "print_translation_mm": [
+        35.159289474462014,
+        11.0,
+        -0.0
+      ],
+      "print_occupied_bounds_mm": [
+        [
+          5,
+          5,
+          0
+        ],
+        [
+          65.31857894892403,
+          12.2,
+          12.0
+        ]
+      ]
+    }
+  ],
+  "material_assumption": {
+    "name": "PETG",
+    "density_kg_m3": 1250,
+    "assumption": "Solid continuum; no infill, anisotropy, creep or strength model"
+  },
+  "splice": {
+    "schema": "cybrgeo-split-lap-splice/1",
+    "parameters": {
+      "beam": {
+        "width_mm": 60,
+        "height_mm": 44,
+        "length_mm": 168,
+        "wall_mm": 6,
+        "center_y_mm": 148,
+        "inner_radius_mm": 1.2,
+        "outer_radius_mm": 0
+      },
+      "overlap_length_mm": 80,
+      "gap_mm": 0.3,
+      "radial_clearance_mm": 0.2,
+      "coupler_wall_mm": 5,
+      "hole_offsets_y_mm": [
+        -30.0,
+        -12.0,
+        12.0,
+        30.0
+      ],
+      "hole_radius_mm": 3.1,
+      "coupler_inner_radius_mm": 1.2,
+      "coupler_outer_radius_mm": 1.4
+    },
+    "derived_coupler": {
+      "width_mm": 47.6,
+      "height_mm": 31.6,
+      "length_mm": 80,
+      "wall_mm": 5,
+      "center_y_mm": 148,
+      "inner_radius_mm": 1.2,
+      "outer_radius_mm": 1.4
+    },
+    "hole_positions_y_mm": [
+      118.0,
+      136.0,
+      160.0,
+      178.0
+    ],
+    "overlap_per_side_mm": 39.85,
+    "scope": "Nominal analytic CAD interfaces; no hardware, printing, contact dynamics or load qualification"
+  },
+  "cross_bore": {
+    "parameters": {
+      "sleeve_outer_diameter_mm": 6,
+      "sleeve_inner_diameter_mm": 4.5,
+      "bolt_diameter_mm": 4,
+      "radial_clearance_mm": 0.1,
+      "sleeve_length_mm": 60
+    },
+    "hole_radius_mm": 3.1,
+    "bolt_radial_clearance_mm": 0.25,
+    "status": "Hardware candidates specified only; not modeled, sourced, tolerance-qualified or load-rated"
+  },
+  "gear_pair": {
+    "schema": "cybrgeo-involute-rack-pair/1",
+    "parameters": {
+      "module_mm": 1.2,
+      "teeth": 20,
+      "pressure_angle_deg": 20,
+      "face_width_mm": 12,
+      "tooth_thickness_reduction_mm": 0.1,
+      "pinion_bore_mm": 4.1,
+      "rack_teeth": 16,
+      "rack_back_depth_mm": 6,
+      "minimum_wall_mm": 1.0,
+      "flank_samples": 18,
+      "tip_samples": 8,
+      "root_samples": 7
+    },
+    "dimensions_mm_and_radians": {
+      "pitch_radius_mm": 12.0,
+      "base_radius_mm": 11.276311449430901,
+      "tip_radius_mm": 13.2,
+      "root_radius_mm": 10.5,
+      "root_polygon_apothem_mm": 10.499622894376047,
+      "base_half_angle_rad": 0.08927753354041439,
+      "tip_half_angle_rad": 0.027418787177480627,
+      "pitch_mm": 3.7699111843077517,
+      "rack_length_mm": 60.31857894892403,
+      "rack_tip_half_width_mm": 0.45571351495749507,
+      "rack_root_half_width_mm": 1.4384331474762413
+    },
+    "pitch_radius_m": 0.012,
+    "source": {
+      "repository": "cybrdelic/cybr-arx6-compact",
+      "commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+      "path": "revisions/p6b-print-first/source/build_printed_gear_trials.py",
+      "sha256": "7d8493b46fa73b21e39441c7b41170d9dd5bbfbd570f4cb466e9e0c24e5209e1"
+    },
+    "scope": "Separate native tooth test articles; no meshing assembly or robot integration",
+    "limitations": [
+      "Flanks and circular tip/root arcs are polygonally sampled; roots have straight radial transitions, not generated trochoids.",
+      "No rolling interference, undercut, contact-ratio, stress, wear, life or measured backlash qualification.",
+      "Bore and minimum walls are declared geometry, not qualified shaft fits or printed strength.",
+      "Pitch scaling must be reconciled with the actual bridge, jaws, transmission and controller.",
+      "SI force/torque conversion assumes the stated forward efficiency; no back-drive loss, compliance or contact dynamics model."
+    ]
+  },
+  "source_module_scaling": {
+    "reference_pitch_radius_m": 0.003,
+    "pitch_radius_ratio": 4.0,
+    "torque_ratio_for_same_rack_force": 4.0,
+    "rack_force_ratio_at_same_pinion_torque": 0.25,
+    "rack_travel_ratio_per_pinion_radian": 4.0
+  },
+  "planning_cube_mm": 246,
+  "planning_bounds_kernel_allowance_mm": 1e-06,
+  "print_orientation": "Parent Z normal to plate; long beam direction in XY; not sliced or qualified",
+  "print_files_sha256": {
+    "print-local/upper-frame-proximal.step": "cb19eaac4abb18401f6cf832383e10fe78af7ebfdc975877c729caa6028142e2",
+    "print-local/upper-frame-proximal.stl": "c6b8bd309fb5da8492ba02c4f1e14a728b73ce0af8018ec86de4077b1f7c951d",
+    "print-local/upper-frame-distal.step": "5ff98a29f3f749d4d7cc57c593c456b3cefbb0f735ccce36f4e13c43f8c369c7",
+    "print-local/upper-frame-distal.stl": "511069fd16006b94605e3b286b626307cc4922b653ca10627ebc45247026abd8",
+    "print-local/upper-frame-lap-coupler.step": "49db2dc91c98e71c98f152b9d2829195e3d498077dd781856edc7a0447dc8b86",
+    "print-local/upper-frame-lap-coupler.stl": "e59d81e70c3eaa8af2c4e3a5889a305d40a0c2342326e36de75a058716880c00",
+    "print-local/fore-frame-reinforced.step": "5391363eeb37cbebf3fe5823a39873012a52458946836d97ca495086fd6c6f3a",
+    "print-local/fore-frame-reinforced.stl": "3feb5a8635d51a3642ed810f20073e1d6888bcaa4b485bc340962f75d76a4c41",
+    "print-local/gripper-pinion-tooth-trial.step": "3bf4925c8c32966d4e3ac502e1bd92da9d49f719ed6e3752961fd4843b8e1c12",
+    "print-local/gripper-pinion-tooth-trial.stl": "948fb832debdca51b37b5ba53c1e6840de942f039b14251e88c10d4e42359a82",
+    "print-local/gripper-rack-tooth-trial.step": "9d40dee0b3244f5db283381f7acf44654adb3a06f78ccc544c0ac8dd77d8e816",
+    "print-local/gripper-rack-tooth-trial.stl": "7c31227793f4c82a1c47c12f26e0ed9f6b550a41ecc0e525e5127ce0a7b13638"
+  },
+  "limitations": [
+    "Four structural articles and separate pinion/rack trials; not an assembled printable robot.",
+    "Four M4 bolt and OD6/ID4.5 x 60 mm metal sleeve stacks are proposed, not modeled or qualified.",
+    "Sixteen M2.5 captive nuts and cover screws require fit, pullout and stack testing; no hardware torque released.",
+    "Source elbow relief changes radius 36.5 to 36.65 mm over z18.8..22.2 mm; the interface remains unqualified.",
+    "PETG mass/inertia use the declared solid-continuum density (default 1250 kg/m3); infill, anisotropy, creep and thermal effects are absent.",
+    "No whole-arm collision/dynamics, FEA, stiffness, fatigue, transmission strength or payload rating follows from these solids.",
+    "Print bounds are a planning envelope only; supports, slicing, shrinkage, actual tolerances and printing are unverified.",
+    "The coarse gear pair requires redesigned surrounding interfaces and controller scaling; it is not a drop-in gripper."
+  ]
+}

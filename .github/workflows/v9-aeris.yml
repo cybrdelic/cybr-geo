@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/v9-aeris.yml'
+      - '.github/scripts/configure_ubuntu_mirrors.py'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/v9.py'
       - 'src/mechanism_lab/v9_dispatch.py'
@@ -20,6 +21,7 @@ on:
     branches: ['fix/true-v9-mitsuba-default']
     paths:
       - '.github/workflows/v9-aeris.yml'
+      - '.github/scripts/configure_ubuntu_mirrors.py'
       - 'examples/aeris/**'
       - 'src/mechanism_lab/v9.py'
       - 'src/mechanism_lab/v9_dispatch.py'
@@ -48,6 +50,7 @@ jobs:
           cache: pip
       - name: Install CAD, EGL and rendering dependencies
         run: |
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update
           sudo apt-get install -y libegl1 libgl1-mesa-dri libglx-mesa0 libglu1-mesa ffmpeg cmake g++ libcairo2 curl
           python -m pip install --upgrade pip

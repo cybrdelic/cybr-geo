@@ -1,0 +1,6 @@
+{
+  "schema": "cybrgeo-engineering-project/1",
+  "name": "iris09",
+  "description": "New single-drive pinned-link mechanism derived from the IRIS-09 optical geometry; source animation is retained separately",
+  "source_commit": "6aac71594c211cc5934674b2113d9db8c5ec17c6"
+}

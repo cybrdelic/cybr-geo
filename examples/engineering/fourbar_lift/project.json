@@ -1,0 +1,5 @@
+{
+  "schema": "cybrgeo-engineering-project/1",
+  "name": "fourbar_lift",
+  "description": "A newly authored gravity-loaded crank-rocker using GEO native CAD, one DC drive and a passive pinned coupler"
+}

@@ -1,0 +1,238 @@
+{
+  "schema": "cybrgeo-arx-source-baseline/1",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "source_checkout_clean": true,
+  "validator_sha256": "8b3cf91867bad7db94d48118f1f8039aa1feaaf8a7be54ba2f4e36df473101c7",
+  "source_input_sha256": {
+    "xml_sha256": "cc9e9294dfdbd022027704beef9df1158aa84fbd58995091d2f8b18b804145aa",
+    "controller_sha256": "6c4bf36dfc8cbc034a81eef2930d5287b1cd09650e55b2f86dae04a44e8aa9de",
+    "safety_sha256": "10e967f2efd33ccb3ad547d18dfea57548aed2ebb7b0f4eebcc426f68eff06c5",
+    "parameters_sha256": "0da3126e257dcffa653c28ec1f26d9b4aba9bffc63e564f60e98f2f4da5c168f",
+    "geometry_sha256": "838768d0473b4ba2ed25be1e1b0d5c34c3ac643dce99e140bb415d99f2103208",
+    "collision_proxies_sha256": "db5eff64aa0281a98a703e5b3b7db4a99abd6a4515d84de35c31a03b596dc64a",
+    "cad_mass_properties_sha256": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11"
+  },
+  "runtime_sha256": {
+    "mujoco.js": "f152292545944dd9cd950188fb8fd3f935f91f72da1513b4f311c8dfa6541580",
+    "mujoco.wasm": "e05ac96db7f45bd46e76fed6e3469bf9204329e093344d742a18bca2cc0e230e",
+    "package.json": "679ca98ed01e75d83bc6ed46ded097926e46cde6630d2259552786f265d6ab91"
+  },
+  "scenarios": {
+    "nominal": {
+      "raw_report": "nominal/results/nominal.json",
+      "raw_report_sha256": "1528bbc97bc4f7737baf45cbf881c7d2339856f2db7da4ea00d2067dc39ac173",
+      "duration_s": 10.000000000007999,
+      "timestep_s": 0.000416666666667,
+      "options": {},
+      "solver": "MuJoCo 3.16.0 WASM; implicitfast; Newton",
+      "samples": 1201,
+      "original_validator_passed": true,
+      "original_failed_checks": [],
+      "placement_B_error_m": 0.00025047959375220215,
+      "return_A_error_m": 0.00033514317048208823,
+      "maximum_imposed_workpiece_force": 0
+    },
+    "friction_loss": {
+      "raw_report": "friction_loss/results/friction_loss.json",
+      "raw_report_sha256": "369678d36ecfb8700e2933e83ed763f00b7fc4b3bff507b7f2c3da0d331859f2",
+      "duration_s": 5.0000000000039995,
+      "timestep_s": 0.000416666666667,
+      "options": {
+        "frictionChangeTime": 2,
+        "frictionAfterScale": 0.01
+      },
+      "solver": "MuJoCo 3.16.0 WASM; implicitfast; Newton",
+      "samples": 601,
+      "original_validator_passed": true,
+      "original_failed_checks": [],
+      "placement_B_error_m": 0.0781589790303881,
+      "return_A_error_m": 0.19549260346991149,
+      "maximum_imposed_workpiece_force": 0
+    },
+    "no_counterbalance": {
+      "raw_report": "no_counterbalance/results/no_counterbalance.json",
+      "raw_report_sha256": "82d95be83af065251c932e8067b8a0de10188ad7def726bd668ae4904a7db011",
+      "duration_s": 10.000000000007999,
+      "timestep_s": 0.000416666666667,
+      "options": {
+        "springScale": 0
+      },
+      "solver": "MuJoCo 3.16.0 WASM; implicitfast; Newton",
+      "samples": 1201,
+      "original_validator_passed": false,
+      "original_failed_checks": [
+        "hard travel bounds respected",
+        "no structural proxy penetration over 0.1 mm",
+        "motor-generated output torque within belt service allowance",
+        "estimated belt torque including rotor deceleration within service allowance",
+        "completed without safety trip",
+        "placement at B within 1.5 mm",
+        "return to A within 1.5 mm"
+      ],
+      "placement_B_error_m": 0.2044408088967986,
+      "return_A_error_m": 0.0765823104828671,
+      "maximum_imposed_workpiece_force": 0
+    }
+  },
+  "contact_loss_comparison": {
+    "change_time_s": 2,
+    "friction_after_scale": 0.01,
+    "maximum_pre_change_state_difference": 0,
+    "maximum_before_release_puck_height_difference_m": 0.20012415669546266,
+    "maximum_before_release_puck_position_divergence_m": 0.20160732683395471,
+    "nominal_B_error_m": 0.00025047959375220215,
+    "friction_loss_B_error_m": 0.0781589790303881,
+    "effect_observed": true,
+    "snapshots": [
+      {
+        "time_s": 1.9,
+        "nominal_puck_position_m": [
+          0.29313968745053326,
+          0.18603611036226772,
+          -0.10439068992950505
+        ],
+        "friction_loss_puck_position_m": [
+          0.29313968745053326,
+          0.18603611036226772,
+          -0.10439068992950505
+        ],
+        "nominal_pad_normal_N": [
+          5.721759826206,
+          5.751648957231754
+        ],
+        "friction_loss_pad_normal_N": [
+          5.721759826206,
+          5.751648957231754
+        ]
+      },
+      {
+        "time_s": 2,
+        "nominal_puck_position_m": [
+          0.29742235329656486,
+          0.1950437329945401,
+          -0.07791123422236784
+        ],
+        "friction_loss_puck_position_m": [
+          0.29742235329656486,
+          0.1950437329945401,
+          -0.07791123422236784
+        ],
+        "nominal_pad_normal_N": [
+          5.689969118681787,
+          5.78028134142812
+        ],
+        "friction_loss_pad_normal_N": [
+          5.689969118681787,
+          5.78028134142812
+        ]
+      },
+      {
+        "time_s": 2.2,
+        "nominal_puck_position_m": [
+          0.3098387208772438,
+          0.21502870832614968,
+          -0.0005782417035561533
+        ],
+        "friction_loss_puck_position_m": [
+          0.3302055065668446,
+          0.037673091974511255,
+          -0.007561840462348288
+        ],
+        "nominal_pad_normal_N": [
+          5.6424624999355055,
+          5.831605810555468
+        ],
+        "friction_loss_pad_normal_N": [
+          0,
+          0
+        ]
+      },
+      {
+        "time_s": 2.5,
+        "nominal_puck_position_m": [
+          0.3265448734484667,
+          0.1858393524240478,
+          0.10375686975086544
+        ],
+        "friction_loss_puck_position_m": [
+          0.3654897506781822,
+          0.013999459379234835,
+          0.05578498226628523
+        ],
+        "nominal_pad_normal_N": [
+          5.7409724940571945,
+          5.7323407775402355
+        ],
+        "friction_loss_pad_normal_N": [
+          0,
+          0
+        ]
+      },
+      {
+        "time_s": 2.75,
+        "nominal_puck_position_m": [
+          0.3299010414707018,
+          0.18313754699668597,
+          0.12384615205275602
+        ],
+        "friction_loss_puck_position_m": [
+          0.3654897440328897,
+          0.013999458780492084,
+          0.055784984441802264
+        ],
+        "nominal_pad_normal_N": [
+          5.738028382471908,
+          5.736064230955564
+        ],
+        "friction_loss_pad_normal_N": [
+          0,
+          0
+        ]
+      },
+      {
+        "time_s": 3.4,
+        "nominal_puck_position_m": [
+          0.3300535499965497,
+          0.028144720053086065,
+          0.1237719909218543
+        ],
+        "friction_loss_puck_position_m": [
+          0.3654897496002043,
+          0.013999462596938954,
+          0.055785004028071794
+        ],
+        "nominal_pad_normal_N": [
+          5.742245770038936,
+          5.733406692492997
+        ],
+        "friction_loss_pad_normal_N": [
+          0,
+          0
+        ]
+      },
+      {
+        "time_s": 4.9,
+        "nominal_puck_position_m": [
+          0.3301108217084069,
+          0.027999455763000242,
+          0.12377537079522435
+        ],
+        "friction_loss_puck_position_m": [
+          0.36548975130750494,
+          0.013999460608563406,
+          0.05578498367695767
+        ],
+        "nominal_pad_normal_N": [
+          0,
+          0
+        ],
+        "friction_loss_pad_normal_N": [
+          0,
+          0
+        ]
+      }
+    ],
+    "interpretation": "The runs match exactly through 2 s. Reducing configured pair friction to 1% causes the independently simulated puck to leave the pads and fall before the commanded 3.4 s release. Source nominal placement tolerance 1.5 mm is met by nominal and missed by friction_loss. The original friction_loss validator still reports pass because that scenario omits nominal placement checks; its pass flag is preserved above."
+  },
+  "scope": "Fresh execution of the original pinned validate_p5.mjs with ARX_VALIDATION_OUT redirected to separate task outputs. These are source-baseline simulations for comparison with a later shared runtime, not validation of that runtime, the separate compact ARX source, or hardware. No workpiece weld, pose command, actuator or applied force was added."
+}

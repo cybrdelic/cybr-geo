@@ -29,6 +29,7 @@ jobs:
       - name: Install and regenerate missing source-only inputs
         run: |
           set -euo pipefail
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
           python -m pip install -r requirements-tested.txt
@@ -70,6 +71,7 @@ jobs:
       - name: Install tested dependencies and native prerequisites
         run: |
           set -euo pipefail
+          sudo python3 .github/scripts/configure_ubuntu_mirrors.py
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libopengl0 libglib2.0-0
           python -m pip install -r requirements-tested.txt
@@ -87,7 +89,7 @@ jobs:
           import hashlib, json, os, pathlib, subprocess, sys
           shard, count = int(os.environ['SHARD']), int(os.environ['SHARD_COUNT'])
           assert 0 <= shard < count
-          files = sorted(str(p) for folder in ('tests', 'tests_legacy')
+          files = sorted(str(p) for folder in ('tests', 'tests_legacy', 'studio/tests')
                          for p in pathlib.Path(folder).rglob('*.py')
                          if p.name.startswith('test_') or p.name.endswith('_test.py'))
           selected = files[shard::count]
@@ -155,7 +157,7 @@ jobs:
           result = {'counts': counts, 'test_files': len(expected), 'shards': 8,
                     'input_sha256': manifests[0]['input_sha256'], 'input_origin': manifests[0]['input_origin'],
                     'tested_tree': manifests[0]['tree'], 'commit': manifests[0]['commit'],
-                    'scope': 'Full active and legacy Python suites. Explicit skips are not passes. No physical certification or new full renders are implied.'}
+                    'scope': 'Full active, legacy and Studio Python suites. Explicit skips are not passes. No physical certification or new full renders are implied.'}
           pathlib.Path('regression-summary.json').write_text(json.dumps(result, indent=2) + '\n')
           print(json.dumps(result, indent=2))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as stream:

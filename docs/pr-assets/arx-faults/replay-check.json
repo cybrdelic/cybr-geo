@@ -1,0 +1,53 @@
+{
+  "schema": "cybrgeo-native-replay-check/1",
+  "passed": true,
+  "model_sha256": "7e2d095563159bbc512a4ac8a6d3716f22dccb90e7f4487818e6091f20dc752f",
+  "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+  "display_mesh_sha256": "392dab63fe439d09dab9806590524d40432bf29794af601e1da8af227a712cdd",
+  "replay_state_sha256": "dab5d1b9734ec26d5f4391c238b1de9c0959643c1feb6392c1bcc2f6d1ebb7b8",
+  "parts": 385,
+  "valid_native_cad_parts": 385,
+  "sampled_frame_indices": [
+    0,
+    522,
+    1044,
+    1566,
+    2088
+  ],
+  "sampled_times_s": [
+    0.0,
+    4.3500000000034795,
+    8.700000000006959,
+    13.050000000010439,
+    17.400000000013918
+  ],
+  "compared_vertices": 62900,
+  "max_vertex_error_mm": 0.0,
+  "max_native_cad_mesh_local_bounds_error_mm": 0.13933000000000106,
+  "native_mesh_bounds_tolerance_mm": 0.3,
+  "cache_rebind_exact": true,
+  "free_workpiece_body": "puck",
+  "body_bindings": {
+    "fixed": "fixed_hardware",
+    "turret": "turret",
+    "upper": "upper",
+    "fore": "fore",
+    "roll": "roll",
+    "bend": "bend",
+    "tool": "tool",
+    "jaw": "jaw_left",
+    "opposed_jaw": "jaw_right",
+    "puck": "puck",
+    "world": "world"
+  },
+  "visual_limitations": [
+    "Four deforming spring coil visuals are omitted; spring forces remain in the physical model.",
+    "Internal input shafts, drive pulleys, pinion and belt teeth retain native local phase; separate rotor/belt material states are not recorded.",
+    "Flexible cable harness is omitted; contacts use the separate declared conservative proxy model.",
+    "Workbench surface is omitted from the display; its authored physical contacts remain active.",
+    "Workpiece bore is native visual geometry; its physical contact primitive remains the declared cylinder.",
+    "Display finishes are source appearance, not a measured material or manufacturing qualification."
+  ],
+  "scope": "Native/display placement and recorded-state replay; no hardware qualification",
+  "trace_file_sha256": "8b8e8df1b4bc03348ede51b6d751671cb7533d8be4a87219908aad2d0f20f37f"
+}

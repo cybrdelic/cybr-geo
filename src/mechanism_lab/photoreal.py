@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
-import json,math,subprocess,tempfile,time,hashlib,os
+import json,math,subprocess,tempfile,time,hashlib,os,platform
 import numpy as np
 from PIL import Image
 from .core import project_root
@@ -20,11 +20,13 @@ def compile_renderer():
         prefix=Path(embree).resolve()
         if not (prefix/'include/embree4/rtcore.h').is_file():raise ValueError('CYBR_GEO_EMBREE_ROOT needs Embree 4 headers and lib/')
         flags=['-DCYBR_EMBREE4','-I'+str(prefix/'include'),'-L'+str(prefix/'lib'),'-Wl,-rpath,'+str(prefix/'lib'),'-lembree4']
-    key=hashlib.sha256(b''.join(p.read_bytes() for p in sorted(source.glob('*')) if p.suffix in ('.h','.cpp'))+str(flags).encode()).hexdigest()[:20]
+    target=(platform.system(),platform.machine())
+    suffix='.exe' if target[0]=='Windows' else ''
+    key=hashlib.sha256(b''.join(p.read_bytes() for p in sorted(source.glob('*')) if p.suffix in ('.h','.cpp'))+str((target,flags)).encode()).hexdigest()[:20]
     build=Path(os.environ.get('CYBR_GEO_NATIVE_CACHE',str(Path(tempfile.gettempdir())/'cybrgeo-native')))/key
-    build.mkdir(parents=True,exist_ok=True);exe=build/'mechanism_photoreal'
+    build.mkdir(parents=True,exist_ok=True);exe=build/('mechanism_photoreal'+suffix)
     if not exe.exists():
-        temporary=build/f'mechanism_photoreal.{os.getpid()}.tmp'
+        temporary=build/f'mechanism_photoreal.{os.getpid()}.tmp{suffix}'
         subprocess.run(['g++','-O3','-std=c++17','-fopenmp',str(source/'photoreal.cpp'),*flags,'-o',str(temporary)],check=True)
         temporary.replace(exe)
     return exe

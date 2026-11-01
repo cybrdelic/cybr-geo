@@ -1,0 +1,110 @@
+{
+  "schema": "cybrgeo-public-evidence-path-derivation/1",
+  "original_packet_manifest_sha256": "f4060c1b0886741d2c2c48b03482981fc89f2db3206244ab4a61b2b4f62571c7",
+  "original_packet_manifest_bytes": 7395,
+  "scope": "Derived execution receipts only. Original execution bytes are retained locally; their hashes are provenance anchors, not proof of byte equality with these public copies. All six gzip numeric receipts retain their original bytes.",
+  "serialization": "Parse original UTF-8 JSON with optional BOM; replace only listed JSON pointers; append public_derivation; serialize UTF-8 without BOM, indent=2, ensure_ascii=False, allow_nan=False, LF and one final newline.",
+  "projection": "Remove public_derivation; replace each listed pointer value with the literal <PATH-REDACTED>; hash canonical JSON: sort_keys=True, separators=(comma,colon), allow_nan=False, UTF-8.",
+  "placeholders": {
+    "${REPO_ROOT}": "Checkout directory used by the recorded process.",
+    "${PYTHON_EXECUTABLE}": "Interpreter used by the recorded process; choose an installed compatible Python for reproduction.",
+    "${PATHSEP}": "Recorded path-list separator; use os.pathsep on the reproduction platform.",
+    "${EXTRA_DEPENDENCIES}": "Recorded additional dependency directory outside the checkout; install the documented dependencies for reproduction instead of assuming this directory exists."
+  },
+  "derived_receipts": {
+    "full-suite-execution.json": {
+      "original_bytes": 5277,
+      "original_sha256": "fc789122ac5dfa5ba7618863e47a583f523d39bed87bd01032915094fb2e5ccc",
+      "unchanged_semantic_projection_sha256": "af158e767a529fb3b4d7eea1c2f339e1cb2bfa6d95e0ec1f8c1a56dea2417adb",
+      "substitutions": [
+        {
+          "pointer": "/explicit_environment/PYTHONPATH",
+          "replacement": "${REPO_ROOT}/src${PATHSEP}${EXTRA_DEPENDENCIES}",
+          "original_value_utf8_bytes": 146,
+          "original_value_utf8_sha256": "551299fef590692b9891a5f057509105134ae89535b58251f4ce53c15f1203d6"
+        }
+      ]
+    },
+    "public-command-execution.json": {
+      "original_bytes": 927,
+      "original_sha256": "76b615e0c8165baa8991e058bcb25df423ef692af51549363b16dcec0c58b3e9",
+      "unchanged_semantic_projection_sha256": "99fa7996e94aa66fec48cef24ea72ce9897d5df3fd174df3438c73ec83b6408c",
+      "substitutions": [
+        {
+          "pointer": "/public_command/0",
+          "replacement": "${PYTHON_EXECUTABLE}",
+          "original_value_utf8_bytes": 71,
+          "original_value_utf8_sha256": "4fae63fb468ca7e300b4ed7b0c848007d9580cbf411ce1f658f92636f2306b78"
+        },
+        {
+          "pointer": "/public_command/6",
+          "replacement": "outputs/engineering-arx-core-final",
+          "original_value_utf8_bytes": 34,
+          "original_value_utf8_sha256": "bca56b653a5be05fc446961b0209b5353ddb12cca578e909cf37cf914c61f9ea"
+        }
+      ]
+    },
+    "refinement-execution.json": {
+      "original_bytes": 1398,
+      "original_sha256": "5cfd5cd0c271c89e112353020d29cdb6aeba6e3a6c5355e06812b0a7d6ff3535",
+      "unchanged_semantic_projection_sha256": "37b2b6327e3de7cdef62d52f78763590e71386e299aed721d6f0f17e6207a3cd",
+      "substitutions": [
+        {
+          "pointer": "/command/0",
+          "replacement": "${PYTHON_EXECUTABLE}",
+          "original_value_utf8_bytes": 71,
+          "original_value_utf8_sha256": "4fae63fb468ca7e300b4ed7b0c848007d9580cbf411ce1f658f92636f2306b78"
+        },
+        {
+          "pointer": "/cwd",
+          "replacement": "${REPO_ROOT}",
+          "original_value_utf8_bytes": 65,
+          "original_value_utf8_sha256": "0a179e4afe438d8d09bfbdcfed02537dc1cada6920d041173f81d30bb7352e68"
+        }
+      ]
+    },
+    "refinement-execution-failed-spawn.json": {
+      "original_bytes": 1309,
+      "original_sha256": "c609e09943e017cc7efb6ebbe0b9edf7fe8ac3ffa00bf412fcd3253689d80b17",
+      "unchanged_semantic_projection_sha256": "027eb3b27086235edce4dddc47905c8d0e5d61e4ff48d107bebcb12b7f852119",
+      "substitutions": [
+        {
+          "pointer": "/command/0",
+          "replacement": "${PYTHON_EXECUTABLE}",
+          "original_value_utf8_bytes": 71,
+          "original_value_utf8_sha256": "4fae63fb468ca7e300b4ed7b0c848007d9580cbf411ce1f658f92636f2306b78"
+        },
+        {
+          "pointer": "/cwd",
+          "replacement": "${REPO_ROOT}",
+          "original_value_utf8_bytes": 65,
+          "original_value_utf8_sha256": "0a179e4afe438d8d09bfbdcfed02537dc1cada6920d041173f81d30bb7352e68"
+        }
+      ]
+    }
+  },
+  "omitted_originals": {
+    "run_final_refinement.ps1": {
+      "bytes": 2558,
+      "sha256": "c63540e3638b502022146fb590f2b2817574f9459965bfe61154f04d2bf428d8",
+      "reason": "Historical machine-specific wrapper. Its SHA remains in the successful execution receipt. Replaced for reproduction only by run_final_refinement.py; no new simulation is claimed."
+    },
+    "curate_maintained_final.py": {
+      "bytes": 11762,
+      "sha256": "2dbff8c2bac8461eb08cf3a14879b40323f5633b3c5144b5c673c86ea0d80824",
+      "reason": "Historical curation helper depended on private run directories and would restore unredacted receipts. The portable inspector is the public verification entry point."
+    }
+  },
+  "remaining_recorded_paths": {
+    "full-suite-inputs.json.gz": [
+      "/output",
+      "/native_directory"
+    ],
+    "refined-suite-inputs.json.gz": [
+      "/output",
+      "/native_directory"
+    ]
+  },
+  "remaining_recorded_paths_scope": "These four values remain in the lossless archived inputs for exact input-hash verification. They are inert run-location metadata, not portable reproduction settings. No claim that the entire archive is path-redacted is made.",
+  "new_reproduction_launcher": "run_final_refinement.py"
+}

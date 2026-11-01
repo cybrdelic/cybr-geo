@@ -11,6 +11,14 @@ import hashlib, json, re
 import numpy as np
 import trimesh
 
+def _stream_sha256(path: Path, chunk_size: int = 4 * 1024 * 1024) -> str:
+    """Hash scene archives without allocating a second archive-sized buffer."""
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(chunk_size), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
 @dataclass(frozen=True)
 class Material:
     name: str = "Machined alloy"
@@ -112,7 +120,7 @@ class Assembly:
         meta = dict(schema="cybrgeo.scene/1", name=self.name, units="mm", up="Z",
                     materials=[asdict(m) for m in self.materials], parts=entries,
                     metadata=self.metadata,
-                    meshes_sha256=hashlib.sha256((root/'meshes.npz').read_bytes()).hexdigest())
+                    meshes_sha256=_stream_sha256(root/'meshes.npz'))
         (root/'scene.json').write_text(json.dumps(meta, indent=2)+'\n')
         if self.cad:
             import cadquery as cq
@@ -130,13 +138,13 @@ class Assembly:
         info = json.loads(path.read_text()); root = path.parent
         if info.get('schema') != 'cybrgeo.scene/1' or info.get('units') != 'mm':
             raise ValueError("Unsupported scene schema or units")
-        if hashlib.sha256((root/'meshes.npz').read_bytes()).hexdigest() != info['meshes_sha256']:
+        if _stream_sha256(root/'meshes.npz') != info['meshes_sha256']:
             raise ValueError("Mesh archive SHA256 mismatch")
         parts=[]
         with np.load(root/'meshes.npz', allow_pickle=False) as arr:
             for entry in info['parts']:
                 e=dict(entry); key=e.pop('key')
-                parts.append(Part(**e, **{k:arr[f'{key}_{k}'].copy() for k in ('vertices','faces','normals')}))
+                parts.append(Part(**e, **{k:arr[f'{key}_{k}'] for k in ('vertices','faces','normals')}))
         result=cls(info['name'],parts,[Material(**m) for m in info['materials']],info['metadata'])
         if with_cad:
             import cadquery as cq

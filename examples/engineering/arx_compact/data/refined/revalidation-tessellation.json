@@ -1,0 +1,748 @@
+{
+  "part_instances": 278,
+  "changed_instances": 123,
+  "linear_deflection_mm": 0.012,
+  "angular_deflection_rad": 0.065,
+  "unchanged_parts_byte_preserved": true,
+  "parts": [
+    {
+      "id": 2,
+      "original_triangles": 6932,
+      "refined_triangles": 49700,
+      "brep_sha256": "b1e8a374578b7120e2a0a302f0252ea70e1a2a3c0d9fe00cfa9080369e4149eb"
+    },
+    {
+      "id": 3,
+      "original_triangles": 2536,
+      "refined_triangles": 42696,
+      "brep_sha256": "ac129e050c3dad8b7dd1ed938d9ee949e783267e276780471894b898f09b8b43"
+    },
+    {
+      "id": 18,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "d348ceaa0ae05082c7785d4b2e8394da38d6969cdc17995136eea1afa4c33bbb"
+    },
+    {
+      "id": 19,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "1dd089978092fc0ace280967c0d7749ca29c092976019fc6e5962b136743cd81"
+    },
+    {
+      "id": 20,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "f4f656298c37fc11815a7caab383311c2884f19b8e3997044e948a58caa1b735"
+    },
+    {
+      "id": 21,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "6844570a8ca6a44d2f7e15a05f1e40cdc7d625277c83b57b277ad4ec6c7f9092"
+    },
+    {
+      "id": 22,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "f8ce39bc414ac3c7d9c7df97efb207d4f23912d0722eea4b8059f919889fce64"
+    },
+    {
+      "id": 23,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "431c6d56d0594a76994e5065b1a587eac3989b3372c12dc1a11ddf58fb567a3a"
+    },
+    {
+      "id": 24,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "0fe89d4e33adde69b9df917f68c2f5e10ed4eafa786ba2630568498736460b8c"
+    },
+    {
+      "id": 25,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "25196fbdac3bb9544b96964654f509b83cc22525bf73c2f2bd99edd9be9a4ebb"
+    },
+    {
+      "id": 26,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "650da643e8ebc2ee5c1a9f72d3adedd1fc396e853df81b4f9c8a659e92ad7113"
+    },
+    {
+      "id": 27,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "cf2bace78db3bb0a7cb096bb63a8556344c9981a08ec1143561d947a5e101f01"
+    },
+    {
+      "id": 28,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "244c5a25528f4fd38845a584b7e0419eba9853d0e2867431a6ef5d957c6618b9"
+    },
+    {
+      "id": 29,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "19a11062bd75445307d6149a5d75b39b75270218cc596d4defe3bec227f02ebb"
+    },
+    {
+      "id": 32,
+      "original_triangles": 6932,
+      "refined_triangles": 49700,
+      "brep_sha256": "d5775bb9bddc6261911add5f150a8410f869688f9ec51ebd04957167603f9655"
+    },
+    {
+      "id": 33,
+      "original_triangles": 2536,
+      "refined_triangles": 42696,
+      "brep_sha256": "1ee132f0d39916f494a0f664bdc918a2a543b981a63250663f05de8a160d9324"
+    },
+    {
+      "id": 52,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "2e41d7e5ea50d882765dfbbc50ed645c4d6104cefe8efc66911012a96694d931"
+    },
+    {
+      "id": 53,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "82ce26baa7f9790c3d70f1b8cb72b8cc954d3d4461df97af544d5547b159e94c"
+    },
+    {
+      "id": 54,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "3a2cf3e53a68c1e5d8e94f94fdcfaa2c162e8d551acc7205e7fa232003927daa"
+    },
+    {
+      "id": 55,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "3151e8fce76409448e5e54a6b6b182e29964ef2ebd0df7ddb3d81316c49cbd37"
+    },
+    {
+      "id": 56,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "f9a4fc450d502baf128ed2b70443c770afac7d43039925248038c0c2799903e8"
+    },
+    {
+      "id": 57,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "52030a2fc83595158c94eb8be8543ccc04a38a5c47e7d72f940df6e731c3825d"
+    },
+    {
+      "id": 58,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "c819f2793a6820559dd0b49ca9b77dcc50589d472b65f40c0e7a8711a48e4303"
+    },
+    {
+      "id": 59,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "36c43ec91236975c277bd6a250266885ec731f49044dd264cc3e351f5e8dc1e0"
+    },
+    {
+      "id": 60,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "2c3475281f3bdd0b4612f58b8864b7af5c7bb36ad18f571578d4e813a93f5419"
+    },
+    {
+      "id": 61,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "eb85274d12ff058d82e5730ffb8b368e9456703b734fee51d454c1b8c1c26370"
+    },
+    {
+      "id": 62,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "8d5d8a855511d51ef997548cb2998d60a74bac16f99071e47c0d35ed46302b31"
+    },
+    {
+      "id": 63,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "58f9ba89e6c5e3116b888a95b2622bdfb0d8a09006457a46cc66cda633fbce69"
+    },
+    {
+      "id": 66,
+      "original_triangles": 6932,
+      "refined_triangles": 49700,
+      "brep_sha256": "5b06e084df21f21d33cae754b7badd03535c426e18e6d3f053dce0598701ed49"
+    },
+    {
+      "id": 67,
+      "original_triangles": 2536,
+      "refined_triangles": 42696,
+      "brep_sha256": "cb3f3791a0a20e460b8ec778f2b441e9730eb9084ee75b404b23c037ec69391e"
+    },
+    {
+      "id": 86,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "45a31342b4602c89abfbaace111c0337bc049b04244ead2d573c58fa190d56df"
+    },
+    {
+      "id": 87,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "1055d17b662e99dd985055f6ac68b599f6e47e538db481f5a1cb960fa16d8ccb"
+    },
+    {
+      "id": 88,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "43e21b93bc1b7e1d65f02deaf0c837252172fdaabc404d73338a41d795eebbfa"
+    },
+    {
+      "id": 89,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "1942ebcbc173ee6303b1aa96dac7eca3677bdd652620bf7493ebb3f0f8f9ec80"
+    },
+    {
+      "id": 90,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "501a12c3df72b09b87fec9ea98ca77c1d47665eabd3ece6463a27d5884e223d8"
+    },
+    {
+      "id": 91,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "572a869d3d048e5834284fdd5a6cab7b5c95984cf507ad862aadafb67cbb63b5"
+    },
+    {
+      "id": 92,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "347adb6021a40caf45a5e639cb502de132b318cd00b7c4b9e3e0f4d03d84fdc8"
+    },
+    {
+      "id": 93,
+      "original_triangles": 1256,
+      "refined_triangles": 2348,
+      "brep_sha256": "b0260ce9dcaa850862ad9726684867a5f37026a5712bd172d3113f4491e74799"
+    },
+    {
+      "id": 94,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "e71d41037147712cbf94f900c25dd7ba9f9f3fea362c25095e8b1c0efb3fb538"
+    },
+    {
+      "id": 95,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "dcb37d14c69e543509acbb24c7b6e7e3945d1fa906bb104009f271e88f390c72"
+    },
+    {
+      "id": 96,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "b1a65694b846455e17f833cac3e8572d7a49759eabc01e495e7cdbd774e4357a"
+    },
+    {
+      "id": 97,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "908dc39323c587763a51d47dcf1e3df8bd8dcbf83c40f46417b58e44841a9d58"
+    },
+    {
+      "id": 100,
+      "original_triangles": 6932,
+      "refined_triangles": 49716,
+      "brep_sha256": "2556a66d3486a807f4036ac8a8431cb6f2a491a4b3e69ef399b5b8c6f7c982f2"
+    },
+    {
+      "id": 101,
+      "original_triangles": 2536,
+      "refined_triangles": 42696,
+      "brep_sha256": "83627c7fd4a9fefc96a62c84a4dbe0c099586e100f7fe05df21ec095dca0b539"
+    },
+    {
+      "id": 116,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "5aea7c478a99315a320f389ec5dd590fa3ae172b976410102b0bb6d3c80108e1"
+    },
+    {
+      "id": 117,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "0b1f30f1629ab8e745ece4d068a659d91a3cca687102084007feb5ff13dfabe4"
+    },
+    {
+      "id": 118,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "c1b5e2df8278344e151b6a44ad1fe6e8ec17534c242d95f1094750df9a745830"
+    },
+    {
+      "id": 119,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "c5133331669c6d5acb5b4176645e438b2dbebeb49176f27cd2c779451b323c2e"
+    },
+    {
+      "id": 120,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "3a7e65cc75e2ec7daa494d32e260dde1dd1e595c59fd4b543545f9228223e3e6"
+    },
+    {
+      "id": 121,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "5e9480ecf66a3358340315e3744084b18a6b5e190765a069df7bbfad742fdbff"
+    },
+    {
+      "id": 122,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "12a1b021b2d259a28cc459d4aa53ee0b3e4f232b744379d5c8a8549812f1142f"
+    },
+    {
+      "id": 123,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "d0c6f5ae2133fa334eef8963076def60c63ddf0a9fa3aa8db234bce46d6a2319"
+    },
+    {
+      "id": 124,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "beb373c6dc23152e94fc65527279852901065223ce9af13bcd51bb948ee2c222"
+    },
+    {
+      "id": 125,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "02f7a54a7a93489257495a0080b54ec8951c575ea5cdce6b2a50707e17bdf5a1"
+    },
+    {
+      "id": 126,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "cf9f785ac105d5c400b1b53eabe65025720636a8d1f74d96d30a6f22fbb734b1"
+    },
+    {
+      "id": 127,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "366f0fb637ebb2de44c4ffa2f81877560bd16860e775f96f3f59c3db76773b4d"
+    },
+    {
+      "id": 128,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "b7de8ba0f3013311f562e6b14b2fa98bc3bbd0498eca896ab99cc9f5ee2b186d"
+    },
+    {
+      "id": 129,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "d597ddecd807089c168fd5ff6de18b0f9e43b76b500898a6d39a45eac4cb0a0c"
+    },
+    {
+      "id": 132,
+      "original_triangles": 6932,
+      "refined_triangles": 49716,
+      "brep_sha256": "03a2ed022296e2ee9603635f9a400bf2e6379ed9bae7e237c9031bdf2205cb99"
+    },
+    {
+      "id": 133,
+      "original_triangles": 2536,
+      "refined_triangles": 42696,
+      "brep_sha256": "261ae4dc731f164368de580aae66101389c4c51deffdc8f6465765ef7842e27a"
+    },
+    {
+      "id": 152,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "a95ab148e2f9deac41b777f20fd172fbb4050466f35c3cdabd4a4e999f5625a1"
+    },
+    {
+      "id": 153,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "9644edcd0494f5dc6c081de93708cd68cdecb32c88f57cd6554adc440ebc7f4b"
+    },
+    {
+      "id": 154,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "887db17128e5237054186502a4402bc9ff5fdc6810d492bf0d84c85ed3839f77"
+    },
+    {
+      "id": 155,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "c44fe503ba3202660a6a6026c1e974bb43415db977e1dcf48b24caf5494eefd6"
+    },
+    {
+      "id": 156,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "cd6350a2d22427241eb262541769c4bf587e69be50bff4e200d51922dd59d061"
+    },
+    {
+      "id": 157,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "b924e9c875893c5993ef0f9cb2f617426de41bd1df3fc33cb41b4d3b1db17f59"
+    },
+    {
+      "id": 158,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "d2903cfb99b3ec3bd30155cd5866db1881b7a624fd2e323c8d089754cd81476c"
+    },
+    {
+      "id": 159,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "25c1e511e0162839cbb667054d6473dd3e4d51539004557d9acfbf1418e595a8"
+    },
+    {
+      "id": 160,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "ffd5b27ef3850dd329223b47ba40721e0cccda9b2d41460c28e052770e64c102"
+    },
+    {
+      "id": 161,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "530aad205510de79006ad0dc08b2b958b8bba01a706865cd11b62dc5f17c234d"
+    },
+    {
+      "id": 162,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "f57b443fcf46823afcd63f05ea9545805510cec179cfb472471c1cc9e6dc737e"
+    },
+    {
+      "id": 163,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "96599405b9551005cc7676d9382809cff829c281651aa141930d2d3f31c7f367"
+    },
+    {
+      "id": 164,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "564fb1372ce31956f23436bfd1432db0a8536299b49fff2d71a4ae80364f5dc9"
+    },
+    {
+      "id": 165,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "f915129f49c5a9ef5c7941179f0712fc5bc2355864be3311a33d5b1261b27a58"
+    },
+    {
+      "id": 168,
+      "original_triangles": 6932,
+      "refined_triangles": 49716,
+      "brep_sha256": "0534f4c02a2da17382af3c239065b64ef932a78dbdce56e1202a0fdc5d1b8996"
+    },
+    {
+      "id": 169,
+      "original_triangles": 2536,
+      "refined_triangles": 42696,
+      "brep_sha256": "7afc7df3fb66bf1d9d40ac1ad47e2e96cda56280b78dfe0cdbd5ceeca2a032dd"
+    },
+    {
+      "id": 188,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "f1d03115a0e7a9bdd4890bc919f8c890c411ee06b4133b76028bd3d9130fc4d0"
+    },
+    {
+      "id": 189,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "0696a64622d8b4de4f44cf82aa34889475476afd59af3323cf4137a5eee0561c"
+    },
+    {
+      "id": 190,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "00c983b72697024c86602e77548ccae629f6beb2acfea47419554bb870b3f4c8"
+    },
+    {
+      "id": 191,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "b05f912fc2d43657e62116b66e8d281a2ceb34414096f4049f0a9277c4b611c8"
+    },
+    {
+      "id": 192,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "9fd6951366fb901b42a221f185df7e28faca2aa5ed8ab724475eede8408410fc"
+    },
+    {
+      "id": 193,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "9d440d5d1fef5c6cbc33f37879e69067759c28f2055d113f6f12d6177d5c2d7b"
+    },
+    {
+      "id": 194,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "dc28fb47c476ecc85b625a93cf5e5332c6fb7e994ebf4e70eb317b5b2ef5eca7"
+    },
+    {
+      "id": 195,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "de5c00ec2690eb21fc925cfcd1bc04ded5aa42a6e67440595f732afb8cfd164c"
+    },
+    {
+      "id": 196,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "f9ecf9347207fc501348e5897637e7e238e503a17592e64b2ff1d34a138a6c60"
+    },
+    {
+      "id": 197,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "eddad2ebd18e06dc15908c0a39ee0b8b7c8fefdc44d7dcfde90061919fabd980"
+    },
+    {
+      "id": 198,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "3bdefc0041bb608ca9306c25b30c6480ec4c0f53b12d552afb407fa73b75e90d"
+    },
+    {
+      "id": 199,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "620a250f8adb09010f067e31424ee4ead5f59a894404fd0f7f149b251db4549f"
+    },
+    {
+      "id": 200,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "00b796ccc777cf05c5e0244530b5638118d225fbf78abbfad8602a4bb2d9081b"
+    },
+    {
+      "id": 201,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "0d635ac274c163b5e5e0577a8ff12af83c47cdaf2a2f34947774560df8ea2e20"
+    },
+    {
+      "id": 210,
+      "original_triangles": 1708,
+      "refined_triangles": 5484,
+      "brep_sha256": "c5645a01207975067263bf6226f415964cf02db91ee8b1b2123f8b925e8e894b"
+    },
+    {
+      "id": 211,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "f678e74f4d9acfc165515c5fac9d45bafb1ea99a62fde9c3230016571c0e7510"
+    },
+    {
+      "id": 212,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "69e2806e078962c2b4a0e59bcb0e5040b0be4de0488eb374eafda1349bdbbf49"
+    },
+    {
+      "id": 213,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "31dc1ce2d232d3fcfe8aa480000ea5a1fd12bd19534165604f69f7531b49afe5"
+    },
+    {
+      "id": 214,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "cbd8e7bbc8b8fb7c2d60ca975cdab85da1451dd25b00de42ee79e1f1e8428820"
+    },
+    {
+      "id": 215,
+      "original_triangles": 1708,
+      "refined_triangles": 5484,
+      "brep_sha256": "5ae22dd90a30bdc01eb9f8560a6a29d01c7eb274b89eaab869ba19c95f57ccc6"
+    },
+    {
+      "id": 216,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "f0e30e5156273b31065611e40d451bea9829d89b702128d276035c0689051330"
+    },
+    {
+      "id": 217,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "88ae23d2a6cea65352f1e0b59a8864d7cd1219c072c294f990945138d8561c47"
+    },
+    {
+      "id": 218,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "1c4db3ce1a71093c95989c959d2581c760548f3c6ecddf7c824d8e20c06e4407"
+    },
+    {
+      "id": 219,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "61c8b29fae269fa6cfc084702216052012db3fe74a2a06ae7d03ba80f9cadcdd"
+    },
+    {
+      "id": 220,
+      "original_triangles": 1708,
+      "refined_triangles": 5484,
+      "brep_sha256": "df83197cb0da62329fdce095083b6e75f18f7d5f93e385bf46844fd308372c50"
+    },
+    {
+      "id": 221,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "41bf55433b594cd8106ff054ae51f5f6ca52924690feb750b41c97062500dfe2"
+    },
+    {
+      "id": 222,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "41c8a822d88b60ce0eef1731c2c4950674cfddaa8aac79b4f9edacc7f72b7414"
+    },
+    {
+      "id": 223,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "7243d112cc98c8e42a1b1635d714ce6bfbadaeb26f524d0f0b2964649c958069"
+    },
+    {
+      "id": 224,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "61f522af767f4001d849c10009f927a1f436b84690e7f91942f92a6450646174"
+    },
+    {
+      "id": 225,
+      "original_triangles": 1708,
+      "refined_triangles": 5484,
+      "brep_sha256": "e88b1f3a787fcc59f31cbef688ea7e97fefb79b0cafd9fde65804e6111306785"
+    },
+    {
+      "id": 226,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "c9d4bd9daea37c20f1f994fed2c90d6cc9781804d3711e8ecc77c41875b0ed4b"
+    },
+    {
+      "id": 227,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "ed04b5d1281e65b15891f6e173c3912f566cb40955d07810a7cf206d7fe88450"
+    },
+    {
+      "id": 228,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "d926fa3fd762a9e5176bec344646c4341a55d3ec95b0481670fbb136a56a6d4a"
+    },
+    {
+      "id": 229,
+      "original_triangles": 1256,
+      "refined_triangles": 2736,
+      "brep_sha256": "355ad8f07ab742a84f4191f649b05192746ed8cc4579dc2f314dc891339352ce"
+    },
+    {
+      "id": 235,
+      "original_triangles": 15284,
+      "refined_triangles": 31960,
+      "brep_sha256": "43dff5959345d3decbc2375e8396d65408546bc1b0b1d9239f2f90445d88eac5"
+    },
+    {
+      "id": 241,
+      "original_triangles": 1348,
+      "refined_triangles": 2432,
+      "brep_sha256": "2eb974d49b79e47760909359c107a35a51909b467351aae92501fdd97c9b1ac8"
+    },
+    {
+      "id": 250,
+      "original_triangles": 1348,
+      "refined_triangles": 2432,
+      "brep_sha256": "af8591a835f60072e5e6e75caea2a3becd3de6fcdd1802410b7753d99dbdf57e"
+    },
+    {
+      "id": 260,
+      "original_triangles": 2100,
+      "refined_triangles": 41128,
+      "brep_sha256": "b673b10158c0fb8d74f338b1eaa0f10a3b85f004bc629559045e78aabc5f7fbc"
+    },
+    {
+      "id": 261,
+      "original_triangles": 840,
+      "refined_triangles": 39576,
+      "brep_sha256": "be7c9cf34399fc9016a9f619800f2687d6014e6aeb4eac3ea809f7382153d075"
+    },
+    {
+      "id": 266,
+      "original_triangles": 2100,
+      "refined_triangles": 41128,
+      "brep_sha256": "d31e45fab873ff0b5552e5e3cb84aa4dc5d75cc10631454c8520b17a9f02a6cd"
+    },
+    {
+      "id": 267,
+      "original_triangles": 840,
+      "refined_triangles": 39576,
+      "brep_sha256": "f164a033f08d9b39a417ea731d6b309eb801a6df818d145225e180e3e427d2de"
+    },
+    {
+      "id": 272,
+      "original_triangles": 6220,
+      "refined_triangles": 12600,
+      "brep_sha256": "2983303d0014a4b5f4e75365eef1c94c58bcde83e37e984369872abf042c2dfc"
+    },
+    {
+      "id": 273,
+      "original_triangles": 8542,
+      "refined_triangles": 15910,
+      "brep_sha256": "ac132bfa1a2d00df2161b6b5174a4d73fdb22f2aae9686072e073c0be92a764f"
+    },
+    {
+      "id": 274,
+      "original_triangles": 12898,
+      "refined_triangles": 23666,
+      "brep_sha256": "d1bb7d6de4bc26f44bd18e6872facb034005f44877426089950dc44b552e59d6"
+    },
+    {
+      "id": 275,
+      "original_triangles": 9528,
+      "refined_triangles": 19128,
+      "brep_sha256": "8fcb58eef0407a46ab233fed71248d238e98a50c13c15091bcfd56e1e5e8c738"
+    },
+    {
+      "id": 276,
+      "original_triangles": 9380,
+      "refined_triangles": 16722,
+      "brep_sha256": "4be320d1a4b5af499ff07ead903e10a55734bace9838ae008f89ca50e90492b0"
+    },
+    {
+      "id": 277,
+      "original_triangles": 9404,
+      "refined_triangles": 17896,
+      "brep_sha256": "034f4dce2c0d4d34ee07a055e44d1fb637334f5dad87bfe8c72e0ad8e5c76e4d"
+    }
+  ],
+  "refined_native_sha256": "0cd8b69794c1dfd5c45a0ee7bda40bde0ec71e95013cc1f221dc8308218bb71d"
+}

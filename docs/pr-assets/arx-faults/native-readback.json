@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "default_name": "arx_belt",
+  "native_parts": 118,
+  "native_placements": 375,
+  "verified_artifacts": 628,
+  "nominal_interface_checks": 52,
+  "aggregate_analytic_components": 385,
+  "project_source_files": 18,
+  "construction_dependencies": {
+    "packages": {
+      "cadquery": "2.8.0",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.5.4"
+    },
+    "runtime": {
+      "implementation": "CPython",
+      "machine": "AMD64",
+      "python": "3.12.10",
+      "system": "Windows"
+    },
+    "scope": "Explicit shared CAD, mass, material/core and contact helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured",
+    "source_files": {
+      "advanced_geometry.py": "de79f0e759705ac26dc1cb8bba41cd6a06b053e9235b35528847fa31540cb1c3",
+      "contact_geometry.py": "e84d003f81c158a323f688cd7fdf97fe354e697a6aad2c77d2891c1d0c3abf78",
+      "core.py": "75c52fdafd46ec533e77d42e8c4f02f292d6cc5215cc8a182f35ec41efce2af9",
+      "engineering_source.py": "c381d4e9251a66ef5faeaa8662a724b3cbf315bb43ac65a0eeee640dae86a96f",
+      "geometry.py": "b77b78a7421dbe127ab7c29f01b9c4c03fc068337ae8357429e161730c56e12c",
+      "linkages.py": "db14a2085c9bea50c13c955473b59d28f94ab6c33c3f4663b5c140574ab981a5",
+      "native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7",
+      "native_replay.py": "00bdcc7baa015cb9cf1b6aff68635ced3f12748f9322315ad58cc40562dc0784",
+      "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+      "shape_dag.py": "da11471bffb07c551c42d64cf1826ae4d928a0cb7ab4b06990474942226b8e65"
+    }
+  },
+  "native_source_binding_sha256": "f7c1923e8e102048f624cd898c55aea5c393a57b68299833a316f09989e5816c",
+  "native_build_sha256": "a9aa786bdb7d3dae3624af5f85bc0300a1142b2c40c45c94609af230c73e9826",
+  "model_sha256": "7e2d095563159bbc512a4ac8a6d3716f22dccb90e7f4487818e6091f20dc752f",
+  "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+  "simulated_seconds": 17.400000000013918,
+  "simulated_steps": 41760,
+  "step": {
+    "file": "arx_belt.step",
+    "sha256": "acb1733669a081690f34412cd959f23b7d81a5ebc47ca75da46caf7d9330af85",
+    "bytes": 27146714,
+    "valid_solids": 392,
+    "minimum_volume_mm3": 5.242532740582303,
+    "sum_solid_volumes_mm3": 5066917.239046412
+  },
+  "glb": {
+    "file": "assembly.glb",
+    "sha256": "7489b98b52efaf07a75f971aa4dddc6fd8e07d512794eb955ae6a4f89a8d7aeb",
+    "bytes": 15155112,
+    "geometry_nodes": 385
+  },
+  "scope": "Fresh native construction, source binding, nominal contact dynamics and independent CAD readback; no hardware qualification"
+}

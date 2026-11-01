@@ -1,0 +1,6 @@
+{
+  "schema": "cybrgeo-engineering-project/1",
+  "name": "arx_belt",
+  "description": "Actual ARX P5 authored geometry and task using CYBR GEO shared engineering services",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2"
+}

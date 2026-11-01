@@ -1,0 +1,184 @@
+{
+  "schema": "cybrgeo-arx-authored-policy-media/2",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "source_revision": "Pinned ARX belt P5 reference; not the latest ARX source revision",
+  "model_sha256": "7e2d095563159bbc512a4ac8a6d3716f22dccb90e7f4487818e6091f20dc752f",
+  "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+  "reference_sha256": "0cc503e88f290c0200f39b3b05ae0b25cfbf7b211e4519bdd858af82be19c5fa",
+  "trace_file_sha256": "8b8e8df1b4bc03348ede51b6d751671cb7533d8be4a87219908aad2d0f20f37f",
+  "task_parameters_sha256": "c935e37d3cd297d236a22f43c243ec79c5298fdcffcff4e251df01d57076afe5",
+  "operating_policy": {
+    "lateral_tilt_scale": 0.0
+  },
+  "runtime_implementation": {
+    "schema": "cybrgeo-causal-runtime/1",
+    "source_files": {
+      "causal_runtime.py": "1c06bfd24ddd3606cc664bbf85b36536fa1f0cd6b5d020b083ed7d1f2302c1d1",
+      "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+    },
+    "packages": {
+      "numpy": "2.5.4",
+      "mujoco": "3.16.0"
+    },
+    "runtime": {
+      "python": "3.12.10",
+      "system": "Windows",
+      "machine": "AMD64"
+    },
+    "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+  },
+  "native_build_sha256": "a9aa786bdb7d3dae3624af5f85bc0300a1142b2c40c45c94609af230c73e9826",
+  "native_source_binding_sha256": "f7c1923e8e102048f624cd898c55aea5c393a57b68299833a316f09989e5816c",
+  "source_files": {
+    "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+    "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+    "faults.py": "dcb75c486d4beecea85716fe6e55e8e68f0fd7938fb44615042c82692f41a5b6",
+    "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+    "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+    "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+    "project.py": "3710188dc7614afcbb44bb51890b17362a995bc7a358f5d440a85c2d2e7e03d2",
+    "task.py": "8113f6951f7cd4799cec296445ccd3ccdc8bf81b50ecca47e56d9ab96cc2b244",
+    "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+    "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+    "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+    "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+    "data/default-task.json": "254cfc26109819ffe2ea623aa919079119827881654c373ed22103057d68ded4",
+    "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+    "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+    "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+    "data/source-scenarios.json": "d0148801f4b5600c57488454b2413bb15b0921d0a7a467a7d6258695223b3506",
+    "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+  },
+  "reference_clock": {
+    "schema": "cybrgeo-reference-clock/1",
+    "source_times_s": [
+      0.0,
+      1.65,
+      2.75,
+      3.4,
+      5.0,
+      6.65,
+      7.75,
+      8.4,
+      10.0
+    ],
+    "physical_times_s": [
+      0.0,
+      1.65,
+      3.85,
+      7.1,
+      8.7,
+      10.35,
+      12.55,
+      15.8,
+      17.4
+    ],
+    "source_period_s": 10.0,
+    "physical_period_s": 17.4,
+    "rates": [
+      1.0,
+      0.5,
+      0.2,
+      1.0000000000000002,
+      1.0,
+      0.4999999999999996,
+      0.20000000000000012,
+      1.000000000000001
+    ],
+    "implementation_sha256": "d5f6a6661ee35f87d48fac9b2dc33e152655b2acb399e8a1e3168062d6a40849"
+  },
+  "source_landmark_times_s": [
+    0.0,
+    1.4,
+    2.2,
+    3.2,
+    4.9,
+    7.2,
+    9.9,
+    10.0
+  ],
+  "requested_physical_landmark_times_s": [
+    0.0,
+    1.4,
+    2.7500000000000004,
+    6.100000000000001,
+    8.6,
+    11.45,
+    17.299999999999997,
+    17.4
+  ],
+  "actual_recorded_stills": [
+    {
+      "path": "pose-00000.png",
+      "frame_index": 0,
+      "time_s": 0.0
+    },
+    {
+      "path": "pose-00168.png",
+      "frame_index": 168,
+      "time_s": 1.40000000000112
+    },
+    {
+      "path": "pose-00330.png",
+      "frame_index": 330,
+      "time_s": 2.7500000000022
+    },
+    {
+      "path": "pose-00732.png",
+      "frame_index": 732,
+      "time_s": 6.100000000004879
+    },
+    {
+      "path": "pose-01032.png",
+      "frame_index": 1032,
+      "time_s": 8.60000000000688
+    },
+    {
+      "path": "pose-01374.png",
+      "frame_index": 1374,
+      "time_s": 11.45000000000916
+    },
+    {
+      "path": "pose-02076.png",
+      "frame_index": 2076,
+      "time_s": 17.30000000001384
+    },
+    {
+      "path": "pose-02088.png",
+      "frame_index": 2088,
+      "time_s": 17.400000000013918
+    }
+  ],
+  "simulated_seconds": 17.400000000013918,
+  "integration_steps": 41760,
+  "recorded_frames": 2089,
+  "render_script_sha256": "2252bccba2a3767f8cd9bcfd1018bb63ee210156042cdffc520825d56d301f7d",
+  "media": {
+    "size_px": [
+      800,
+      600
+    ],
+    "requested_fps": 6,
+    "gif_frames": 106,
+    "gif_duration_ms": 17570
+  },
+  "scope": "Fresh native CAD at recorded MuJoCo states, held without interpolation. No source film or image generation. This nominal motion does not establish separate fault acceptance, fail-safe payload retention, latest-source integration or hardware qualification.",
+  "files_sha256": {
+    "replay-check.json": "04daf6ba0e83c99e62889be05d70e6446cdba5a569ed606bf4f4eefd58c93508",
+    "replay-evidence.json": "881b58799ea2401290337949cc45f4403eb670d0e58ea282a3e9ab1be26049f0",
+    "geometry-truth.json": "c17d2c3f070e629dd0177dcd1d3d3bf38262bae1c3cebba00682c5f00f9c055f",
+    "integrated-motion.gif": "f6648d1e144fc4e7388d17ac45e36295c859544711f7914796844d866456823c",
+    "pose-00000.png": "f8def9272f790625dd96d5b566ca96a4a3ab33dc221066a4424aa54f995653a7",
+    "pose-00168.png": "b93e9b042ac8e86cb3b20f09efd709d946df15d4d1f3a3d4674bccb5f7c23e80",
+    "pose-00330.png": "85a0225d4c92a42a11a42b14106fa772356d8f8daa270b6bc8a768ef6fac8191",
+    "pose-00732.png": "a9e89be74f7ba2cc79aba658ea27937f0ec900047d681b6aabf88b42c9c61108",
+    "pose-01032.png": "cd4d471f4eea6d235a73ebd509a7ce0c7cbbeb7d4be577ab500bb27c8080e2fd",
+    "pose-01374.png": "53e317dbe2b89355246e6c34822288673881d2aea2bcb381caa3153f3d9871a5",
+    "pose-02076.png": "1c1c8472c4ae71ce54e7b24e5181c9d630e79219bea6cd5358ab0b4aba6769d7",
+    "pose-02088.png": "433b5f90c42805e9eeb2ea557174795fa89f61dacebb0b3aa4135b9666309de3",
+    "nominal-engineering.json": "ebea6a6a19a5f8c60a2ef1046955ea8966de64ce258797cab477ca99f937e5da",
+    "native-readback.json": "c4ee6f85315c7f45719f4f0615b1735fc59a20a6def2e98dbf00e23f483ea6b8",
+    "native-build.json": "79b55cdd8ab3457134d4b24f803d414ccaf2fe91bf15c6f14070dbe1a01aab11",
+    "native-source-binding.json": "fd8fd3eed04b68476266865addd9d7cc1d5a58fc611480c5f419c3d0ad1ea863"
+  }
+}

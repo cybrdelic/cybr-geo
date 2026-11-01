@@ -1,0 +1,16 @@
+{
+  "schema": "cybrgeo-arx-gripper-travel-index/1",
+  "full_suite": {
+    "cases": 49,
+    "maximum_bound_residual_m": 0.0,
+    "file": "full-suite-gripper-travel.json.gz"
+  },
+  "refined_suite": {
+    "cases": 4,
+    "maximum_bound_residual_m": 0.0,
+    "file": "refined-suite-gripper-travel.json.gz"
+  },
+  "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+  "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+  "scope": "Readback of pinned ARX belt P5 source-bound traces at aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2, including initial state and every integrated step. Observed residuals against authored slide ranges; no new acceptance tolerance and no claim about the distinct compact P6 design or latest ARX revisions."
+}

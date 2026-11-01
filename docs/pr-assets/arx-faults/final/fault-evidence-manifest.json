@@ -1,0 +1,166 @@
+{
+  "schema": "cybrgeo-arx-fault-evidence-packet/1",
+  "files": {
+    "README.md": {
+      "bytes": 7197,
+      "sha256": "9caf1e8a8dbd0e4aa529c407c57908b53b504ba001b018e900dce6e4bd0c67d2"
+    },
+    "comparative-metrics.json": {
+      "bytes": 206256,
+      "sha256": "0c07278694de3f3a6fef85a6f9662dc3383f4edceb13fa060f50c96b59cab102"
+    },
+    "full-suite-execution.json": {
+      "bytes": 5524,
+      "sha256": "73041aa82c0fd409159f277a2238e50db8ccd0eb79c523edc0cf61187c68b669"
+    },
+    "full-suite-gripper-travel.json.gz": {
+      "bytes": 7340,
+      "sha256": "6acd1375fadfe7b7589a43c3dfd1b7c8860e5bb712b292b86332bf132d01bee4"
+    },
+    "full-suite-inputs.json.gz": {
+      "bytes": 223167,
+      "sha256": "a9f623d197effdc3d27723197d87ed3f3095bd947e6751eb26512b0ea2d0949d"
+    },
+    "full-suite-summary.json": {
+      "bytes": 566166,
+      "sha256": "3697b1ce26ac3c956a4be7575da315dd2d4895793b0b3eb520c8af5c009888ce"
+    },
+    "full-suite-summary.json.gz": {
+      "bytes": 2633349,
+      "sha256": "22db9c70110998b22f00b46ff5d712701dea6ac98508b1f1c95e2fbfd7bbe3c1"
+    },
+    "gripper-travel.json": {
+      "bytes": 817,
+      "sha256": "d888710b5691b1ac8d9fe8bef19842a103aecedcaa27408bbb3a2fee419846b5"
+    },
+    "inspect_final_faults.py": {
+      "bytes": 8106,
+      "sha256": "721ce8cad13077f4e96e8c2ca81589694c32594b1a6b0e8f933684c95c0959da"
+    },
+    "native-build.json": {
+      "bytes": 72900,
+      "sha256": "79b55cdd8ab3457134d4b24f803d414ccaf2fe91bf15c6f14070dbe1a01aab11"
+    },
+    "native-source-binding.json": {
+      "bytes": 3602,
+      "sha256": "fd8fd3eed04b68476266865addd9d7cc1d5a58fc611480c5f419c3d0ad1ea863"
+    },
+    "public-command-execution.json": {
+      "bytes": 1188,
+      "sha256": "616a21ae0a2f818cbdc5d8953dda71d77a05a609e6b2703a2d7717b1e72938c4"
+    },
+    "publication-provenance.json": {
+      "bytes": 5750,
+      "sha256": "6f81a2e5c80e66971b2c9c3426927572ae346bc01a5c9c672ae9aa3614217849"
+    },
+    "readback_final_suite.py": {
+      "bytes": 4196,
+      "sha256": "85bbc7439476fce1addcb31df5541ed17b6e5b1eb11b97090d7c83c84082f8de"
+    },
+    "refined-suite-gripper-travel.json.gz": {
+      "bytes": 2970,
+      "sha256": "1439d227240ce4469dc5fd73f517692f757d3e430a86c9cf8294f4985cc2592c"
+    },
+    "refined-suite-inputs.json.gz": {
+      "bytes": 222296,
+      "sha256": "c2ecc33cac6a36fd19afb1b9b6f0abba614049ae016f358b248979ebcb7a4cae"
+    },
+    "refined-suite-summary.json": {
+      "bytes": 61691,
+      "sha256": "d4dc680bb9555df12a8459e3232466c190393b5a13a0e4ef9cfd3dee3264afc6"
+    },
+    "refined-suite-summary.json.gz": {
+      "bytes": 270521,
+      "sha256": "de8144d5369e7536da912ef3329b20cacb557a50030f86f22778bae6ad2faa8a"
+    },
+    "refinement-execution-failed-spawn.json": {
+      "bytes": 1550,
+      "sha256": "37c529f9cb5a130f3c71f215171269793eceff15a7f53cc937aa42202d9ba484"
+    },
+    "refinement-execution.json": {
+      "bytes": 1598,
+      "sha256": "c4f2cf08265648038159c8833d956b5de0e57e43bda12b33c3fa347a37099aae"
+    },
+    "run_final_refinement.py": {
+      "bytes": 2866,
+      "sha256": "9a13a4f6d2a88a693d3cf52ff22b5b8d2c528112b6db0467c11736f5cbaf356f"
+    },
+    "summarize_maintained_final.py": {
+      "bytes": 7933,
+      "sha256": "39770d6f83a5a9929d536d5d78f3c10e0d4d8b8ff42f75c24184b1d950b4bc10"
+    }
+  },
+  "raw_receipts": {
+    "full-suite-inputs.json.gz": {
+      "source_path": "outputs/engineering-arx-core-faults-final/inputs.json",
+      "raw_bytes": 5270920,
+      "raw_sha256": "8289451d5699e7e4f47b18d9d2949272f0b4c2ccfde7bf8aa15898de0de3fc7b",
+      "compressed_bytes": 223167,
+      "compressed_sha256": "a9f623d197effdc3d27723197d87ed3f3095bd947e6751eb26512b0ea2d0949d",
+      "encoding": "gzip mtime=0; exact original bytes"
+    },
+    "full-suite-summary.json.gz": {
+      "source_path": "outputs/engineering-arx-core-faults-final/summary.json",
+      "raw_bytes": 20045605,
+      "raw_sha256": "69c5c78a4c1e10cdcf9d012342e8448816e4e6a7b2e03482162cde15a7a39fe7",
+      "compressed_bytes": 2633349,
+      "compressed_sha256": "22db9c70110998b22f00b46ff5d712701dea6ac98508b1f1c95e2fbfd7bbe3c1",
+      "encoding": "gzip mtime=0; exact original bytes"
+    },
+    "full-suite-gripper-travel.json.gz": {
+      "source_path": "outputs/engineering-arx-core-faults-final/gripper-travel.json",
+      "raw_bytes": 140378,
+      "raw_sha256": "f3e33c04e0e92006c1f0ed19ba8b25d9dce6355c6bf5de13d184fbad53df81dc",
+      "compressed_bytes": 7340,
+      "compressed_sha256": "6acd1375fadfe7b7589a43c3dfd1b7c8860e5bb712b292b86332bf132d01bee4",
+      "encoding": "gzip mtime=0; exact original bytes"
+    },
+    "refined-suite-inputs.json.gz": {
+      "source_path": "outputs/engineering-arx-core-refined-direct/inputs.json",
+      "raw_bytes": 5252864,
+      "raw_sha256": "b8169b4502a54f1af1256d1664f7d18b835f89ff06ca013fdf20cf2cd5656de5",
+      "compressed_bytes": 222296,
+      "compressed_sha256": "c2ecc33cac6a36fd19afb1b9b6f0abba614049ae016f358b248979ebcb7a4cae",
+      "encoding": "gzip mtime=0; exact original bytes"
+    },
+    "refined-suite-summary.json.gz": {
+      "source_path": "outputs/engineering-arx-core-refined-direct/summary.json",
+      "raw_bytes": 2049044,
+      "raw_sha256": "e75fa410d4abf200afdb20749d5fcbb9a903b6956405578baf52116779c057f8",
+      "compressed_bytes": 270521,
+      "compressed_sha256": "de8144d5369e7536da912ef3329b20cacb557a50030f86f22778bae6ad2faa8a",
+      "encoding": "gzip mtime=0; exact original bytes"
+    },
+    "refined-suite-gripper-travel.json.gz": {
+      "source_path": "outputs/engineering-arx-core-refined-direct/gripper-travel.json",
+      "raw_bytes": 16833,
+      "raw_sha256": "a244c138c44b39027a609b0ee21a314f3d3e67764adf56f3f85cb3183e216e5b",
+      "compressed_bytes": 2970,
+      "compressed_sha256": "1439d227240ce4469dc5fd73f517692f757d3e430a86c9cf8294f4985cc2592c",
+      "encoding": "gzip mtime=0; exact original bytes"
+    }
+  },
+  "source_repository": "cybrdelic/cybr-arx6-belt",
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "source_revision_label": "Pinned P5; not latest ARX",
+  "operating_policy": {
+    "lateral_tilt_scale": 0.0,
+    "cycle_seconds": 17.4
+  },
+  "full_count": 49,
+  "refined_count": 5,
+  "suite_acceptance": {
+    "full_suite": true,
+    "refined_suite": true
+  },
+  "excluded_execution_attempt": {
+    "file": "refinement-execution-failed-spawn.json",
+    "output": "outputs/engineering-arx-core-refined-final",
+    "completed_scenarios": 0,
+    "failure": "Windows SpawnProcess queue semaphore raised WinError6 before any result; preserved as execution failure, not a numerical verdict. Direct retry uses a new output directory."
+  },
+  "native_build_sha256": "a9aa786bdb7d3dae3624af5f85bc0300a1142b2c40c45c94609af230c73e9826",
+  "native_source_binding_sha256": "f7c1923e8e102048f624cd898c55aea5c393a57b68299833a316f09989e5816c",
+  "scope": "Complete terminal maintained source-scenario runs on one fresh verified native build. Six compressed numeric receipts preserved losslessly; compact summaries reconstruct exactly. Four execution receipts are derived public copies with documented path substitutions and original hashes. Historical input paths remain inert archived metadata. Full suite includes43 ordinary and6 deliberate adverse rows; the latter are expected task/numeric failures. Original numeric verdicts remain separate from additional adverse placement checks. Payload loss remains separately reported. Half-timestep refinement covers nominal plus four critical ordinary cases, not every case or an all-state envelope. No hardware qualification.",
+  "publication_provenance": "publication-provenance.json"
+}

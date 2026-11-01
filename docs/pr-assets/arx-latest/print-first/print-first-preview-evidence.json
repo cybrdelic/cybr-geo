@@ -1,0 +1,63 @@
+{
+  "source_commit": "85bd6d2ce5b7c567d08b3ffccf2a9be46005aabf",
+  "source_input_sha256": {
+    "print-first-fore.brep": "8fcb58eef0407a46ab233fed71248d238e98a50c13c15091bcfd56e1e5e8c738",
+    "print-first-upper.brep": "d1bb7d6de4bc26f44bd18e6872facb034005f44877426089950dc44b552e59d6"
+  },
+  "native_build_sha256": "bf021f9b01941fa20c6d48b72450128f3c40b8e0fe21a3f83b58ecc4a67c37fd",
+  "input_spec_sha256": "fdd92d8045dfb49c96bdb319cd90d62a8513c8660a7e480d5d7c58958c91cc56",
+  "print_plan_sha256": "e9aa155c08919ac5d807e2038a542f87d7fdf26d09c71108f4db2c9acc9af2d8",
+  "preview_recipe_sha256": "602fba0d9dbda16c3b37794c8b4af0f9b916dd83f51c965a0a0066d29d150a8a",
+  "construction_code_sha256": {
+    "examples/engineering/arx_compact/print_first.py": "602fba0d9dbda16c3b37794c8b4af0f9b916dd83f51c965a0a0066d29d150a8a",
+    "src/mechanism_lab/manufacturing_joints.py": "06914c57a4bc23272babf671a383093b461c17461f22bb63738dfe7939724c0b",
+    "src/mechanism_lab/manufacturing_gears.py": "0cfd6dfcb890a6cc9544bceb947b44b98276b2bb1b055f76a6a64937e2298770",
+    "src/mechanism_lab/native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7"
+  },
+  "print_step_sha256": {
+    "upper-frame-proximal": "cb19eaac4abb18401f6cf832383e10fe78af7ebfdc975877c729caa6028142e2",
+    "upper-frame-distal": "5ff98a29f3f749d4d7cc57c593c456b3cefbb0f735ccce36f4e13c43f8c369c7",
+    "fore-frame-reinforced": "5391363eeb37cbebf3fe5823a39873012a52458946836d97ca495086fd6c6f3a",
+    "upper-frame-lap-coupler": "49db2dc91c98e71c98f152b9d2829195e3d498077dd781856edc7a0447dc8b86",
+    "gripper-pinion-tooth-trial": "3bf4925c8c32966d4e3ac502e1bd92da9d49f719ed6e3752961fd4843b8e1c12",
+    "gripper-rack-tooth-trial": "9d40dee0b3244f5db283381f7acf44654adb3a06f78ccc544c0ac8dd77d8e816"
+  },
+  "display_translation_mm": {
+    "upper-frame-proximal": [
+      0,
+      40,
+      0
+    ],
+    "upper-frame-distal": [
+      95,
+      40,
+      0
+    ],
+    "fore-frame-reinforced": [
+      210,
+      40,
+      0
+    ],
+    "upper-frame-lap-coupler": [
+      310,
+      90,
+      0
+    ],
+    "gripper-pinion-tooth-trial": [
+      130,
+      0,
+      0
+    ],
+    "gripper-rack-tooth-trial": [
+      200,
+      5,
+      0
+    ]
+  },
+  "geometry_scale": 1,
+  "scope": "Six actual CAD test articles; display placement only; not an assembled robot, successful print, simulation or hardware qualification",
+  "material_display": "Opaque inspection colors; no optical or printed-finish inference",
+  "image_sha256": "991a06afd8287d6c0aa5a2235775c0baa62675162b51a556b6e81c3fc1bffcf2",
+  "image_file": "print-first-preview.png",
+  "renderer_metadata": "print-first-preview.render.json"
+}

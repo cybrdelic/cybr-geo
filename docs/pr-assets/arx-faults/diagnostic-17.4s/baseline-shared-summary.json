@@ -1,0 +1,133 @@
+{
+  "provenance": {
+    "baseline_head": "1c216fdaebf14c68c0a0cb5dde794cd4ada7a06a",
+    "baseline_snapshot_sha256": "283b977dd6fa6c06d499518598f58962d5e03bab7896991336853cde98c3c811",
+    "baseline_model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
+    "baseline_control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+    "services_sha256": {
+      "causal_runtime.py": "502a812b26c0d48c9b595d6c074a7862b1e8ef0917d61a3b215be59a5a8e155c",
+      "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+      "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a"
+    },
+    "policy": "source",
+    "policy_task_source": "\"\"\"ARX belt example's source-derived reference task; SI units, not dynamics.\n\nPort of ``reference`` and ``referenceDerivatives`` in the pinned source's\n``ARX-6-P5-Engineering/integration/controller.mjs`` at commit\n``aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2``. Supply its parameters.json mapping.\n\nThe reference is a target for a force/torque controller. It does not prescribe\nthe actual body state, attach a workpiece, or prove contact/placement success.\nThe original finite-difference stencil and angle branch choices are retained,\nincluding across stage boundaries. This example-specific task is not a core\ntrajectory policy.\n\"\"\"\nfrom __future__ import annotations\n\nimport math\nfrom collections.abc import Mapping\n\nSOURCE_COMMIT = \"aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2\"\nPERIOD_S = 10.0\nDERIVATIVE_STEP_S = 0.00025\nHALF_CYCLE_BOUNDARIES_S = (0.0, 0.40, 0.65, 1.0, 1.65, 2.75, 3.4, 3.75, 4.45, 5.0)\n\n\ndef _clip(value, low, high):\n    return max(low, min(high, value))\n\n\ndef _dot(a, b):\n    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]\n\n\ndef _scale(a, value):\n    return [x * value for x in a]\n\n\ndef _sub(a, b):\n    return [x - b[index] for index, x in enumerate(a)]\n\n\ndef _mix(a, b, value):\n    return [x + (b[index] - x) * value for index, x in enumerate(a)]\n\n\ndef _ease(value):\n    value = _clip(value, 0, 1)\n    return value * value * value * (value * (value * 6 - 15) + 10)\n\n\ndef _phase(time, start, end):\n    return _ease((time - start) / (end - start))\n\n\ndef _ry(angle):\n    c, s = math.cos(angle), math.sin(angle)\n    return [c, 0, s, 0, 1, 0, -s, 0, c]\n\n\ndef _rz(angle):\n    c, s = math.cos(angle), math.sin(angle)\n    return [c, -s, 0, s, c, 0, 0, 0, 1]\n\n\ndef _mm(a, b):\n    result = [0.0] * 9\n    for row in range(3):\n        for col in range(3):\n            for index in range(3):\n                result[3 * row + col] += a[3 * row + index] * b[3 * index + col]\n    return result\n\n\ndef _transpose_mul(a, vector):\n    return [a[0] * vector[0] + a[3] * vector[1] + a[6] * vector[2],\n            a[1] * vector[0] + a[4] * vector[1] + a[7] * vector[2],\n            a[2] * vector[0] + a[5] * vector[1] + a[8] * vector[2]]\n\n\ndef _position(time, parameters):\n    t = math.fmod(time, PERIOD_S)\n    if t < 0:\n        t += PERIOD_S\n    returning = t >= 5\n    h, direction_sign = (t - 5, -1) if returning else (t, 1)\n    scale = parameters['scene_units_to_meters']\n    a, b = parameters['workpiece_targets_m']['A'], parameters['workpiece_targets_m']['B']\n    start, end = (b, a) if returning else (a, b)\n    high_start, high_end = [start[0], .92 * scale, start[2]], [end[0], .92 * scale, end[2]]\n    travel = _phase(h, 1.65, 2.75)\n    hump = 16 * travel * travel * (1 - travel) * (1 - travel)\n    if h < .65:\n        tcp, stage = _mix(high_start, start, _phase(h, 0, .65)), 0\n    elif h < 1:\n        tcp, stage = list(start), 1\n    elif h < 1.65:\n        tcp, stage = _mix(start, high_start, _phase(h, 1, 1.65)), 2\n    elif h < 2.75:\n        tcp, stage = _mix(high_start, high_end, travel), 3\n        tcp[1] += .16 * scale * hump\n    elif h < 3.4:\n        tcp, stage = _mix(high_end, end, _phase(h, 2.75, 3.4)), 4\n    elif h < 3.75:\n        tcp, stage = list(end), 5\n    elif h < 4.45:\n        tcp, stage = _mix(end, high_end, _phase(h, 3.75, 4.45)), 6\n    else:\n        tcp, stage = list(high_end), 7\n    cfg = parameters['controller']\n    gap = cfg['jaw_closed_target_half_gap_m'] if .40 <= h < 3.4 else cfg['jaw_open_half_gap_m']\n    direction = [.15 * hump, -1, direction_sign * .34 * hump]\n    direction = _scale(direction, 1 / math.hypot(*direction))\n    wrist = _sub(tcp, _scale(direction, parameters['tool_length_m']))\n    delta = _sub(wrist, [0, parameters['shoulder_height_m'], 0])\n    radial = math.hypot(delta[0], delta[2])\n    q1 = math.atan2(delta[2], delta[0])\n    base = _ry(-q1)\n    l1, l2 = parameters['upper_length_m'], parameters['fore_length_m']\n    q3 = math.acos(_clip((_dot(delta, delta) - l1 * l1 - l2 * l2) / (2 * l1 * l2), -1, 1))\n    elevation = math.atan2(delta[1], radial) + math.atan2(l2 * math.sin(q3), l1 + l2 * math.cos(q3))\n    q2 = math.pi / 2 - elevation\n    fore = _mm(_mm(base, _rz(-q2)), _rz(-q3))\n    local = _transpose_mul(fore, direction)\n    q4 = math.atan2(-local[2], local[0])\n    q5 = math.acos(_clip(local[1], -1, 1))\n    bend = _mm(_mm(fore, _ry(q4)), _rz(-q5))\n    reference_x = _sub([1, 0, 0], _scale(direction, direction[0]))\n    reference_x = _scale(reference_x, 1 / math.hypot(*reference_x))\n    reference_local = _transpose_mul(bend, reference_x)\n    q6 = math.atan2(-reference_local[2], reference_local[0])\n    if q6 < 0:\n        q6 += 2 * math.pi\n    q6 += direction_sign * .5 * hump\n    return dict(q=[q1, q2, q3, q4, q5, q6], gap=gap, stage=stage)\n\n\ndef reference(time: float, parameters: Mapping) -> dict:\n    \"\"\"Return q [rad], qd [rad/s], qdd [rad/s\u00b2], half-gap [m], and stage.\n\n    Accepts arbitrary finite times, including negative times and later cycles.\n    Derivatives use the original centred 0.00025-second stencil without angle\n    unwrapping or smoothing; gap remains the source's switched half-gap target.\n    Parameters are read only. No integration or body-state mutation occurs.\n    \"\"\"\n    if isinstance(time, bool) or not isinstance(time, (int, float)) or not math.isfinite(time):\n        raise ValueError('Reference time must be a finite number of seconds')\n    if not isinstance(parameters, Mapping):\n        raise TypeError('Reference parameters must be the source parameter mapping')\n    result = _position(time, parameters)\n    before = _position(time - DERIVATIVE_STEP_S, parameters)['q']\n    after = _position(time + DERIVATIVE_STEP_S, parameters)['q']\n    result['qd'] = [(b - a) / (2 * DERIVATIVE_STEP_S) for a, b in zip(before, after)]\n    result['qdd'] = [(b - 2 * q + a) / (DERIVATIVE_STEP_S * DERIVATIVE_STEP_S)\n                     for q, a, b in zip(result['q'], before, after)]\n    return result\n",
+    "retiming": {
+      "source_edges_s": [
+        0.0,
+        1.65,
+        2.75,
+        3.4,
+        5.0,
+        6.65,
+        7.75,
+        8.4,
+        10.0
+      ],
+      "physical_edges_s": [
+        0.0,
+        1.65,
+        2.75,
+        3.4,
+        5.0,
+        6.65,
+        7.75,
+        8.4,
+        10.0
+      ],
+      "rates": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "diagnostic_script_sha256": "3f4b6f54296655d19fe2da85c5b5821ab38d200d0458e115558e3ea1f71a3bdd",
+    "measurement_script_sha256": "fd75e46971358508e4fdad5c59d2cf27e76a61921ebf606118365eb4e355bf40",
+    "scope": "Historical 1c216fda physical baseline; in-memory trajectory variant; not a new source-bound native build"
+  },
+  "nominal_passed": true,
+  "scenarios": [
+    {
+      "case": "power_loss_3.2",
+      "scope": "original-clock",
+      "fault_s": 3.2,
+      "passed": false,
+      "peak_belt_Nm": [
+        3.64322919588199,
+        10.856625896529794,
+        9.392807624988992,
+        3.2543430285033303,
+        2.3970226512548694,
+        0.027020202258424275
+      ],
+      "max_settled_speed_sampled_rad_s": [
+        1.1653889297475937e-15,
+        1.2097175886938861e-05,
+        3.0594892938622902e-06,
+        2.6848233481603098e-05,
+        2.4967445735605892e-06,
+        1.6036572852497275e-08
+      ],
+      "failed": [
+        "estimated belt torque including rotor deceleration within service allowance"
+      ],
+      "puck_drop_m": 0.026294278089946978
+    },
+    {
+      "case": "weak_spring_double_delay_3.2",
+      "scope": "original-clock",
+      "fault_s": 3.2,
+      "passed": false,
+      "peak_belt_Nm": [
+        3.656069399797132,
+        15.657271053100029,
+        33.376752462530455,
+        3.1211943704423235,
+        9.782919291309465,
+        0.026930968599268024
+      ],
+      "max_settled_speed_sampled_rad_s": [
+        6.867521119557199e-07,
+        4.4953493726491744e-06,
+        3.19400565060805e-05,
+        2.8499221843199524e-05,
+        1.1735709215784316e-05,
+        1.7533882924032624e-07
+      ],
+      "failed": [
+        "estimated belt torque including rotor deceleration within service allowance"
+      ],
+      "puck_drop_m": 0.02711386630988766
+    },
+    {
+      "case": "weak_spring_double_delay_7.2",
+      "scope": "original-clock",
+      "fault_s": 7.2,
+      "passed": false,
+      "peak_belt_Nm": [
+        4.420119523294117,
+        12.722381635250478,
+        4.623200099645652,
+        2.2721733481687263,
+        0.907068531377821,
+        0.9763895981238092
+      ],
+      "max_settled_speed_sampled_rad_s": [
+        3.125661811839846e-07,
+        1.416171722358206e-06,
+        1.84766965508477e-05,
+        0.1516818295514095,
+        3.0206035957133385e-06,
+        4.4518480950238085e-08
+      ],
+      "failed": [
+        "all joints settle below 0.002 rad/s"
+      ],
+      "puck_drop_m": 0.19653315468049865
+    }
+  ]
+}

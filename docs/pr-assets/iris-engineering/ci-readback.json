@@ -1,0 +1,525 @@
+{
+  "passed": true,
+  "project": "iris09",
+  "native_parts": 68,
+  "native_placements": 68,
+  "verified_artifacts": 230,
+  "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+  "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+  "construction_dependencies": {
+    "packages": {
+      "cadquery": "2.8.0",
+      "cadquery-ocp": "7.9.3.1.1",
+      "numpy": "2.5.4"
+    },
+    "runtime": {
+      "implementation": "CPython",
+      "machine": "AMD64",
+      "python": "3.12.10",
+      "system": "Windows"
+    },
+    "scope": "Explicit shared CAD, mass, material/core and contact helpers plus CAD kernel/runtime versions; arbitrary external Python imports are not captured",
+    "source_files": {
+      "advanced_geometry.py": "de79f0e759705ac26dc1cb8bba41cd6a06b053e9235b35528847fa31540cb1c3",
+      "contact_geometry.py": "e84d003f81c158a323f688cd7fdf97fe354e697a6aad2c77d2891c1d0c3abf78",
+      "core.py": "75c52fdafd46ec533e77d42e8c4f02f292d6cc5215cc8a182f35ec41efce2af9",
+      "engineering_source.py": "c381d4e9251a66ef5faeaa8662a724b3cbf315bb43ac65a0eeee640dae86a96f",
+      "geometry.py": "b77b78a7421dbe127ab7c29f01b9c4c03fc068337ae8357429e161730c56e12c",
+      "linkages.py": "db14a2085c9bea50c13c955473b59d28f94ab6c33c3f4663b5c140574ab981a5",
+      "native_construction.py": "38538594e3f8985aa328a046a2047040f6588dce91a334e8257b1d58e1a5fbb7",
+      "native_replay.py": "00bdcc7baa015cb9cf1b6aff68635ced3f12748f9322315ad58cc40562dc0784",
+      "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+      "shape_dag.py": "da11471bffb07c551c42d64cf1826ae4d928a0cb7ab4b06990474942226b8e65"
+    }
+  },
+  "project_source_files": 6,
+  "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+  "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+  "runtime_implementation": {
+    "schema": "cybrgeo-causal-runtime/1",
+    "source_files": {
+      "causal_runtime.py": "1c06bfd24ddd3606cc664bbf85b36536fa1f0cd6b5d020b083ed7d1f2302c1d1",
+      "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+    },
+    "packages": {
+      "numpy": "2.5.4",
+      "mujoco": "3.16.0"
+    },
+    "runtime": {
+      "python": "3.12.10",
+      "system": "Windows",
+      "machine": "AMD64"
+    },
+    "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+  },
+  "simulated_seconds": 8.0,
+  "simulated_steps": 40000,
+  "model": {
+    "actuators": 1,
+    "scalar_joints": 19,
+    "connect_closures": 9,
+    "collision_geometries": 0,
+    "explicit_contact_pairs": 0
+  },
+  "task_requirements": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "complete ring cycle",
+        "passed": true
+      },
+      {
+        "name": "loop closure at recorded states",
+        "passed": true,
+        "maximum_mm": 3.722851617216969e-07,
+        "limit_mm": 0.05
+      },
+      {
+        "name": "all passive leaves reach aperture endpoint",
+        "passed": true,
+        "endpoint_error_rad": 0.00020458384682242592,
+        "peak_leaf_excursion_rad": 0.8998339932779758
+      },
+      {
+        "name": "every-step loop closure",
+        "passed": true,
+        "maximum_mm": 3.722882204047887e-07,
+        "limit_mm": 0.05,
+        "full_coverage": true,
+        "covered_integration_steps": 40000
+      },
+      {
+        "name": "every-step passive leaf range",
+        "passed": true,
+        "full_coverage": true,
+        "constructed_range_rad": [
+          0.0,
+          0.9
+        ],
+        "numerical_allowance_rad": 1e-10
+      },
+      {
+        "name": "passive leaf synchrony",
+        "passed": true,
+        "maximum_difference_rad": 1.4432899320127035e-15
+      },
+      {
+        "name": "single ring tracking",
+        "passed": true,
+        "maximum_error_rad": 0.000633740686653006
+      },
+      {
+        "name": "no applied body wrenches",
+        "passed": true
+      },
+      {
+        "name": "no directly applied follower forces",
+        "passed": true
+      },
+      {
+        "name": "no unexpected controller fault",
+        "passed": true
+      }
+    ],
+    "scope": "Actual integrated ideal-pin linkage task; all integration-step native solver closure and joint extrema plus recorded post-state closure. This is not a continuous-time clearance proof or hardware qualification."
+  },
+  "leaf_extrema": {
+    "leaf_00_hinge": {
+      "minimum_position": {
+        "value": 0.0,
+        "time_s": 0.0
+      },
+      "maximum_position": {
+        "value": 0.8998340215066734,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.3511415003350762,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_01_hinge": {
+      "minimum_position": {
+        "value": 0.0,
+        "time_s": 0.0
+      },
+      "maximum_position": {
+        "value": 0.8998340215066732,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.35114150033508534,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_02_hinge": {
+      "minimum_position": {
+        "value": -1.1287027709567537e-17,
+        "time_s": 0.0002
+      },
+      "maximum_position": {
+        "value": 0.8998340215066731,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.3511415003350568,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_03_hinge": {
+      "minimum_position": {
+        "value": 0.0,
+        "time_s": 0.0
+      },
+      "maximum_position": {
+        "value": 0.8998340215066737,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.3511415003350344,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_04_hinge": {
+      "minimum_position": {
+        "value": -2.3210589573197026e-17,
+        "time_s": 0.0002
+      },
+      "maximum_position": {
+        "value": 0.8998340215066737,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.3511415003351892,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_05_hinge": {
+      "minimum_position": {
+        "value": 0.0,
+        "time_s": 0.0
+      },
+      "maximum_position": {
+        "value": 0.8998340215066736,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.3511415003351067,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_06_hinge": {
+      "minimum_position": {
+        "value": -8.078773068414535e-18,
+        "time_s": 0.0002
+      },
+      "maximum_position": {
+        "value": 0.8998340215066736,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.35114150033513986,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_07_hinge": {
+      "minimum_position": {
+        "value": 0.0,
+        "time_s": 0.0
+      },
+      "maximum_position": {
+        "value": 0.8998340215066736,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.3511415003350445,
+        "time_s": 5.8744000000000005
+      }
+    },
+    "leaf_08_hinge": {
+      "minimum_position": {
+        "value": -2.3974676315344868e-17,
+        "time_s": 0.0002
+      },
+      "maximum_position": {
+        "value": 0.8998340215066735,
+        "time_s": 4.042
+      },
+      "peak_absolute_speed": {
+        "value": -0.35114150033514396,
+        "time_s": 5.8744000000000005
+      }
+    }
+  },
+  "closure_peak_events_m": {
+    "rod_00_closure": {
+      "value": 3.722882138115441e-10,
+      "time_s": 5.8342,
+      "interval_start_s": 5.8342,
+      "interval_end_s": 5.8344000000000005
+    },
+    "rod_01_closure": {
+      "value": 3.722882102385486e-10,
+      "time_s": 5.8342,
+      "interval_start_s": 5.8342,
+      "interval_end_s": 5.8344000000000005
+    },
+    "rod_02_closure": {
+      "value": 3.722882112888507e-10,
+      "time_s": 5.8346,
+      "interval_start_s": 5.8346,
+      "interval_end_s": 5.8348
+    },
+    "rod_03_closure": {
+      "value": 3.7228821349137794e-10,
+      "time_s": 5.8342,
+      "interval_start_s": 5.8342,
+      "interval_end_s": 5.8344000000000005
+    },
+    "rod_04_closure": {
+      "value": 3.722882106408258e-10,
+      "time_s": 5.8346,
+      "interval_start_s": 5.8346,
+      "interval_end_s": 5.8348
+    },
+    "rod_05_closure": {
+      "value": 3.722882166739973e-10,
+      "time_s": 5.8344000000000005,
+      "interval_start_s": 5.8344000000000005,
+      "interval_end_s": 5.8346
+    },
+    "rod_06_closure": {
+      "value": 3.7228821294934127e-10,
+      "time_s": 5.8344000000000005,
+      "interval_start_s": 5.8344000000000005,
+      "interval_end_s": 5.8346
+    },
+    "rod_07_closure": {
+      "value": 3.722882084026561e-10,
+      "time_s": 5.8344000000000005,
+      "interval_start_s": 5.8344000000000005,
+      "interval_end_s": 5.8346
+    },
+    "rod_08_closure": {
+      "value": 3.722882204047887e-10,
+      "time_s": 5.8344000000000005,
+      "interval_start_s": 5.8344000000000005,
+      "interval_end_s": 5.8346
+    }
+  },
+  "constraint_sampling": "Native solver residuals from every mj_step; pre-integration for Euler/implicit, last internal stage for RK4. Missing rows are not zero residuals. No terminal post-state refresh.",
+  "motor": {
+    "peak_current_A": 0.004234973753979289,
+    "peak_output_torque_Nm": 0.00021174868769896447,
+    "peak_motor_speed_rad_s": 0.11138998673267365,
+    "peak_voltage_V": 0.0305677331968777,
+    "over_continuous_current_s": 0.0,
+    "over_continuous_gear_torque_s": 0.0,
+    "rms_current_A": 0.0032729038980981898,
+    "final_temperature_C": 25.000025349453196,
+    "electrical_energy_J": 0.0006135758864597578,
+    "copper_heat_J": 0.0005141711964569388,
+    "mechanical_energy_J": 9.939840717991623e-05,
+    "gear_heat_J": 0.0,
+    "belt_demand_limit_s": 0.0,
+    "gear_demand_limit_s": 0.0,
+    "voltage_saturation_s": 0.0,
+    "transmitted_torque_estimate": {
+      "joint": "ring_drive",
+      "unit": "Nm",
+      "minimum": {
+        "value": -0.00020001832051028245,
+        "time_s": 1.8468,
+        "interval_start_s": 1.8466,
+        "motor_output_torque_Nm": -0.00020001832051028245,
+        "armature_inertia_kg_m2": 0.0,
+        "acceleration_rad_s2": -0.010664460103615436
+      },
+      "maximum": {
+        "value": 0.00021174868769896447,
+        "time_s": 5.4424,
+        "interval_start_s": 5.442200000000001,
+        "motor_output_torque_Nm": 0.00021174868769896447,
+        "armature_inertia_kg_m2": 0.0,
+        "acceleration_rad_s2": 0.03733135550132438
+      },
+      "peak_absolute": {
+        "value": 0.00021174868769896447,
+        "time_s": 5.4424,
+        "interval_start_s": 5.442200000000001,
+        "motor_output_torque_Nm": 0.00021174868769896447,
+        "armature_inertia_kg_m2": 0.0,
+        "acceleration_rad_s2": 0.03733135550132438
+      },
+      "samples": 40000,
+      "method": "motor output minus reflected dof armature times velocity increment / timestep; ideal output torque estimate, not a measured gear or belt stress"
+    }
+  },
+  "nominal_interface_checks": 102,
+  "pin_lip_axial_envelope": {
+    "name": "moving_pin_envelope_to_lower_rotor_lip",
+    "intersection_volume_mm3": 0.0,
+    "minimum_distance_mm": 0.20000000000000284,
+    "volume_tolerance_mm3": 1e-05,
+    "pass": true,
+    "required_minimum_distance_mm": 0.2,
+    "scope": "Continuous planar axial envelope; not a whole-assembly continuous clearance proof"
+  },
+  "keeper_radial_bearing_envelope": {
+    "name": "output_keeper_envelope_to_radial_bearing",
+    "intersection_volume_mm3": 0.0,
+    "minimum_distance_mm": 0.09999999999999432,
+    "volume_tolerance_mm3": 1e-05,
+    "pass": true,
+    "required_minimum_distance_mm": 0.1,
+    "scope": "Continuous planar keeper envelope against radial bearing only; support posts require separate clearance assessment"
+  },
+  "leaf_geometry": {
+    "crop": {
+      "schema": "cybrgeo-iris-rigid-leaf/1",
+      "source": {
+        "repository": "https://github.com/cybrdelic/cybr-iris09",
+        "commit": "6aac71594c211cc5934674b2113d9db8c5ec17c6",
+        "file": "IRIS-09.glsl",
+        "normalized_text_sha256": "455e1ba9b0740a6ab925f9c022eea5f217fd3bbfc08ffec3177fb3b1d925843b",
+        "checkout_bytes_sha256": "a0adeb7354f16e84d62c43af09d9c38b3e6542af9bad7730627536d01992145b",
+        "upstream_license": "No license grant supplied; adaptation requested by the source owner for CYBR GEO. No upstream license is inferred."
+      },
+      "adaptation": "One fixed crop of original two-circle/canted-slab material; no per-pose world clipping",
+      "scene_unit_mm": 50.0,
+      "hinge_radius_mm": 43.0,
+      "hinge_range_rad": [
+        0.0,
+        0.9
+      ],
+      "radial_envelope_mm": 49.5,
+      "exact_constraint": "H^2+x^2+y^2+2*H*max_q(x*cos(q)+y*sin(q)) <= R^2",
+      "construction": "Intersection of endpoint disks, minus the outward angular wedge beyond R-H",
+      "original_volume_mm3": 230.2378766690319,
+      "fixed_volume_mm3": 36.74707749554477,
+      "vertical_thickness_mm": 0.0325,
+      "cant": 0.008,
+      "boundary_continuous_radius_max_mm": 49.500000000000014,
+      "boundary_tessellation_tolerance_mm": 0.01,
+      "qualification": "Exact nominal radial-envelope construction; no supplier fit, foil stiffness, fatigue, tolerance stack or hardware qualification"
+    },
+    "shaft_keepouts": {
+      "schema": "cybrgeo-iris-shaft-keepouts/1",
+      "method": "Exact annular sectors plus round ends: fixed circular shafts swept in rotating leaf coordinates",
+      "hinge_range_rad": [
+        0.0,
+        0.9
+      ],
+      "shaft_radius_mm": 1.8,
+      "radial_clearance_mm": 0.1,
+      "other_fixed_pivot_count": 8,
+      "arcs": [
+        {
+          "fixed_pivot_index": 1,
+          "local_arc_radius_mm": 29.41373232600751,
+          "local_arc_range_rad": [
+            -1.9198621771937625,
+            -1.0198621771937626
+          ]
+        },
+        {
+          "fixed_pivot_index": 2,
+          "local_arc_radius_mm": 55.27973443304237,
+          "local_arc_range_rad": [
+            -2.2689280275926285,
+            -1.3689280275926285
+          ]
+        },
+        {
+          "fixed_pivot_index": 3,
+          "local_arc_radius_mm": 74.47818472546172,
+          "local_arc_range_rad": [
+            -2.6179938779914944,
+            -1.7179938779914945
+          ]
+        },
+        {
+          "fixed_pivot_index": 4,
+          "local_arc_radius_mm": 84.69346675904988,
+          "local_arc_range_rad": [
+            -2.9670597283903604,
+            -2.0670597283903605
+          ]
+        },
+        {
+          "fixed_pivot_index": 5,
+          "local_arc_radius_mm": 84.69346675904988,
+          "local_arc_range_rad": [
+            2.9670597283903604,
+            3.8670597283903603
+          ]
+        },
+        {
+          "fixed_pivot_index": 6,
+          "local_arc_radius_mm": 74.47818472546173,
+          "local_arc_range_rad": [
+            2.6179938779914944,
+            3.5179938779914943
+          ]
+        },
+        {
+          "fixed_pivot_index": 7,
+          "local_arc_radius_mm": 55.27973443304239,
+          "local_arc_range_rad": [
+            2.2689280275926285,
+            3.1689280275926284
+          ]
+        },
+        {
+          "fixed_pivot_index": 8,
+          "local_arc_radius_mm": 29.413732326007526,
+          "local_arc_range_rad": [
+            1.9198621771937627,
+            2.819862177193763
+          ]
+        }
+      ],
+      "initial_volume_mm3": 36.74707749554477,
+      "final_volume_mm3": 35.676285180956526,
+      "connected_solids": 1,
+      "own_pivot_material_retained": true,
+      "qualification": "Nominal rigid geometry only; foil stiffness, pivot fastening and fit require separate qualification"
+    }
+  },
+  "contact_scope": {
+    "policy": "Ideal pin bearings and loop closures; no leaf/contact forces hidden in the model",
+    "scope": "Native material clearance is evaluated separately; bearings are not wear/friction contact models"
+  },
+  "assumptions": [
+    "New derived four-bar mechanism; the source has no inherited mechanical transmission or dynamics",
+    "One scene unit is assumed to be 50 mm; materials and motor values are engineering assumptions",
+    "Source foil thickness is 0.0325 mm; its manufacturing and tolerance stack are unqualified",
+    "Pinned joints use ideal axes with nominal CAD bores; bearing contact, flexibility, fatigue and wear are not modeled",
+    "Grooved split retainers have nominal CAD capture and clearance; elastic installation and retention strength are unqualified",
+    "Rotor capture lips retain 0.3 mm nominal thickness with an envelope-derived axial fit; their strength and deflection are unqualified",
+    "Joint limits are model travel guards, not a claim of physical stop hardware",
+    "Annular direct-drive DC torque port is a lumped actuator assumption with a fixed reaction housing, not a selected supplier motor",
+    "All nine follower leaves move through rod forces; only the annular rotor has a motor"
+  ],
+  "step": {
+    "file": "iris09.step",
+    "sha256": "e479d06ed49289efb320f3aaff5b1269c8a26792c63a1c6796f1d87d0bf9def2",
+    "bytes": 18830049,
+    "valid_solids": 74,
+    "minimum_volume_mm3": 1.1232918403114174,
+    "sum_solid_volumes_mm3": 346887.6688777575
+  },
+  "glb": {
+    "file": "assembly.glb",
+    "sha256": "4a0cfd6a5cfec0263261b5bd29ae0c3a75a8ed473318b84851983868bb2ed139",
+    "bytes": 15847676,
+    "geometry_nodes": 68
+  },
+  "qualification": {
+    "construction": "Native CAD, recorded nominal mating clearances and source-bound CAD mass tensors",
+    "dynamics": "One electrical motor and nine passive leaf/rod loops integrated by MuJoCo with ideal pin constraints",
+    "contact": "No leaf, bearing or housing contact-force model is exercised by this client",
+    "clearance": "Selected nominal CAD fits, authored leaf keepouts and pin/lower-lip and keeper/radial-bearing envelopes; no complete continuous assembly motion-envelope proof",
+    "hardware": "Not qualified: assumed motor/materials/foil thickness; tolerances, retention strength, fatigue and wear remain open"
+  }
+}

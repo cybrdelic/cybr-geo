@@ -1,0 +1,22 @@
+{
+  "power_off": {
+    "trace_path": "outputs/engineering-iris09-core-controls/power_off/simulation/trace.json.gz",
+    "trace_file_sha256": "85781a7fc6cda2d2ce39cd296b5f62ad37af8a4f9b3e98f07f645907a0d5427a",
+    "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+    "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+    "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+    "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+    "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+    "saved_frames": 954
+  },
+  "disabled_first_closure": {
+    "trace_path": "outputs/engineering-iris09-core-controls/disabled_first_closure/simulation/trace.json.gz",
+    "trace_file_sha256": "ee8321e64b1bcf88b33dbed18679797c64cd24fcdadf0854fb76bf8a00863363",
+    "model_sha256": "344095c42f92462a3b9a78f62eee2195d21a6d655a507b577028418790dc9e79",
+    "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+    "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+    "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+    "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+    "saved_frames": 954
+  }
+}

@@ -11,6 +11,9 @@ os.environ.setdefault('LP_NUM_THREADS','4')
 os.environ.setdefault('OMP_NUM_THREADS','4')
 os.environ.setdefault('OPENBLAS_NUM_THREADS','1')
 import math
+import json
+import time
+import sys
 from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont
@@ -19,14 +22,28 @@ from vtk.util.numpy_support import numpy_to_vtk,numpy_to_vtkIdTypeArray,vtk_to_n
 from .core import Part, Assembly, View
 
 
-FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-BOLD='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+FONT='DejaVuSans.ttf'
+BOLD='DejaVuSans-Bold.ttf'
 FG=(220,230,236);MUTED=(140,156,168)
 
 
 def font(sz,bold=False):
     try:return ImageFont.truetype(BOLD if bold else FONT,sz)
     except OSError:return ImageFont.load_default(size=sz)
+
+
+def render_window():
+    """Use an available native OpenGL window, with headless EGL on Linux.
+
+    Windows/macOS VTK wheels use their WGL/Cocoa factory; they need not expose
+    the Linux EGL class. Offscreen rendering still requires a working OpenGL
+    context. A missing or broken graphics driver is not a successful render.
+    """
+    egl = getattr(vtk, 'vtkEGLRenderWindow', None)
+    use_egl = sys.platform.startswith('linux') and egl is not None and not os.environ.get('VTK_DEFAULT_OPENGL_WINDOW')
+    window = egl() if use_egl else vtk.vtkRenderWindow()
+    window.SetOffScreenRendering(1)
+    return window
 
 
 def studio_texture():
@@ -112,7 +129,7 @@ class Studio:
         self.output_size=tuple(map(int,size));self.supersample=max(1,int(supersample))
         render_size=(self.output_size[0]*self.supersample,self.output_size[1]*self.supersample)
         self.ren=vtk.vtkRenderer();self.ren.SetBackground(.026,.031,.038);self.ren.SetBackground2(.065,.074,.086);self.ren.GradientBackgroundOn()
-        self.win=vtk.vtkEGLRenderWindow();self.win.SetOffScreenRendering(1);self.win.SetSize(*render_size);self.win.SetMultiSamples(0);self.win.SetAlphaBitPlanes(1);self.win.AddRenderer(self.ren)
+        self.win=render_window();self.win.SetSize(*render_size);self.win.SetMultiSamples(0);self.win.SetAlphaBitPlanes(1);self.win.AddRenderer(self.ren)
         self.ren.UseImageBasedLightingOn();self.ren.AutomaticLightCreationOff();self.tex=studio_texture();self.ren.SetEnvironmentTexture(self.tex,False)
         self.ren.SetEnvironmentUp(0,0,1);self.ren.SetEnvironmentRight(1,0,0);self.ren.UseSphericalHarmonicsOn()
 
@@ -145,13 +162,20 @@ class Studio:
         steps=vtk.vtkRenderStepsPass();delegate=steps;self.passes=[steps]
         if ao:
             ssao=vtk.vtkSSAOPass();ssao.SetDelegatePass(steps)
-            extent=max(np.ptp(assembly.bounds,axis=0));ssao.SetRadius(max(1.0,extent*.025));ssao.SetBias(.018);ssao.SetKernelSize(64);ssao.BlurOn()
+            extent=max(np.ptp(assembly.bounds,axis=0));radius=max(1.0,extent*.025)
+            # A fixed .018 model-unit bias creates false self-occlusion bands
+            # on millimetre CAD. Keep the numerical bias relative to the sampled
+            # neighbourhood, retaining AO instead of darkening flat surfaces.
+            ssao.SetRadius(radius);ssao.SetBias(radius*.12);ssao.SetKernelSize(64);ssao.BlurOn()
             delegate=ssao;self.passes.append(ssao)
         tone=vtk.vtkToneMappingPass();tone.SetToneMappingType(vtk.vtkToneMappingPass.GenericFilmic);tone.SetGenericFilmicDefaultPresets();tone.SetExposure(1.05*float(exposure));tone.SetDelegatePass(delegate)
         self.passes.append(tone);self.ren.SetPass(tone)
         self.ren.UseFXAAOn();self.ren.GetFXAAOptions().SetRelativeContrastThreshold(.05);self.ren.GetFXAAOptions().SetHardContrastThreshold(.18)
         self.cam=self.ren.GetActiveCamera();self.cam.SetViewUp(0,0,1)
         self.capture=vtk.vtkWindowToImageFilter();self.capture.SetInput(self.win);self.capture.SetInputBufferTypeToRGB();self.capture.ReadFrontBufferOff()
+        # render() already draws the frame. Capture the existing back buffer
+        # instead of asking VTK to draw the same geometry a second time.
+        self.capture.ShouldRerenderOff()
         self.set_camera()
 
     def set_camera(self,az=235.,el=22.,scale=88.,target=(0,0,0),distance=None,projection='perspective',focal_length_mm=58.,sensor_width_mm=36.):
@@ -211,14 +235,43 @@ def render_still(assembly,output,view_name='hero',size=(1600,1100),time_seconds=
     from .truth import assert_renderable,write_truth_report
     report=assert_renderable(assembly,intent,allow_estimates)
     view=assembly.views[view_name]
-    studio=Studio(assembly,size=size,section=view.section,floor=view.floor,supersample=supersample,exposure=view.exposure)
+    output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
+    progress_path=output.with_suffix('.render-progress.json')
+    started=time.perf_counter();timings={};studio=None
+    def checkpoint(stage, **extra):
+        progress_path.write_text(json.dumps(dict(stage=stage,elapsed_s=time.perf_counter()-started,
+                                                timings_s=timings,resolution=list(size),supersample=supersample,
+                                                **extra),indent=2)+'\n',encoding='utf-8')
+    checkpoint('initializing')
     try:
+        stage_started=time.perf_counter()
+        studio=Studio(assembly,size=size,section=view.section,floor=view.floor,supersample=supersample,exposure=view.exposure)
+        timings['initialization']=time.perf_counter()-stage_started
+        checkpoint('rendering',render_window=studio.win.GetClassName())
+        stage_started=time.perf_counter()
         studio.visible(lambda p:p.group not in view.hide);studio.pose(time_seconds,view.explode);studio.set_view(view);im=studio.render()
+        timings['render_and_capture']=time.perf_counter()-stage_started
+        checkpoint('saving',render_window=studio.win.GetClassName())
+        stage_started=time.perf_counter()
         if captions:
             counts=report['tier_counts'];truth=f"{report['resolved_intent'].upper()} / " + ', '.join(f"{k}:{v}" for k,v in counts.items())
             im=labelled(im,view.title or assembly.name.upper(),view.note,
                         f'Actual 3D geometry / {view.projection} PBR / {truth}',
                         tag='CYBR MECHANISM LAB / TRUTH-GATED RENDER')
-        output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);im.save(output)
-        write_truth_report(report,output.with_suffix('.truth.json'));return output
-    finally:studio.close()
+        im.save(output)
+        timings['image_save']=time.perf_counter()-stage_started
+        metadata = dict(backend='vtk-pbr', renderer='VTK PBR rasterizer',
+                        render_window=studio.win.GetClassName(), vtk_version=vtk.vtkVersion.GetVTKVersion(),
+                        graphics_capabilities=studio.win.ReportCapabilities(),
+                        model=assembly.name, view=view_name, resolution=list(size),
+                        supersample=studio.supersample, spp=None, generated_imagery=False,timings_s=timings,
+                        scope='Actual geometry with PBR materials and rasterized studio lighting; not path tracing or dynamics evidence.')
+        output.with_suffix('.render.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf-8')
+        write_truth_report(report,output.with_suffix('.truth.json'))
+        checkpoint('complete',render_window=studio.win.GetClassName())
+        return output
+    except Exception as error:
+        checkpoint('failed',error=f'{type(error).__name__}: {error}')
+        raise
+    finally:
+        if studio is not None:studio.close()
