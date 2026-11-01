@@ -1,0 +1,16 @@
+{
+  "backend": "vtk-pbr",
+  "renderer": "VTK PBR rasterizer",
+  "render_window": "vtkWin32OpenGLRenderWindow",
+  "vtk_version": "9.6.2",
+  "model": "arx6_compact_source_reference",
+  "view": "side",
+  "resolution": [
+    1280,
+    960
+  ],
+  "supersample": 2,
+  "spp": null,
+  "generated_imagery": false,
+  "scope": "Actual geometry with PBR materials and rasterized studio lighting; not path tracing or dynamics evidence."
+}

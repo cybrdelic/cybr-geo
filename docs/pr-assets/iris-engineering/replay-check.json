@@ -1,0 +1,27 @@
+{
+  "schema": "cybrgeo-native-replay-check/1",
+  "passed": true,
+  "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+  "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+  "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+  "trace_file_sha256": "3abcbc1aab9681d37234fed7584b39bf4150afd2cecf8f67308aa135bf27377f",
+  "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+  "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+  "replay_state_sha256": "83427a78b983dbfd43c7e22ee6ac14b4954633d1827f2d1420ec8d4bb58fa095",
+  "display_mesh_sha256": "70e04ffb0fb3f42a1815e0afbe1e4a3093de5c70b1ff23e39e6a1a38960748a2",
+  "part_count": 68,
+  "analytical_parts_valid": true,
+  "sampled_times_s": [
+    0.0,
+    1.9992,
+    4.0068,
+    6.006,
+    8.0
+  ],
+  "vertex_comparisons": 2081655,
+  "max_vertex_transform_error_mm": 0.0,
+  "max_native_mesh_bounds_difference_mm": 0.001440219957004274,
+  "bounds_tolerance_mm": 0.3,
+  "cache_rebind_exact": true,
+  "scope": "Actual integrated poses and native CAD replay parity only; no clearance or hardware qualification"
+}

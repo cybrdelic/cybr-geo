@@ -1,0 +1,979 @@
+{
+  "schema": "cybrgeo-native-readback-verification/2",
+  "passed": true,
+  "native_directory": "outputs/engineering-arx-sourcebound/native",
+  "elapsed_seconds": 15.327999999979511,
+  "native_build_sha256": "38a59ded51b62b14093b6aa9901e9429d6013ee86c27572ec3fe1d3783ad58d9",
+  "native_build_canonical_sha256": "da72631e57904d6dfcd9ae6a53edf5d60ce7340845823ceb1d2c6307fee3a4ad",
+  "native_source_binding_file_sha256": "641de7891062f3129ce9ecb8601dc4e9d66ce6e38c602484b585095e9852158b",
+  "native_source_binding_canonical_sha256": "52f6276e636788093d0a9a050ae4b85c6effb699eb12fa143773cd6b98934531",
+  "native_step_files": [
+    {
+      "file": "bench_backing_washer.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "4615c2c38b2f88c9c06e767f466ada524ad7fb0e1815de2741752f712d17f8c3"
+    },
+    {
+      "file": "bench_mount_bolt.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "33862a31958b5ec056e3fdba0530a95cee8d9d768088bdf6cdc44a383e5983d7"
+    },
+    {
+      "file": "bench_mount_nut.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "c22c50d6a46cfbc2b98ad21ee1bdf0866530b51bd6bc2a3b6d8d917a34de19aa"
+    },
+    {
+      "file": "bench_mount_plate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "b694f4d96d94c8a3a9f3ea6186f4ea0467144c1651eabe3ff59324380f2394c7"
+    },
+    {
+      "file": "bend_subassembly.step",
+      "solids": 53,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "4862fdbc2fcd17b093bda5c6f7d00fbe1f14850560f33471a26ec378308f598e"
+    },
+    {
+      "file": "elbow_extension_spring.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "334cafc08072ee4b28089955fda911ce30fd7cbd6da22829f68af5b082b5edb2"
+    },
+    {
+      "file": "elbow_fixed_anchor_nut_strips.step",
+      "solids": 2,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "5f9ea09ac43e6d145eeba7d0752122e216d329ac746b95ebbc9d8c8e1c025b8d"
+    },
+    {
+      "file": "elbow_moving_anchor_nut_plate.step",
+      "solids": 2,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "6d3a348a323759784cb1ed05c02475c7899bdb9bcea6059ece6a293d4cc72b6e"
+    },
+    {
+      "file": "elbow_spring_fixed_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "71fd3fcd02a5f9e371b06a7e512d8ac2235b9430ddff9b81366309dc02b7b144"
+    },
+    {
+      "file": "elbow_spring_moving_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "493e162930d19906acfc1ed5f8146222e977d4517a18b3ff489b373b3feca025"
+    },
+    {
+      "file": "finger_pad.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "18671cd2143427c2fa6d6ae74917cd0e082fe4e070dceba811b10fbeef0986e9"
+    },
+    {
+      "file": "fixed_subassembly.step",
+      "solids": 62,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9c66dceb9e81d0a4c25b3fde1acbcf16597f941781361649cd4cfe63522d69ff"
+    },
+    {
+      "file": "fore_clamp_side_shims.step",
+      "solids": 2,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9f1c2c5f160e8a6cadcc3cc99a28d8c3942d618cb2f8084ff0cd7d032d162470"
+    },
+    {
+      "file": "fore_link_tube.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "cc04dcaf3e11b7b29d4cd4d27b793c4dc27acfea8799780c15b0a35c8ebc6fb1"
+    },
+    {
+      "file": "fore_nut_strip.step",
+      "solids": 2,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "1e73c9aef8350145acc1db1b3aad6712646083ec597a2ba4642c7985956b4e1d"
+    },
+    {
+      "file": "fore_roll_housing_clamp.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "46a35bd1ee1c2f3b90e5eaedcb1c0d25061e473b5cc6acbdc5af9f19994a0c02"
+    },
+    {
+      "file": "fore_root_ear.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9549469440fc913ecb06675504df32c94fbf85df523205e8686acfae32a373d2"
+    },
+    {
+      "file": "fore_subassembly.step",
+      "solids": 63,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "4a9649dee1cdd311c1dd597a8e0f496cbcda7f88b0fbbd86f277e956a959dc7c"
+    },
+    {
+      "file": "gripper_bridge.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "3b02409cbe740e56bfd61ba8cbcaf9016abadcfc9e3139dc65691945d68fd4a3"
+    },
+    {
+      "file": "gripper_cable_clamp_base.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "cfe4d9c2604144b465c64ff2886b85dee47c69d2f4c4915eee9e4c7bf173b263"
+    },
+    {
+      "file": "gripper_cable_clamp_cap.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "62cdf187b3b302a4004ad289328ac990fcf134c0b243acfc3d3629cc7b6b9188"
+    },
+    {
+      "file": "gripper_cable_clamp_liner.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "18b511926fbe31d387e0d1948538bd46f9a905c726eb856ddd0416ce19f3524d"
+    },
+    {
+      "file": "gripper_cable_clamp_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "ecce454df23ff63f2d920b7609ac9b12f24fad05567bd58c418c2288de6c44e2"
+    },
+    {
+      "file": "gripper_pinion_m0p3_z20.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "141ffbe18c8ac6aba33616b208a89b922bca042785bccda2f4e52432210d59e0"
+    },
+    {
+      "file": "gripper_rack_m0p3.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "6128dc6d4489e53a8dc87d28cf0ebb219cbbc7013a29aa648da03566aab7af3f"
+    },
+    {
+      "file": "idle_bearing_inner_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "635d42f08a847b20f0b36341e1db6f746175c356b356c2f9d1eb5380b1bc3cbe"
+    },
+    {
+      "file": "idle_bearing_outer_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "2c0f6a210632cbf51c998cb9ff16e596bd4f2bf36d8d2bdcc512a98a812f3706"
+    },
+    {
+      "file": "J1_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "8fb9e5d25aa822aa56cf3f43a9d572f22037906f30418c75eb5aa251ddff3a26"
+    },
+    {
+      "file": "J1_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "39966ae5e1548fe7f12f197fa48c308e681ef29bc3490afb92f29b3cd4e64951"
+    },
+    {
+      "file": "J1_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9300d5853daf7d14c18cb407cf3ca5517b539743dcdd37992d1ef51afd5bc26b"
+    },
+    {
+      "file": "J1_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "3136c0eac4441ae0dd93016430376bea9a204621b89c3fad849cd3640f93c348"
+    },
+    {
+      "file": "J2_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "614b47e170b103b266536929ac95f0f7363374fdddb840ceaacddb8ac102aeec"
+    },
+    {
+      "file": "J2_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "c7288eeca8139e5a429ac0f95adcfd834d3a25163e6cb0f8a09f8519d0f1b4b7"
+    },
+    {
+      "file": "J2_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "c5be172f262db744a41228718745113014d1a4acbbe7ef55eed9dd295e7e9e39"
+    },
+    {
+      "file": "J2_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "cf610445e1786890fd2f3efad70528441466509850fbb215efc92c8b7232bdc5"
+    },
+    {
+      "file": "J3_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "515ca5304bf9183e1898b81c329f981fbeb24c004aeb1ee29ebb3decefc7a880"
+    },
+    {
+      "file": "J3_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "8293e92efdf80fbd794ff567651417d39098389042111b3216e571eb50f35b87"
+    },
+    {
+      "file": "J3_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "f5819ad3e7af1b521616183c996529cb656c5d3594e9268ae5ea8e74ecbceb68"
+    },
+    {
+      "file": "J3_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "3ae8fc180ac5259260d16b26cc47095a1e8ccdf18c5cdaa306603f62806a3a1d"
+    },
+    {
+      "file": "J4_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "10fc8f40b82c84c49fa9f7bd0fd5c997d4c9bc4f27e998001f8e2a6abc9f38e0"
+    },
+    {
+      "file": "J4_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "0952410a2fedc7cede14bd87b28932e3ddb36e49e9542d084c9f835254596873"
+    },
+    {
+      "file": "J4_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "d5350d823d5bdfc835839258634f6c562abf5fb32c25fdbdb43c2646a2132b1e"
+    },
+    {
+      "file": "J4_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "52a1df1106de4fd59f7ead67ccca4d95d1bf2e74cce0a33b00fb8dcbcdf949e5"
+    },
+    {
+      "file": "J5_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "45f07849b760a4dee22320cd444a9b0519bc9506ae36cb18330f525a7c345075"
+    },
+    {
+      "file": "J5_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "60298599c39955df2d652dc53f34a6aa27415c78ab14806340fcbea20d128ee1"
+    },
+    {
+      "file": "J5_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "41ebfa70e70016d4c66f7bd330752b0ed2f8ae7e43ce303db85297782c62d6dd"
+    },
+    {
+      "file": "J5_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "4c12350046ba4b1ceb7be1bd42b9f9ce4182492bc06b6b7ff3f62fe17586095a"
+    },
+    {
+      "file": "J6_clocked_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "ca48a8dfeb332665c68732ae53d9527ae3c8e4b7a87581ad500e52e5aca742e4"
+    },
+    {
+      "file": "J6_clocked_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "0d6bd6336ed0b769d43a181cdc91f31fab27ed1501755122a540d05dd71bcc1d"
+    },
+    {
+      "file": "J6_index_sensor_mount.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "060cd261ef0e78a0dd3c8e2c3f95ed04b45b4cbeee951e36995d5fd1431acc02"
+    },
+    {
+      "file": "J6_stop_pin_backplate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "65a5e010a67caebe17bc9efd7cdda6dccd64f8ff4124b33be2d5ee69df4ca911"
+    },
+    {
+      "file": "jaw_guide_bushing.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "445de56af01562b73255c259bf7a379ed678fb805fbae5392aeae650f000932e"
+    },
+    {
+      "file": "jaw_subassembly.step",
+      "solids": 5,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "c62e23f3ba9b34d15460b467a3f6c52cabd2e0f75d5c2daed15fa3daf57f68aa"
+    },
+    {
+      "file": "large_bearing_housing.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "2d5114e21ab84a8d0f492eb52a5a465d54ad21ccca5033d6f1c44644cfed29e4"
+    },
+    {
+      "file": "large_brake_back_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "82d3813fafa7910f3501d19fcde37f3938552c838fcb7885f225fe19ffa905a3"
+    },
+    {
+      "file": "large_brake_front_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "33d3d1b8e8f74f3a9fb396d04058b641cff71ddbbca8fb5409b780b999f8a662"
+    },
+    {
+      "file": "large_brake_guard_strut.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "0c5bc592da9f3791808c906fb6544fec3ace504b4d9a22d459791977e4c4c429"
+    },
+    {
+      "file": "large_brake_keyed_hub.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "5267eb3e94d757d85ab80681c60d211711a53cf574449cf50684bf0146745a03"
+    },
+    {
+      "file": "large_brake_shaft_key.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9f97f4e7b17468d8862a93a595ffa680200b52df32fe8e3be2ff4304aa71b0bd"
+    },
+    {
+      "file": "large_brake_vendor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "25f0fec85f09b682c59233ef205f45153a7e9704177ff7ecc9a4bff72bd5fd36"
+    },
+    {
+      "file": "large_DIN471_installed_retainer.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "d2326eb20cea695854779cf5054e31b3a297d1992daf484fc2ada2e34b12f7ad"
+    },
+    {
+      "file": "large_folded_carrier_deck.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "bbbbafa799d81127bb187c097b22e23e556e26280e37a0ff15c30892cb4ce805"
+    },
+    {
+      "file": "large_folded_drive_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "848eba2345db5e15b6f80b459898236cdc97922da3ae629699b6babc29b6cfd5"
+    },
+    {
+      "file": "large_folded_driven_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "de8430a1150b555327392e7c2929a2de14588fe48b4ee33b0e670f3748d84592"
+    },
+    {
+      "file": "large_folded_front_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "d88303bd8c0e2aa2834226a94c610afad461bf34f9268f72f0f06f9f3b8acca8"
+    },
+    {
+      "file": "large_folded_housing_rails.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "cc84e98cd255dcaa9c7a37e6b3872be0f6fa5472d4968cc48f23562238a63494"
+    },
+    {
+      "file": "large_folded_input_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "753c62a0dad4a9a18bff108c0e8cd81ac2d898e92ec86240ba89ca2268cb2649"
+    },
+    {
+      "file": "large_folded_input_support_bearing.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "14f5d84822a09c9ef41c103c71621c32ff025fae6ef36e5bf576d714caa3b3b2"
+    },
+    {
+      "file": "large_folded_tension_block.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "6a6c46447ae34c2838159d1f01e995d84865338c9e752e32273bcb44bab4f652"
+    },
+    {
+      "file": "large_folded_tension_screw.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "541cf9a53436c3b574ea46681628fb7667be385f016d9cf02f0a5ac5c943d047"
+    },
+    {
+      "file": "large_folded_timing_belt.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "68629c575f0594cca5c26871a44f4698e7de8dd9e3acd8eeb78b29bad6265f21"
+    },
+    {
+      "file": "large_front_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "f7de5a78ba22d35aa1f7c05019b809b11bad74f392b3779b9e696af1b69addaa"
+    },
+    {
+      "file": "large_index_sensor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "e071b8f8c2c89c370d8ab12c3228b1b7f6de439145275d15888eb892b94b9aa0"
+    },
+    {
+      "file": "large_inner_race_spacer.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "05fc0b44d7430c546eb71af9ff04f829555cbf35b462a6223475737008eb9f17"
+    },
+    {
+      "file": "large_integral_steel_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "f01e27dc227dfe75489a672916d36c56479125dddacd967f057838176fd99650"
+    },
+    {
+      "file": "large_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "ca16634f520a76284de6dccaf44a6356faf2b76fec14930a6002538809eab9d8"
+    },
+    {
+      "file": "large_rear_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "75a53b3a2ea9d8bba89bbd9d52d55a49d9e6a239193568252c4ebe75395cb145"
+    },
+    {
+      "file": "large_selective_inner_race_shim.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "59b657150825faeecbd1a9ca112fb3db43a1d0f45e1378f9aabd1fc948feccd4"
+    },
+    {
+      "file": "large_stop_pin.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "991c8bbdddea59c3975c5e1e7309e5910bfcdd6e74ad45cb578d7ad6a4406c72"
+    },
+    {
+      "file": "left_jaw_carriage.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "32436364fe9fe9b5884a2121f5b79fd53198ae4157754e04aacc33a50af73f41"
+    },
+    {
+      "file": "left_jaw_subassembly.step",
+      "solids": 5,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "bc9d9c8a22a1ea2c413bfca0d38397b27adca32770332cf887f2fb30d2a31894"
+    },
+    {
+      "file": "pedestal_sleeve.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "870499d2379855d2f899ef1da32462ba0e5fb20c7920c0e3ece6299df2a913c1"
+    },
+    {
+      "file": "pinion_front_bushing.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "7df324dc0e41656d33bc876964f6c3a3f06fed3216935cfd5add47084d619103"
+    },
+    {
+      "file": "right_jaw_carriage.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "3ee42b3018601e625f8499932e14437f7f6d69b8cee29fa87265146a69796f2a"
+    },
+    {
+      "file": "roll_subassembly.step",
+      "solids": 55,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "f6f481f06c6707a564e8f78bc0b0b1af3363c414f010cfdae8c762f6f3f8094e"
+    },
+    {
+      "file": "shoulder_extension_spring.step",
+      "solids": 3,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9f090ee9e7c95288818b8703a133bec26858ad8153a5b3af50f069bfa005352b"
+    },
+    {
+      "file": "shoulder_spring_fixed_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "2d5bfafa7197c5142682ff92058444a0ba9a66cefe6b8ed5c3d3a253ad9abbab"
+    },
+    {
+      "file": "shoulder_spring_moving_clevis.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "70acd27ad7a7aed278ae782b170215ba6fc61988cdec1a839773eed72e2810b4"
+    },
+    {
+      "file": "shoulder_spring_nut_plate.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "3e09823874cd3d4d259fb5a1ba27d4300e2b804277599f7b9908047e448ce0f2"
+    },
+    {
+      "file": "small_bearing_housing.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "3c3731d145be5ebebfd6e099d3be5180c67b508df8e6179ea3860ea53c10250e"
+    },
+    {
+      "file": "small_brake_back_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "02277ce885b1bc6a6ab507bdacb775974342fc82b7a48012ba71ff653175e4f9"
+    },
+    {
+      "file": "small_brake_front_adapter.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "0e33ad9c9a4935ac2c0ebea060fc3ec536d490850f40e13ed2612e8ba95a5b1b"
+    },
+    {
+      "file": "small_brake_guard_strut.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "57430f63a10374bb7bb406747febb692c342a1a3650afd606004259d31e54ec5"
+    },
+    {
+      "file": "small_brake_keyed_hub.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "87e7f3ff1c54e5301e2ed2d650aacbcaebdc05397686ad4fbe94490ac98ccf46"
+    },
+    {
+      "file": "small_brake_shaft_key.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "02084f36e749a217242bcdbac8b3cacddeaa8601d06800ea1437ac03419abd66"
+    },
+    {
+      "file": "small_brake_vendor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "cbb9636a13b347e1e20e2dc0faff3a610df9ce33748a465068a4b34c58d2d5ea"
+    },
+    {
+      "file": "small_DIN471_installed_retainer.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "d74b028d3866fbd5fc0abde3646b4cd0525910cf5fe72d55f060091b4f36f329"
+    },
+    {
+      "file": "small_folded_carrier_deck.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "05972ce7d76a9d27a0aa1188145c71ba33adf51ffe4ed344b341be2712f8cb36"
+    },
+    {
+      "file": "small_folded_drive_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "fc6c6da10f753d2cb12b413281cd17cf53bda39d5f0205efd758ab84fb1501f0"
+    },
+    {
+      "file": "small_folded_driven_pulley.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "622435609038d2a82f5d901af6f913cdbbf157934c350aa307ff46e2676aaac3"
+    },
+    {
+      "file": "small_folded_front_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "c09c84a4868ce11e53ed90b274486bf07f144156e9131d529ecb1a8cf280a9ad"
+    },
+    {
+      "file": "small_folded_housing_rails.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "75576e8cbbdb3a109c3a6a33f853c46732b3e28aaf41031a007ac749b1fb36c2"
+    },
+    {
+      "file": "small_folded_input_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "39f2b9ab77c599b3979941c5935b850ed62e45f9f85b1e9b2e806bc1a4218968"
+    },
+    {
+      "file": "small_folded_input_support_bearing.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "04f491cb92c603c9e0d4794b60910eba82999d73c47daac87914e20abb992c4b"
+    },
+    {
+      "file": "small_folded_tension_block.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "53e4adb15ac3997a5cc84d1ae8d99b3d3abb7eeec9a2f8ef0f14f19422165be0"
+    },
+    {
+      "file": "small_folded_tension_screw.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "4c7077d9a8e8871d00a15c8ad8cf8f6dedd943f4e13b3a15ea2d0f45cb3e51cf"
+    },
+    {
+      "file": "small_folded_timing_belt.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "6530237e8fa7e3a5154a59f8153a307dd172bbc44c75a243c5ab508104dde688"
+    },
+    {
+      "file": "small_front_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "cb69c51ecb68cac0b10d7afad99dbd73d1a7f34108d518b90b3273509a31b011"
+    },
+    {
+      "file": "small_index_sensor_envelope.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "858357c4bb68ce788387932a6d3d1de5919c72fa1c4644b38dfe594ed548f886"
+    },
+    {
+      "file": "small_inner_race_spacer.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "4924520b2a6b3bb03d1f4fc6ba0f70441fcc815626bcf6c847bfa753d067a65f"
+    },
+    {
+      "file": "small_integral_steel_stop_target.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "08c97f453dadc02013d4f1d3f07f4e4e975b066bf9453de718072680b07edaf5"
+    },
+    {
+      "file": "small_output_shaft.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "eea29fce7748d7acbcf98b4b9d1c5a85463afcf8efaf11cb957f67ee05443cf8"
+    },
+    {
+      "file": "small_rear_bearing_cover.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "c711cb8d59e6060e3b73612e789c30857bb75bc23582e813ae84b45d3a26b568"
+    },
+    {
+      "file": "small_selective_inner_race_shim.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "0d6db6e16fe041bbdcbe4d82a4a72a0ec93672ced1f719aa1eb0a9d2979b8034"
+    },
+    {
+      "file": "small_stop_pin.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "350ad8a6f2ed4d7779e64710fff68009dbb130a02d3832ca0abd5e0be67d862b"
+    },
+    {
+      "file": "spring_eye_pin.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "d447772a0844244301917f3002520951130c948b7169469f573b5cdc394a91d8"
+    },
+    {
+      "file": "tool_subassembly.step",
+      "solids": 20,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "bc448195d5292065aa6dc7e960d0285648703c5375001ba237502f9b88a1524d"
+    },
+    {
+      "file": "turret_subassembly.step",
+      "solids": 56,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "85beebc72cc88c5e58d86eac7e15e94cb88c46c2b1a13b5100efd18913f8938c"
+    },
+    {
+      "file": "turret_yoke.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "de4923ee5f7cef86b56238b6d6b701d5e0a74e563a9aadaa17a058c80dac4ac8"
+    },
+    {
+      "file": "upper_elbow_housing_clamp.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "007c3f268c0e8503a1e815b153eb935491ad7178aaac345dbaab0d9345082f63"
+    },
+    {
+      "file": "upper_link_tube.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "b233ee2a8415652c4d7b58e11129d86267e323a9ed39b17d20e173476a23c76e"
+    },
+    {
+      "file": "upper_nut_strip.step",
+      "solids": 4,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "f76a3c31f04b4df3e8c25c86de17173593a16f06eb3547b9aa9b565c11e7ea4f"
+    },
+    {
+      "file": "upper_root_ear.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "97751cff879fe41eaaf5e7984043987c9c8adb5fe35a14860790c07d1ad61aa5"
+    },
+    {
+      "file": "upper_subassembly.step",
+      "solids": 68,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "09386c8b4f14147755c26e1b1886781b6e9a696557768e02bbb3dc9755fa0126"
+    },
+    {
+      "file": "wrist_bend_cradle.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "24c204c80f1924b664a20f430eae78975cce3c14c01cc547b2ea7d67d6eb6688"
+    },
+    {
+      "file": "wrist_idle_trunnion.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "80459a6394c0d430deadef3a140478dbe5df7181a103e6f855f0dd064443b976"
+    },
+    {
+      "file": "wrist_roll_fork.step",
+      "solids": 1,
+      "valid": true,
+      "all_solids_positive_volume": true,
+      "sha256": "9bcd3685b350b9b6dc635e6d2559274de92ed2c69cd76534f8be85ad49cd52ca"
+    }
+  ],
+  "step_file_count": 127,
+  "stop_checks": 8,
+  "stop_checks_passed": true,
+  "stop_check_report": {
+    "path": "outputs/engineering-arx-sourcebound/native/reports/P5-corrected-joint-stop-check.json",
+    "sha256": "c3184bf9b9537b243a579a370cdb77f5df46a89f0d6ef66130db01300615bbb0",
+    "checks": [
+      {
+        "joint": "J3",
+        "check": "native link clearance at corrected upper hard stop",
+        "angle_rad": 1.85,
+        "intersection_volume_mm3": 0.0,
+        "minimum_distance_mm": 2.636859968168595,
+        "pass": true
+      },
+      {
+        "joint": "J3",
+        "check": "physical pin engagement one milliradian before stop",
+        "angle_rad": 1.8490000000000002,
+        "intersection_volume_mm3": 0.0,
+        "minimum_distance_mm": 0.03193643351457416,
+        "pass": true
+      },
+      {
+        "joint": "J3",
+        "check": "physical pin engagement at stop",
+        "angle_rad": 1.85,
+        "intersection_volume_mm3": 0.0,
+        "minimum_distance_mm": 7.944157947911665e-12,
+        "pass": true
+      },
+      {
+        "joint": "J3",
+        "check": "physical pin engagement one milliradian beyond stop",
+        "angle_rad": 1.851,
+        "intersection_volume_mm3": 0.04555303985105956,
+        "minimum_distance_mm": 0.0,
+        "pass": true
+      },
+      {
+        "joint": "J5",
+        "check": "native link clearance at corrected upper hard stop",
+        "angle_rad": 1.63,
+        "intersection_volume_mm3": 0.0,
+        "minimum_distance_mm": 1.0,
+        "pass": true
+      },
+      {
+        "joint": "J5",
+        "check": "physical pin engagement one milliradian before stop",
+        "angle_rad": 1.629,
+        "intersection_volume_mm3": 0.0,
+        "minimum_distance_mm": 0.014924059067591661,
+        "pass": true
+      },
+      {
+        "joint": "J5",
+        "check": "physical pin engagement at stop",
+        "angle_rad": 1.63,
+        "intersection_volume_mm3": 0.0,
+        "minimum_distance_mm": 1.6042626665492004e-12,
+        "pass": true
+      },
+      {
+        "joint": "J5",
+        "check": "physical pin engagement one milliradian beyond stop",
+        "angle_rad": 1.6309999999999998,
+        "intersection_volume_mm3": 0.008409612798042893,
+        "minimum_distance_mm": 0.0,
+        "pass": true
+      }
+    ]
+  },
+  "source_stop_validator_sha256": "2b53b23c1e506be4a3d64d60fba99acdceb050293bb76cef5fa6a0527cb25483",
+  "source_stop_validator_byte_identical_copy": true,
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "scope": "Actual current exported native STEP readback and byte-identical pinned source nominal corrected-stop checks; not tolerance-stack, all-motion, impact-strength or hardware qualification.",
+  "native_build_hash_encoding": "Raw native-build.json file bytes. native_build_canonical_sha256 is the distinct parsed JSON digest bound in physics provenance."
+}

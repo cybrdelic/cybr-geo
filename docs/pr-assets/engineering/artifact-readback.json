@@ -1,0 +1,127 @@
+{
+  "bundle": "outputs/engineering-current/compact_arm",
+  "passed": true,
+  "errors": [],
+  "scope": "Artifact identity, reopened STEP/GLB/MJCF and sampled prescribed/integrated motion replay. No hardware qualification.",
+  "bundle_receipt_sha256": "74816f439042f3b3efeacdb7adaf5198965ef6f9fc6254d37931e4d295b1cf01",
+  "manifest": {
+    "files_verified": 245,
+    "all_sha256_match": true
+  },
+  "recipe": {
+    "architecture": "component_graph",
+    "sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+    "mechanism_sha256": "d655f957f3837c2f78a4df40ca180fd21f314639e4d79657b17822d4b6fbf3ba",
+    "model_sha256": "9c3a583ea7c74fc7796fbb6539a786abd582620449f05bdd836cb3e50cbb21bc",
+    "matches_current_compiler": true
+  },
+  "static_glb": {
+    "named_mesh_nodes": 109,
+    "reopened_geometries": 109,
+    "bounds_m_y_up": [
+      [
+        -0.05,
+        0.0,
+        -0.058
+      ],
+      [
+        0.661,
+        0.193,
+        0.058
+      ]
+    ]
+  },
+  "step": {
+    "reopened_solids": 109,
+    "all_analytic_valid": true,
+    "minimum_solid_volume_mm3": 4.0534085053676145,
+    "total_solid_volume_mm3": 741506.5536146065,
+    "bounds_mm_z_up": [
+      [
+        -50.0,
+        -58.0,
+        0.0
+      ],
+      [
+        661.0,
+        58.0,
+        193.0
+      ]
+    ],
+    "maximum_step_glb_bound_error_mm": 0.0
+  },
+  "motion_glb": {
+    "parts": 109,
+    "channels": 185,
+    "stored_keyframes": 65,
+    "sampled_times_s": [
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5,
+      4.0,
+      4.5,
+      5.0,
+      5.5,
+      6.0,
+      6.5,
+      7.0,
+      7.5,
+      8.0
+    ],
+    "duration_s": 8.0,
+    "maximum_rotation_element_error": 1.1039832437109709e-08,
+    "maximum_translation_error_mm": 3.6248496115831585e-06,
+    "maximum_sampled_vertex_error_mm": 8.964337467887162e-06,
+    "scope": "Decoded artifact node transforms at the listed keyframes, including mm/Z-up to m/Y-up conversion. No continuous interpolation or collision proof."
+  },
+  "mujoco": {
+    "reopened_bodies": 110,
+    "generalized_velocities": 8,
+    "actuators": 8,
+    "backend_version": "3.16.0",
+    "trace_states": 161,
+    "integration_steps": 4000,
+    "tracking_passed": true,
+    "operating_limits_passed": true,
+    "state_readback": {
+      "sampled_states": 17,
+      "maximum_pose_component_error_mm_or_dimensionless": 5.551115123125783e-14,
+      "scope": "Reopened MJCF forward kinematics at recorded joint states; does not rerun dynamics"
+    },
+    "stored_integration_states": 4001
+  },
+  "integrated_motion_glb": {
+    "parts": 109,
+    "channels": 185,
+    "stored_keyframes": 65,
+    "sampled_times_s": [
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5,
+      4.0,
+      4.5,
+      5.0,
+      5.5,
+      6.0,
+      6.5,
+      7.0,
+      7.5,
+      8.0
+    ],
+    "duration_s": 8.0,
+    "maximum_rotation_element_error": 1.9780966309390635e-08,
+    "maximum_translation_error_mm": 3.51363833317464e-06,
+    "maximum_sampled_vertex_error_mm": 8.018020594136033e-06,
+    "scope": "Actual GLB decoded transforms compared with recorded MuJoCo body states and the declared interpolation; no new physics or hardware qualification."
+  }
+}

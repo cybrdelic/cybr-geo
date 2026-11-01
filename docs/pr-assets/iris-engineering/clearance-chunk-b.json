@@ -1,0 +1,1590 @@
+{
+  "schema": "cybrgeo-sampled-native-clearance-audit/1",
+  "scope": "Actual recorded integrated poses and completed native STEP solids; samples do not establish a continuous articulated motion envelope.",
+  "identity": {
+    "native_directory": "outputs\\engineering-iris09-repaired\\native",
+    "trace_path": "outputs\\engineering-iris09-repaired\\simulation\\trace.json.gz",
+    "audit_script_sha256": "3ba53d4164c48b85f141a1687e36d43e473322662c1d0e29e6a2a60e8e2d6d97",
+    "trace_sha256": "858d48c1e7fb5d27baf17e2d780a1a894a68ef642153210220f04bc59524e8dd",
+    "native_build_sha256": "b4c99587bc5082a391d983ac7eecc336b99ff034de202e12ea5bb23b9ee44b79",
+    "native_build_file_sha256": "277c17d313004209f78fda8b12f1b567c2222fee2660a501185b49514ef59789",
+    "native_source_binding_sha256": "6c27467150627bff8455658e509589bb4353ef988a1a45fe16406ad937031f80",
+    "model_sha256": "0312790eb3f48ac8f845ca7cf315b5f2d649a3f3eb02bb70620d09e27ab6f67c",
+    "recorded_body_poses_sha256": "35d48b6c1ed6a56d2423c205f4361b6648d152116d014d570a5cfa8374823a17",
+    "sampled_body_poses_sha256": "49b1d85b1d7fd8a2b536fa9582a1c6cbe18e9413998bf99ef7569f745271125f"
+  },
+  "method": "All differently named physical-body pairs; conservative AABB pruning then exact BRep distance, then BRep intersection for zero-distance candidates. Same-body rigid joins omitted.",
+  "tolerances": {
+    "zero_distance_mm": 1e-07,
+    "numerical_intersection_volume_mm3": 1e-08
+  },
+  "native_parts": 68,
+  "native_solids": 74,
+  "native_artifacts_verified": 230,
+  "part_inventory": [
+    {
+      "body": "rotor",
+      "name": "annular_rotor_and_drive_pins",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__annular_rotor_and_drive_pins.step",
+      "volume_mm3": 11148.312390246283,
+      "solids": 2
+    },
+    {
+      "body": "rotor",
+      "name": "knob_mean_radius_approximation",
+      "material": "aluminum",
+      "step_file": "cad/placed/rotor__knob_mean_radius_approximation.step",
+      "volume_mm3": 131.98648388654968,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_00",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_00.step",
+      "volume_mm3": 1.1232918403117418,
+      "solids": 1
+    },
+    {
+      "body": "leaf_00",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_00__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_00",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_00__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_00",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_00__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_00",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_00__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_00",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_00__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_01",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_01.step",
+      "volume_mm3": 1.123291840311742,
+      "solids": 1
+    },
+    {
+      "body": "leaf_01",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_01__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_01",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_01__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_01",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_01__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_01",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_01__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_01",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_01__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_02",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_02.step",
+      "volume_mm3": 1.1232918403117411,
+      "solids": 1
+    },
+    {
+      "body": "leaf_02",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_02__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_02",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_02__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_02",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_02__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_02",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_02__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_02",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_02__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_03",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_03.step",
+      "volume_mm3": 1.1232918403118268,
+      "solids": 1
+    },
+    {
+      "body": "leaf_03",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_03__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_03",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_03__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_03",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_03__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_03",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_03__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_03",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_03__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_04",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_04.step",
+      "volume_mm3": 1.1232918403115606,
+      "solids": 1
+    },
+    {
+      "body": "leaf_04",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_04__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_04",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_04__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_04",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_04__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_04",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_04__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_04",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_04__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_05",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_05.step",
+      "volume_mm3": 1.1232918403115606,
+      "solids": 1
+    },
+    {
+      "body": "leaf_05",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_05__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_05",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_05__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_05",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_05__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_05",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_05__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_05",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_05__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_06",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_06.step",
+      "volume_mm3": 1.1232918403118257,
+      "solids": 1
+    },
+    {
+      "body": "leaf_06",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_06__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_06",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_06__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_06",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_06__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_06",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_06__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_06",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_06__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_07",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_07.step",
+      "volume_mm3": 1.123291840311741,
+      "solids": 1
+    },
+    {
+      "body": "leaf_07",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_07__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_07",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_07__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_07",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_07__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_07",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_07__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_07",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_07__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "rotor",
+      "name": "input_pin_keeper_08",
+      "material": "steel",
+      "step_file": "cad/placed/rotor__input_pin_keeper_08.step",
+      "volume_mm3": 1.123291840311742,
+      "solids": 1
+    },
+    {
+      "body": "leaf_08",
+      "name": "leaf_shaft_crank",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_08__leaf_shaft_crank.step",
+      "volume_mm3": 237.08594641238398,
+      "solids": 1
+    },
+    {
+      "body": "leaf_08",
+      "name": "output_pin_keeper",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_08__output_pin_keeper.step",
+      "volume_mm3": 1.123291840311722,
+      "solids": 1
+    },
+    {
+      "body": "leaf_08",
+      "name": "lower_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_08__lower_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "leaf_08",
+      "name": "upper_shaft_collar",
+      "material": "steel",
+      "step_file": "cad/placed/leaf_08__upper_shaft_collar.step",
+      "volume_mm3": 1.5345111696506084,
+      "solids": 1
+    },
+    {
+      "body": "rod_08",
+      "name": "bored_connecting_rod",
+      "material": "steel",
+      "step_file": "cad/placed/rod_08__bored_connecting_rod.step",
+      "volume_mm3": 85.96509905100396,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "housing_material_3",
+      "material": "brass",
+      "step_file": "cad/placed/fixed__housing_material_3.step",
+      "volume_mm3": 11801.02218139715,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "housing_material_2",
+      "material": "aluminum",
+      "step_file": "cad/placed/fixed__housing_material_2.step",
+      "volume_mm3": 44361.549647697124,
+      "solids": 2
+    },
+    {
+      "body": "fixed",
+      "name": "housing_material_5",
+      "material": "aluminum",
+      "step_file": "cad/placed/fixed__housing_material_5.step",
+      "volume_mm3": 53159.92641463852,
+      "solids": 5
+    },
+    {
+      "body": "fixed",
+      "name": "housing_material_1",
+      "material": "aluminum",
+      "step_file": "cad/placed/fixed__housing_material_1.step",
+      "volume_mm3": 214707.72195608358,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "screw_0",
+      "material": "steel",
+      "step_file": "cad/placed/fixed__screw_0.step",
+      "volume_mm3": 33.1597473219945,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "screw_1",
+      "material": "steel",
+      "step_file": "cad/placed/fixed__screw_1.step",
+      "volume_mm3": 33.15974730636492,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "screw_2",
+      "material": "steel",
+      "step_file": "cad/placed/fixed__screw_2.step",
+      "volume_mm3": 33.15974731824868,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "screw_3",
+      "material": "steel",
+      "step_file": "cad/placed/fixed__screw_3.step",
+      "volume_mm3": 33.15974730268598,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "screw_4",
+      "material": "steel",
+      "step_file": "cad/placed/fixed__screw_4.step",
+      "volume_mm3": 33.15974731465718,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "screw_5",
+      "material": "steel",
+      "step_file": "cad/placed/fixed__screw_5.step",
+      "volume_mm3": 33.1597475989553,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "lens_0",
+      "material": "glass",
+      "step_file": "cad/placed/fixed__lens_0.step",
+      "volume_mm3": 7301.337603040529,
+      "solids": 1
+    },
+    {
+      "body": "fixed",
+      "name": "lens_1",
+      "material": "glass",
+      "step_file": "cad/placed/fixed__lens_1.step",
+      "volume_mm3": 1121.5549030281138,
+      "solids": 1
+    }
+  ],
+  "requested_sample_times_s": [
+    2.0,
+    5.0,
+    8.0
+  ],
+  "pose_count": 3,
+  "cross_body_pairs_per_pose": 2103,
+  "elapsed_s": 1096.9962315000012,
+  "minimum_distance_mm": 0.024999685214125433,
+  "nearest_pair": {
+    "time_s": 1.9992,
+    "parts": [
+      "leaf_06/leaf_shaft_crank",
+      "rod_06/bored_connecting_rod"
+    ],
+    "distance_mm": 0.024999685214125433
+  },
+  "unexpected_intersections": [],
+  "zero_volume_contacts": [],
+  "no_material_intersections": true,
+  "positive_separation": true,
+  "poses": [
+    {
+      "time_s": 1.9992,
+      "cross_body_pairs": 2103,
+      "aabb_pruned": 1884,
+      "native_distances": 219,
+      "native_intersections": 0,
+      "minimum_distance_mm": 0.024999685214125433,
+      "overlaps": [],
+      "touches": [],
+      "pairs_within_0_1mm": [
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02500000000000151
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999998273376
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999831792
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999996758213
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.0249999999954856
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995490737
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999938138
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999716627
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999949888
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.04999999999999716
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499968521414564
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_01/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663046
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663053
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999999454
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.053200002150051315
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499968521414031
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "leaf_02/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663046
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999998902678
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.05320000214998668
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999685214138534
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "leaf_03/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663053
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999995218725
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.053200002149805296
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499968521413609
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "leaf_04/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663046
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999501508
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.05320000214958888
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999685214144307
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "leaf_05/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663038
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999996253734
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.053200002149457616
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999685214138756
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "leaf_06/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.0659576615466305
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999997272072
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.053200002149445424
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999685214125433
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "leaf_07/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663042
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000016342
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.053200002149583835
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999685214149192
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.06595766154663044
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000009237
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.053200002149799724
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.0249996852141372
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999898017
+        },
+        {
+          "time_s": 1.9992,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.05320000214998374
+        }
+      ]
+    },
+    {
+      "time_s": 4.998,
+      "cross_body_pairs": 2103,
+      "aabb_pruned": 1886,
+      "native_distances": 217,
+      "native_intersections": 0,
+      "minimum_distance_mm": 0.024999766633958975,
+      "overlaps": [],
+      "touches": [],
+      "pairs_within_0_1mm": [
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999997996
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999669342
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999832767
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999996582235
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995507633
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999550542
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999997699
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999969978
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999511777
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.04999999999998295
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499976663396164
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_01/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.032092335851802004
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180197
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999999557
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999766633970744
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "leaf_02/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180195
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999998813208
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499976663396608
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "leaf_03/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180178
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999995884575
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999766633961862
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "leaf_04/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180192
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999976207
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499976663397052
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "leaf_05/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180195
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999997775676
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999766633958975
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "leaf_06/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180185
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999998407612
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999766633961418
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "leaf_07/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180187
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000015826
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999766633972964
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.03209233585180191
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000009237
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999766633967857
+        },
+        {
+          "time_s": 4.998,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999955946
+        }
+      ]
+    },
+    {
+      "time_s": 8.0,
+      "cross_body_pairs": 2103,
+      "aabb_pruned": 1879,
+      "native_distances": 224,
+      "native_intersections": 0,
+      "minimum_distance_mm": 0.024999999011515416,
+      "overlaps": [],
+      "touches": [],
+      "pairs_within_0_1mm": [
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999980857
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999667812
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999821162
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999996386572
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995518107
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999995514482
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999976364
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999999684656
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999999949918
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "rotor/annular_rotor_and_drive_pins",
+            "fixed/housing_material_2"
+          ],
+          "distance_mm": 0.04999999999999716
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "rod_00/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999011520512
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_01/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445464
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445467
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_00/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999999626
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "rod_01/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999011530064
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "leaf_02/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445456
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_01/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999919384
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "rod_02/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999011525897
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "leaf_03/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445494
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_02/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999995134692
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "rod_03/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999011515416
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "leaf_04/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445503
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_03/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.02499999999922438
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "rod_04/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999011518514
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "leaf_05/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445505
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_04/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999994752165
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "rod_05/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999901151979
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "leaf_06/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445506
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_05/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999996261943
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "rod_06/bored_connecting_rod"
+          ],
+          "distance_mm": 0.024999999011520047
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "leaf_07/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.0889020416544546
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_06/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000016342
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "rod_07/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999901151916
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "leaf_08/leaf_shaft_crank"
+          ],
+          "distance_mm": 0.08890204165445469
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_07/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.025000000000009237
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "rod_08/bored_connecting_rod"
+          ],
+          "distance_mm": 0.02499999901152632
+        },
+        {
+          "time_s": 8.0,
+          "parts": [
+            "leaf_08/leaf_shaft_crank",
+            "fixed/housing_material_3"
+          ],
+          "distance_mm": 0.024999999999835147
+        }
+      ]
+    }
+  ],
+  "qualification": "Nominal rigid CAD and sampled poses only; no supplier fits, wear, structural/foil stiffness, fatigue or hardware qualification"
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "cybrgeo-simulation-replay-evidence/1",
+  "backend": "MuJoCo",
+  "backend_version": "3.16.0",
+  "recipe_sha256": "ad975c4acc960d3f9538a65855e1db9669b1af1fd5fbb4416705a0c1260e22f6",
+  "mechanism_sha256": "d655f957f3837c2f78a4df40ca180fd21f314639e4d79657b17822d4b6fbf3ba",
+  "model_sha256": "9c3a583ea7c74fc7796fbb6539a786abd582620449f05bdd836cb3e50cbb21bc",
+  "simulation_sha256": "921e5ffd879c59577f8961ac18cb3dfc6397cf3712b930c8ecb9d6ec9512dadc",
+  "browser_assembly_sha256": "f1e2e91b66b97898fc4cfae8fc6fe804862376671eac76605ea04b0b0384ad48",
+  "parts": 109,
+  "samples": 5,
+  "maximum_matrix_error": 6.661338147750939e-16,
+  "maximum_vertex_error_mm": 4.587817686955852e-13,
+  "maximum_sampled_motion_mm": 102.13259161475652,
+  "passed": true,
+  "scope": "Actual integrated MuJoCo body matrices and WASM CAD vertices replayed in a flat Three.js group, compared with native simulated_assembly. No duplicate joint pivots, no unit conversion, no live browser UI claim. This checks replay fidelity, not simulation accuracy or hardware qualification."
+}

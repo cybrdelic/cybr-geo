@@ -1,0 +1,2859 @@
+{
+  "interfaces": {
+    "elbow_spring_member_0_fixed": {
+      "first_variation_mm": null,
+      "force_demand_N": 88.17746887670654,
+      "parts": [
+        "upper__spring_eye_pin_64",
+        "upper__elbow_spring_fixed_clevis_62"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "elbow_spring_member_0_moving": {
+      "first_variation_mm": null,
+      "force_demand_N": 88.17746887670654,
+      "parts": [
+        "fore__spring_eye_pin_58",
+        "fore__elbow_spring_moving_clevis_56"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "elbow_spring_member_1_fixed": {
+      "first_variation_mm": null,
+      "force_demand_N": 88.17746887670654,
+      "parts": [
+        "upper__spring_eye_pin_65",
+        "upper__elbow_spring_fixed_clevis_62"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "elbow_spring_member_1_moving": {
+      "first_variation_mm": null,
+      "force_demand_N": 88.17746887670654,
+      "parts": [
+        "fore__spring_eye_pin_59",
+        "fore__elbow_spring_moving_clevis_56"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "shoulder_spring_member_0_fixed": {
+      "first_variation_mm": null,
+      "force_demand_N": 230.77027076724193,
+      "parts": [
+        "turret__spring_eye_pin_54",
+        "turret__shoulder_spring_fixed_clevis_53"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "shoulder_spring_member_0_moving": {
+      "first_variation_mm": null,
+      "force_demand_N": 230.77027076724193,
+      "parts": [
+        "upper__spring_eye_pin_58",
+        "upper__shoulder_spring_moving_clevis_56"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "shoulder_spring_member_1_fixed": {
+      "first_variation_mm": null,
+      "force_demand_N": 230.77027076724193,
+      "parts": [
+        "turret__spring_eye_pin_55",
+        "turret__shoulder_spring_fixed_clevis_53"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    },
+    "shoulder_spring_member_1_moving": {
+      "first_variation_mm": null,
+      "force_demand_N": 230.77027076724193,
+      "parts": [
+        "upper__spring_eye_pin_59",
+        "upper__shoulder_spring_moving_clevis_56"
+      ],
+      "required_service_gap_mm": null,
+      "role": "retained_contact",
+      "second_variation_mm": null
+    }
+  },
+  "loads": {
+    "rack_motor": {
+      "part": "pinion__gripper_pinion_m0p3_z20_0",
+      "source_demand_limit_Nm": 0.05
+    },
+    "motor1": {
+      "part": "turret__J1_output_shaft",
+      "source_demand_limit_Nm": 12.798933333333332
+    },
+    "motor2": {
+      "part": "upper__J2_output_shaft",
+      "source_demand_limit_Nm": 12.798933333333332
+    },
+    "motor3": {
+      "part": "fore__J3_output_shaft",
+      "source_demand_limit_Nm": 12.798933333333332
+    },
+    "motor4": {
+      "part": "roll__J4_output_shaft",
+      "source_demand_limit_Nm": 2.4948
+    },
+    "motor5": {
+      "part": "bend__J5_output_shaft",
+      "source_demand_limit_Nm": 2.4948
+    },
+    "motor6": {
+      "part": "tool__J6_output_shaft",
+      "source_demand_limit_Nm": 2.4948
+    }
+  },
+  "parts": {
+    "bend__J5_brake_armature": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J5_driven_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J5_integral_stop_target": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J5_output_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J5_pulley_output_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_bearing_-20": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_bearing_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_back_adapter": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_spacer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_spacer_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_stator": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_strut_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_strut_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_strut_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_brake_strut_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_carrier_deck": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_carrier_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_carrier_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_carrier_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_carrier_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_drive_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_front_cover": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gear_mount_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gear_mount_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gear_mount_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gear_mount_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gear_mount_screw_4": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gear_mount_screw_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_gearhead": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_housing_rails": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_index_sensor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_input_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_input_support_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_motor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_pulley_input_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_sensor_mount": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_stop_pin_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_stop_pin_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_tension_block": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_tension_screw": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__J6_timing_belt": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_DIN471_installed_retainer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_bearing_housing_10": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_brake_front_adapter_15": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_brake_keyed_hub_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_brake_shaft_key_6": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_front_bearing_cover_12": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_inner_race_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_rear_bearing_cover_11": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__small_selective_inner_race_shim_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__wrist_bend_cradle_51": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "bend__wrist_idle_trunnion_52": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_bearing_-34": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_bearing_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_back_adapter": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_spacer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_spacer_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_spacer_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_spacer_4": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_spacer_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_stator": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_strut_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_strut_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_strut_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_brake_strut_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_carrier_deck": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_carrier_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_carrier_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_carrier_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_carrier_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_drive_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_front_cover": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_gear_mount_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_gear_mount_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_gear_mount_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_gear_mount_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_gearhead": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_housing_rails": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_index_sensor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_input_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_input_support_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_motor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_pulley_input_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_sensor_mount": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_stop_pin_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_stop_pin_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_tension_block": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_tension_screw": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__J1_timing_belt": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_backing_washer_44": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_backing_washer_47": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_backing_washer_50": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_backing_washer_53": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_backing_washer_56": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_backing_washer_59": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_bolt_45": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_bolt_48": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_bolt_51": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_bolt_54": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_bolt_57": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_bolt_60": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_nut_46": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_nut_49": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_nut_52": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_nut_55": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_nut_58": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_nut_61": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__bench_mount_plate_42": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__large_bearing_housing_0": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__large_brake_front_adapter_5": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__large_front_bearing_cover_2": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__large_rear_bearing_cover_1": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fixed__pedestal_sleeve_43": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J3_brake_armature": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J3_driven_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J3_integral_stop_target": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J3_output_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J3_pulley_output_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_bearing_-20": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_bearing_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_back_adapter": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_spacer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_spacer_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_stator": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_strut_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_strut_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_strut_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_brake_strut_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_carrier_deck": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_carrier_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_carrier_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_carrier_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_carrier_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_drive_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_front_cover": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gear_mount_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gear_mount_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gear_mount_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gear_mount_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gear_mount_screw_4": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gear_mount_screw_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_gearhead": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_housing_rails": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_index_sensor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_input_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_input_support_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_motor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_pulley_input_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_sensor_mount": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_stop_pin_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_stop_pin_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_tension_block": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_tension_screw": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__J4_timing_belt": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__elbow_moving_anchor_nut_plate_57": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__elbow_spring_moving_clevis_56": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__fore_clamp_side_shims_55": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__fore_link_tube_51": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__fore_nut_strip_53": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__fore_roll_housing_clamp_54": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__fore_root_ear_52": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__large_DIN471_installed_retainer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__large_brake_keyed_hub_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__large_brake_shaft_key_6": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__large_inner_race_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__large_selective_inner_race_shim_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__small_bearing_housing_10": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__small_brake_front_adapter_15": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__small_front_bearing_cover_12": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__small_rear_bearing_cover_11": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__spring_eye_pin_58": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "fore__spring_eye_pin_59": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw__finger_pad_1": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw__jaw_guide_bushing_2": {
+      "material": "polymer",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw__jaw_guide_bushing_3": {
+      "material": "polymer",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw__right_jaw_carriage_0": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw__upper_rack": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw_opposed__finger_pad": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw_opposed__guide_bushing_-10": {
+      "material": "polymer",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw_opposed__guide_bushing_10": {
+      "material": "polymer",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw_opposed__left_jaw_carriage": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "jaw_opposed__lower_rack": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J4_brake_armature": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J4_driven_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J4_integral_stop_target": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J4_output_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J4_pulley_output_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_bearing_-20": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_bearing_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_back_adapter": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_spacer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_spacer_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_stator": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_strut_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_strut_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_strut_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_brake_strut_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_carrier_deck": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_carrier_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_carrier_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_carrier_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_carrier_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_drive_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_front_cover": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gear_mount_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gear_mount_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gear_mount_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gear_mount_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gear_mount_screw_4": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gear_mount_screw_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_gearhead": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_housing_rails": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_idle_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_index_sensor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_input_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_input_support_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_motor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_pulley_input_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_sensor_mount": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_stop_pin_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_stop_pin_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_tension_block": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_tension_screw": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__J5_timing_belt": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__idle_bearing_inner_cover_52": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__idle_bearing_outer_cover_53": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_DIN471_installed_retainer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_bearing_housing_10": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_brake_front_adapter_15": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_brake_keyed_hub_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_brake_shaft_key_6": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_front_bearing_cover_12": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_inner_race_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_rear_bearing_cover_11": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__small_selective_inner_race_shim_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "roll__wrist_roll_fork_51": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__J6_brake_armature": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__J6_driven_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__J6_integral_stop_target": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__J6_output_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__J6_pulley_output_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__gripper_bridge_10": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__gripper_cable_clamp_base_16": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__gripper_cable_clamp_cap_17": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__gripper_cable_clamp_liner_18": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__gripper_cable_clamp_mount_15": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__gripper_motor": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "pinion__gripper_pinion_m0p3_z20_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__guide_rod_-10": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__guide_rod_10": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__pinion_front_bushing_12": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__small_DIN471_installed_retainer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__small_brake_keyed_hub_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__small_brake_shaft_key_6": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__small_inner_race_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "tool__small_selective_inner_race_shim_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J1_brake_armature": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J1_driven_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J1_integral_stop_target": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J1_output_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J1_pulley_output_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_bearing_-34": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_bearing_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_back_adapter": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_spacer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_spacer_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_spacer_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_spacer_4": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_spacer_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_stator": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_strut_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_strut_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_strut_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_brake_strut_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_carrier_deck": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_carrier_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_carrier_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_carrier_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_carrier_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_drive_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_front_cover": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_gear_mount_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_gear_mount_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_gear_mount_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_gear_mount_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_gearhead": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_housing_rails": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_index_sensor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_input_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_input_support_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_motor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_pulley_input_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_sensor_mount": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_stop_pin_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_stop_pin_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_tension_block": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_tension_screw": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__J2_timing_belt": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_DIN471_installed_retainer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_bearing_housing_10": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_brake_front_adapter_15": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_brake_keyed_hub_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_brake_shaft_key_6": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_front_bearing_cover_12": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_inner_race_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_rear_bearing_cover_11": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__large_selective_inner_race_shim_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__shoulder_spring_fixed_clevis_53": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__spring_eye_pin_54": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__spring_eye_pin_55": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "turret__turret_yoke_52": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J2_brake_armature": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J2_driven_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J2_integral_stop_target": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J2_output_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J2_pulley_output_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_bearing_-34": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_bearing_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_back_adapter": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_spacer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_spacer_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_spacer_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_spacer_4": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_spacer_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_stator": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_strut_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_strut_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_strut_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_brake_strut_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_carrier_deck": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_carrier_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_carrier_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_carrier_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_carrier_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_drive_pulley": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_front_cover": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_gear_mount_screw_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_gear_mount_screw_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_gear_mount_screw_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_gear_mount_screw_3": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_gearhead": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_housing_rails": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_index_sensor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_input_shaft": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_input_support_bearing": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_motor": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_pulley_input_key": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_sensor_mount": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_stop_pin_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_stop_pin_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_tension_block": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_tension_screw": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__J3_timing_belt": {
+      "material": "rubber",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__elbow_fixed_anchor_nut_strips_63": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__elbow_spring_fixed_clevis_62": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_DIN471_installed_retainer_1": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_bearing_housing_10": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_brake_front_adapter_15": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_brake_keyed_hub_5": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_brake_shaft_key_6": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_front_bearing_cover_12": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_inner_race_spacer_0": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_rear_bearing_cover_11": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__large_selective_inner_race_shim_2": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__shoulder_spring_moving_clevis_56": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__shoulder_spring_nut_plate_57": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__spring_eye_pin_58": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__spring_eye_pin_59": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__spring_eye_pin_64": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__spring_eye_pin_65": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__upper_elbow_housing_clamp_55": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__upper_link_tube_52": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__upper_nut_strip_54": {
+      "material": "steel",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    },
+    "upper__upper_root_ear_53": {
+      "material": "aluminum",
+      "maximum_volume_mm3": null,
+      "nominal_minimum_wall_mm": null,
+      "process": null,
+      "required_dimensional_tolerance_mm": null
+    }
+  },
+  "schema": "cybrgeo-qualification-intent/1",
+  "unresolved_requirements": [
+    {
+      "category": "design",
+      "kind": "installed_interface_graph",
+      "reason": "The 52 retained P5 nominal template and fixture checks do not identify every exact placed-part mating and load-transfer interface among 380 installed parts. A full installed structural, bearing, belt and fastener interface graph remains to be authored.",
+      "subject": "assembly"
+    },
+    {
+      "category": "design",
+      "kind": "power_loss_payload_retention",
+      "reason": "The source power-loss case drops the free puck. No passive pawl, brake or qualified fail-closed jaw return mechanism is present in both native CAD and MuJoCo; the motor-off grip must not be called retained.",
+      "subject": "pinion__gripper_pinion_m0p3_z20_0"
+    },
+    {
+      "category": "external",
+      "kind": "material_and_process_capability",
+      "reason": "No purchased material lot, supplier fits, belt pretension, spring curve, facility process capability, fabricated serial measurements or exact-STEP part inspection is available for the 380 placed parts.",
+      "subject": "assembly"
+    },
+    {
+      "category": "external",
+      "kind": "service_and_capacity_evidence",
+      "reason": "Ideal motor and spring force envelopes are source-derived demands only. Independent service-envelope review, tested interface and drive capacity, retained spring-eye pin/clevis strength and assembled thermal/endurance/fault results are unavailable.",
+      "subject": "assembly"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "shoulder_spring_member_0_fixed"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "shoulder_spring_member_0_moving"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "shoulder_spring_member_1_fixed"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "shoulder_spring_member_1_moving"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "elbow_spring_member_0_fixed"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "elbow_spring_member_0_moving"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "elbow_spring_member_1_fixed"
+    },
+    {
+      "category": "external",
+      "kind": "retained_spring_anchor_test",
+      "reason": "A source-derived pin and clevis have a nominal 0.1 mm radial bore gap, but no same-unit tested retention, assembled play, loaded capacity, fatigue or spring-lot uncertainty record exists.",
+      "subject": "elbow_spring_member_1_moving"
+    }
+  ]
+}

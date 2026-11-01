@@ -9,6 +9,7 @@ import shutil
 import sys
 
 from .render_profiles import V9
+from .registry import DEFAULT_RECIPE,CONSTRUCTED
 
 
 def resolution(text):
@@ -47,15 +48,34 @@ def parser():
     sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('list',help='List built-in recipes')
     sub.add_parser('doctor',help='Inspect installed dependencies and system tools')
-    q=sub.add_parser('preview',help='Build, check, export GLB and render a native preview in one command')
-    q.add_argument('recipe',nargs='?',default='example_flange')
+    q=sub.add_parser('preview',help='Build, check, export GLB and render a geometry preview in one command')
+    q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE)
     q.add_argument('--view',default='hero');q.add_argument('--size',type=resolution,default=(640,480))
     q.add_argument('--spp',type=positive_int,default=32);q.add_argument('--depth',type=positive_int,default=8)
     q.add_argument('--threads',type=positive_int,default=4);q.add_argument('--out',type=Path)
+    q.add_argument('--renderer',choices=['auto','native','pbr'],default='auto')
     q.add_argument('--step',action='store_true',help='Also export analytic STEP (requires CAD-backed parts)')
     q.add_argument('--rebuild',action='store_true');_truth_args(q)
-    q=sub.add_parser('build',help='Build/cache a model and export GLB plus its component list')
-    q.add_argument('recipe');q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
+    q=sub.add_parser('build',help='Build/cache diagnostic geometry and export GLB plus its component list')
+    q.add_argument('recipe',nargs='?',default=DEFAULT_RECIPE);q.add_argument('--step',action='store_true');q.add_argument('--stl',action='store_true');q.add_argument('--rebuild',action='store_true');q.add_argument('--out',type=Path)
+    q=sub.add_parser('mechanism',help='Construct diagnostic CAD and integrate an engineering task; hardware release is separate')
+    q.add_argument('architecture',nargs='?',default=DEFAULT_RECIPE,help='Mechanism JSON document, or a compatibility example alias')
+    q.add_argument('--parameters',type=Path,help='JSON object of bounded construction parameters')
+    q.add_argument('--out',type=Path);q.add_argument('--step',action='store_true',help='Export diagnostic STEP with manufacturing_validated=false')
+    q.add_argument('--reuse-native',type=Path,help='Reuse a hash-verified native build of the same authored project')
+    q.add_argument('--media',action='store_true',help='Also render actual mesh PNG/GIF inspection views')
+    q.add_argument('--size',type=resolution,default=(960,720))
+    q.add_argument('--seconds',type=positive_float,help='Simulation duration; defaults to the authored project cycle (legacy mechanisms: 10 seconds)')
+    q.add_argument('--fps',type=positive_int,default=12)
+    from .engineering_media import add_arguments as replay_arguments
+    replay_arguments(sub.add_parser('replay',help='Render accepted native CAD and saved integrated motion with source-bound media receipts'))
+    q=sub.add_parser('release',help='Release manufacturing CAD only after source-bound construction and externally signed hardware evidence')
+    q.add_argument('project',help='Engineering project containing data/qualification-plan.json')
+    q.add_argument('--run',type=Path,required=True,help='Accepted diagnostic engineering run to qualify')
+    q.add_argument('--evidence',type=Path,required=True,help='Signed physical records and their original report documents')
+    q.add_argument('--trust-policy',type=Path,required=True,help='Independently provisioned Ed25519 issuer policy')
+    q.add_argument('--fault-profile',type=Path,help='External source/model-bound motor-off acceptance limits for a held free workpiece')
+    q.add_argument('--out',type=Path,required=True,help='Fresh qualified release directory')
     q=sub.add_parser('render',help='Render a named view from actual geometry; V9 is the default photographic backend')
     q.add_argument('recipe');q.add_argument('--view',default='hero');q.add_argument('--renderer',choices=['v9','photoreal','pathtrace','pbr'],default='v9')
     q.add_argument('--size',type=resolution,default=V9.still_size);q.add_argument('--spp',type=positive_int,default=V9.still_spp);q.add_argument('--depth',type=positive_int,default=V9.still_depth);q.add_argument('--threads',type=positive_int,default=4)
@@ -90,7 +110,7 @@ def parser():
 
 
 def doctor():
-    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG','mitsuba'];dependencies={}
+    libraries=['numpy','cadquery','vtk','trimesh','shapely','scipy','Pillow','numba','ezdxf','CairoSVG','mitsuba','mujoco'];dependencies={}
     for name in libraries:
         try:dependencies[name]=importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:dependencies[name]=None
@@ -105,11 +125,39 @@ def doctor():
 
 def run(args):
     if args.root:os.environ['MECHANISM_LAB_ROOT']=str(args.root.expanduser().resolve())
+    if args.command=='replay':
+        from .engineering_media import run_arguments
+        run_arguments(args)
+        return 0
+    if args.command=='release':
+        from .qualification import release_project
+        print(json.dumps(release_project(args.project,args.run,args.evidence,args.trust_policy,args.out,
+            fault_profile=args.fault_profile),indent=2))
+        return 0
     from .core import project_root,validate
-    from .registry import load,BUILTINS
+    from .registry import load,BUILTINS,is_mechanism_source
     if args.command=='list':print('\n'.join(BUILTINS));return 0
     if args.command=='doctor':return doctor()
     root=project_root()
+    if args.command=='mechanism':
+        from .engineering_source import is_engineering_project
+        if is_engineering_project(args.architecture):
+            from .engineering_pipeline import generate_project
+            if args.parameters:
+                raise ValueError('Edit the authored project specification; legacy cartridge parameters do not apply')
+            assembly,report=generate_project(args.architecture,args.out,seconds=args.seconds,
+                reuse_native=args.reuse_native,media=args.media,size=args.size,fps=args.fps)
+            if args.step and report['passed']:
+                from .exporters import export_step, artifact_stem
+                stem=artifact_stem(assembly)
+                destination=args.out or root/'outputs'/stem
+                export_step(assembly,destination/(stem+'.step'),mesh_filename='assembly.glb')
+            print(json.dumps(report,indent=2));return 0 if report['passed'] else 2
+        from .mechanism_bundle import generate
+        parameters=json.loads(args.parameters.read_text(encoding='utf-8')) if args.parameters else None
+        report=generate(args.architecture,parameters,args.out,args.step,args.media,args.size,
+                        10. if args.seconds is None else args.seconds,args.fps)
+        print(json.dumps(report,indent=2));return 0
     if args.command=='preview':
         from .preview import preview
         print(json.dumps(preview(args),indent=2));return 0
@@ -134,16 +182,37 @@ def run(args):
                     target=destination/uri;target.parent.mkdir(parents=True,exist_ok=True)
                     if (source.parent/uri).resolve()!=target.resolve():shutil.copy2(source.parent/uri,target)
         recipe=destination/(safe_name(args.name)+'.json');recipe.write_text(json.dumps({'schema':1,'kind':'geometry-import','source':source.name,'name':assembly.name,'units':assembly.metadata['source_units'],'up_axis':assembly.metadata['source_up_axis']},indent=2)+'\n');print(recipe);return 0
-    analytic=args.command in ('blueprint','whiteprint') or (args.command=='build' and args.step)
-    assembly=load(args.recipe,rebuild=getattr(args,'rebuild',False),analytic=analytic);out=root/'outputs'/assembly.name;out.mkdir(parents=True,exist_ok=True)
+    engineered=is_mechanism_source(args.recipe) and args.command in ('build','animate')
+    analytic=engineered or args.command in ('blueprint','whiteprint') or (args.command=='build' and args.step)
+    assembly=load(args.recipe,rebuild=getattr(args,'rebuild',False),analytic=analytic)
+    from .exporters import artifact_stem
+    stem=artifact_stem(assembly);out=root/'outputs'/stem;out.mkdir(parents=True,exist_ok=True)
+    if engineered:
+        from .engineering_pipeline import evaluate_plan
+        analysis_out=(args.out if args.command=='build' and args.out else out)/'engineering'
+        assembly,engineering=evaluate_plan(assembly.metadata['construction_recipe'], analysis_out,
+            seconds=getattr(args,'seconds',8.), assembly=assembly)
+        if not engineering['passed']:
+            raise RuntimeError('Engineering generation did not authorize motion: '+
+                '; '.join(item['stage']+': '+item['message'] for item in engineering['errors']))
+        if args.command=='animate' and args.mode=='motion':
+            from .dynamics import simulated_assembly
+            assembly=simulated_assembly(assembly,engineering['simulation'])
     if args.command=='build':
         from .exporters import export_glb,export_step,export_bom,export_stls
-        out=args.out or out;out.mkdir(parents=True,exist_ok=True);export_glb(assembly,out/(assembly.name+'.glb'));export_bom(assembly,out)
-        if args.step:export_step(assembly,out/(assembly.name+'_analytic.step'))
+        out=args.out or out;out.mkdir(parents=True,exist_ok=True)
+        if (out/'qualified-release.json').exists():
+            raise ValueError('Diagnostic build cannot write into a qualified manufacturing release')
+        (out/'DIAGNOSTIC-NOT-FOR-MANUFACTURE.json').write_text(json.dumps({
+            'schema':'cybrgeo-diagnostic-artifact/1','status':'diagnostic_geometry',
+            'manufacturing_release':False},indent=2)+'\n',encoding='utf-8')
+        export_glb(assembly,out/(stem+'.glb'));export_bom(assembly,out)
+        if args.step:export_step(assembly,out/(stem+'_analytic.step'))
         if args.stl:export_stls(assembly,out/'stl')
         from .registry import cache_directory
         shutil.copy2(cache_directory(args.recipe)/'validation.json',out/'validation.json')
-        print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out)},indent=2))
+        print(json.dumps({'model':assembly.name,'parts':len(assembly.parts),'output':str(out),
+                          'manufacturing_release':False,'artifact_status':'diagnostic_geometry'},indent=2))
     elif args.command=='render':
         output=args.out or out/'renders'/(args.view+'_'+args.renderer+'.png')
         if args.renderer=='v9':
@@ -161,7 +230,7 @@ def run(args):
         truth=assert_renderable(assembly,args.intent,args.allow_estimates)
         from .media import Shot,render_video
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'videos'/(assembly.name+'_'+args.renderer+'.mp4')
+        output=args.out or out/'videos'/(stem+'_'+args.renderer+'.mp4')
         if args.renderer=='v9':
             from .v9_dispatch import render_v9_video
             report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
@@ -174,7 +243,7 @@ def run(args):
     elif args.command=='film':
         from .media import Shot
         shots=[Shot(**record) for record in json.loads(args.shots.read_text())] if args.shots else [Shot(args.view,args.seconds,args.action)]
-        output=args.out or out/'films'/(assembly.name+'_'+args.renderer+'.mp4')
+        output=args.out or out/'films'/(stem+'_'+args.renderer+'.mp4')
         if args.renderer=='v9':
             from .v9_dispatch import render_v9_video
             report=render_v9_video(assembly,output,shots,args.size,args.fps,args.spp,args.depth,args.intent,args.allow_estimates)
@@ -184,13 +253,13 @@ def run(args):
         print(json.dumps({k:v for k,v in report.items() if k!='truth' and k!='frames_log'},indent=2))
     elif args.command=='animate':
         from .exporters import export_animated_glb
-        output=args.out or out/(assembly.name+'_'+args.mode+'.glb');print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))
+        output=args.out or out/(stem+'_'+args.mode+'.glb');print(json.dumps(export_animated_glb(assembly,output,args.seconds,args.fps,args.mode),indent=2))
     elif args.command=='catalogue':
         from .media import catalogue
         output=args.out or out/'parts';items=catalogue(assembly,output,args.size);print(json.dumps({'parts':len(items),'catalogue':str(output/'index.html')},indent=2))
     elif args.command in ('blueprint','whiteprint'):
         from .whiteprint import whiteprint
-        output=args.out or out/'drawings'/(assembly.name+'_whiteprint');specification=json.loads(args.annotations.read_text()) if args.annotations else None;print(json.dumps(whiteprint(assembly,output,args.part,args.title,args.scale,specification),indent=2))
+        output=args.out or out/'drawings'/(stem+'_whiteprint');specification=json.loads(args.annotations.read_text()) if args.annotations else None;print(json.dumps(whiteprint(assembly,output,args.part,args.title,args.scale,specification),indent=2))
     elif args.command=='validate':
         report=validate(assembly,args.expensive);text=json.dumps(report,indent=2)+'\n'
         if args.out:args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(text)

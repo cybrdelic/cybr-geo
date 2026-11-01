@@ -1,0 +1,112 @@
+{
+  "backend": "MuJoCo",
+  "backend_version": "3.16.0",
+  "mechanism_sha256": "3eab3bf233f70149bca8f3956e33ad6b8a2cdce234b53ceb13b7f05659d2783e",
+  "model_sha256": "37a7696d91c8d0b05fcb257782045e420d51263c0141af4adcf90501afde02f8",
+  "seconds": 8.0,
+  "timestep_s": 0.0001,
+  "integration_steps": 80000,
+  "tracking_passed": true,
+  "operating_limits_passed": false,
+  "metrics": {
+    "J1_output": {
+      "unit": "deg",
+      "max_tracking_error": 3.205029848533687e-05,
+      "rms_tracking_error": 2.1878092958290807e-05,
+      "peak_applied_effort_SI": 0.018453207374774214,
+      "effort_limit_SI": 25.0,
+      "max_requested_speed": 3.2986722862692823,
+      "max_requested_acceleration": 2.5907711552859563,
+      "max_simulated_speed": 3.2986476038584374,
+      "max_simulated_acceleration": 2.5913065390419687,
+      "saturation_fraction": 0.0
+    },
+    "J2_motor": {
+      "unit": "deg",
+      "max_tracking_error": 0.0005225952335709405,
+      "rms_tracking_error": 3.4386900051184616e-05,
+      "peak_applied_effort_SI": 6.526690173360919,
+      "effort_limit_SI": 9.8,
+      "max_requested_speed": 3.2986722862692823,
+      "max_requested_acceleration": 2.5907711552859563,
+      "max_simulated_speed": 3.2986596946722795,
+      "max_simulated_acceleration": 2836.1123835192425,
+      "saturation_fraction": 0.0
+    },
+    "J3_motor": {
+      "unit": "deg",
+      "max_tracking_error": 0.000300796183317047,
+      "rms_tracking_error": 2.0020374884080757e-05,
+      "peak_applied_effort_SI": 3.756256470340518,
+      "effort_limit_SI": 9.8,
+      "max_requested_speed": 3.2986722862692823,
+      "max_requested_acceleration": 2.5907711552859563,
+      "max_simulated_speed": 3.298668238168487,
+      "max_simulated_acceleration": 1637.426691773494,
+      "saturation_fraction": 0.0
+    },
+    "J4_output": {
+      "unit": "deg",
+      "max_tracking_error": 3.1973413075687005e-05,
+      "rms_tracking_error": 2.0152228341269364e-05,
+      "peak_applied_effort_SI": 0.01696545587923094,
+      "effort_limit_SI": 25.0,
+      "max_requested_speed": 3.2986722862692823,
+      "max_requested_acceleration": 2.5907711552859563,
+      "max_simulated_speed": 3.2986502454645645,
+      "max_simulated_acceleration": 2.6600856482337796,
+      "saturation_fraction": 0.0
+    },
+    "J5_output": {
+      "unit": "deg",
+      "max_tracking_error": 4.1004834710188267e-05,
+      "rms_tracking_error": 2.8134670090243363e-05,
+      "peak_applied_effort_SI": 0.9316736574418205,
+      "effort_limit_SI": 25.0,
+      "max_requested_speed": 3.2986722862692823,
+      "max_requested_acceleration": 2.5907711552859563,
+      "max_simulated_speed": 3.2986405255115936,
+      "max_simulated_acceleration": 2.7626633229692854,
+      "saturation_fraction": 0.0
+    },
+    "J6_output": {
+      "unit": "deg",
+      "max_tracking_error": 6.976621513553722e-05,
+      "rms_tracking_error": 4.364979251748958e-05,
+      "peak_applied_effort_SI": 0.0008933436120721509,
+      "effort_limit_SI": 25.0,
+      "max_requested_speed": 3.2986722862692823,
+      "max_requested_acceleration": 2.5907711552859563,
+      "max_simulated_speed": 3.2987246946631976,
+      "max_simulated_acceleration": 2.6305096502210574,
+      "saturation_fraction": 0.0
+    },
+    "jaw_left_travel": {
+      "unit": "mm",
+      "max_tracking_error": 5.7686810371083974e-05,
+      "rms_tracking_error": 3.8093121986629744e-05,
+      "peak_applied_effort_SI": 0.11816570502690657,
+      "effort_limit_SI": 100.0,
+      "max_requested_speed": 2.748893571891069,
+      "max_requested_acceleration": 2.158975962738297,
+      "max_simulated_speed": 2.7489376849524603,
+      "max_simulated_acceleration": 2.1625341678116907,
+      "saturation_fraction": 0.0
+    },
+    "jaw_right_travel": {
+      "unit": "mm",
+      "max_tracking_error": 5.1633726411400424e-05,
+      "rms_tracking_error": 3.432574499186164e-05,
+      "peak_applied_effort_SI": 0.11834512698977115,
+      "effort_limit_SI": 100.0,
+      "max_requested_speed": 2.748893571891069,
+      "max_requested_acceleration": 2.158975962738297,
+      "max_simulated_speed": 2.7489330906634866,
+      "max_simulated_acceleration": 2.1613289969215654,
+      "saturation_fraction": 0.0
+    }
+  },
+  "maximum_drive_constraint_error_native": 0.0005359073797940637,
+  "scope": "Original belt-component study; explicit failed operating-limit diagnostic, not ARX-6 and not an authorized engineering result.",
+  "artifact_sha256": "82b4bbda9330a2773b42c8512e9c8b28922068707321e68cc1e20f35eb9269a6"
+}

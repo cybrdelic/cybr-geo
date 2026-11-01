@@ -1,0 +1,65 @@
+{
+  "schema": "cybrgeo-recorded-state-equivalence/1",
+  "passed": true,
+  "previous": {
+    "path": "outputs\\engineering-iris09-accepted\\simulation\\trace.json.gz",
+    "trace_sha256": "a3e2c71358ea794ddce8105310f4bc743cb23e691d3d069a382d6bb81a142166",
+    "frame_count": 954,
+    "body_poses_and_times_sha256": "35d48b6c1ed6a56d2423c205f4361b6648d152116d014d570a5cfa8374823a17",
+    "complete_frames_sha256": "6596b2612a4b7fa3c1bca86b42ce882f185776f32de9e1f870262cbd752e188d",
+    "runtime_implementation": {
+      "schema": "cybrgeo-causal-runtime/1",
+      "source_files": {
+        "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+        "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+      },
+      "packages": {
+        "numpy": "2.5.4",
+        "mujoco": "3.16.0"
+      },
+      "runtime": {
+        "python": "3.12.10",
+        "system": "Windows",
+        "machine": "AMD64"
+      },
+      "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+    },
+    "model_sha256": "e61aeafeab9a40a9c92cfb011ecbbc4a8745deadcd4649d55d497ae18c2530a0",
+    "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+    "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc"
+  },
+  "current": {
+    "path": "outputs\\engineering-iris09-core-final\\simulation\\trace.json.gz",
+    "trace_sha256": "3abcbc1aab9681d37234fed7584b39bf4150afd2cecf8f67308aa135bf27377f",
+    "frame_count": 954,
+    "body_poses_and_times_sha256": "35d48b6c1ed6a56d2423c205f4361b6648d152116d014d570a5cfa8374823a17",
+    "complete_frames_sha256": "6596b2612a4b7fa3c1bca86b42ce882f185776f32de9e1f870262cbd752e188d",
+    "runtime_implementation": {
+      "schema": "cybrgeo-causal-runtime/1",
+      "source_files": {
+        "causal_runtime.py": "1c06bfd24ddd3606cc664bbf85b36536fa1f0cd6b5d020b083ed7d1f2302c1d1",
+        "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+      },
+      "packages": {
+        "numpy": "2.5.4",
+        "mujoco": "3.16.0"
+      },
+      "runtime": {
+        "python": "3.12.10",
+        "system": "Windows",
+        "machine": "AMD64"
+      },
+      "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+    },
+    "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+    "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+    "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc"
+  },
+  "exact_body_poses_and_times": true,
+  "exact_complete_saved_frames": true,
+  "exact_frame_count": true,
+  "first_differing_frame_index": null,
+  "comparison": "Exact canonical JSON values; no rounding, interpolation, rotation normalization or tolerance.",
+  "scope": "Recorded states only. Runtime and source identities remain separate; no new clearance or hardware claim.",
+  "script_sha256": "4c409de766a7b415cb5b9bec145ae8c5135c7333bb909ee5c85dd5f4a66fe706"
+}

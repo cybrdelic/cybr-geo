@@ -1,0 +1,309 @@
+{
+  "scope": "Two actual load-bearing link test-article designs, not an assembled/qualified whole-robot print conversion.",
+  "material_model": "Transparent PETG target, 1250 kg/m3 assumed solid fill, no infill homogenization.",
+  "source_upper_bbox_mm": [
+    88.00000000000001,
+    357.0,
+    49.0
+  ],
+  "beam_section_old_nominal_wall_mm": 2.5,
+  "beam_section_new_nominal_wall_mm": 6.0,
+  "elbow_collar_local_relief": {
+    "original_radius_mm": 36.5,
+    "revised_radius_mm": 36.65,
+    "z_band_mm": [
+      18.8,
+      22.2
+    ],
+    "reason": "Remove inherited tangent zero-thickness topology; new interface fit remains unqualified."
+  },
+  "upper_joint_gap_mm": 0.3,
+  "upper_sleeve_length_mm": 80,
+  "upper_sleeve_radial_clearance_mm": 0.2,
+  "parts": [
+    {
+      "name": "upper-frame-proximal",
+      "source_id": 274,
+      "description": "Reinforced proximal upper frame; original joint end retained for subsequent flange redesign/testing.",
+      "volume_mm3": 120260.11021528681,
+      "solid_PETG_mass_kg": 0.15032513776910852,
+      "com_parent_mm": [
+        -1.765897374314761e-15,
+        88.27224001012398,
+        -4.323457248151851
+      ],
+      "inertia_tensor_about_COM_kg_m2": [
+        [
+          0.00029242176591565925,
+          -4.1786242993980465e-20,
+          -3.854521233457198e-21
+        ],
+        [
+          -4.1786242993980465e-20,
+          0.00010210899054913285,
+          -3.4103840202226195e-05
+        ],
+        [
+          -3.854521233457198e-21,
+          -3.4103840202226195e-05,
+          0.00031429392103309397
+        ]
+      ],
+      "bounds_parent_mm": [
+        [
+          -33.00000000000001,
+          -33.0,
+          -25.0
+        ],
+        [
+          33.00000000000001,
+          147.85000000000002,
+          22.0
+        ]
+      ],
+      "CAD_valid_single_solid": true,
+      "STEP_valid_single_solid": true,
+      "STEP_volume_relative_error": 2.220446049250313e-16,
+      "print_bounding_size_mm": [
+        66.00000000000001,
+        180.85000000000002,
+        47.0
+      ],
+      "fits_246mm_planning_cube": true,
+      "print_translation_mm": [
+        38.00000000000001,
+        38.0,
+        25.0
+      ],
+      "print_orientation": "Parent Z normal to plate; long beam direction in XY. Support/bridge strategy NOT sliced or qualified.",
+      "status": "STRUCTURAL_TEST_ARTICLE_NOT_POWERED_ROBOT_RELEASE",
+      "STL_sha256": "58973ee72679c617929c1a8ba349e857a29bfa73bcaf03ebe12885dff7f0aee3"
+    },
+    {
+      "name": "upper-frame-distal",
+      "source_id": 274,
+      "description": "Reinforced distal upper frame; 0.30 mm split gap. Original joint end remains an unqualified print interface.",
+      "volume_mm3": 117665.00495151269,
+      "solid_PETG_mass_kg": 0.14708125618939089,
+      "com_parent_mm": [
+        -4.141093493988606e-14,
+        206.34627632105838,
+        -0.35336900187910014
+      ],
+      "inertia_tensor_about_COM_kg_m2": [
+        [
+          0.00027539476663723236,
+          1.797568809364858e-19,
+          9.32791117833941e-20
+        ],
+        [
+          1.797568809364858e-19,
+          0.00011413382145382811,
+          2.3168493716579628e-07
+        ],
+        [
+          9.32791117833941e-20,
+          2.3168493716579628e-07,
+          0.0002973728482031179
+        ]
+      ],
+      "bounds_parent_mm": [
+        [
+          -44.00000000000001,
+          148.14999999999998,
+          -24.0
+        ],
+        [
+          44.00000000000001,
+          324.0,
+          24.0
+        ]
+      ],
+      "CAD_valid_single_solid": true,
+      "STEP_valid_single_solid": true,
+      "STEP_volume_relative_error": 1.887379141862766e-14,
+      "print_bounding_size_mm": [
+        88.00000000000001,
+        175.85000000000002,
+        48.0
+      ],
+      "fits_246mm_planning_cube": true,
+      "print_translation_mm": [
+        49.00000000000001,
+        -143.14999999999998,
+        24.0
+      ],
+      "print_orientation": "Parent Z normal to plate; long beam direction in XY. Support/bridge strategy NOT sliced or qualified.",
+      "status": "STRUCTURAL_TEST_ARTICLE_NOT_POWERED_ROBOT_RELEASE",
+      "STL_sha256": "b70920c5c9e0a94f6aeabc40425f4bc3d21d928141ea5171dd92a608d5c02177"
+    },
+    {
+      "name": "upper-frame-lap-coupler",
+      "source_id": null,
+      "description": "80 mm internal PETG sleeve, nominal 0.20 mm per-side radial fit, four sleeved M4 cross-bolts.",
+      "volume_mm3": 54116.66203834943,
+      "solid_PETG_mass_kg": 0.0676458275479368,
+      "com_parent_mm": [
+        -5.1679022737394506e-15,
+        148.00000000000006,
+        -8.947652952227114e-16
+      ],
+      "inertia_tensor_about_COM_kg_m2": [
+        [
+          4.541991867953122e-05,
+          -2.529077391955072e-20,
+          5.407940761870126e-22
+        ],
+        [
+          -2.529077391955072e-20,
+          2.742250767721179e-05,
+          2.2327473203631565e-21
+        ],
+        [
+          5.407940761870126e-22,
+          2.2327473203631565e-21,
+          5.418510119795919e-05
+        ]
+      ],
+      "bounds_parent_mm": [
+        [
+          -23.8,
+          108.0,
+          -15.8
+        ],
+        [
+          23.8,
+          188.0,
+          15.8
+        ]
+      ],
+      "CAD_valid_single_solid": true,
+      "STEP_valid_single_solid": true,
+      "STEP_volume_relative_error": 6.661338147750939e-16,
+      "print_bounding_size_mm": [
+        47.6,
+        80.0,
+        31.6
+      ],
+      "fits_246mm_planning_cube": true,
+      "print_translation_mm": [
+        28.8,
+        -103.0,
+        15.8
+      ],
+      "print_orientation": "Parent Z normal to plate; long beam direction in XY. Support/bridge strategy NOT sliced or qualified.",
+      "status": "STRUCTURAL_TEST_ARTICLE_NOT_POWERED_ROBOT_RELEASE",
+      "STL_sha256": "e59d81e70c3eaa8af2c4e3a5889a305d40a0c2342326e36de75a058716880c00"
+    },
+    {
+      "name": "fore-frame-reinforced",
+      "source_id": 275,
+      "description": "Forearm tube span strengthened from 2.5 to 6 mm nominal wall; end/roll interfaces remain unqualified.",
+      "volume_mm3": 121909.51946043815,
+      "solid_PETG_mass_kg": 0.1523868993255477,
+      "com_parent_mm": [
+        0.20990345999548193,
+        81.44922938474973,
+        5.640854070576941
+      ],
+      "inertia_tensor_about_COM_kg_m2": [
+        [
+          0.00027390350500992747,
+          -1.5849575787927527e-06,
+          1.8043138984553358e-07
+        ],
+        [
+          -1.5849575787927527e-06,
+          0.00013806715431997321,
+          3.366986830884857e-05
+        ],
+        [
+          1.8043138984553358e-07,
+          3.366986830884857e-05,
+          0.0002732093979834649
+        ]
+      ],
+      "bounds_parent_mm": [
+        [
+          -36.00000000000001,
+          -33.0,
+          -36.00000000000001
+        ],
+        [
+          43.0,
+          136.0,
+          36.0
+        ]
+      ],
+      "CAD_valid_single_solid": true,
+      "STEP_valid_single_solid": true,
+      "STEP_volume_relative_error": 8.104628079763643e-15,
+      "print_bounding_size_mm": [
+        79.0,
+        169.0,
+        72.0
+      ],
+      "fits_246mm_planning_cube": true,
+      "print_translation_mm": [
+        41.00000000000001,
+        38.0,
+        36.00000000000001
+      ],
+      "print_orientation": "Parent Z normal to plate; long beam direction in XY. Support/bridge strategy NOT sliced or qualified.",
+      "status": "STRUCTURAL_TEST_ARTICLE_NOT_POWERED_ROBOT_RELEASE",
+      "STL_sha256": "3feb5a8635d51a3642ed810f20073e1d6888bcaa4b485bc340962f75d76a4c41"
+    }
+  ],
+  "nominal_intersections": [
+    {
+      "a": "proximal",
+      "b": "distal",
+      "intersection_volume_mm3": 0.0
+    },
+    {
+      "a": "proximal",
+      "b": "coupler",
+      "intersection_volume_mm3": 0.0
+    },
+    {
+      "a": "distal",
+      "b": "coupler",
+      "intersection_volume_mm3": 0.0
+    }
+  ],
+  "hardware_candidates": [
+    {
+      "item": "M4 through bolt, nominal 75 mm length candidate",
+      "quantity": 4,
+      "scope": "Confirm actual thread engagement and washer/nut stack; no torque released."
+    },
+    {
+      "item": "Metal compression sleeve OD6 ID4.5 length60 mm candidate",
+      "quantity": 4,
+      "scope": "Not printed. Length/seating tolerance must be measured before use."
+    },
+    {
+      "item": "M4 metal nut and wide washer pair",
+      "quantity": 4,
+      "scope": "Positive retention plus printed bearing-load tests required."
+    },
+    {
+      "item": "M2.5 square captive nut in 5.4 mm pocket",
+      "quantity": 16,
+      "scope": "Eight per link, 16 for both. Replaces inherited metal-tapped cover lands."
+    },
+    {
+      "item": "Revised M2.5 cover screw, nominal 16 mm candidate",
+      "quantity": 16,
+      "scope": "Full P6-A cap/washer/sleeve stack integration not performed."
+    }
+  ],
+  "limitations": [
+    "Joint-end flange bending, captive-nut pullout, layer anisotropy, creep and fatigue not qualified.",
+    "No full-arm swept collision, self-collision or hardware load test has been run for these prototypes.",
+    "Original bolt patterns retained at actuator interfaces; not enough to qualify a plastic load path.",
+    "STL build envelope checked, but not sliced or printed; supports, shrinkage and real tolerances remain unverified.",
+    "The four splice sleeves/bolts are specified, not modeled in the new STEP assembly.",
+    "Not a replacement for the archived P6-A simulation or validated dynamics model."
+  ]
+}

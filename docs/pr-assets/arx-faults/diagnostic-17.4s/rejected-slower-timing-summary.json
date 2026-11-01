@@ -1,0 +1,97 @@
+{
+  "complete": true,
+  "results": [
+    {
+      "policy": "transfer-0.4-descent-0.2-dt-1",
+      "case": "power_loss_7.2--matched-phase",
+      "passed": false,
+      "expected_outcome_observed": false,
+      "failed": [
+        {
+          "name": "all joints settle below 0.002 rad/s",
+          "passed": false,
+          "measured": [
+            5.303411763576646e-07,
+            1.755823950399392e-06,
+            1.625598785567269e-05,
+            0.19053086574785755,
+            2.7829892736812405e-06,
+            4.089388271753244e-08
+          ],
+          "limit": 0.002,
+          "sampling": "source-compatible 120 Hz after fault + 0.5 s"
+        }
+      ],
+      "max_speed_after_fault_deadline_rad_s": [
+        5.303411763576646e-07,
+        1.755823950399392e-06,
+        1.625598785567269e-05,
+        0.19053086574785755,
+        2.7829892736812405e-06,
+        4.089388271753244e-08
+      ],
+      "max_fault_travel_deg": [
+        1.1827636126924608,
+        0.6034140548588989,
+        0.7265310394806487,
+        14.298763829062942,
+        0.41759574851533254,
+        0.49193978133086774
+      ],
+      "payload": {
+        "max_observed_fault_drop_m": 0.20100796418272002,
+        "required_by_ordinary_source_fault_checks": false,
+        "scope": "Observed free-payload drop; no fail-safe retention claim"
+      },
+      "trace_sha256": "fa123ef3813c89359aca9d424b27fe6bb29f0e478692bf102a5f9dd1cd6a1e2b"
+    },
+    {
+      "policy": "transfer-0.3-descent-0.2-dt-1",
+      "case": "power_loss_7.2--matched-phase",
+      "passed": false,
+      "expected_outcome_observed": false,
+      "failed": [
+        {
+          "name": "all joints settle below 0.002 rad/s",
+          "passed": false,
+          "measured": [
+            5.814636878326689e-07,
+            1.6889048402446424e-06,
+            1.637403580863897e-05,
+            0.11859789076990956,
+            2.7576318926614e-06,
+            3.971990152125045e-08
+          ],
+          "limit": 0.002,
+          "sampling": "source-compatible 120 Hz after fault + 0.5 s"
+        }
+      ],
+      "max_speed_after_fault_deadline_rad_s": [
+        5.814636878326689e-07,
+        1.6889048402446424e-06,
+        1.637403580863897e-05,
+        0.11859789076990956,
+        2.7576318926614e-06,
+        3.971990152125045e-08
+      ],
+      "max_fault_travel_deg": [
+        0.856045340669307,
+        0.47467121671714285,
+        0.5996122620766814,
+        14.847832459776626,
+        0.34139647532078315,
+        0.35209161693575586
+      ],
+      "payload": {
+        "max_observed_fault_drop_m": 0.20098066906326012,
+        "required_by_ordinary_source_fault_checks": false,
+        "scope": "Observed free-payload drop; no fail-safe retention claim"
+      },
+      "trace_sha256": "82f1a5401439522929ae82d49e207ade9b16cee5f2538cd35f26c34ac7ce9986"
+    }
+  ],
+  "input_sha256": "e625018216b27569a55701a73fe5023cb5ff2e66c0c1dad8efcd5671301d020e",
+  "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+  "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+  "scope": "Pinned P5 in-memory reference timing experiments only; no new authored project or hardware claim"
+}

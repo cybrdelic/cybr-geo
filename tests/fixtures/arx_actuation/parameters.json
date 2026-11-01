@@ -1,0 +1,380 @@
+{
+  "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+  "motors": {
+    "gear_ratio": [
+      42.875,
+      81.37037037037037,
+      81.37037037037037,
+      127.85538461538462,
+      127.85538461538462,
+      127.85538461538462
+    ],
+    "gear_efficiency": [
+      0.6789999999999999,
+      0.6789999999999999,
+      0.6789999999999999,
+      0.5335,
+      0.5335,
+      0.5335
+    ],
+    "torque_constant_Nm_A": [
+      0.091,
+      0.091,
+      0.091,
+      0.0348,
+      0.0348,
+      0.0348
+    ],
+    "resistance_ohm": [
+      0.994,
+      0.994,
+      0.994,
+      13.1,
+      13.1,
+      13.1
+    ],
+    "inductance_H": [
+      0.000995,
+      0.000995,
+      0.000995,
+      0.000729,
+      0.000729,
+      0.000729
+    ],
+    "bus_voltage_V": [
+      48,
+      48,
+      48,
+      48,
+      48,
+      48
+    ],
+    "peak_current_A": [
+      4,
+      4,
+      4,
+      1.4,
+      1.4,
+      1.4
+    ],
+    "continuous_current_A": [
+      2.41,
+      2.41,
+      2.41,
+      0.716,
+      0.716,
+      0.716
+    ],
+    "rotor_inertia_kg_m2": [
+      4.4E-06,
+      4.4E-06,
+      4.4E-06,
+      4.45E-07,
+      4.45E-07,
+      4.45E-07
+    ],
+    "joint_viscous_Nm_s_rad": [
+      0.03,
+      0.06,
+      0.04,
+      0.006,
+      0.006,
+      0.004
+    ],
+    "joint_friction_Nm": [
+      0.06,
+      0.1,
+      0.07,
+      0.012,
+      0.012,
+      0.008
+    ],
+    "thermal_capacity_J_K": [
+      20,
+      35,
+      25,
+      12,
+      12,
+      8
+    ],
+    "thermal_resistance_K_W": [
+      5,
+      4,
+      5,
+      7,
+      7,
+      9
+    ],
+    "gear_output_torque_limit_Nm": [
+      11,
+      20,
+      20,
+      3,
+      3,
+      3
+    ],
+    "gear_continuous_torque_Nm": [
+      15,
+      15,
+      15,
+      3,
+      3,
+      3
+    ],
+    "gear_intermittent_torque_Nm": [
+      22.5,
+      22.5,
+      22.5,
+      3.5,
+      3.5,
+      3.5
+    ],
+    "gear_max_input_speed_rad_s": [
+      837.7580409572781,
+      837.7580409572781,
+      837.7580409572781,
+      1256.6370614359173,
+      1256.6370614359173,
+      1256.6370614359173
+    ],
+    "max_pwm_duty": [
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      0.9
+    ],
+    "gear_efficiency_transition_motor_rad_s": [
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0
+    ],
+    "gear_input_inertia_kg_m2": [
+      1.5E-06,
+      9.4E-07,
+      9.4E-07,
+      4E-08,
+      4E-08,
+      4E-08
+    ],
+    "extra_transmission_inertia_kg_m2": [
+      0.0001021537882965907,
+      0.0001021537882965907,
+      0.0001021537882965907,
+      4.808336463108478E-06,
+      4.808336463108478E-06,
+      4.808336463108478E-06
+    ],
+    "belt_screen_capacity_Nm": [
+      19.1984,
+      19.1984,
+      19.1984,
+      3.7422,
+      3.7422,
+      3.7422
+    ],
+    "belt_service_factor": 1.5,
+    "belt_allowable_output_torque_Nm": [
+      12.798933333333332,
+      12.798933333333332,
+      12.798933333333332,
+      2.4948,
+      2.4948,
+      2.4948
+    ]
+  },
+  "gripper": {
+    "architecture": "single opposed rack and pinion; q_left=q_right constraint; equal forces from common pinion torque",
+    "motor_part": "Pololu 5216 HPCB 12V 100.37:1 with encoder",
+    "gear_ratio": 100.37,
+    "gear_efficiency": 0.6133904324842206,
+    "torque_constant_Nm_A": 0.0030906391622725336,
+    "back_emf_V_s_rad": 0.0030906391622725336,
+    "resistance_ohm": 16.0,
+    "inductance_H": 0.0005,
+    "bus_voltage_V": 12.0,
+    "peak_current_A": 0.35,
+    "continuous_current_A": 0.1875,
+    "no_load_current_A": 0.08,
+    "output_torque_per_current_Nm_A": 0.19027828358208954,
+    "motor_rotor_inertia_kg_m2": 1E-09,
+    "output_torque_limit_Nm": 0.05,
+    "pinion_pitch_radius_m": 0.003,
+    "pinion_teeth": 20,
+    "module_m": 0.0003,
+    "max_jaw_velocity_m_s": 0.04,
+    "position_to_velocity_gain_per_s": 30.0,
+    "velocity_force_gain_N_s_m": 80.0,
+    "rail_friction_force_N_each": 0.15,
+    "thermal_capacity_J_K": 3.0,
+    "thermal_resistance_K_W": 15.0,
+    "inference": "R from12V/.75A extrapolatedstall; Kt=Ke inferred from330rpm no-load/.08A; eta inferred from1.3kgcm extrapolatedstall torque. Lumped Coulomb loss calibrated tono-loadcurrent. L andJ areassumed; notmanufacturerwindingmeasurements.",
+    "gear_efficiency_transition_motor_rad_s": 3.0
+  },
+  "spec": {
+    "joint_soft_limits_rad": [
+      [
+        -0.55,
+        0.55
+      ],
+      [
+        -0.1,
+        0.75
+      ],
+      [
+        1.05,
+        1.83
+      ],
+      [
+        -0.45,
+        0.45
+      ],
+      [
+        0.9,
+        1.61
+      ],
+      [
+        2.2,
+        4.1
+      ]
+    ],
+    "counterbalance": {
+      "joint_index": 1,
+      "spring_count": 2,
+      "parent_anchor_m": [
+        -0.065,
+        -0.04,
+        0.06
+      ],
+      "child_anchor_m": [
+        0,
+        0.07,
+        0.06
+      ],
+      "second_spring_z_m": 0.084,
+      "wire_diameter_mm": 2.8,
+      "mean_coil_diameter_mm": 18.0,
+      "active_turns": 30,
+      "shear_modulus_MPa": 79000.0,
+      "free_eye_length_m": 0.104,
+      "reference_q_rad": 0.2,
+      "reference_total_torque_Nm": 11.0,
+      "density_kg_m3": 7850.0,
+      "material": "Proposed EN 10270-1 spring steel; grade, hook form, initial tension and fatigue life require spring supplier review",
+      "model": "Two tension-only Hookean springs between the actual moving anchor coordinates; no ideal constant torque",
+      "installation": "Compact pinned short-lever layout with actual BREP brackets; preload, spring fatigue and guarded installation still require qualification",
+      "stiffness_N_m": 3469.2089620484676,
+      "initial_tension_N": 84.25023288499638,
+      "reference_length_m": 0.13424330056336523,
+      "reference_force_each_N": 189.1705622413485,
+      "hook_span_total_mm": 18.0
+    },
+    "elbow_counterbalance": {
+      "joint_index": 2,
+      "spring_count": 2,
+      "parent_anchor_m": [
+        -0.03,
+        -0.09,
+        -0.055
+      ],
+      "child_anchor_m": [
+        0,
+        -0.045,
+        -0.055
+      ],
+      "second_spring_z_m": -0.079,
+      "wire_diameter_mm": 1.8,
+      "mean_coil_diameter_mm": 15.0,
+      "active_turns": 22,
+      "shear_modulus_MPa": 79000.0,
+      "free_eye_length_m": 0.062,
+      "reference_q_rad": 1.5,
+      "reference_total_torque_Nm": 6.0,
+      "density_kg_m3": 7850.0,
+      "material": "Proposed spring steel; exact grade, initial tension, hook form and fatigue life require spring supplier qualification",
+      "model": "Two tension-only springs at actual moving anchors. Reaction is represented by joint-3 generalized torque, not external support.",
+      "installation": "Compact pinned short-lever layout with actual BREP brackets; preload, spring fatigue and guarded installation still require qualification",
+      "stiffness_N_m": 1396.1454545454546,
+      "reference_length_m": 0.08808400650890409,
+      "reference_force_each_N": 66.99491293894764,
+      "initial_tension_N": 30.577845815207134,
+      "hook_span_total_mm": 20.0
+    },
+    "brakes": {
+      "large": {
+        "family": "Kendrion PM Line size 09",
+        "proposed_part": "86 61109H00-0050",
+        "source": "https://www.kendrion.com/en/productfinder/group/product/brakes/86-61109h00-0050",
+        "holding_torque_Nm": 22.0,
+        "screening_dynamic_torque_Nm": 13.2,
+        "dynamic_torque_status": "Engineering derating to 60% of M4; not a vendor-certified M1 value",
+        "max_single_stop_energy_J": 550.0,
+        "max_estops": 500,
+        "max_estop_speed_rpm": 3000.0,
+        "mass_kg": 1.1,
+        "coil_voltage_V": 24.0,
+        "coil_power_W": 17.0,
+        "OD_mm": 90.0,
+        "ID_mm": 40.0,
+        "length_mm": 37.6,
+        "coupling_time_s": 0.025,
+        "delay_s": 0.02,
+        "ramp_s": 0.015,
+        "delay_status": "Conservative model delay/ramp; exact installation switching time must be measured",
+        "stack_extension_mm": 60.0,
+        "mount_pcd_mm": 75.0,
+        "mount_count": 6,
+        "mount_clearance_mm": 3.3,
+        "mount_status": "Nominal PM size09 pattern; configured 0050 drawing and hub interface require vendor confirmation"
+      },
+      "small": {
+        "family": "Kendrion PM Line size 04 compact stator",
+        "proposed_part": "86 61104H00 configured shaft/hub",
+        "source": "https://www.kendrion.com/fileadmin/user_upload/Downloads/Datasheets_Operating_instructions/Industrial_Brakes/Operating-Instructions-permanent-magnet-brake-pm-line-BA-86-621..H00-2021.09.pdf",
+        "holding_torque_Nm": 2.2,
+        "screening_dynamic_torque_Nm": 1.32,
+        "dynamic_torque_status": "Engineering derating to 60% of M4; not a vendor-certified M1 value",
+        "max_single_stop_energy_J": 200.0,
+        "max_estops": 500,
+        "max_estop_speed_rpm": 3000.0,
+        "mass_kg": 0.19,
+        "coil_voltage_V": 24.0,
+        "coil_power_W": 8.2,
+        "OD_mm": 39.5,
+        "ID_mm": 13.0,
+        "length_mm": 25.7,
+        "coupling_time_s": 0.014,
+        "delay_s": 0.012,
+        "ramp_s": 0.012,
+        "delay_status": "Conservative model delay/ramp; exact installation switching time must be measured",
+        "stack_extension_mm": 46.0,
+        "mount_pcd_mm": 32.5,
+        "mount_count": 3,
+        "mount_clearance_mm": 2.2,
+        "mount_status": "Compact 611 envelope, NOT the 62.5mm flange envelope of 62104-0018. Configured drawing and hub remain procurement gates"
+      }
+    },
+    "gripper_driver": {
+      "part": "Pololu 4036 DRV8876 carrier",
+      "source": "https://www.pololu.com/product/4036",
+      "bus_V": 12.0,
+      "logic_V": 3.3,
+      "sense_V_per_A": 2.5,
+      "continuous_current_A": 0.1875,
+      "peak_current_A": 0.35,
+      "peak_budget_s": 0.2,
+      "vref_continuous_V": 0.46875,
+      "vref_peak_V": 0.875,
+      "vref_absolute_ceiling_V": 0.875,
+      "board_mm": [
+        15.24,
+        17.78
+      ],
+      "control": "PH/EN; PWM with synchronized current sampling; independent hardware chopping ceiling; fault latches; VREF low by default"
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "cybrgeo-iris-evidence-manifest/1",
+  "source_run": "outputs/engineering-iris09-core-final",
+  "native_directory": "outputs/engineering-iris09-core-final/native",
+  "runtime_implementation": {
+    "schema": "cybrgeo-causal-runtime/1",
+    "source_files": {
+      "causal_runtime.py": "1c06bfd24ddd3606cc664bbf85b36536fa1f0cd6b5d020b083ed7d1f2302c1d1",
+      "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+    },
+    "packages": {
+      "numpy": "2.5.4",
+      "mujoco": "3.16.0"
+    },
+    "runtime": {
+      "python": "3.12.10",
+      "system": "Windows",
+      "machine": "AMD64"
+    },
+    "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+  },
+  "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+  "control_sha256": "483318d31e6b972b9881c45286104278b30907a49debdf877b2fddfa273f93ff",
+  "reference_sha256": "ff0232de2410af1955434a4206c537f77892db16a1085a79caa1cd7a0d6a96cc",
+  "trace_file_sha256": "3abcbc1aab9681d37234fed7584b39bf4150afd2cecf8f67308aa135bf27377f",
+  "assembly_glb_sha256": "4a0cfd6a5cfec0263261b5bd29ae0c3a75a8ed473318b84851983868bb2ed139",
+  "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+  "native_build_file_sha256": "1f0eb77c6038bd8eb3e66400641f3521ec084476f29bdb7b77b85ee54e4009a3",
+  "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+  "native_source_binding_file_sha256": "00a3f8d1ddc1edba5baa716d9f070e2221c57a0f370ca6162b2a8d021aafcb8b",
+  "saved_frames": 954,
+  "source_files": {
+    "design.py": "7a0c8bae330b4f51c38b5b8ccdcb600ea95dd4a43875e77e01a17617cb20d396",
+    "leaf_geometry.py": "1b6caaa6d2711acd036e23df9b56a6b49d729be4ef48839bda5ccb1fe8c25140",
+    "mechanism.py": "6c349ed8c88546d6da91a6b58acab18bd70b7b53f34939b579d1440c8577fd64",
+    "project.json": "a1fa4fd19cebb2455fc66ffb8ce64e69944600a19e58d5965da1f8d2661d4600",
+    "project.py": "e5ad16787bc1b9ddc34d2f0ed1b083518ab370301bf1199d70d7f02277c78f4f",
+    "data/mechanism.json": "328fba30776c3c809a5d835876d762b47028cc9dc1a46318c58f8506da854156"
+  },
+  "capture_execution": {
+    "script_sha256": "05ef398d0f18fae31fab62a92adf985a519dbe55e188c5672278b634b8b76a53",
+    "scope": "The current published capture.py was executed against this accepted run; media was rendered anew from its actual integrated states."
+  },
+  "files_sha256": {
+    "capture.py": "05ef398d0f18fae31fab62a92adf985a519dbe55e188c5672278b634b8b76a53",
+    "ci-readback.json": "4d4fc8306448b6b24ed67ac43f6eff7b865acc6b232e7a0ce5b0c29ab943a22e",
+    "clearance-audit.py": "3ba53d4164c48b85f141a1687e36d43e473322662c1d0e29e6a2a60e8e2d6d97",
+    "clearance-bridge.py": "f11fd2b22a897d5d7a81e073630fa77054257c0bf408726bc30d8e7584fe62b7",
+    "clearance-chunk-a.json": "cfbe46b7f9c0684c7f603a540c0bfb4323f84193dc04ea249e0597dc73de7e10",
+    "clearance-chunk-b.json": "fa0db2d4e7a6fcc8982614b1d82e39708454fff1e2d30de9a367c68b711beb52",
+    "clearance-chunk-c.json": "9936fd65a47733b5d789dbe6144855bcbaf2e82a207347029b164a57d91afc7e",
+    "clearance-equivalence.json": "29450364be0dedb3a7b49e4f06c0be4235f863d0b8c35c87434fed414970a22d",
+    "clearance-merge.py": "8240005aa849f907d452784b4c45a900ded417343352a604e5716de28531dd97",
+    "compare_trace_states.py": "4c409de766a7b415cb5b9bec145ae8c5135c7333bb909ee5c85dd5f4a66fe706",
+    "counterfactual-trace-bindings.json": "ff654650d6237d0d6bb18a84b449b4ba0f917c3ffddf72a53fca44cd4daeb548",
+    "counterfactuals.json": "217a0de4fe5e77536976b1245371e8a865df8c271f6a3f6009d3d71c16b02441",
+    "engineering-summary.json": "d5cfef0f27c43d757a686fa9479c6e0d14c150be770a389873b9c89b9cbf2d3e",
+    "linkage-inspection.json": "654bb3b378afbd8f3c94242ceadb806ee22a298a2380b70af015bbf882befe66",
+    "linkage-inspection.png": "c7a8d6c3e42d01b5f1c6135bdb9a2f2139b010a93a60d9c49044a2995ed822ea",
+    "load-path-review.md": "9d640f3e74e2fa8624d86f42fd2cb8418971971e25023c8c98d0563b79495cbd",
+    "media.json": "25ee287234e9a853901ed43bd996dfedb7b84d5e08e689d828b4e01c3845650e",
+    "motion.gif": "8c1c9accb0f7caa490b727bf5728ec33eba94e0de8130abedeba989890ca65d4",
+    "native-build.json": "1f0eb77c6038bd8eb3e66400641f3521ec084476f29bdb7b77b85ee54e4009a3",
+    "native-clearance.json": "6a2e930a01a4e731e163a83c101733683362a2dadf4f16bc8e7c59b24f7866d2",
+    "native-source-binding.json": "00a3f8d1ddc1edba5baa716d9f070e2221c57a0f370ca6162b2a8d021aafcb8b",
+    "pose-midpoint.render.json": "e9515954191f0598009a31eeac0704613d2e00a5c88f4e728fb2fd750bbe006e",
+    "pose-midpoint.truth.json": "8c86e15f71910d054d1646af609774de25f5a30702a7c1b868b88e294ce52f81",
+    "pose-start.render.json": "e954561df1e85e635f6f82f9aae91fe1feb006330d495ed9ccf7ee7dd5395f77",
+    "pose-start.truth.json": "8c86e15f71910d054d1646af609774de25f5a30702a7c1b868b88e294ce52f81",
+    "pose.png": "f9b5b78f5eda67a90740fae24d2130b5067f196dbb054b153a750a2e9b136779",
+    "pre-repair-clearance-failure.json": "47264027e6a425796e2f6559ab1b9b6ca49d35c1bdf68053613ffb6cab710f6f",
+    "replay-check.json": "eb8a14aa994c0d355b2ea6af985554d597db8fa0825ffcb4b257bc0385e891e7",
+    "run_causal_controls.py": "f7e49b2d68e98ea9f4f5558b58d46bd5ab501cc9c6b7400cf7de5d9a15081da8",
+    "runtime-parity.json": "b37889de6105cb974f66cfaf3e5775ee0d752cd9154d31abafa4034c799ec9ff",
+    "start.png": "14580bd97adee2ce813e5b49a806035a535d76d2ae87c38a56cd996a5ec5d09d",
+    "three-replay-check.json": "0987d887132738b5de38b3afa49953f91021d5cdc1b970605849b2521a9b8792",
+    "top-midpoint.render.json": "7cdc5810936952a45f746f2367c877037217c584d7a5d73e8cf42d54aea2e30d",
+    "top-midpoint.truth.json": "8c86e15f71910d054d1646af609774de25f5a30702a7c1b868b88e294ce52f81",
+    "top.png": "20e23f0807845d88b61cf759ba00bfe41037b040b2802efbcccf8f6535ec7cdb"
+  },
+  "hash_encoding": "files_sha256 hashes exact file bytes; model and native semantic identities use physical_model.digest",
+  "scope": "Actual native replay, measured simulation and separately scoped native clearance. No live browser or hardware claim."
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "cybrgeo-command-execution-observation/1",
+  "command": [
+    "${PYTHON_EXECUTABLE}",
+    "tools/check_arx_faults.py",
+    "--native",
+    "outputs/engineering-arx-core-final/native",
+    "--output",
+    "outputs/engineering-arx-core-refined-direct",
+    "--workers",
+    "3",
+    "--clock",
+    "matched-phase",
+    "--case",
+    "nominal",
+    "--case",
+    "power_loss_3.2",
+    "--case",
+    "power_loss_7.2",
+    "--case",
+    "weak_spring_double_delay_3.2",
+    "--case",
+    "weak_spring_double_delay_7.2",
+    "--timestep-scale",
+    ".5"
+  ],
+  "cwd": "${REPO_ROOT}",
+  "explicit_thread_environment": {
+    "LP_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "other_thread_environment": "Not overridden by this script",
+  "start_utc": "2026-10-22T23:00:42.6341584Z",
+  "wrapper_sha256": "c63540e3638b502022146fb590f2b2817574f9459965bfe61154f04d2bf428d8",
+  "scope": "Direct PowerShell invocation after a separate Windows worker-handle failure. Execution resources and timing are outside physical model/source binding; no physics or acceptance changes.",
+  "end_utc": "2026-10-22T23:17:19.7800721Z",
+  "elapsed_s": 996.8016248,
+  "returncode": 0,
+  "process_succeeded": true,
+  "public_derivation": {
+    "schema": "cybrgeo-public-evidence-path-derivation/1",
+    "original_bytes": 1398,
+    "original_sha256": "5cfd5cd0c271c89e112353020d29cdb6aeba6e3a6c5355e06812b0a7d6ff3535",
+    "provenance_file": "publication-provenance.json",
+    "scope": "Path-substituted public copy; not byte-identical to the recorded execution receipt."
+  }
+}

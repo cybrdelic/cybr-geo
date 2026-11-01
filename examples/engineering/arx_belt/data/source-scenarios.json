@@ -1,0 +1,293 @@
+{
+  "schema": "cybrgeo-arx-source-scenarios/1",
+  "provenance": {
+    "repository": "https://github.com/cybrdelic/cybr-arx6-belt",
+    "commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+    "path": "ARX-6-P5-Engineering/integration/validate_p5.mjs",
+    "lf_sha256": "4fe47f23e40981a5c1de524ff89fd9dbba85e826b799e4f7430337501524722d",
+    "notice": "Source-derived adaptation under CYBR GEO GPL-2.0-only; see NOTICE-SOURCES.md. No additional upstream license grant is inferred."
+  },
+  "thresholds": {
+    "hard_limit_margin_rad": -0.0001,
+    "structural_penetration_m": 0.0001,
+    "belt_torque_tolerance_Nm": 1e-05,
+    "current_tolerance_A": 1e-05,
+    "gripper_peak_current_A": 0.35,
+    "gripper_current_tolerance_A": 1e-06,
+    "belt_pulley_rpm": 200,
+    "voltage_tolerance_V": 1e-06,
+    "placement_error_m": 0.0015,
+    "settling_speed_rad_s": 0.002,
+    "settling_delay_s": 0.5,
+    "drive_disabled_current_A": 1e-12,
+    "held_payload_drift_m": 0.001,
+    "hold_current_A": 0.01
+  },
+  "scenarios": [
+    {
+      "name": "nominal",
+      "seconds": 10.0,
+      "options": {},
+      "kind": "nominal",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "nominal_30s",
+      "seconds": 30.0,
+      "options": {},
+      "kind": "nominal",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "dt1200",
+      "seconds": 10.0,
+      "options": {},
+      "kind": "nominal",
+      "deliberate_negative_control": false,
+      "timestep_s": 0.0008333333333333334
+    },
+    {
+      "name": "dt4800",
+      "seconds": 10.0,
+      "options": {},
+      "kind": "nominal",
+      "deliberate_negative_control": false,
+      "timestep_s": 0.00020833333333333335
+    },
+    {
+      "name": "weak_spring",
+      "seconds": 10.0,
+      "options": {
+        "springScale": 0.9
+      },
+      "kind": "nominal",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "no_counterbalance",
+      "seconds": 10.0,
+      "options": {
+        "springScale": 0
+      },
+      "kind": "nominal",
+      "deliberate_negative_control": true
+    },
+    {
+      "name": "normal_stop",
+      "seconds": 4.0,
+      "options": {
+        "normalStopTime": 2.0
+      },
+      "kind": "normal_stop",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "watchdog",
+      "seconds": 4.0,
+      "options": {
+        "heartbeatUntil": 1.9
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "estop",
+      "seconds": 4.0,
+      "options": {
+        "estopTime": 2.0
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "invalid_feedback",
+      "seconds": 4.0,
+      "options": {
+        "invalidFeedbackTime": 2.0
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_no_brakes",
+      "seconds": 3.0,
+      "options": {
+        "motorOffTime": 2.0,
+        "brakes": false,
+        "enforceLimits": false
+      },
+      "kind": "fault",
+      "deliberate_negative_control": true
+    },
+    {
+      "name": "friction_loss",
+      "seconds": 5.0,
+      "options": {
+        "frictionChangeTime": 2.0,
+        "frictionAfterScale": 0.01
+      },
+      "kind": "fault",
+      "deliberate_negative_control": true
+    },
+    {
+      "name": "weak_grip",
+      "seconds": 5.0,
+      "options": {
+        "gripScale": 0.025
+      },
+      "kind": "fault",
+      "deliberate_negative_control": true
+    },
+    {
+      "name": "power_loss_0.6",
+      "seconds": 1.7999999999999998,
+      "options": {
+        "motorOffTime": 0.6
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_1.2",
+      "seconds": 2.4,
+      "options": {
+        "motorOffTime": 1.2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_1.9",
+      "seconds": 3.0999999999999996,
+      "options": {
+        "motorOffTime": 1.9
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_2.2",
+      "seconds": 3.4000000000000004,
+      "options": {
+        "motorOffTime": 2.2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_2.6",
+      "seconds": 3.8,
+      "options": {
+        "motorOffTime": 2.6
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_3.2",
+      "seconds": 4.4,
+      "options": {
+        "motorOffTime": 3.2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_6.2",
+      "seconds": 7.4,
+      "options": {
+        "motorOffTime": 6.2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "power_loss_7.2",
+      "seconds": 8.4,
+      "options": {
+        "motorOffTime": 7.2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "weak_spring_double_delay_1.2",
+      "seconds": 2.4,
+      "options": {
+        "motorOffTime": 1.2,
+        "springScale": 0.9,
+        "brakeDelayScale": 2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "weak_spring_double_delay_1.9",
+      "seconds": 3.0999999999999996,
+      "options": {
+        "motorOffTime": 1.9,
+        "springScale": 0.9,
+        "brakeDelayScale": 2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "weak_spring_double_delay_2.2",
+      "seconds": 3.4000000000000004,
+      "options": {
+        "motorOffTime": 2.2,
+        "springScale": 0.9,
+        "brakeDelayScale": 2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "weak_spring_double_delay_2.6",
+      "seconds": 3.8,
+      "options": {
+        "motorOffTime": 2.6,
+        "springScale": 0.9,
+        "brakeDelayScale": 2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "weak_spring_double_delay_3.2",
+      "seconds": 4.4,
+      "options": {
+        "motorOffTime": 3.2,
+        "springScale": 0.9,
+        "brakeDelayScale": 2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "weak_spring_double_delay_7.2",
+      "seconds": 8.4,
+      "options": {
+        "motorOffTime": 7.2,
+        "springScale": 0.9,
+        "brakeDelayScale": 2
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    },
+    {
+      "name": "brake_torque_40pct",
+      "seconds": 3.4,
+      "options": {
+        "motorOffTime": 2.2,
+        "springScale": 0.9,
+        "brakeDelayScale": 2,
+        "brakeScale": 0.6666666666666666
+      },
+      "kind": "fault",
+      "deliberate_negative_control": false
+    }
+  ],
+  "qualification": "Original numerical scenario thresholds; physical brake/friction/tolerance/hardware qualification and fail-safe payload retention are separate."
+}

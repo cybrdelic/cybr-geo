@@ -1,0 +1,2881 @@
+{
+  "schema": "cybrgeo-exact-native-pose-equivalence/1",
+  "passed": true,
+  "scope": "A separate exact-equivalence bridge. Original audit identities remain unchanged; only its geometric calculations apply to the final source-bound build if every check passes.",
+  "normalization": "Registered/placed native STEP DATA bytes are compared exactly, excluding only HEADER metadata. Aggregate assembly DATA hashes are retained; any differences must be confined to the explicitly listed presentation entity types. No entity renumbering, rounding, topology reordering or coordinate normalization is performed.",
+  "aggregate_export_scope": "The audit consumes placed native STEP files, not aggregate assemblies. No claim is made that aggregate exports are byte-identical. Any non-presentation aggregate change blocks reuse.",
+  "aggregate_presentation_entity_allowlist": [
+    "COLOUR_RGB",
+    "FILL_AREA_STYLE",
+    "FILL_AREA_STYLE_COLOUR",
+    "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+    "PRESENTATION_STYLE_ASSIGNMENT",
+    "STYLED_ITEM",
+    "SURFACE_SIDE_STYLE",
+    "SURFACE_STYLE_FILL_AREA",
+    "SURFACE_STYLE_USAGE"
+  ],
+  "audited": {
+    "native_directory": "outputs\\engineering-iris09-repaired\\native",
+    "trace_path": "outputs\\engineering-iris09-repaired\\simulation\\trace.json.gz",
+    "trace_sha256": "858d48c1e7fb5d27baf17e2d780a1a894a68ef642153210220f04bc59524e8dd",
+    "native_build_sha256": "b4c99587bc5082a391d983ac7eecc336b99ff034de202e12ea5bb23b9ee44b79",
+    "native_source_binding_sha256": "6c27467150627bff8455658e509589bb4353ef988a1a45fe16406ad937031f80",
+    "model_sha256": "0312790eb3f48ac8f845ca7cf315b5f2d649a3f3eb02bb70620d09e27ab6f67c",
+    "source_sha256": "7936b8ac8c0f6ac955feec2a9d25ee42f5d92d9552f25f9843d9e2a89107a434",
+    "specification_sha256": "297a0f5ca091e3a0088cb5bcb70d9378b137815f1c734a768eacfdd25d3ca6b9"
+  },
+  "final": {
+    "native_directory": "outputs\\engineering-iris09-core-final\\native",
+    "trace_path": "outputs\\engineering-iris09-core-final\\simulation\\trace.json.gz",
+    "trace_sha256": "3abcbc1aab9681d37234fed7584b39bf4150afd2cecf8f67308aa135bf27377f",
+    "native_build_sha256": "f34eca6cd5724f2e22e7f134d1549d91f11355e8a14ca4d182e7fcf26ad1e04e",
+    "native_source_binding_sha256": "8517812e6e129da8092d2ee427a216d0d23b01e206e183139c29a47a6e74a344",
+    "model_sha256": "a983eaf6ca031d3b86dceb18131a848f05aa9c25c7c64229694fb8954d9b12c1",
+    "source_sha256": "dca008865ec7d5c76b6f3e5b7805337801162763848973a7ef281e303279cec6",
+    "specification_sha256": "8eb5416acb68d354148af015b8740457038883d0875630a09fa571d3b0e7cde4"
+  },
+  "checks": [
+    {
+      "name": "identical registered, placed and assembly STEP path set",
+      "passed": true
+    },
+    {
+      "name": "exact STEP DATA bytes for every registered and placed native export",
+      "passed": true,
+      "count": 136
+    },
+    {
+      "name": "aggregate assembly DATA is unchanged or differs only in explicitly listed presentation entities",
+      "passed": true,
+      "count": 20,
+      "exact_data_count": 10
+    },
+    {
+      "name": "identical placed-native-parts.json",
+      "passed": true,
+      "audited_sha256": "dbd371d081bfbc0d4f3e8c77c0cae379103481dce5209bd3529b3715be3a5607",
+      "final_sha256": "dbd371d081bfbc0d4f3e8c77c0cae379103481dce5209bd3529b3715be3a5607"
+    },
+    {
+      "name": "identical cad_parts.json",
+      "passed": true,
+      "audited_sha256": "686702598beb69f56a1f3cd230e969bbc20508182c4dd9023bd0c93e6e907f3e",
+      "final_sha256": "686702598beb69f56a1f3cd230e969bbc20508182c4dd9023bd0c93e6e907f3e"
+    },
+    {
+      "name": "identical authored frames",
+      "passed": true,
+      "audited_sha256": "b95b651eb2fd466547046bd0730d4e630b369ca92fef9618cb83a37a92b2060b",
+      "final_sha256": "b95b651eb2fd466547046bd0730d4e630b369ca92fef9618cb83a37a92b2060b"
+    },
+    {
+      "name": "identical authored links",
+      "passed": true,
+      "audited_sha256": "6f020f99b47985d75e70640522321bbe4774084e8c8527cb3aa00606f4d3cd0c",
+      "final_sha256": "6f020f99b47985d75e70640522321bbe4774084e8c8527cb3aa00606f4d3cd0c"
+    },
+    {
+      "name": "identical authored phi0",
+      "passed": true,
+      "audited_sha256": "cbe5c8d297914c788f9823422443be60326be4a22cd9385a04dcd190cfb349e4",
+      "final_sha256": "cbe5c8d297914c788f9823422443be60326be4a22cd9385a04dcd190cfb349e4"
+    },
+    {
+      "name": "identical authored phi1",
+      "passed": true,
+      "audited_sha256": "feab15ae1737d04b19d1a84a3fcc0a84d1969d60c9a48b7697e9c7e1d28bbe37",
+      "final_sha256": "feab15ae1737d04b19d1a84a3fcc0a84d1969d60c9a48b7697e9c7e1d28bbe37"
+    },
+    {
+      "name": "all recorded body poses and frame times exactly identical",
+      "passed": true,
+      "audited_frames": 954,
+      "final_frames": 954,
+      "audited_sha256": "35d48b6c1ed6a56d2423c205f4361b6648d152116d014d570a5cfa8374823a17",
+      "final_sha256": "35d48b6c1ed6a56d2423c205f4361b6648d152116d014d570a5cfa8374823a17"
+    },
+    {
+      "name": "original sampled audit passed",
+      "passed": true
+    }
+  ],
+  "step_files": [
+    {
+      "path": "cad/fixed__housing_material_1.step",
+      "audited_raw_sha256": "eccbaa97bfd91fcf46680178c3f4c45053650952d56fbb4e7c7f9b697569bfa3",
+      "final_raw_sha256": "526e565f655611d8cf546671c396899a4e1312af5c440e776b62cf8e5a46d856",
+      "audited_data_sha256": "af1bc4e226a3eb24cf9eba9dddb76186a869428dba36b0b4be4f351eb3553a36",
+      "final_data_sha256": "af1bc4e226a3eb24cf9eba9dddb76186a869428dba36b0b4be4f351eb3553a36",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__housing_material_2.step",
+      "audited_raw_sha256": "2c6fd82a285085f5ffbb85140704b2d8604f8b3f8edaaa436b516e4b694e894e",
+      "final_raw_sha256": "33ef049b5199db0f937e7777980c7aa893ac5f4bcf2c126bd72728f225401724",
+      "audited_data_sha256": "73693c42fad3a2b9da1e5bb10b497f9d621c620128b4b11c6e4ca34c9ca4ec75",
+      "final_data_sha256": "73693c42fad3a2b9da1e5bb10b497f9d621c620128b4b11c6e4ca34c9ca4ec75",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__housing_material_3.step",
+      "audited_raw_sha256": "8b392e17190b25eeb0caa12383acc227eb79042e4c4e480226c811d2d4bfb7b4",
+      "final_raw_sha256": "3b7e204c852c2053df5cd9eb238e79cf68d3aa13c9cdad3251b8e5e4a279e95f",
+      "audited_data_sha256": "934af507c88754932bf47c613b4f1bd11fa971c3b2c7e798a1b93f4c410d1a2d",
+      "final_data_sha256": "934af507c88754932bf47c613b4f1bd11fa971c3b2c7e798a1b93f4c410d1a2d",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__housing_material_5.step",
+      "audited_raw_sha256": "8b00c4b89b5b4a2206f8420e7205ade232a66354fe8deec15932291ee99fb4bf",
+      "final_raw_sha256": "541f207892a24b660c053ed814e6bae7226a7363dc14b37009cbe2845f8df108",
+      "audited_data_sha256": "1fa4cb9af207109dbea8dbced981376d49c894464eaf47c1f47b9e7505c6aeea",
+      "final_data_sha256": "1fa4cb9af207109dbea8dbced981376d49c894464eaf47c1f47b9e7505c6aeea",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__lens_0.step",
+      "audited_raw_sha256": "77a00eb839516082a5f6833915a76e98dd4b44fb4fcf9be66f972cc466d92719",
+      "final_raw_sha256": "3d6b09d3cf0c9dd3311d4dafb4b93385e1a39c8db14eb48b178a0c2929640efa",
+      "audited_data_sha256": "4dd865c5b0c51e249d3963724d199daeeecc0688e8c5157a614a9c16bc81cf2c",
+      "final_data_sha256": "4dd865c5b0c51e249d3963724d199daeeecc0688e8c5157a614a9c16bc81cf2c",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__lens_1.step",
+      "audited_raw_sha256": "ce52d37c0f3dcc7e010897b57a3aba4460fa1d001e99ec54242f49b0c0ad7955",
+      "final_raw_sha256": "f54865108ef3dd52a2dd964b9a7b64972401082f9ff3fcbb803c01df356a0c26",
+      "audited_data_sha256": "a4dde5020bf0d802cc27f5fec5138891b15b233e069e31d720c6b98170def897",
+      "final_data_sha256": "a4dde5020bf0d802cc27f5fec5138891b15b233e069e31d720c6b98170def897",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__screw_0.step",
+      "audited_raw_sha256": "f55b85f506fb5ca1069fb3e9c1c40cb180ed98733e52e4e097fbee66526123ff",
+      "final_raw_sha256": "bcd9165ae9eda9b6a60cd63440f6be17edc2a8fe6707b8cfdb5a5a3f3c18b111",
+      "audited_data_sha256": "a53c32f22ab1e4a488aafc720ce50966e44ab6fa3ecdfc6d0fbe5368fcee73a5",
+      "final_data_sha256": "a53c32f22ab1e4a488aafc720ce50966e44ab6fa3ecdfc6d0fbe5368fcee73a5",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__screw_1.step",
+      "audited_raw_sha256": "571ba7b6d4e0b15f268062b67119cca0bedca560c2a53c1a7becef646016bda1",
+      "final_raw_sha256": "da6d35ffcf1da290048a01fb77a15d6a93a1b04bef21e257ff8891460d05a6b2",
+      "audited_data_sha256": "5ddf69ac9b0793e8271ac3b756d97bdb44e78b427c6380c8f6f73df5f4049fab",
+      "final_data_sha256": "5ddf69ac9b0793e8271ac3b756d97bdb44e78b427c6380c8f6f73df5f4049fab",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__screw_2.step",
+      "audited_raw_sha256": "45655b1251ab1d6c8f3210f69682642fba10f527aa011ac0ed8a472680a91d58",
+      "final_raw_sha256": "0a609b8e7abe84599cff4cab25244caa65f9ee53cc150af869ec28b6f1710d93",
+      "audited_data_sha256": "1007df4e636d1c13641ccf38ee0cbc8dac4d8922334be347b7c7131e529e0a4a",
+      "final_data_sha256": "1007df4e636d1c13641ccf38ee0cbc8dac4d8922334be347b7c7131e529e0a4a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__screw_3.step",
+      "audited_raw_sha256": "4dde39478c2f563cfb3776ac3f6816332bf91a2d9be43877b1aaeb18b31f2ef7",
+      "final_raw_sha256": "6fec3dfefbbd47ff3bdddde4872e2a1c48670e581ef051d619c021fc60a39f36",
+      "audited_data_sha256": "b7ff6fe99ee9d5c733cc6500ae69f5824716fe3ee0592a1e737deae28bb3800f",
+      "final_data_sha256": "b7ff6fe99ee9d5c733cc6500ae69f5824716fe3ee0592a1e737deae28bb3800f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__screw_4.step",
+      "audited_raw_sha256": "fab251adf04be6219c4e7aa84043338fbb66ce5aff65b3c544c1e3e49613b64d",
+      "final_raw_sha256": "fe719a0c2aabc0cdb553a44206617f46654d762ed52de9a98510ab521c6ea4c1",
+      "audited_data_sha256": "1929d64ad0ffe3031302a0ddde794442c4ac5be0793c340b73e8a9e6a4c10f2f",
+      "final_data_sha256": "1929d64ad0ffe3031302a0ddde794442c4ac5be0793c340b73e8a9e6a4c10f2f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed__screw_5.step",
+      "audited_raw_sha256": "6cb4fea460be986ffd87b0df343ee4c00fbdb9d94e962f3f3012967a2be21fb2",
+      "final_raw_sha256": "7e5f192660097331a0e95c8e139843c57c72cb91a6776586c922a258d2212f9f",
+      "audited_data_sha256": "a6ebaac091200eab1383899a8a82cf42c83b05ac4c87442b0bc0f9aeac760464",
+      "final_data_sha256": "a6ebaac091200eab1383899a8a82cf42c83b05ac4c87442b0bc0f9aeac760464",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/fixed_subassembly.step",
+      "audited_raw_sha256": "276800a1be2a88687474bb24d15bf306db0374463a463d5a928cf89856c51199",
+      "final_raw_sha256": "64248e6af245839b8ceb679bf9e9d99da171ccb66763688cb4b653d77a880168",
+      "audited_data_sha256": "25b9ad5baa84cd55e2292c3dbb1129085416abc478582400140217b29f00f4d8",
+      "final_data_sha256": "55a6718b2c46db46164300ae9dab3342853c5985c1b02c2c5b8ca46e0a9bcca0",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "233123",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "6c3c313437c5bf5124a4c809461fdb47088ba989ff04feab308ab52e353d1eaf",
+          "final_entity_sha256": "aeb5a34b6af2b233a3c53bec01229431d504f5cc69074a4d2ba6cc5ad8fd1c84"
+        },
+        {
+          "entity": "233124",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "e2ed0be36ac446433a6b019566b0a7c9bb334955a7c9dc776baa138e9d7c6973",
+          "final_entity_sha256": "9d27bf666de413d058d1b70dbe4173b5c0f6aeaae4265bc8081cbb542c4ae789"
+        },
+        {
+          "entity": "233132",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "d6c356cabda3393dc75d1cdd02c936a09f7f819964484fc1069d5e17a3e34aa6",
+          "final_entity_sha256": "352db5e8c6cb95d9a0af9fac97d4f4673aa5cd492eb423258b23eb0ec80450da"
+        },
+        {
+          "entity": "233133",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "d60a81f8ad136428f8fb98768c43fe071d6d414f87ee2d1df269b2097ddfd0c2",
+          "final_entity_sha256": "911cde2de13f9bd8a8f3618173345c6b5ab7034eefc92f81dbd51c4428f7141b"
+        },
+        {
+          "entity": "233140",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "d732655af1bf84f3ccf060d33daa9bcbfc68d40052d32c90671f8cfbb1473048",
+          "final_entity_sha256": "2c85ee13e914d3c8e70ca7cf42f27ec69d725a39a50d64802940bc125c179a3e"
+        },
+        {
+          "entity": "233141",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "b41a0672a24f874fb92ca9d8db647cd7280eaa446596d1740087fe0f4e75413c",
+          "final_entity_sha256": "f39bc4a987e13601277b687fbfdfcbbba2f673e197e125c4cb69d2b5943352f9"
+        },
+        {
+          "entity": "233148",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "d53372875605412350652fe6f0f066012961700e511d0b6af350e0da67b1ee70",
+          "final_entity_sha256": "18f3c6eface55f92f84c3a41b3ab58af897e78d744acf8514a9d875c340cc5ec"
+        },
+        {
+          "entity": "233149",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "c6a3a3d0a2f8b689bed7fc75b7211bf27dacdc6ed57d8e41f7dcec7948c23eea",
+          "final_entity_sha256": "59e4188a39bcf46ea8e7b3a9af619c97faa885334a35074665d0ccc672634983"
+        },
+        {
+          "entity": "233156",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "13c402e234e98b75e39b783087d961121f68570e58ef039d0db505b067059708",
+          "final_entity_sha256": "7ede597afda2b1316102c658e82ebea364f03dfd67f22ae4d0ee4052dcaf7d6d"
+        },
+        {
+          "entity": "233157",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "85c0222b30fdabfd254ad72c8eaac3d2bb72cd1bea7e482dc4ceecc872367f8c",
+          "final_entity_sha256": "65578e6de32c619d455d4f1f043f9e05f07e9175db7e5faef3bac59da4c75a79"
+        },
+        {
+          "entity": "233163",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "5e002b4d16e36f7260a520332826b93d737b2bd74dabbd492d5291aeb8eedfbe",
+          "final_entity_sha256": "578d1ac3a2b70745399f267cd60622b956d84b611dbded4fcf007282c0169f00"
+        },
+        {
+          "entity": "233164",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "COLOUR_RGB",
+          "audited_entity_sha256": "5082bea9995e7190c5947ae5a7a55f934d2abc793011fa473e9eecca377eae0b",
+          "final_entity_sha256": "acd41747ab1e5ba8d93fa0d42e4381d784e9937a9f2131cd4a16ab02d4157f7a"
+        },
+        {
+          "entity": "233165",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "09ea10fdb90d92d31ac959be63e54e8da4e10516c311a62f051ad906fe817b45",
+          "final_entity_sha256": "d85382494771cd1177d16c4986998311af2ba63d8d1566c39ff65fdc095c7fe5"
+        },
+        {
+          "entity": "233166",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "2697619fd8d633c93112fea0168d14c35c2313668989bf29a80a15f5e0cf5ee8",
+          "final_entity_sha256": "1478f9aaeb0effb72f887cb622ef5b1467899412f35c8acb7eb85a78c7e422e2"
+        },
+        {
+          "entity": "233167",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "a057ca25b3c3861d32ee3e99b45f9ee295f484beda66b340185b58b1176fc81d",
+          "final_entity_sha256": "8add42838dcaeaf9df19b518bfd3528c3d7175ab9f13bed8042347a4754547f6"
+        },
+        {
+          "entity": "233168",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "229b27195e7a732b072066d09e54be4e50c9e2983186378f8564d1a6b83e074d",
+          "final_entity_sha256": "dcf366fd11abe5a76773eba9dd6e88e15d93bbfb18369f92a9207ce2fa835f13"
+        },
+        {
+          "entity": "233169",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "26e5d76930435ddff089bc1585701ad8478201cc14330816e52e7f524ea9545b",
+          "final_entity_sha256": "3d4c96cc73187d008276a2c3be2b5868eb1f36e8145fa00391d762cf65740218"
+        },
+        {
+          "entity": "233170",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "a36e69c36589eb1ed88b7b59a595029a7748c36f70f5c6d01b6893ebbcc14c7b",
+          "final_entity_sha256": "98dded7dd2fced5388ccbd646280afd04de1497e1806292159316b978231b0d9"
+        },
+        {
+          "entity": "233171",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "fd9330716723b936f3b7e629fa3d69b18e55d37949bfc1724747011e61b99869",
+          "final_entity_sha256": "863a46c32a74c29ce93c258da565895ddf80a07a654590e8447c47262a80001c"
+        },
+        {
+          "entity": "233172",
+          "audited_type": "COLOUR_RGB",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "4b28f1319154e123e5bf73a5bc74b1bde0f07aadfb83ae25d20a9721dc91b610",
+          "final_entity_sha256": "21fc8033834823b0116ff048000971592bb3e52111eefa510ae36d36e093fda2"
+        },
+        {
+          "entity": "233173",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "4ff8a78c63ee57804289b2ebeba99bcebe95dfc66d77a730a5177d1f9271f4e5",
+          "final_entity_sha256": "31c8d9a23f48fe2dda3e6401ee42918335c5fbd2210a7ed7d54d0f1a96c259fa"
+        },
+        {
+          "entity": "233174",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "fc841f8a5fca333f1121f910b17bb1edbf5f3245dc808dea185ec5c27bfda272",
+          "final_entity_sha256": "f82524eab0cc3c60239a77aaf239d866088af4c391bd56f4011ede8dc6fb5912"
+        },
+        {
+          "entity": "233175",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "defbe6c42cbabe1e005d71a3d0d2286ad406ac35104790d269ab10a45d54431b",
+          "final_entity_sha256": "100206464fded8b1f6d346f4f32383c52e1accf882ad29d323fc54a444164209"
+        },
+        {
+          "entity": "233176",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "8f8eaf14562412baeb395442d0a081165c00c990d16a06e55a30676d572c7e72",
+          "final_entity_sha256": "8d42992ee4e3f38a8d5081d791d59f7e8a6fe578b042e1bc921a694fc52d89a9"
+        },
+        {
+          "entity": "233177",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "2e7151412ea7f52674227aa71e6b2bdc93783fbe9b8d1362798fc2d4c29037ac",
+          "final_entity_sha256": "ac4d48da46a4811ede8b98801598997d1778e2a72c3c6b8c5ecaf78a87250a3b"
+        },
+        {
+          "entity": "233178",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "eb95823ebebc8109a118105308ccbe07e1167d3f04392a0ff29fc25a321aae56",
+          "final_entity_sha256": "5809309258822fc3857447cc9cac896fe2f50e93dbf6bb895e0302e00d4dd245"
+        },
+        {
+          "entity": "233179",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "63247a790afe61d80f12e4efe2805cda4d62016d07da76cd434b402bbde766c8",
+          "final_entity_sha256": "b4ad075af968ef6ed01929cd17ae01f2704d305860b85fdfd59f7e482cadb8f6"
+        },
+        {
+          "entity": "233180",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "4767fe50e14846b54325e55a982740528a1804804fa07223b623417c69fe6614",
+          "final_entity_sha256": "2a77279b9706a5c9d75a8d1798c5ff2307cee49a49409516747c30e51931b88a"
+        },
+        {
+          "entity": "233181",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "27e9aaa702e17c303a1b47399948a57749131940bb609074cf08d3a89be16237",
+          "final_entity_sha256": "2ef76a6e723f9c4d15b5035388b45e49904a9159a12b7d93de533824b2e5f15f"
+        },
+        {
+          "entity": "233182",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "daa52337d75d31662f94f22f3c2302a9949d619d9c8dbedd91f628da5a32d6cc",
+          "final_entity_sha256": "5d3c69fc9098cf828ca43b583b6df1ca9f0a7900de54b5527aa5335fa578f8ec"
+        },
+        {
+          "entity": "233183",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "3e69daa05f0301c15e231f8dd3c514432911ed57052c04a3ba5a5a817efcbdf1",
+          "final_entity_sha256": "e543b17ed32ef74d83ec181ee8f843bbe20cf8a35959dab4bda93fff6bd31e84"
+        },
+        {
+          "entity": "233184",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "55d08208d5ebae7b88b56fcc26e585179ec9d7fa115a32ef06be6abbeed8a5b1",
+          "final_entity_sha256": "430461712753e48a5ab6490afdb26b776350c08dd14fafbc6babd0114b129fc8"
+        },
+        {
+          "entity": "233185",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "17edbdc9cef54c7ac7ed77d55f8af9319d6dfe3977e9d9ffb7c4f197d3c46120",
+          "final_entity_sha256": "c8ef8f4dccb8366128f0272fb5e7fb8641b97680494312b980c7412b875788ae"
+        },
+        {
+          "entity": "233186",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "142d65d804d40a7a39a0679345ed9b88fee639ec181a56ae82bccee3d7d8e496",
+          "final_entity_sha256": "e7194f9e8eb9294acb6af62a00d043ddac70b94d02ad71ab46a94d2fe130247d"
+        },
+        {
+          "entity": "233187",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "a0bd0add0afd8724fd98e5d9674dfcb3e63d768a64adfb5da3db2b6227b689d1",
+          "final_entity_sha256": "0cf9b6534ec8de2a72dded44b3dcbcd8d233de9ea82a13912af0f720082fa6df"
+        },
+        {
+          "entity": "233188",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "b45339c277713bc9c526f3faeff9709fbb4b7bfd5e2e02bb2eed428717d0d2c4",
+          "final_entity_sha256": "72ac0233d4f7a7d72a68570c11a8ac753095c02890d82d053ac28f95d92c8f8f"
+        },
+        {
+          "entity": "233189",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "20410625d25452087ce48b804c9e79223251bca4cb6a9d0cc83f3e04e035b8bc",
+          "final_entity_sha256": "c7eaba2b778d4f4d78f5002cc85df4f4550d1e48a11996b8f28a2f87f6c5aeef"
+        },
+        {
+          "entity": "233195",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "8ca88dd388a2f99f94ecc8f2038da0ee7497f591284a7e4611cca45be44f2f9c",
+          "final_entity_sha256": "18103fa8e6fc06785a0af26918bf2ce19983c4fc1112afef3ac51f724a6b99c0"
+        },
+        {
+          "entity": "233196",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "a5446a32e0c4be6cc17c7250c1feffbba6de341a22d17d7963e11ea8c0197887",
+          "final_entity_sha256": "a29a52477f4f9f65706fe5aa692ad5077c1df887ef2ba07e4ae53c4b5f922dae"
+        },
+        {
+          "entity": "233197",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "0a1f59c6e8c8499e1d371fa788576a02c3132b78062eae446d72bfe63ffd3440",
+          "final_entity_sha256": "f80310b45186b5a666ba32562f7a825973d8960a4a6c44e07ca3817b22cf818c"
+        },
+        {
+          "entity": "233198",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "3386020f1421795c25024e7ae58f0c069e701a8a9353dd233a1f23bb18f27e89",
+          "final_entity_sha256": "54ac138eaa313e2ca1ef526b6a814e1a7495af5e5d76c6b96c44324150331594"
+        },
+        {
+          "entity": "233199",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "abaaec19dea98cb1d0a0ab4a8142d7ebf4050421308b147f7cd9751e81e5319c",
+          "final_entity_sha256": "37a7a62171b84114ce245076ea903ea3a2bb14b4dd97d4d6605d76e1c16fb29a"
+        },
+        {
+          "entity": "233200",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "294ef7a5e7aa0da598d83a7b9d72355bb273a2d9e85103bf112fae0affa503b9",
+          "final_entity_sha256": "f230e2cbfa83733ad87c599033d01f7af55e9cb2a05d8e707bceeb490aec3bfa"
+        },
+        {
+          "entity": "233201",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "1957a6d7344ccd1dc502845e61e7754c9fde2a0f6a1d52c5e28ee3524653011e",
+          "final_entity_sha256": "109ec56b7437829e133f46b868ce05536cd3ed7e19b4f573015c3646e9784ac7"
+        },
+        {
+          "entity": "233202",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "130d2d36ad14cead37340e67b5544012bc4bb2fc48eef92ed7b5a23e6efde6cd",
+          "final_entity_sha256": "52093d3fd362f05aa14178d8dbcf38341be05aff5252e6f26b1fe70e4e78d616"
+        },
+        {
+          "entity": "233203",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "1a38b951c3e1d8604cd1d24a276a1d1fac299fdf1352af45340f6c5222bab557",
+          "final_entity_sha256": "26a7c2f17ea1a94f3c0f961cd271af0ffb52a1bf21c133e0b78ed891bf7433b0"
+        },
+        {
+          "entity": "233204",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "d357c4b3c13a9ccefb21ff058a9506bc9b8d16fe7e9ced2ca5710fce1d61232b",
+          "final_entity_sha256": "7f114a5fb639ad08ba09d4271c6fac59b0665e167bd8aac596e450bc9bbbbef7"
+        },
+        {
+          "entity": "233205",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "d0c30c940014dedbceb2f01f770289a6fc7ddef88da4aec90b4b37ff548d488a",
+          "final_entity_sha256": "c3e418297b9b2a88992c7deb290f5523745b4e663711d654d005602d2856f657"
+        },
+        {
+          "entity": "233206",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "aa69500671dd66fa4b278dfef287728ad1cf651858a08318d2adfbe65fd89029",
+          "final_entity_sha256": "aabdea27ab824500e3cf3285922390b2a8af92051271ab6fc36a2d31be475ed7"
+        },
+        {
+          "entity": "233207",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "17a0971b103b6ee3c32967e4ee56d14e5355bdc2cc63b62e9b072cccafc1ac49",
+          "final_entity_sha256": "337b7746e5000217489c0f058415a337b2f1fe57ff5c96fe1df8cd0d61b2b142"
+        },
+        {
+          "entity": "233208",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "9576f61a4a62d6d6f7eeb67ace1b0da1c31b2c16acfac92739cf9855a917a665",
+          "final_entity_sha256": "c798d2ea006ead25893f62f65f9d7c06dd388924a4468cc8da59e503c8543b05"
+        },
+        {
+          "entity": "233209",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "c43ebe0f757be6380473afdd8bf4764f68a3766d27c9c530a790958bdbb14fb3",
+          "final_entity_sha256": "fda0431ea54b36936597d34be985e3f1d2ce0136398d9dda87a464650cc76c88"
+        },
+        {
+          "entity": "233210",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "298230a2323caebab31c4130556f673e37b41fb91857ba38b7734414308b3bb8",
+          "final_entity_sha256": "55d332b65a6c120402ed3340417050efd535d9e67c3544d8d2f234daf5a197a5"
+        },
+        {
+          "entity": "233211",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "e8da6e649660cf37170ce98df307584a327b3afac0b4cafd7650c04d8937e349",
+          "final_entity_sha256": "7f347fe2292d2f04ab6f300e9635cda558635e239fcf59e027d696a15e652f1a"
+        },
+        {
+          "entity": "233212",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "1a939d182c9af9f55304b5ae87cf41b789a515fa384f3a5cf80aea83bb8ecf7b",
+          "final_entity_sha256": "39f0c2cf1bb50d4f62e65c51c62d0f22116c58a493f0fc5722d95f171cc2aec8"
+        },
+        {
+          "entity": "233213",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "26d582fdbfe49c8ac7fd31eb66afb807ef55b170d5a21b555a560fef8178244c",
+          "final_entity_sha256": "e7ee497da7bcacb1077449cfed35a2ac76a239ed385e0191eddcbbb43267fa93"
+        },
+        {
+          "entity": "233214",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "ef32b1f63079a048ac8a79441011b0b7efb9db8c39d1e7b7f5a72e1732819eb5",
+          "final_entity_sha256": "c8efa57cb32611b27c3730e66b324eda7ebd179aa5432d01c768e1668012186a"
+        },
+        {
+          "entity": "233215",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "a05bb3f80f9687339572b0da6b8ceae913908cac522ecec17282e31405cc6f94",
+          "final_entity_sha256": "ac13a5a5d09fa3376cd01c926d4173f26fe57cc573789cce0f89e1e3f72695ad"
+        },
+        {
+          "entity": "233216",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "258a65e6ac01d2c7213ce8b1ff7c43ea2cf04847e8542f15752b5488448ed2f9",
+          "final_entity_sha256": "bfb2809f62028a34aca30bb415ca52bb9c5b7c1318e41ece74f9a5e20605d3c5"
+        },
+        {
+          "entity": "233217",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "af9bed38fb75e665d1e023e7a96c9db5b79519b153e0a3b7db7630a29f653200",
+          "final_entity_sha256": "e6fe5bb0ca6d2f81c4c88585a61888b5155020bf78fe54591518e227f1a556b3"
+        },
+        {
+          "entity": "233218",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "aa329d279b00327914580c241aaae9742a1a29927e4aa877e988190e823141ce",
+          "final_entity_sha256": "99ded07208b39d2c92eb57da979b32b3d757d04dc3e5e921a5c903e3f0943723"
+        },
+        {
+          "entity": "233219",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "db41e732bc82856109eb39f813efd197e9d9dab740c2ebb7807db30db765287a",
+          "final_entity_sha256": "eae53656cd035e477ad6cf2cc7783b5aa05355fefadd85af584e28abe2495fb5"
+        },
+        {
+          "entity": "233220",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "c3d9f11896d677fd9d034cbb784b9091c32093a689fadb9bc046e7f91845617c",
+          "final_entity_sha256": "5f55e5754afc39698875bca0b15272a15fa989d8b71297188a63109497faf48a"
+        },
+        {
+          "entity": "233221",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "2e8243989d8ee0e2488322e365cc893eaf37d5fde00684f4d4fc425e6f0cd7bb",
+          "final_entity_sha256": "f1ebcdc1521fdeb035dab8ff037cd92f7a460d630c935f8cee5489f5928f6c56"
+        },
+        {
+          "entity": "233222",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "2ea4b38818d4995402d14d75bba64ce93e03604c2d3103a1352971bd00f361e1",
+          "final_entity_sha256": "b6146763522e85b9e77d02fb219457968a2cc5cd897c5d80e8d1e0f08822f862"
+        },
+        {
+          "entity": "233223",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "a0dae626213e0e9bc535e073d494a6618916145af521964c2ae176858f27323f",
+          "final_entity_sha256": "53ada8ac2b3b48ac3a518f5198e7027dca2cf91c45e262074530f8a0079072c5"
+        },
+        {
+          "entity": "233224",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "10ba2bb287d5381d68280dc74a94ba0192db4ead36e8615eb5265d622af9152f",
+          "final_entity_sha256": "0ed966bea94d931df675d19d239383d119c5199fe97280448168c8988187a064"
+        },
+        {
+          "entity": "233225",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "fb14d46612fbd71c40adf73bb2296aba48887eb9d05c4297e9a10d49cfe75351",
+          "final_entity_sha256": "d709add24d80fae5e8b1dde8934702e40b1dc602ace58b0ac6388d0243aaf096"
+        },
+        {
+          "entity": "233226",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "1fa1297df00f0241f72ce9c64f4ac0cc8f33dc70879ec383422b462181675b45",
+          "final_entity_sha256": "5ae0c9aea96799b0b709579b67df93d1f168c9a032935f0457a0be90b95ed694"
+        },
+        {
+          "entity": "233227",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "a6bef3e72553e3cd077c4def20c3f813922ca6ad990d09a94365a240d9965cf9",
+          "final_entity_sha256": "da112423f636207897cd6488fa2ba71645133bc55b8446d655c31ee2835d1a8a"
+        },
+        {
+          "entity": "233228",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "4507d877fba28658f9a7902efa60a21dbbb94edd21f3e404107161f8eb163da3",
+          "final_entity_sha256": "0d4a1840928f4314fa3eddb7da390c3228e55cbda117fd796b6729bfdb9259ee"
+        },
+        {
+          "entity": "233229",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "5423da0b678440d586ca267652f5144e4d2685cd3187ab02ff012cc78eda9f2b",
+          "final_entity_sha256": "0fa4b44e305d2c5a99ad037f3938b80d2b9bb6e229044095f4cc7ad03e0b9c59"
+        },
+        {
+          "entity": "233230",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "a67b5449b18cf52d3a6484481376fc41777a4d45c8c8379c32c5bb75d7c3e65c",
+          "final_entity_sha256": "01730cda94016c8ba11386ea9b9eab2c4aa52a8edd830a502259c234d1b6e032"
+        },
+        {
+          "entity": "233231",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "0dd1a4bdac675e22e91c3f0c2fbb1b90fa30fddf663581ffb4e89185f47a2bd1",
+          "final_entity_sha256": "e1a62f23f9e497d38b91d7466a91d07f6965bda8062854b29f742afa88f8714d"
+        },
+        {
+          "entity": "233232",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "f9a0382641c46459f98a93a4741699fa5bf2bd83963788ea206b33c1bc57ce5b",
+          "final_entity_sha256": "e2c2c0c4786f3e3b6c3089ca4562bca0307b076446a46e2f69e1b375eb188966"
+        },
+        {
+          "entity": "233233",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "d99fe49821b9eb1af0a778d1b9f304f5e198166d96f86d4a59b46dae59ccf86e",
+          "final_entity_sha256": "8ccd835c2d07c5a94f684ebda33bcf9f55f43d12b6135ccf128665fc252a3d25"
+        },
+        {
+          "entity": "233234",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "fddb20a7446e536b63201db2ef0b14b1dc275c282b8f99fd643a44625932eb7e",
+          "final_entity_sha256": "49255d83f551029a3404ff13d03a463ef8572d19653996ecdaaf93174d9a59c5"
+        },
+        {
+          "entity": "233235",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "743c784ca5eb476002e0664d50cf2f283f8a0a96647954ab6605b381eb85eb92",
+          "final_entity_sha256": "33d5c9abc3bd3988711c8e23a8e17aeb51c706c01f7db1c8336755349aaf5e4a"
+        },
+        {
+          "entity": "233236",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "5fd2da01375a3d9cf7776b163dcd7b1820cad71d56afe397ae907c7c3a69c041",
+          "final_entity_sha256": "3b40bdc28c9da7a760c62fd43f6872570c821e2dfbf7f9ece45cf7e16fb4854a"
+        },
+        {
+          "entity": "233237",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "c3f09235796a42e3e0bb50cf1a20817780fcc686b8dc6fdac5184ed711fe8590",
+          "final_entity_sha256": "26c86b70e17b596bd3ff40711a4e272fe296c075d14085c0cd562d965c6e7f72"
+        },
+        {
+          "entity": "233238",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "e729b5bfe9d1fe022d9381a5beb4458f618459a8b39d9dc14b73d5a2e4caa207",
+          "final_entity_sha256": "22f3c6229d9f9cfdbf4aec3083091c2c68b9c383bd1d6d204f0153a8ef29d8f5"
+        },
+        {
+          "entity": "233239",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "a87d08cc585c7a1687469a7244be1b8c558e1e354cfaa92f6af3572ca4f176b9",
+          "final_entity_sha256": "82725b46a4433a8efb61ba173ee63d0e72ceae9066de78eb90c7b915c62394f0"
+        },
+        {
+          "entity": "233240",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "a5eb33979002ea8e4f1fd7a39ff91edeabd732066089545f8629f91825dc2d6d",
+          "final_entity_sha256": "7a148d385cfb1c9256aada7740a64b5c7afd161b1231649bd0a65a31c22b2369"
+        },
+        {
+          "entity": "233241",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "d00fb9a38a587543dbf9b0dc6696d85e816610fe2d22faf9f4babef139c20f2a",
+          "final_entity_sha256": "9e9ffb56628841edfc78f1f5ad43ee285598a1970b0f573a099eb29f6f66c7c2"
+        },
+        {
+          "entity": "233242",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "6c16ef3689340acaa3f960cb7cda8b45bf53d686eb04f9bb02fa69565991bc81",
+          "final_entity_sha256": "6efafbf3f50056a5cf37f700f2ba15cd0b4606e3b414eee4d80176c4dfb577e6"
+        },
+        {
+          "entity": "233243",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "3b59788fec8b1f0cf19ad7616820622f3e5762ac36975262bbe1136d4bb6c3fa",
+          "final_entity_sha256": "01fce374f28482b9990422f6ad2f1662aa956a0ad9ef2fbb3a5375d12da8dac6"
+        },
+        {
+          "entity": "233244",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "0c707778b9a2f56bd377544e75528811948b89ed89ab7bf7cc67024d5445ab32",
+          "final_entity_sha256": "7657d7c4c4f937dc90a82e035565f0816df2237c04388c3ed141ed183a3768e1"
+        },
+        {
+          "entity": "233245",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "c3be52546def63b5ee048df9dcf73e59bc6f58aca20c47ad92bb589b452bdc21",
+          "final_entity_sha256": "f6bd1bb77c41d1bb4c1baf05591a9238c22d97410271a96a7aaff2d1fafbdf93"
+        },
+        {
+          "entity": "233246",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "535edc085811fa4b83627293a5055af62f452eac28f6cf3a64850e11c83fd759",
+          "final_entity_sha256": "4768b7e8c1afd93d22f3e81896cb355b0102ea5dfeaacd3af15047a24b050684"
+        },
+        {
+          "entity": "233247",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "5148253b2ae60508d0738c2529ed2d4bee7bc4b8e2e5f53890ec4cac378989b8",
+          "final_entity_sha256": "6077502272dc7570e02fcc12e656ea08c799a73c305cf7fb6ed64e8efd4084bd"
+        },
+        {
+          "entity": "233248",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "71381a81fa8a5456386a706545d7938db9af011aa4fd45f8a3507ad3a1979b3f",
+          "final_entity_sha256": "af077c5bf0f7eb3d2f5db84ec5d494d10fbe6c2d727eff791909418e1c145239"
+        },
+        {
+          "entity": "233249",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "39ac283bff33998bf8992ce9bb0d4c9d29763b5e6ea62e096ea4c52910cc088d",
+          "final_entity_sha256": "7ead7ed8ee1c4eb6065cfc94a61a2f594c93485080a21523a031afd7d0ff85c0"
+        },
+        {
+          "entity": "233255",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "5377b00e7237311aa734367f192f15599ee36ed52b5df13099a05e521f17a372",
+          "final_entity_sha256": "17ed0dc7e0d601646f06e43a5bf562de1fa50fbcd011faf611712b8b468651ea"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_00__leaf_shaft_crank.step",
+      "audited_raw_sha256": "7567620346b9c14c5a7731ae47b3d7e3acb94706b848bdd56b6affdb7502125d",
+      "final_raw_sha256": "60506b7e4a078bb9bd13661910a325e723127d282ec39257dd93be03b25881a1",
+      "audited_data_sha256": "9ce142d4ac0884158ec635af02cd82f748cf1972e8be9f8bea45e584959ceb67",
+      "final_data_sha256": "9ce142d4ac0884158ec635af02cd82f748cf1972e8be9f8bea45e584959ceb67",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_00__lower_shaft_collar.step",
+      "audited_raw_sha256": "5e2750b3cc4e229677939ef5cbee05f254f7bb66c4c6a8f2434b079edb9ac1fd",
+      "final_raw_sha256": "83dfda4182bf0f139c809c0caf742c8ce8aeda53089147cee44778a4bb0e2e96",
+      "audited_data_sha256": "a9e1aae72f904de3c105b821cefdc16cdc531b1f3f1a809073f5eb30cb5feb5b",
+      "final_data_sha256": "a9e1aae72f904de3c105b821cefdc16cdc531b1f3f1a809073f5eb30cb5feb5b",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_00__output_pin_keeper.step",
+      "audited_raw_sha256": "a78932ed7181caa4238fb0b6ac22b1deae2e145adc3f7d582799f1540df8647f",
+      "final_raw_sha256": "9ad025d8763f8c2ec4109151a21a99a992b3be79394d392fe28bb08625947cca",
+      "audited_data_sha256": "36dea3bd54d7025168970e86ee4cf4f78364999e6f2efb42fa7fa870f2aeb746",
+      "final_data_sha256": "36dea3bd54d7025168970e86ee4cf4f78364999e6f2efb42fa7fa870f2aeb746",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_00__upper_shaft_collar.step",
+      "audited_raw_sha256": "7cb1ca1277aec07275df95805842e0cdc687ea6bea8137cfc688eaff8ad6532e",
+      "final_raw_sha256": "b5c1f8eb83d6189a4a943594390330ebadbf9e1f8b1788184bcb28dee61314c1",
+      "audited_data_sha256": "698bf800fd3aefc78e43c0934cb9c65ca2241abacf9c08e2baf0f73f2f333a24",
+      "final_data_sha256": "698bf800fd3aefc78e43c0934cb9c65ca2241abacf9c08e2baf0f73f2f333a24",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_00_subassembly.step",
+      "audited_raw_sha256": "cfa0e9506835729ad519f3eeba28a1b16f00293958e9d76c2f84dba2c49d03b4",
+      "final_raw_sha256": "ab097c029961bc19871e3b9b5e5f54cc55b7ee22827946982ae40e4f95988135",
+      "audited_data_sha256": "64e13f658dd0f17d9684ec01089b826b689f42db53d57c3c3479327e334cb912",
+      "final_data_sha256": "6e63461a9cdce5e5f2131a4b03ef9216d54f8f77b81a6e02743b2af967e2c61a",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "b97886baf93dff1e3c1679999733181e6730ac3cac430ae382559eb122b76b3c",
+          "final_entity_sha256": "ad2714b85a51b3c69e5791e79e761c27aa33ed562e55073f9435936894b301ad"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "58899b12ca0cae692a0f40893d1a3b1d0c7f232eb5ac385560f6c29dabe86642",
+          "final_entity_sha256": "c60d3b444a0353a4792fc1838d1d65dff47d0ddb3d45d22c444e9d019c19cbdb"
+        },
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "6c205fb26f89a729835ba52c3ba3d7634d5845032a5a0477d890c73644364c26",
+          "final_entity_sha256": "5239c9d0ac8f3800e0949d86f2e9971fbcadaac6c90ca47038abbcabd178ab58"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "fc0c172955fe13c4b3ffc7ffad0bdefeeda5582e81d4932f7754eba342640191",
+          "final_entity_sha256": "0da41b11975df0a2d6b0d58654dde0a29d9094f2453ec8d681620642ca42171b"
+        },
+        {
+          "entity": "3808",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "6cf851f017a0da4d5d47d4379fffc7608e049264c09537d7a13c2a923b233bd3",
+          "final_entity_sha256": "2abbbdd3c272649d10f1d91b29e87f48f6146762da4090b47ee87e39318e6aea"
+        },
+        {
+          "entity": "3809",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "e2739a7457dcf74f383e83ddb017550df81c5a51252d3eb583a574f4817eb0c4",
+          "final_entity_sha256": "8f27efcf3ec47de39016de09f2599194180fb573e3684ff29701eecb9c1ea596"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_01__leaf_shaft_crank.step",
+      "audited_raw_sha256": "f919780d0685afe788d3fef7953a250ec9617fe4e094e94a067b4479c15a4ab8",
+      "final_raw_sha256": "2690f1d6009565d05de163ee182775ea5024210c08727ca4629791d806ee589c",
+      "audited_data_sha256": "8cf033c36b46f6927b638e303eebaf2ad8e53b5d980ee3bf70afcbcb182305a9",
+      "final_data_sha256": "8cf033c36b46f6927b638e303eebaf2ad8e53b5d980ee3bf70afcbcb182305a9",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_01__lower_shaft_collar.step",
+      "audited_raw_sha256": "4073d7e817eafa08165fc99ef86b5cbba545ff22dac5d1694ce28595dff74bc2",
+      "final_raw_sha256": "1d29cbde2d828e0acf2d87ab03f1d598839a59cd12acd7e8fd3a134869d02514",
+      "audited_data_sha256": "2b40ebcf3e112ad4ccff22b04af11a6de391eedf9a0ce46f4d889b1f195eaa0f",
+      "final_data_sha256": "2b40ebcf3e112ad4ccff22b04af11a6de391eedf9a0ce46f4d889b1f195eaa0f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_01__output_pin_keeper.step",
+      "audited_raw_sha256": "4392cde12544c35764b29c939712b654d72ccd954d08c9dfecd6e1f70bf7832d",
+      "final_raw_sha256": "f5ab3c7b1c1d62b5dc7c064712e043457763b19a6e7767e09b4676a0761d3ee2",
+      "audited_data_sha256": "254a4e721189c2125287def82a36dfa325a91429e9809bd213b1b70c9b45fc3a",
+      "final_data_sha256": "254a4e721189c2125287def82a36dfa325a91429e9809bd213b1b70c9b45fc3a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_01__upper_shaft_collar.step",
+      "audited_raw_sha256": "428a562b0abbe6ef13513a795bd7dd58020186989ff75fa4ea902e23eea01ec8",
+      "final_raw_sha256": "2ca312d00e2827ac9292c9c803b57f2682ee639954d97000558958229b393190",
+      "audited_data_sha256": "0361931da2195ce7cc53f1b183f4436c394e1f05ec02bdd138419386762155e9",
+      "final_data_sha256": "0361931da2195ce7cc53f1b183f4436c394e1f05ec02bdd138419386762155e9",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_01_subassembly.step",
+      "audited_raw_sha256": "5e7252af18912b8baaaf955e6dd75e74691015874c8ea8ac906eaf52eac86aaa",
+      "final_raw_sha256": "72db44b5180be881e12423bbd020d53d6da574ae5ed83affc88294f2a4dd743e",
+      "audited_data_sha256": "fd990c6b76b3d3803dd53c287c8dbf0493eaeff765e4968de5ba0bb150bf7b58",
+      "final_data_sha256": "61cb350de64211c90d257fdbb7d3b8e237a199dec37c4041130979677664a374",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "244f0d8522eefb5f96b09a414648046d8a273b85f2c6f38e3911425f2071f57f",
+          "final_entity_sha256": "afbcd27acd2a85076b8361a32e9bd35d98e636a79a023be990e9f86ed09cc0bf"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "ca0207b8932271f5d6a35f1790b4b2c1a64b36d1c3ebf3b4fa5848b770ea72e9",
+          "final_entity_sha256": "bca1bbfc6b2d8d4b7611eadf45ac7666690f42e6632eee9d4faefcd484fd03ef"
+        },
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "6c205fb26f89a729835ba52c3ba3d7634d5845032a5a0477d890c73644364c26",
+          "final_entity_sha256": "1a3ed95e50f36028f5590cc8d8f8d016cb321097681658f9faaefc8a0fa0ddf6"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "fc0c172955fe13c4b3ffc7ffad0bdefeeda5582e81d4932f7754eba342640191",
+          "final_entity_sha256": "99642302a61841dde71d6688ddeb07b53baa93b408d450df51255f5575c9049b"
+        },
+        {
+          "entity": "3808",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "6cf851f017a0da4d5d47d4379fffc7608e049264c09537d7a13c2a923b233bd3",
+          "final_entity_sha256": "fe024c7912cac5611e1d389203a6b21c49a470989cfdbf0b81f374607b56615e"
+        },
+        {
+          "entity": "3809",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "e2739a7457dcf74f383e83ddb017550df81c5a51252d3eb583a574f4817eb0c4",
+          "final_entity_sha256": "11b64d8187895a5c5a6713ec4d36b29d0d244afb4d7e7ebf4e67df95601c51bf"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_02__leaf_shaft_crank.step",
+      "audited_raw_sha256": "25ac55c4b4814ad003196cd54907bb44ec6b874da89afd5cd0f3c2af9b5828cf",
+      "final_raw_sha256": "351222ee418b21cce9e49d2925083a1d9e388d52202b10e0afa89140e5b0c346",
+      "audited_data_sha256": "173dbb8ea735f8078d7c2e21be41c1fc5dc399ff796d4d98399a8e251f7c9be9",
+      "final_data_sha256": "173dbb8ea735f8078d7c2e21be41c1fc5dc399ff796d4d98399a8e251f7c9be9",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_02__lower_shaft_collar.step",
+      "audited_raw_sha256": "b1b9e9a96afcd66984590834d2db81cd0af5c3cb60c05dc61d37bc4e35742585",
+      "final_raw_sha256": "8f21e316c7ad144187af65c1e99d10da23f5cf241f4ab5b7cfa2774ddd1f02a9",
+      "audited_data_sha256": "3b73527226397ba65956a2cd1b963732eaaa165e8b982253627da6a0d2e101ea",
+      "final_data_sha256": "3b73527226397ba65956a2cd1b963732eaaa165e8b982253627da6a0d2e101ea",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_02__output_pin_keeper.step",
+      "audited_raw_sha256": "6d0514451fe45f284285327ceb4946d74024fc9b033d30f6d3deb92d230dac45",
+      "final_raw_sha256": "6ab55d9bf6d0bdd4413c812f42ee686a8dac5be0d9a59e047f8f0e2851c39221",
+      "audited_data_sha256": "ac5eea2c770251e3984d6da1597b555ef0bf6a0b803228ca000b0d053832d42e",
+      "final_data_sha256": "ac5eea2c770251e3984d6da1597b555ef0bf6a0b803228ca000b0d053832d42e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_02__upper_shaft_collar.step",
+      "audited_raw_sha256": "65c5c2c985112e6dc6804fa531401a5bb80d81fbe2f5cb3f9af13d83fcd72cf9",
+      "final_raw_sha256": "eab6df352644adc56c5bb8141a11ba92e235d1ec1271c435f2f3d6cf26b44b8d",
+      "audited_data_sha256": "9d6642bcce7abfb7e0a0227456083b09cace71f31633d7d50ff4a0ba8bacb683",
+      "final_data_sha256": "9d6642bcce7abfb7e0a0227456083b09cace71f31633d7d50ff4a0ba8bacb683",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_02_subassembly.step",
+      "audited_raw_sha256": "061b2c4472fa995e4e5f58e15b4e3c8bffe4a2052ce98149707573aa8dff187b",
+      "final_raw_sha256": "9a75f26bd2be8a5b4d97f1a15c016f71765c7c5c10417b83f675ff04b11d842e",
+      "audited_data_sha256": "90639853b01524cddf72eed4122bf77429ee7e991687ef19e9c1c48b571a37d9",
+      "final_data_sha256": "90639853b01524cddf72eed4122bf77429ee7e991687ef19e9c1c48b571a37d9",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/leaf_03__leaf_shaft_crank.step",
+      "audited_raw_sha256": "baaf371f0e30452bd0f60b3ce8ccb269d0568ba9ade0ed598744b53f36317498",
+      "final_raw_sha256": "15267af70ec5405be776b821bf792130894f1f7f3eddc5bda9d4451b5e405b19",
+      "audited_data_sha256": "a01e02e86da205b97e3e22a9daaed7d23a4f72a0c64fd48996d31c335f598ca4",
+      "final_data_sha256": "a01e02e86da205b97e3e22a9daaed7d23a4f72a0c64fd48996d31c335f598ca4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_03__lower_shaft_collar.step",
+      "audited_raw_sha256": "547ef30256b170e728ab2a507f18e7f45aedec2516484c030735d72d5905660d",
+      "final_raw_sha256": "ec99d4057399c32fd6c9ca46e3fdc90f5871b8179dbf5412a97e30d954e501c1",
+      "audited_data_sha256": "4fc4de5c8ae2d7fe3e305d1c58518cddac7807db162284943b1ac83c5a388728",
+      "final_data_sha256": "4fc4de5c8ae2d7fe3e305d1c58518cddac7807db162284943b1ac83c5a388728",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_03__output_pin_keeper.step",
+      "audited_raw_sha256": "a503097ae52520d7137f295ebd9c8775f36ccb31adbd4c7301d58d9f118aa3fe",
+      "final_raw_sha256": "7ca3f218dee6c16ae2534220b09dbc2e9641511454e78db081066e2eb7ef72f0",
+      "audited_data_sha256": "a25b909b0c974490961c0eac0a1e6c88bd5e798cf95a13a7148d2ed4476ed7b3",
+      "final_data_sha256": "a25b909b0c974490961c0eac0a1e6c88bd5e798cf95a13a7148d2ed4476ed7b3",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_03__upper_shaft_collar.step",
+      "audited_raw_sha256": "10a212554b3e98a722c9f40c0e468e30ff2e17a561bf73ac3700b199f487844f",
+      "final_raw_sha256": "c38c581a3879e9d733bdc485f477f34863219b5436f24670c1e9d5c9d3a32d4f",
+      "audited_data_sha256": "c2acb59339f8e2996e6c0866cfe643e0209ba76186254d823f078c16767e930f",
+      "final_data_sha256": "c2acb59339f8e2996e6c0866cfe643e0209ba76186254d823f078c16767e930f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_03_subassembly.step",
+      "audited_raw_sha256": "b509b39c06f78638917c374b366baa08bada6f4512c9f0a4bb67385294cd9e1f",
+      "final_raw_sha256": "038a060d47b624f4c2bf5a1e3c9ba55c55a83dbe024dabc5d0c11c67c00aa9be",
+      "audited_data_sha256": "ab3037fbaaef5f7c2d6daf7718724f64fc401b8e5da8f8b34e24e970ed1b29ff",
+      "final_data_sha256": "25bdc2cebad3edc14de4df23df59f612fd686f5803df1525280a90d797d78714",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "ad2714b85a51b3c69e5791e79e761c27aa33ed562e55073f9435936894b301ad",
+          "final_entity_sha256": "afbcd27acd2a85076b8361a32e9bd35d98e636a79a023be990e9f86ed09cc0bf"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "c60d3b444a0353a4792fc1838d1d65dff47d0ddb3d45d22c444e9d019c19cbdb",
+          "final_entity_sha256": "bca1bbfc6b2d8d4b7611eadf45ac7666690f42e6632eee9d4faefcd484fd03ef"
+        },
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "94c18ca5d8ca920dc52018a25c6de01312cf7cf8fe7a79f2209663c997d9534a",
+          "final_entity_sha256": "6c205fb26f89a729835ba52c3ba3d7634d5845032a5a0477d890c73644364c26"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "09a69520b844c3869adae5dfc296bc1e1ad8f1569a8b7f8f3d717697cba4144d",
+          "final_entity_sha256": "fc0c172955fe13c4b3ffc7ffad0bdefeeda5582e81d4932f7754eba342640191"
+        },
+        {
+          "entity": "3800",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "c7163e133517313f832decad909515303afaa374343817e01aa0a781cf37f200",
+          "final_entity_sha256": "1da8173fef9a1d63fad3433f16797b9302d1412a4880f4b5f603865b622769e2"
+        },
+        {
+          "entity": "3801",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "ec23616a86268df5d5b3001fd7020a1c44fb8054aeea90e0282104c290e0e1d5",
+          "final_entity_sha256": "5958a8540e9cb85263dc846340b476177bb8a3e95ec66a6781e174fb7555784e"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_04__leaf_shaft_crank.step",
+      "audited_raw_sha256": "970d48fd1db201717d30d844d4f823df792d3b66d5a7c7847e352547ae4cc231",
+      "final_raw_sha256": "9a4992c23315fc08be7d66cd734c0d32d0999905e8c3e737a34de08a47dc803b",
+      "audited_data_sha256": "63c657eca3a0e1c74063cbc0f6fcde900248d2addb7a31a10738470d9ecac949",
+      "final_data_sha256": "63c657eca3a0e1c74063cbc0f6fcde900248d2addb7a31a10738470d9ecac949",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_04__lower_shaft_collar.step",
+      "audited_raw_sha256": "ff4cdaeb37519e62ba0eebeef82c9459225392bcb2fab3539bdef49262f029cb",
+      "final_raw_sha256": "a5b9226af0e9a967e95f16fe93c54878974394e8baad83f059b9be3e0ca5e703",
+      "audited_data_sha256": "354466500e3d2b52069d9091033e2b43cb83fb98ae9be3b8082d600a900c7bd8",
+      "final_data_sha256": "354466500e3d2b52069d9091033e2b43cb83fb98ae9be3b8082d600a900c7bd8",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_04__output_pin_keeper.step",
+      "audited_raw_sha256": "2161382a828966d5e5bbc8077fb34d42876f9ad75aa6222348b4aefdbe10740a",
+      "final_raw_sha256": "b584b2fe41714f574f9d9d248844dd4fd56a366ff72809755110cf43c2b24f09",
+      "audited_data_sha256": "5a376d4922006f197277991b189eb50d3c717055b6f657e2892457d1a42eea81",
+      "final_data_sha256": "5a376d4922006f197277991b189eb50d3c717055b6f657e2892457d1a42eea81",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_04__upper_shaft_collar.step",
+      "audited_raw_sha256": "53382d672171c1e0d88a09742bd77058c6b3cd59e6c86674b8ae94b6d4c98d92",
+      "final_raw_sha256": "dc4f3b1effc8853ce0f5dcab5ede0fc04da718866217cb73bcd1a8f96b5cc0d0",
+      "audited_data_sha256": "5aade7f6280d37bb494f8b16967992f95b8c26c6e8263a25f318d24ccff85c52",
+      "final_data_sha256": "5aade7f6280d37bb494f8b16967992f95b8c26c6e8263a25f318d24ccff85c52",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_04_subassembly.step",
+      "audited_raw_sha256": "b8a763f68c705660a6d3fab451012b3f5b2f9349b08a7886a5a637e735a4e67a",
+      "final_raw_sha256": "beface3a1d7d01c33a304bbe8a1c5db88acfa469a8e7319fefb54ab6d17118b9",
+      "audited_data_sha256": "f98c03afded1e87310ba7eb407ae69c4b3369681ff6e5ebf377cd8b9e5919d43",
+      "final_data_sha256": "ee9af926a2ad302c7d60b6f6c6d4ba9cea40b8794ead9ea86b2f2ed5f9379f51",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "afbcd27acd2a85076b8361a32e9bd35d98e636a79a023be990e9f86ed09cc0bf",
+          "final_entity_sha256": "ad2714b85a51b3c69e5791e79e761c27aa33ed562e55073f9435936894b301ad"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "bca1bbfc6b2d8d4b7611eadf45ac7666690f42e6632eee9d4faefcd484fd03ef",
+          "final_entity_sha256": "c60d3b444a0353a4792fc1838d1d65dff47d0ddb3d45d22c444e9d019c19cbdb"
+        },
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "94c18ca5d8ca920dc52018a25c6de01312cf7cf8fe7a79f2209663c997d9534a",
+          "final_entity_sha256": "1a3ed95e50f36028f5590cc8d8f8d016cb321097681658f9faaefc8a0fa0ddf6"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "09a69520b844c3869adae5dfc296bc1e1ad8f1569a8b7f8f3d717697cba4144d",
+          "final_entity_sha256": "99642302a61841dde71d6688ddeb07b53baa93b408d450df51255f5575c9049b"
+        },
+        {
+          "entity": "3800",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "714af873160d064cc09c4d02d2b0e8deb56d66792f51df2cf611c53950a66e0c",
+          "final_entity_sha256": "c7163e133517313f832decad909515303afaa374343817e01aa0a781cf37f200"
+        },
+        {
+          "entity": "3801",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "a7939901dc4bcaafb5faf4f93bfb90af2fc00f5fe0d210ba6060d7a7714bfbf3",
+          "final_entity_sha256": "ec23616a86268df5d5b3001fd7020a1c44fb8054aeea90e0282104c290e0e1d5"
+        },
+        {
+          "entity": "3808",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "99d508dedce76e97b6da23f9e5554286448cb8b40d86f755098c351302f84daf",
+          "final_entity_sha256": "2abbbdd3c272649d10f1d91b29e87f48f6146762da4090b47ee87e39318e6aea"
+        },
+        {
+          "entity": "3809",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "2f780b4540ea6a1e8390ac52aeb54792a27662ab194158d1ea391f97bc812fc1",
+          "final_entity_sha256": "8f27efcf3ec47de39016de09f2599194180fb573e3684ff29701eecb9c1ea596"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_05__leaf_shaft_crank.step",
+      "audited_raw_sha256": "dcacc3208ea6b2e06b2509fee36e01a8b653bccea76b5e33dbce7ce66b4b7dca",
+      "final_raw_sha256": "badf3a2f3f07e60668ebb03a1befcc2148cff6b99c87fd4c2cb6dc28eb75a63d",
+      "audited_data_sha256": "0cae5803ece01c691091d12b1c929eeb720b264e590cf9b95beb0c2d1a8931a3",
+      "final_data_sha256": "0cae5803ece01c691091d12b1c929eeb720b264e590cf9b95beb0c2d1a8931a3",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_05__lower_shaft_collar.step",
+      "audited_raw_sha256": "3c92e25828b7d9d95a6a4248e232e8e4c1d399469a4eb3754b81019b7c1d137b",
+      "final_raw_sha256": "4198ef10b10f787f644213cf504380e53dc48fb3c4a137d3dc3feab8c98806e1",
+      "audited_data_sha256": "bc80d9ffc63d3f58f74b3952963a669e6e91a241acb39aff81806a10eb657dc4",
+      "final_data_sha256": "bc80d9ffc63d3f58f74b3952963a669e6e91a241acb39aff81806a10eb657dc4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_05__output_pin_keeper.step",
+      "audited_raw_sha256": "300ffe3f664610db9ff8f95026b8d4878f5888be8cfb431a37e5f3a60036240e",
+      "final_raw_sha256": "19e172515d4daf6ef289a94f0a3b22547c3180e1729d3c71d84d3672f1d2bc67",
+      "audited_data_sha256": "dcd60fb5c3319ee40b16fc14c4f08ae4e1a80209b70023f034dc6074dd34c410",
+      "final_data_sha256": "dcd60fb5c3319ee40b16fc14c4f08ae4e1a80209b70023f034dc6074dd34c410",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_05__upper_shaft_collar.step",
+      "audited_raw_sha256": "2870a366d6069e20002b01058bf8c3af11a6c6525d18396a89e98d7c2dd965c0",
+      "final_raw_sha256": "b242b921f5bb11d8e6d1890a2489dcbd5df0a3f9439ba99f8420a035aa290291",
+      "audited_data_sha256": "6538e8b2d7851015cdb2dc0d71176229e4957e41c0b996f754fd65bb3ace5659",
+      "final_data_sha256": "6538e8b2d7851015cdb2dc0d71176229e4957e41c0b996f754fd65bb3ace5659",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_05_subassembly.step",
+      "audited_raw_sha256": "48e9d9cdb7a075adf00f9be11b5afc47c7a2d922e9dd829b747f4b6a5ea55cf3",
+      "final_raw_sha256": "ea830c74ea0e20d257dba4a379b15e6b196ef898b873e96da8d5d15277884dee",
+      "audited_data_sha256": "b620617d33baabe8ca7397d4db3c7fd55be54a7c06b13544cc0bf3baab99a277",
+      "final_data_sha256": "8e092b0a246b5eb4707694c9fd6c683debf2e679e0b9d35021c835dee4bfb345",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "b97886baf93dff1e3c1679999733181e6730ac3cac430ae382559eb122b76b3c",
+          "final_entity_sha256": "ad2714b85a51b3c69e5791e79e761c27aa33ed562e55073f9435936894b301ad"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "58899b12ca0cae692a0f40893d1a3b1d0c7f232eb5ac385560f6c29dabe86642",
+          "final_entity_sha256": "c60d3b444a0353a4792fc1838d1d65dff47d0ddb3d45d22c444e9d019c19cbdb"
+        },
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "1a3ed95e50f36028f5590cc8d8f8d016cb321097681658f9faaefc8a0fa0ddf6",
+          "final_entity_sha256": "5239c9d0ac8f3800e0949d86f2e9971fbcadaac6c90ca47038abbcabd178ab58"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "99642302a61841dde71d6688ddeb07b53baa93b408d450df51255f5575c9049b",
+          "final_entity_sha256": "0da41b11975df0a2d6b0d58654dde0a29d9094f2453ec8d681620642ca42171b"
+        },
+        {
+          "entity": "3800",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "714af873160d064cc09c4d02d2b0e8deb56d66792f51df2cf611c53950a66e0c",
+          "final_entity_sha256": "8e549098abca9959739f265c6b24f7b46c5ad36b703483ebc1a6e0589844b64e"
+        },
+        {
+          "entity": "3801",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "a7939901dc4bcaafb5faf4f93bfb90af2fc00f5fe0d210ba6060d7a7714bfbf3",
+          "final_entity_sha256": "4fb47224696e82d7d4cc51f286fb2d266cf74c61c3f54c125d40ad992bcd9b1f"
+        },
+        {
+          "entity": "3808",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "6cf851f017a0da4d5d47d4379fffc7608e049264c09537d7a13c2a923b233bd3",
+          "final_entity_sha256": "2abbbdd3c272649d10f1d91b29e87f48f6146762da4090b47ee87e39318e6aea"
+        },
+        {
+          "entity": "3809",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "e2739a7457dcf74f383e83ddb017550df81c5a51252d3eb583a574f4817eb0c4",
+          "final_entity_sha256": "8f27efcf3ec47de39016de09f2599194180fb573e3684ff29701eecb9c1ea596"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_06__leaf_shaft_crank.step",
+      "audited_raw_sha256": "447ab53b4f3581cdabb5d4aae61ddfdd9940f9b3d4743e1c8f52b693846cc1c3",
+      "final_raw_sha256": "63120cff9d8ad999bd8c746f2b68612379b0a1a32eb05bb35985d1e734db9455",
+      "audited_data_sha256": "10b596614cd93742d9529527f73589e3917a51531416ab4118b7a0884836b7b6",
+      "final_data_sha256": "10b596614cd93742d9529527f73589e3917a51531416ab4118b7a0884836b7b6",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_06__lower_shaft_collar.step",
+      "audited_raw_sha256": "b920cf5174c74102b3a6a531361f3f1dba3d82297c35456ecffde2c9db64bf24",
+      "final_raw_sha256": "db8a48d1371bcd8f96722fe959cfcfac17f39f1fcc4792f314b8162770cb10d8",
+      "audited_data_sha256": "bbe90cc8dd2fea590490c8808b015046a457ce5ede42b6e193948ebc78221743",
+      "final_data_sha256": "bbe90cc8dd2fea590490c8808b015046a457ce5ede42b6e193948ebc78221743",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_06__output_pin_keeper.step",
+      "audited_raw_sha256": "f03277ef6dc9f5a474baf433c2cf77c9d6b2f76208b92c6f111fb904168849f6",
+      "final_raw_sha256": "d0ef662c893cef174ad82df20edf8ad582274106cb36cb9a71c9cd3a2c262cb9",
+      "audited_data_sha256": "0adb0fcf1dcc5c918d42955b59168caef9b004da6d926e3aa2be72276b9bf83b",
+      "final_data_sha256": "0adb0fcf1dcc5c918d42955b59168caef9b004da6d926e3aa2be72276b9bf83b",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_06__upper_shaft_collar.step",
+      "audited_raw_sha256": "e0f48386ef7dcac3bdce2f8f465c04d1c77c7fde4de52900a51e8e70941af9d8",
+      "final_raw_sha256": "d8f3f36bf5b0984d6a36f5a103637632548d4c42ed6b1cfbbd1fe377267e3eb2",
+      "audited_data_sha256": "6055a416319ba9b13d0f2769961409e375c3bd4168fc4d7747bf8c27e00ecb3f",
+      "final_data_sha256": "6055a416319ba9b13d0f2769961409e375c3bd4168fc4d7747bf8c27e00ecb3f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_06_subassembly.step",
+      "audited_raw_sha256": "a20a4d6597ef088e53f55515fd8630d6af6a0a2af56ddb44697d8e506cb38125",
+      "final_raw_sha256": "0a043ecbe029e4d471d3994cfe4b5d75c07f494ed93cdbe0b2e087043ee8f7a5",
+      "audited_data_sha256": "b29b48965aa80b483ae92d31d07c12d06aa2b9714092d33e63acd7f3f4913353",
+      "final_data_sha256": "b9298c4218c3c6ed244d889ffb860be45753d8475c7551b67bf06884a8407430",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "5239c9d0ac8f3800e0949d86f2e9971fbcadaac6c90ca47038abbcabd178ab58",
+          "final_entity_sha256": "94c18ca5d8ca920dc52018a25c6de01312cf7cf8fe7a79f2209663c997d9534a"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "0da41b11975df0a2d6b0d58654dde0a29d9094f2453ec8d681620642ca42171b",
+          "final_entity_sha256": "09a69520b844c3869adae5dfc296bc1e1ad8f1569a8b7f8f3d717697cba4144d"
+        },
+        {
+          "entity": "3800",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "1da8173fef9a1d63fad3433f16797b9302d1412a4880f4b5f603865b622769e2",
+          "final_entity_sha256": "c7163e133517313f832decad909515303afaa374343817e01aa0a781cf37f200"
+        },
+        {
+          "entity": "3801",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "5958a8540e9cb85263dc846340b476177bb8a3e95ec66a6781e174fb7555784e",
+          "final_entity_sha256": "ec23616a86268df5d5b3001fd7020a1c44fb8054aeea90e0282104c290e0e1d5"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_07__leaf_shaft_crank.step",
+      "audited_raw_sha256": "f381e4b3d7c31e798ffbef0d05e94cf4dc649f7b6e6d97999846396c5bfb9a3b",
+      "final_raw_sha256": "4b29081fe07f05ed25fcad0a816a77ba70200a0976442a59c4af6f0ee193e27f",
+      "audited_data_sha256": "89d461c941062bc2d7188146fd350eba4a7296c1052617dc917031d1b02a0a2e",
+      "final_data_sha256": "89d461c941062bc2d7188146fd350eba4a7296c1052617dc917031d1b02a0a2e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_07__lower_shaft_collar.step",
+      "audited_raw_sha256": "45513a870905fdc956e30a3d357071049913061ac3830d3dc90df4e1f319b739",
+      "final_raw_sha256": "fed308521c2de480f78e40c356436cb6122c5d01a9940143aaeeab9b64405c01",
+      "audited_data_sha256": "e81a0a723e403a2630c26259349a76a5d5910e830b68c8b21f7e0de6d7e4c7a7",
+      "final_data_sha256": "e81a0a723e403a2630c26259349a76a5d5910e830b68c8b21f7e0de6d7e4c7a7",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_07__output_pin_keeper.step",
+      "audited_raw_sha256": "5f9bd9ff25b57d30409a86e6d05688a7b4184e3a8ac7f4244dc6846744dcba34",
+      "final_raw_sha256": "e2324094396737c18bff8a6a0e08e6ff2c51321324d50b784ac51bb71f76f616",
+      "audited_data_sha256": "7ee63fd4b0a3e7aa0708570966862613fe17ae517e3d170b5609470794609bf5",
+      "final_data_sha256": "7ee63fd4b0a3e7aa0708570966862613fe17ae517e3d170b5609470794609bf5",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_07__upper_shaft_collar.step",
+      "audited_raw_sha256": "a550af7427504c3ea1395029e613636c56c98ad94b435995cd041a7505d93d71",
+      "final_raw_sha256": "4706e7bf35b2cd59ec65ed274f8451fb42c3cf6c871f1bf33e7b1bc160837f63",
+      "audited_data_sha256": "9896fd61c395660194df13014acc584fc9e50b33f98fddf405675c977b50bd76",
+      "final_data_sha256": "9896fd61c395660194df13014acc584fc9e50b33f98fddf405675c977b50bd76",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_07_subassembly.step",
+      "audited_raw_sha256": "ad69cdfa50d3fdea5da06a748d690cd600724a3a33c34f7c68280ace7fa39eb9",
+      "final_raw_sha256": "cb7fa572316cb25006481824bda5ec8dab850c5230c202d20846a27fc4b044c6",
+      "audited_data_sha256": "46fd4b217fa818edc9d0ff8cbdb5fd430764507d00455a79fb9900255b8d633d",
+      "final_data_sha256": "2099a06504c6371d923dbdbbaca1bd07c34f10019fa32de57d7f4a714846b12f",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "244f0d8522eefb5f96b09a414648046d8a273b85f2c6f38e3911425f2071f57f",
+          "final_entity_sha256": "b97886baf93dff1e3c1679999733181e6730ac3cac430ae382559eb122b76b3c"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "ca0207b8932271f5d6a35f1790b4b2c1a64b36d1c3ebf3b4fa5848b770ea72e9",
+          "final_entity_sha256": "58899b12ca0cae692a0f40893d1a3b1d0c7f232eb5ac385560f6c29dabe86642"
+        },
+        {
+          "entity": "3792",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "94c18ca5d8ca920dc52018a25c6de01312cf7cf8fe7a79f2209663c997d9534a",
+          "final_entity_sha256": "6c205fb26f89a729835ba52c3ba3d7634d5845032a5a0477d890c73644364c26"
+        },
+        {
+          "entity": "3793",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "09a69520b844c3869adae5dfc296bc1e1ad8f1569a8b7f8f3d717697cba4144d",
+          "final_entity_sha256": "fc0c172955fe13c4b3ffc7ffad0bdefeeda5582e81d4932f7754eba342640191"
+        },
+        {
+          "entity": "3800",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "714af873160d064cc09c4d02d2b0e8deb56d66792f51df2cf611c53950a66e0c",
+          "final_entity_sha256": "8e549098abca9959739f265c6b24f7b46c5ad36b703483ebc1a6e0589844b64e"
+        },
+        {
+          "entity": "3801",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "a7939901dc4bcaafb5faf4f93bfb90af2fc00f5fe0d210ba6060d7a7714bfbf3",
+          "final_entity_sha256": "4fb47224696e82d7d4cc51f286fb2d266cf74c61c3f54c125d40ad992bcd9b1f"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/leaf_08__leaf_shaft_crank.step",
+      "audited_raw_sha256": "29a3c05f4a69326e5a3fd5eca5d7c10305bf29eaa7ef031aa2477868d42c6a23",
+      "final_raw_sha256": "535b01dfc17cd4461a38819c136e60dc9a21dc6fc52df8bed8b8bf59ed4f66c2",
+      "audited_data_sha256": "8d500db241544222ccd107e59109a6d59874a00caec22549794537b279f19d8a",
+      "final_data_sha256": "8d500db241544222ccd107e59109a6d59874a00caec22549794537b279f19d8a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_08__lower_shaft_collar.step",
+      "audited_raw_sha256": "cb3ddccb9e552b062a757a6e24fb53b55cf257491ee5aba72fd74855f2c2285e",
+      "final_raw_sha256": "c100bb95f72a343d4da9fcd6fb59bc3b435b7e63862d4f95c6167cc4fb6c3a17",
+      "audited_data_sha256": "d70c370f8018339a28a115cfe1324a235d95764632836e54079747980ad8e0d0",
+      "final_data_sha256": "d70c370f8018339a28a115cfe1324a235d95764632836e54079747980ad8e0d0",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_08__output_pin_keeper.step",
+      "audited_raw_sha256": "1a196a4d5af086df315750080a3fdf234462875c5bcb126d0a5ec55db7fa7488",
+      "final_raw_sha256": "23f02cc0773265c3f04d33338aa7b994ea2bcd4e486c0cb4c7a52a5b336cb515",
+      "audited_data_sha256": "3dcd7d4c5bd6aa92ced67ac612c43a4e24c3441584710ce37503593e8a661d39",
+      "final_data_sha256": "3dcd7d4c5bd6aa92ced67ac612c43a4e24c3441584710ce37503593e8a661d39",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_08__upper_shaft_collar.step",
+      "audited_raw_sha256": "cf80c574a83dc9f0f3fb51410b87fafae2a7adb266c68ab93cd3cbe070fa9e46",
+      "final_raw_sha256": "c8228bf056ce2d8bdff71682541da26b9a1478c49599ca46b7f4dc635e791753",
+      "audited_data_sha256": "b0d86fbfaeaee93683f593279a7b0db1e8769986199c4bd5301cd498c1ddc025",
+      "final_data_sha256": "b0d86fbfaeaee93683f593279a7b0db1e8769986199c4bd5301cd498c1ddc025",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/leaf_08_subassembly.step",
+      "audited_raw_sha256": "e193c87d66244c7e97510c9b438ce55f01828db60bdb4d5ddc9fd9a4c0d734f2",
+      "final_raw_sha256": "3fd95647881fea7b4a2728723f1783e99a21cef94eeb8b0a83ee1480e915c1e9",
+      "audited_data_sha256": "0015a9896668add7ada5ebf76fcd9280fc9f785d85c29fa160134b0bb816f781",
+      "final_data_sha256": "442d5fc0b32e642eca88ddce7c78c721091f0ea7cb948be7495455114edeeaf9",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "3783",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "ad2714b85a51b3c69e5791e79e761c27aa33ed562e55073f9435936894b301ad",
+          "final_entity_sha256": "244f0d8522eefb5f96b09a414648046d8a273b85f2c6f38e3911425f2071f57f"
+        },
+        {
+          "entity": "3784",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "c60d3b444a0353a4792fc1838d1d65dff47d0ddb3d45d22c444e9d019c19cbdb",
+          "final_entity_sha256": "ca0207b8932271f5d6a35f1790b4b2c1a64b36d1c3ebf3b4fa5848b770ea72e9"
+        },
+        {
+          "entity": "3800",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "1da8173fef9a1d63fad3433f16797b9302d1412a4880f4b5f603865b622769e2",
+          "final_entity_sha256": "714af873160d064cc09c4d02d2b0e8deb56d66792f51df2cf611c53950a66e0c"
+        },
+        {
+          "entity": "3801",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "5958a8540e9cb85263dc846340b476177bb8a3e95ec66a6781e174fb7555784e",
+          "final_entity_sha256": "a7939901dc4bcaafb5faf4f93bfb90af2fc00f5fe0d210ba6060d7a7714bfbf3"
+        },
+        {
+          "entity": "3808",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "99d508dedce76e97b6da23f9e5554286448cb8b40d86f755098c351302f84daf",
+          "final_entity_sha256": "2abbbdd3c272649d10f1d91b29e87f48f6146762da4090b47ee87e39318e6aea"
+        },
+        {
+          "entity": "3809",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "2f780b4540ea6a1e8390ac52aeb54792a27662ab194158d1ea391f97bc812fc1",
+          "final_entity_sha256": "8f27efcf3ec47de39016de09f2599194180fb573e3684ff29701eecb9c1ea596"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    },
+    {
+      "path": "cad/placed/fixed__housing_material_1.step",
+      "audited_raw_sha256": "5955df8b1001c9aa6c5f54a3cfde5bbf2d95092c0c222958cf90502afe52073d",
+      "final_raw_sha256": "8cdd5e88e615fa8e356227115bc75acaef09642458ad279f45f4ad573236d989",
+      "audited_data_sha256": "2c96d8276039d63f5e55c08fdceb0f87f38048ffbbcae6012eb4b9c250fb8068",
+      "final_data_sha256": "2c96d8276039d63f5e55c08fdceb0f87f38048ffbbcae6012eb4b9c250fb8068",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__housing_material_2.step",
+      "audited_raw_sha256": "9af76480caebf98490bc0bebea24ff87a177c929b146d99bfd30af637f26ccf8",
+      "final_raw_sha256": "c9d6ae4285217a4e3a1b0bf24e1ba6af087c135d7714e0e18d40a9dfd17f33f1",
+      "audited_data_sha256": "3a00cf1ef1eea34b5a34887884028a41bcfbed69c2b1c5b5c7a38d557fb31d6f",
+      "final_data_sha256": "3a00cf1ef1eea34b5a34887884028a41bcfbed69c2b1c5b5c7a38d557fb31d6f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__housing_material_3.step",
+      "audited_raw_sha256": "de2594d41e0c6b35ae2935cf713b968561482be044514a74cb1e9666a2e91ab9",
+      "final_raw_sha256": "b7f7e5d7e34c16fc9dee65298bab3363c5317d0fdd80bb622266c7176a8fbc78",
+      "audited_data_sha256": "6b8c52727f909921ec45932fd907ed970130d5cc8f49dde1479b77db14e19904",
+      "final_data_sha256": "6b8c52727f909921ec45932fd907ed970130d5cc8f49dde1479b77db14e19904",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__housing_material_5.step",
+      "audited_raw_sha256": "a50e02d8f7082b6a90b7e78426c83ee613b41db69c5237e729f673e086daadc3",
+      "final_raw_sha256": "75e055fe35581490dedfc4550713eb218c3ded072c243a7eac83836b502057fe",
+      "audited_data_sha256": "b7df3982e9952f74c6e835cbec83677cc0fd7cda649ae4b3d359654cb78d622b",
+      "final_data_sha256": "b7df3982e9952f74c6e835cbec83677cc0fd7cda649ae4b3d359654cb78d622b",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__lens_0.step",
+      "audited_raw_sha256": "1cddf3b908c32ca8c5d715f58d8cf88bd8dc8d1f97c6ddbf6bc99cd06c41668e",
+      "final_raw_sha256": "48eccbde22c79ff1c0708fa75aa4f3170bc54158e8ddbeb4a5b19d7d76410553",
+      "audited_data_sha256": "3e3b965d55649e462fb4509013de3d16f5c2cda1313dbb62cf62305c1b60eebe",
+      "final_data_sha256": "3e3b965d55649e462fb4509013de3d16f5c2cda1313dbb62cf62305c1b60eebe",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__lens_1.step",
+      "audited_raw_sha256": "e63766fa52ce48f5bcde8884830fb831a72854df06252e45ee7ec3993e4089a2",
+      "final_raw_sha256": "90a65a83e43ce9e49672d7f06392da9ae72b6dd41b807148560f842515ba7794",
+      "audited_data_sha256": "89c68e3f3087ce180ea500931185b91b505dd12ee39d9a3930ab9ac89b6f7f92",
+      "final_data_sha256": "89c68e3f3087ce180ea500931185b91b505dd12ee39d9a3930ab9ac89b6f7f92",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__screw_0.step",
+      "audited_raw_sha256": "238f3bbf5feb1927e8a2b3604732ef7899dfba58af5240ccabfef9540391f69c",
+      "final_raw_sha256": "784db1501691ebf6a3d69afe5b68ac5453c2adb3e2b476b68a6ffd61087565f1",
+      "audited_data_sha256": "55960d1d4d3b3c3911e977ee7d08ef23a70b68f50445990cda5363068293ac90",
+      "final_data_sha256": "55960d1d4d3b3c3911e977ee7d08ef23a70b68f50445990cda5363068293ac90",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__screw_1.step",
+      "audited_raw_sha256": "3bdfb11665e69125d5fd02253a5a37708ed640d3b5d063edf0dcf3ee99bd486b",
+      "final_raw_sha256": "27bd816439a1420640de5bd194abcefaf17cde812bc8451c1ddcd333635c937b",
+      "audited_data_sha256": "177f92b59f3967685fcd8cfaada64a2db9f37772231fcc6e9b7d26263e52f5ed",
+      "final_data_sha256": "177f92b59f3967685fcd8cfaada64a2db9f37772231fcc6e9b7d26263e52f5ed",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__screw_2.step",
+      "audited_raw_sha256": "fb9522cd791453ae00d32e211645f7210cb36a441ae8eb0f1bfb6e7b9917395f",
+      "final_raw_sha256": "a8fd4561ba8ec57f6360668676d0dd70bea9b4eda6627bab990ef4f3f732829b",
+      "audited_data_sha256": "00167c3626e47ae1c4ec1878a4d6c3479046473507b1f65b298a26cff0dc565e",
+      "final_data_sha256": "00167c3626e47ae1c4ec1878a4d6c3479046473507b1f65b298a26cff0dc565e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__screw_3.step",
+      "audited_raw_sha256": "acb611afeee57845925c2d1fee0865cce93a1ee36a4f58b1153e6b158eaeeaa6",
+      "final_raw_sha256": "3095b2960baf9c3360de2d0af1b0472aa7155a2df447922f6844fedb7e429d6c",
+      "audited_data_sha256": "883fdfa5fc89ead2fae7eecc9dd4e81b9e3a2ba750baabd8af9e36ffe8989095",
+      "final_data_sha256": "883fdfa5fc89ead2fae7eecc9dd4e81b9e3a2ba750baabd8af9e36ffe8989095",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__screw_4.step",
+      "audited_raw_sha256": "be6660be041746f60c54e7f07bea6a140c802e1d92ac50dce69fb1eb490ebe8c",
+      "final_raw_sha256": "48118e617135fd851f500ede8d6b48e7061fc15816d9a1ed7663e7949847a479",
+      "audited_data_sha256": "1e0cc224bd99955e4059fdb1881a8b7b49a936ba3cfc3961596b6af8640167f1",
+      "final_data_sha256": "1e0cc224bd99955e4059fdb1881a8b7b49a936ba3cfc3961596b6af8640167f1",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/fixed__screw_5.step",
+      "audited_raw_sha256": "ad6210e37e5c9429317417ee200334b848e2fa6587358d39ddf3fa9d3915dcf9",
+      "final_raw_sha256": "a1b9cc36affe5b029c9f79c54dbc5d2dc1c0b9076fbe69e45bd156930de742ca",
+      "audited_data_sha256": "1bd1befec536d027af311f8317978323fa3403a5912723109bf8c3521b18dfa4",
+      "final_data_sha256": "1bd1befec536d027af311f8317978323fa3403a5912723109bf8c3521b18dfa4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_00__leaf_shaft_crank.step",
+      "audited_raw_sha256": "f2ea50c05dc167f5b153b46b82774e515a4c6d0f30ce8bfe5e9f241ec89f0cc5",
+      "final_raw_sha256": "82f81c47a50fba7efad04d3ac3a278ed46b2c0711d61f1d1af74c8f387790757",
+      "audited_data_sha256": "94244a44ff8259d146b4de549273b15dfa3523e591479833b5189f55f90075cb",
+      "final_data_sha256": "94244a44ff8259d146b4de549273b15dfa3523e591479833b5189f55f90075cb",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_00__lower_shaft_collar.step",
+      "audited_raw_sha256": "2d5cff59fca5d1a1e36c208ec61c4cf3a102e433866156c89db94fc3a177eca6",
+      "final_raw_sha256": "9c1fea621483c58ee7752cf0ce5f20b0acb872f8b7c4be460dd6336dbe84bc8f",
+      "audited_data_sha256": "fc48734f319061afe5edea705f0248c2f774fc5135814130300de9892ccb4625",
+      "final_data_sha256": "fc48734f319061afe5edea705f0248c2f774fc5135814130300de9892ccb4625",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_00__output_pin_keeper.step",
+      "audited_raw_sha256": "2adf968725b387e6db3205fbc20203cbbb9609043c0415c00a41e55b56bbf8b9",
+      "final_raw_sha256": "aff4aec84803b299063b839eb2293a8ed8fce01a2a107b8abcbdefc6e4e3efc4",
+      "audited_data_sha256": "05ad7aae94cda355702f9f74f0a97dc8ba1ea87b335ff5b1d2472438a05ecb13",
+      "final_data_sha256": "05ad7aae94cda355702f9f74f0a97dc8ba1ea87b335ff5b1d2472438a05ecb13",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_00__upper_shaft_collar.step",
+      "audited_raw_sha256": "df199bd8ad7c4cc0b21446dbb3a0b2b2b09fd1d047d50b3bf93f38f1301c6210",
+      "final_raw_sha256": "c3709c5dd4226cb5c3b0ebdcaa1f60b4309a6003ff191dba9b8cf20c7287b9f8",
+      "audited_data_sha256": "4dcc2b137aa92f374007b00aeaa1e40abda72ffd6441762e72f24fc2304d2122",
+      "final_data_sha256": "4dcc2b137aa92f374007b00aeaa1e40abda72ffd6441762e72f24fc2304d2122",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_01__leaf_shaft_crank.step",
+      "audited_raw_sha256": "0e5a23f776e1b97e61c6f9c34432f1475f7499faea29bac3c10aefe7e9b9cfac",
+      "final_raw_sha256": "1d4376288eab8e53b56e78db1111d3179441bc32cee9fdd3bc978fa312284147",
+      "audited_data_sha256": "3aa0aed43f2481136fa8d3faa6a2452c7f85f2238c6f0ce685fbcd3d809e92e9",
+      "final_data_sha256": "3aa0aed43f2481136fa8d3faa6a2452c7f85f2238c6f0ce685fbcd3d809e92e9",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_01__lower_shaft_collar.step",
+      "audited_raw_sha256": "e42f29cab745eaa3cf1ef7b8363d4e5dda12d9576eabd89e320e17d1c3264b68",
+      "final_raw_sha256": "39e0e5d68b20fe6ca08e7944c6dd0fe34a8dfd48b37d850103c798985e600276",
+      "audited_data_sha256": "9dc07be503be8aef5be35dc9efefb758eb821ef62b476016d09244cfb13a0d7a",
+      "final_data_sha256": "9dc07be503be8aef5be35dc9efefb758eb821ef62b476016d09244cfb13a0d7a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_01__output_pin_keeper.step",
+      "audited_raw_sha256": "b0d0d137f7a8cd5f8db8eda31cd2fb929f9a6f8470db31ee499beb866c83e7b7",
+      "final_raw_sha256": "6494f66793d32aca7cf0f61c04cb83ad09eb401616b835ec732ece74578f560f",
+      "audited_data_sha256": "b77b217399e13587180458e77d3068bf02fb4a2aafce7a26a6c1ef38f37d6858",
+      "final_data_sha256": "b77b217399e13587180458e77d3068bf02fb4a2aafce7a26a6c1ef38f37d6858",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_01__upper_shaft_collar.step",
+      "audited_raw_sha256": "2fda75b9b4550ba31e03ffbd2d70aa1cb16e1aa0fcfd8dfb3c9fc397f4cda014",
+      "final_raw_sha256": "206e4f4455e8a7598dcd2704f4c648061ce7e9b163528ebb328781fe047d24d6",
+      "audited_data_sha256": "a683ba41426c7a6bd556541306f8341f0675312abff6f2e1da991e01476932e0",
+      "final_data_sha256": "a683ba41426c7a6bd556541306f8341f0675312abff6f2e1da991e01476932e0",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_02__leaf_shaft_crank.step",
+      "audited_raw_sha256": "c8c2fda51b66fa8d05461d514358ca35f88aed7c3eb5c7a26c62b0ebb1c311f9",
+      "final_raw_sha256": "a17c6bd4127d94cd92f0dcc56d4473c92fa905a318cf4a1a9c54a7f10449ecf9",
+      "audited_data_sha256": "4d2ce0e870d76b51a21c1c5ccc2ebc05a9c22e40f665d9b7fd355eddfe432575",
+      "final_data_sha256": "4d2ce0e870d76b51a21c1c5ccc2ebc05a9c22e40f665d9b7fd355eddfe432575",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_02__lower_shaft_collar.step",
+      "audited_raw_sha256": "265e6ecdac60e094f1a817f89dfe9fefab31d032470f4b4716c70a0c1c671e24",
+      "final_raw_sha256": "e46a150eec9695c29033fe43f53af436b2df5f89e1617ddc6b52b673dc83b5fb",
+      "audited_data_sha256": "a5ec8f60f2c45a30ecfce787329e3c66c6e1adb06ddce1719e84f526a9db03aa",
+      "final_data_sha256": "a5ec8f60f2c45a30ecfce787329e3c66c6e1adb06ddce1719e84f526a9db03aa",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_02__output_pin_keeper.step",
+      "audited_raw_sha256": "b79fd6291360416c0210852cae1d2031b8441f19375041282c0dc88c1e47fbfc",
+      "final_raw_sha256": "919b68fedc522bb3f2c6eb2f852beeb3810f3ed5c56704a874fa28654db90fa8",
+      "audited_data_sha256": "9fed6429c49fa4c047e8adbc99acc1062b294f05503d16e654c3cbe8eb5b9cdf",
+      "final_data_sha256": "9fed6429c49fa4c047e8adbc99acc1062b294f05503d16e654c3cbe8eb5b9cdf",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_02__upper_shaft_collar.step",
+      "audited_raw_sha256": "bb6ffe8affad19ed951a77d495e653266a6b46926a9ae5c5da212bbff7487d4f",
+      "final_raw_sha256": "5d427e05f1fef69e9011f3fad79d816e58266317dc5bd6af3bb269a6afd8bc75",
+      "audited_data_sha256": "71f063c1ca0ddf460db2d19308ff56080ffc64abe2066dcf06b25c43d0c60548",
+      "final_data_sha256": "71f063c1ca0ddf460db2d19308ff56080ffc64abe2066dcf06b25c43d0c60548",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_03__leaf_shaft_crank.step",
+      "audited_raw_sha256": "a70dc1065409603a53ff38d8122c02578b33233d8d59076d3debfa676e2c31f7",
+      "final_raw_sha256": "68659d9b0445b7b1f18f6256331ae7a7868ef5224526903cf7e96a3abcc0ea87",
+      "audited_data_sha256": "54c186e5e3eb1d7addf885214d9a2ce25afb4b1dbd82fb95493cea33911e6f11",
+      "final_data_sha256": "54c186e5e3eb1d7addf885214d9a2ce25afb4b1dbd82fb95493cea33911e6f11",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_03__lower_shaft_collar.step",
+      "audited_raw_sha256": "079c70e432663c51ae6c6d018f96d2209608e4815326daabd78c15d8c5d4cc74",
+      "final_raw_sha256": "d64eccc2b832e149e2b77635d9ad5a8fb74027c5a34457d721a3d6df3dbd7a1e",
+      "audited_data_sha256": "800dd8c0ec44fcc60740817c8769a279c6f4c8b138fa422c715860e565c9a94e",
+      "final_data_sha256": "800dd8c0ec44fcc60740817c8769a279c6f4c8b138fa422c715860e565c9a94e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_03__output_pin_keeper.step",
+      "audited_raw_sha256": "9b73ffef18a69c62ebcab4c30f1b66104626bddb0a98abb59bcd31d882761869",
+      "final_raw_sha256": "7314ca686043b095fc168749fe20612987ddfb4869d2c64abacc4ec8224496b6",
+      "audited_data_sha256": "5e82087adaa1224d7db43a42554d30df9ba0ea5f7e91698b16351ade6d24612a",
+      "final_data_sha256": "5e82087adaa1224d7db43a42554d30df9ba0ea5f7e91698b16351ade6d24612a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_03__upper_shaft_collar.step",
+      "audited_raw_sha256": "40286a7ae05a2f3b7938bb5e83576a005b63c3d8f9d6328245d14f7978a51e36",
+      "final_raw_sha256": "5bb5354af8873f3f58576f8912642c944e917f4fb9a6181dc8e4b982f4eb2356",
+      "audited_data_sha256": "90d964affd37bd1b1f3450cbb9a85ae3e03b62e761c9e7b9a3e95c3313ec794e",
+      "final_data_sha256": "90d964affd37bd1b1f3450cbb9a85ae3e03b62e761c9e7b9a3e95c3313ec794e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_04__leaf_shaft_crank.step",
+      "audited_raw_sha256": "3155e62e3e1f156fdad9bcc3888af560a21d4b3e9f695211f2735c05d892656b",
+      "final_raw_sha256": "4dcd4e6d3661bf7a7d6a2c5e722576efb19bf25db55a151b6129306d06b07182",
+      "audited_data_sha256": "d3e480d2e81ce8ec6fdf10d9e048dcada819a3f8bad90a4c283209b315987523",
+      "final_data_sha256": "d3e480d2e81ce8ec6fdf10d9e048dcada819a3f8bad90a4c283209b315987523",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_04__lower_shaft_collar.step",
+      "audited_raw_sha256": "848181ba6e4dd94421eed649f2db5fa5084afaa73a29355aa986bb8b39123c0f",
+      "final_raw_sha256": "38a17c188478bf4e637b7c6eddc92afed00bdf7453db42a33185fd180acf2714",
+      "audited_data_sha256": "458e5065d0bd0fe82f758b52a19ae0a8e1a526cefe9e0ffd5aaacc7c9c4d540a",
+      "final_data_sha256": "458e5065d0bd0fe82f758b52a19ae0a8e1a526cefe9e0ffd5aaacc7c9c4d540a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_04__output_pin_keeper.step",
+      "audited_raw_sha256": "e7533994b48b0da535ce5cfedccc25848acc9bf45cac3278f26c7d459b8ff73b",
+      "final_raw_sha256": "c97de9080c26bac65508e7b654d862deeb2dab3cd121a208a8a9eaf506ce2628",
+      "audited_data_sha256": "7b538e251bd69cc6c4d36a88ea442194130dc223125da112626baf037dc11ca9",
+      "final_data_sha256": "7b538e251bd69cc6c4d36a88ea442194130dc223125da112626baf037dc11ca9",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_04__upper_shaft_collar.step",
+      "audited_raw_sha256": "b886e698b731e037a827e497230611d41961f35fb18b63f902ded727102d817f",
+      "final_raw_sha256": "be835452339cf208ab9c4746eed6b06f63af059029610ab6c42f53e04512a8f2",
+      "audited_data_sha256": "61030edc61b4e6c9c8e79baf2bde53b6bcf94c706e457a0b35882170bd4258fe",
+      "final_data_sha256": "61030edc61b4e6c9c8e79baf2bde53b6bcf94c706e457a0b35882170bd4258fe",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_05__leaf_shaft_crank.step",
+      "audited_raw_sha256": "51b9c3a63bade88d056f98180e8946e45c217a7ee1580dac538d9326afe1bb58",
+      "final_raw_sha256": "137ac5e6d5934a3efca758d675e720812b36cd73aa0a4e6fe2a3047b65ca3296",
+      "audited_data_sha256": "46fb46b444ef7feaf4dbdab0b980f05dfb41cee83f7debeadcde08c3f5f8da35",
+      "final_data_sha256": "46fb46b444ef7feaf4dbdab0b980f05dfb41cee83f7debeadcde08c3f5f8da35",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_05__lower_shaft_collar.step",
+      "audited_raw_sha256": "93bd6bf08dfd1213db589a9482e5990f9d795d7120f318d78db9d10ec35b415b",
+      "final_raw_sha256": "829480e93d549510913e7715f358f359a2f71171f1ee7ee3b81016b0e71ef2e9",
+      "audited_data_sha256": "d6111d59e756e00c468b966c179f0f307554ab100895ca0ca1f4e20b0607f08e",
+      "final_data_sha256": "d6111d59e756e00c468b966c179f0f307554ab100895ca0ca1f4e20b0607f08e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_05__output_pin_keeper.step",
+      "audited_raw_sha256": "406c7b4cf61e1cf4d9ae6061915ba9a683561da60bf5ee466056387582a3b795",
+      "final_raw_sha256": "3d5b573f271040d3422c813cc96a96d3c61e312e8f4049815fbf84133ec97545",
+      "audited_data_sha256": "5585e4bac54e4aef56dfa759cba0e7a39254bcecdfb0c8c5a1537a6e2b8a5b8e",
+      "final_data_sha256": "5585e4bac54e4aef56dfa759cba0e7a39254bcecdfb0c8c5a1537a6e2b8a5b8e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_05__upper_shaft_collar.step",
+      "audited_raw_sha256": "1cd45e5c291f08ad8cd9122dfae230f17ff70ee3e7a69a524702f1269023979c",
+      "final_raw_sha256": "0ced50eec4a2051accc667bd82e8470a5dd8f35e769081845771d67d48f257fd",
+      "audited_data_sha256": "0f6a886dcd5b015478adbaacb70b1a9885991721e38e31719f4d46938e481fc2",
+      "final_data_sha256": "0f6a886dcd5b015478adbaacb70b1a9885991721e38e31719f4d46938e481fc2",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_06__leaf_shaft_crank.step",
+      "audited_raw_sha256": "2720f60cdec2dbd91a3c6224f60916d34423a48a71be3c77a75d99b4d751e723",
+      "final_raw_sha256": "92a5094d7028dd8bece2f6f3d12d14f2aefe54a8067406852b7b02a8eb83f7ed",
+      "audited_data_sha256": "4ab783d8975ee6c8a9c4ee44c26f0635ab793c96bfee9ea6a07d8e30a978f098",
+      "final_data_sha256": "4ab783d8975ee6c8a9c4ee44c26f0635ab793c96bfee9ea6a07d8e30a978f098",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_06__lower_shaft_collar.step",
+      "audited_raw_sha256": "8c92a0af9342a7e4102cdeb89a059853403c7815c90e64a5d57e17a0f1020072",
+      "final_raw_sha256": "f01a679d5c6ed07af929c5e99903ac8dafba83b64f48efd96a28c02fbe4a5267",
+      "audited_data_sha256": "e8942a5dfc882c9a463ec3a7c669ed9e7074e489d76d4faa0bba72407c45bca2",
+      "final_data_sha256": "e8942a5dfc882c9a463ec3a7c669ed9e7074e489d76d4faa0bba72407c45bca2",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_06__output_pin_keeper.step",
+      "audited_raw_sha256": "22782634c3be897e06b654d5a87208ee602d574b8c0d005f60d8db8137de1b28",
+      "final_raw_sha256": "4d8707f4732d24a4e46f7aa5ee92bcc016563ccdc1c805ea4701090cf634e950",
+      "audited_data_sha256": "3e719022249557e0bb7665d584503c463261bcc3baad6f36142bcba767a2afbc",
+      "final_data_sha256": "3e719022249557e0bb7665d584503c463261bcc3baad6f36142bcba767a2afbc",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_06__upper_shaft_collar.step",
+      "audited_raw_sha256": "ba2e020586305f1b9fab3e7bc8c656294db8bc2c514140a88049cb2cfed71e20",
+      "final_raw_sha256": "f65a7c6922383aebd67472909085a26ae4f9296e416ea78cfbcdf9bcace39815",
+      "audited_data_sha256": "08885c9b4781e651d96983e3135ea01180752700612700d27ca7e85b9ffa53e4",
+      "final_data_sha256": "08885c9b4781e651d96983e3135ea01180752700612700d27ca7e85b9ffa53e4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_07__leaf_shaft_crank.step",
+      "audited_raw_sha256": "a87b47b84d009d5dab67486f04f64b20411e78097d540a0f868a2673f7a55bd2",
+      "final_raw_sha256": "bf93dc1218ca46805570c39a6f7cc4ad5ad2e303d02d2a5843aecf3f4a6bb089",
+      "audited_data_sha256": "18150cbe06e987f5207ea555b70cb4984b8e1b10a46e10da0fdc8888bfe28dda",
+      "final_data_sha256": "18150cbe06e987f5207ea555b70cb4984b8e1b10a46e10da0fdc8888bfe28dda",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_07__lower_shaft_collar.step",
+      "audited_raw_sha256": "68b9b6a4912901b635f4fb5f8ff9940cbad86b426f912edce58f85ed71145855",
+      "final_raw_sha256": "3e567fd79b4c91598ca09b2439d3d15ea2daa623b2a4d275231c17069715a44a",
+      "audited_data_sha256": "4c0365990437a4c4095cd1680a1276c467eef161a56578b67af75bd9c9986b47",
+      "final_data_sha256": "4c0365990437a4c4095cd1680a1276c467eef161a56578b67af75bd9c9986b47",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_07__output_pin_keeper.step",
+      "audited_raw_sha256": "86cf409b2a84f7cf4d8d9d6ac839e17b0a7d8fa35e156daba1f5f43a2f9a8f15",
+      "final_raw_sha256": "ee77e5092b86b423703d377aae14d0c65701aa3dc9a66b6beeb7ffe061cbfa87",
+      "audited_data_sha256": "3508750ad225d1938e0a95871967a71991b960adb22511d6feebba8b9b6abbff",
+      "final_data_sha256": "3508750ad225d1938e0a95871967a71991b960adb22511d6feebba8b9b6abbff",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_07__upper_shaft_collar.step",
+      "audited_raw_sha256": "8448345dfa4e59248f78076567d17cc6c04917b6ea60db31a19d091f3071e1ec",
+      "final_raw_sha256": "22f9982b157d69dc7d9a7ed37555abf85bcb86651df0c1193a57af5bc47c7a31",
+      "audited_data_sha256": "091ea54ed51a1d4a6daf648653fa429f5dc66cc0e7613b11e1e463b17d855b25",
+      "final_data_sha256": "091ea54ed51a1d4a6daf648653fa429f5dc66cc0e7613b11e1e463b17d855b25",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_08__leaf_shaft_crank.step",
+      "audited_raw_sha256": "fcd22d7b00e1720fb2bdfac82cca0ac71bbe4d63ed0d31933db621c452032180",
+      "final_raw_sha256": "8b2a8a7079d03d2d4c6806cf7db02d0ceed2f8d6fbdb05bfd2538ca17a558588",
+      "audited_data_sha256": "4c4b4c6e83f9a2bd2f476aa982fddc968a71e592d8f333a12a86d2d6d21fa254",
+      "final_data_sha256": "4c4b4c6e83f9a2bd2f476aa982fddc968a71e592d8f333a12a86d2d6d21fa254",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_08__lower_shaft_collar.step",
+      "audited_raw_sha256": "fcb17e3b5a2edcd72e9d32cab37c5e996014898f7ca3bbd1f5ef4c19a5b558ff",
+      "final_raw_sha256": "8d8f35116b9adad10b793e8a4d2d99276056648f73d6ce85dbd6a7f679623a58",
+      "audited_data_sha256": "4105b1b0ee259ab837db32c319e843f3c755c7fb84e5890fc86a9182fdf23f04",
+      "final_data_sha256": "4105b1b0ee259ab837db32c319e843f3c755c7fb84e5890fc86a9182fdf23f04",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_08__output_pin_keeper.step",
+      "audited_raw_sha256": "d8b3d373b4396426f77736bac922ddb64b730c7734ca74358862b19dbd453d79",
+      "final_raw_sha256": "4e0a5b785062f5a32491b17a90591658d1e328f557b310ce15d1cf01cc27d322",
+      "audited_data_sha256": "be0bf7e7a852de4526d7f479215d85c79805b1d1d9973aa71c606e9881de1f00",
+      "final_data_sha256": "be0bf7e7a852de4526d7f479215d85c79805b1d1d9973aa71c606e9881de1f00",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/leaf_08__upper_shaft_collar.step",
+      "audited_raw_sha256": "f243b97c956c1b5d595646ca97b992ca5c1dd5101b29074e29008d7c7084efa8",
+      "final_raw_sha256": "301ddb1a9258080c6788f79e4aca42621fb18bfb015656ec379e46fff397e57c",
+      "audited_data_sha256": "258f7de52767dae9433208fa47dafb1ee21bfd40bf43c92caf1b39860ede8bc5",
+      "final_data_sha256": "258f7de52767dae9433208fa47dafb1ee21bfd40bf43c92caf1b39860ede8bc5",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_00__bored_connecting_rod.step",
+      "audited_raw_sha256": "eb044e0ab33dec465bdf440acd596b6f4794d42d26cd0bfc182ca36bbb8f6792",
+      "final_raw_sha256": "3d75eefae0e20be2126ae4dae396e2d64b1c3e2faedeb6c4dc92bb3e8d34ea7b",
+      "audited_data_sha256": "6441d212e2df8777286af40922c8c9633afd28899caefa52fd0a042522b89834",
+      "final_data_sha256": "6441d212e2df8777286af40922c8c9633afd28899caefa52fd0a042522b89834",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_01__bored_connecting_rod.step",
+      "audited_raw_sha256": "b0422fc7e353b470bef404261a0ff310ce3f4af6954f96f418dad17796a6789c",
+      "final_raw_sha256": "ddb2c4bef58ea0d640eea1d559f16b8823eacbc7ab47320fdf9ddbd1b217b390",
+      "audited_data_sha256": "5e6dd1f120195ebcca8478d19c2c927ff1b0f0eda68d05bd071847b81a1d6433",
+      "final_data_sha256": "5e6dd1f120195ebcca8478d19c2c927ff1b0f0eda68d05bd071847b81a1d6433",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_02__bored_connecting_rod.step",
+      "audited_raw_sha256": "678a5288e98432c6220b5b0fa7bd69a05b92de2c09fc52477e48c9d3adf71503",
+      "final_raw_sha256": "3eac181826cccd7160237cbaa9bda65b5fdc90466bf5ccadc6f64153d539d92b",
+      "audited_data_sha256": "8c8ff08c7cbc4bd3b1099165f93ced77d73894405b476bbdec8ee8be3d1d012f",
+      "final_data_sha256": "8c8ff08c7cbc4bd3b1099165f93ced77d73894405b476bbdec8ee8be3d1d012f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_03__bored_connecting_rod.step",
+      "audited_raw_sha256": "e607d1d207c74acb47d4607ad82a620c902864e262f9f72ae11390f11eedd768",
+      "final_raw_sha256": "3151d758411c417e02e54701087d301747f43f69326a4073813f7ce96ba64bca",
+      "audited_data_sha256": "5efa289bd630304857b7df2b5841033c7ee5c10fb0ea8d0f0dc725eb17e7aae4",
+      "final_data_sha256": "5efa289bd630304857b7df2b5841033c7ee5c10fb0ea8d0f0dc725eb17e7aae4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_04__bored_connecting_rod.step",
+      "audited_raw_sha256": "cec768608d3ce7c0a45236d34ca971c12cf4a501509578d149cf3144e3848392",
+      "final_raw_sha256": "6aebde516635f4de786bf7459fca63daa1ec1c80a313fe03c0100b4080d290da",
+      "audited_data_sha256": "a4cf746c2b697b093e1434ee76b9a13cddf575f8734fdef506a3876380c9e58f",
+      "final_data_sha256": "a4cf746c2b697b093e1434ee76b9a13cddf575f8734fdef506a3876380c9e58f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_05__bored_connecting_rod.step",
+      "audited_raw_sha256": "ddccd5f823b598809e5d40099f19144e674d4f490c8e1efd7ba91e88f5959fe6",
+      "final_raw_sha256": "aebbc20065b1de918463d59f4cde6581d3aa5cf6b7b96395585705d40f785d2f",
+      "audited_data_sha256": "8c5f7fae5f3ec4f191ecf331f265f0d93d9c2648ea3dffeb65e9efaf2066fb0e",
+      "final_data_sha256": "8c5f7fae5f3ec4f191ecf331f265f0d93d9c2648ea3dffeb65e9efaf2066fb0e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_06__bored_connecting_rod.step",
+      "audited_raw_sha256": "c79bb81aa6d430a52d64a03d7d4cf4683cb30ed0e8082fca1c1b6975e59dcd23",
+      "final_raw_sha256": "eb5228ae6e2d70e0f164da577176da65eaf912ca5da7ec289725cd0696499223",
+      "audited_data_sha256": "69139f9a15d7edaa1a6cdc020fe3b656fd8058ac0e0aa0a4ec86eb50148f5975",
+      "final_data_sha256": "69139f9a15d7edaa1a6cdc020fe3b656fd8058ac0e0aa0a4ec86eb50148f5975",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_07__bored_connecting_rod.step",
+      "audited_raw_sha256": "2989a59495c0af96a44bb9d6369a839120b83ed49f67bc81b5bc1685f9f38ac8",
+      "final_raw_sha256": "76f3f3429b5a0a2e8bd4c794c3c4bd78b231fb5383fd2a979d6b7b667f5ffa9f",
+      "audited_data_sha256": "591200a4c64db55a98f6510e760a5bbb4c2fcbbdbc9cfc0c7f2da9384dc157c7",
+      "final_data_sha256": "591200a4c64db55a98f6510e760a5bbb4c2fcbbdbc9cfc0c7f2da9384dc157c7",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rod_08__bored_connecting_rod.step",
+      "audited_raw_sha256": "227d03d4d18748b439f224c0985c0c12653da367fdbe6c96547f8ac84ab4d169",
+      "final_raw_sha256": "2dbe3d87620158b556ae403e8408680d59f6f1661f7c8f4e665a41b9c1f6bc15",
+      "audited_data_sha256": "589062a5336f4fadfa687ebf198eb9355fec52665efbabf4ffaf33b2b5e5e2fb",
+      "final_data_sha256": "589062a5336f4fadfa687ebf198eb9355fec52665efbabf4ffaf33b2b5e5e2fb",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__annular_rotor_and_drive_pins.step",
+      "audited_raw_sha256": "8237002122e7db675aa4a3e9f9f4494c3b0ed251ff4411af844495a32bf8f679",
+      "final_raw_sha256": "e6f757055e58dc3ea1d9ca2897bb5ca2f18ada72fdc8e2f8f677743dac7f2d79",
+      "audited_data_sha256": "a430fe1484fcce43b45f68991b5e05492d0dd18cb8980a3f2a254a9c36943f4f",
+      "final_data_sha256": "a430fe1484fcce43b45f68991b5e05492d0dd18cb8980a3f2a254a9c36943f4f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_00.step",
+      "audited_raw_sha256": "24c579a5054b9dd50c589f6c3832529358a7b8794211d5a92c01992e593dea5a",
+      "final_raw_sha256": "76a6a508f724f58c2601fc002932a7f506f06f938b6ccfa26c05bf6385f6ab62",
+      "audited_data_sha256": "7bead2b748125165690cb1dc0c7478f43265022588241a0903f8940fa501f0b9",
+      "final_data_sha256": "7bead2b748125165690cb1dc0c7478f43265022588241a0903f8940fa501f0b9",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_01.step",
+      "audited_raw_sha256": "86238053656a1b00ecfbd77fd540d6237be1847bd0d64e33e1ca793b36912779",
+      "final_raw_sha256": "a3739f05e19e8f84bd09669fc08338e63cd850fee656ff35aadf3ebca8ee274e",
+      "audited_data_sha256": "aec1a4eeaee8732b0b55686849e67efae89ace768adaeb76588055bc30f91bac",
+      "final_data_sha256": "aec1a4eeaee8732b0b55686849e67efae89ace768adaeb76588055bc30f91bac",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_02.step",
+      "audited_raw_sha256": "13864dc4f5d3030b449d326d80ecdb63056d44bb1ce255b24be6dca8c100767a",
+      "final_raw_sha256": "0ce8668b35ad3511f0cd00dfac58d7473a2aceec3100a3891a9cc040b32e8be2",
+      "audited_data_sha256": "338413653cfbe7aa62aeb3b67083019aa67e6d4ac54f3a0a81c5d95aa3a300e5",
+      "final_data_sha256": "338413653cfbe7aa62aeb3b67083019aa67e6d4ac54f3a0a81c5d95aa3a300e5",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_03.step",
+      "audited_raw_sha256": "68fd7a52b0fe0d588b0713548339198621e19433f43c3d9e5baf256680b49f6e",
+      "final_raw_sha256": "784ec52f0b8e801bf1b3c9c20c6b231df5a26e3ce12e9b35d2d5ba05a9031b8c",
+      "audited_data_sha256": "3c5c3686d6bfb63594c78f361d988405089d7ec7a62a684a67f1e35332987c9d",
+      "final_data_sha256": "3c5c3686d6bfb63594c78f361d988405089d7ec7a62a684a67f1e35332987c9d",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_04.step",
+      "audited_raw_sha256": "184e0dc1ec561ca355392c9fc12f9a1260d8cbdb872f40fabcf95591271b41a8",
+      "final_raw_sha256": "e04dc35c49917e04ac913316a00a6cd4bf3a4b5f4dd9a7f183cd4c7986266252",
+      "audited_data_sha256": "840f54474c804cce30a4aa5561414f2d940e623ec2b29102a4394790605566ef",
+      "final_data_sha256": "840f54474c804cce30a4aa5561414f2d940e623ec2b29102a4394790605566ef",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_05.step",
+      "audited_raw_sha256": "bc4efb92590f6d1859a8bcc0ec6eaceecb2a600ed658a66dd8d552bfa2dcc058",
+      "final_raw_sha256": "d9a90f5b8929aed4325d72eefbd091b82ee667adc5c7d3b6175a2b442c866a40",
+      "audited_data_sha256": "120bbdfb3fcb698c45368e866b5e01da3dd04c05d21e6fb89956cb634db1f9dd",
+      "final_data_sha256": "120bbdfb3fcb698c45368e866b5e01da3dd04c05d21e6fb89956cb634db1f9dd",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_06.step",
+      "audited_raw_sha256": "2103060bb81d20561df6f8c4bf0aec7b05b080f08c270fe4ab5e0fe1258472b7",
+      "final_raw_sha256": "bbb0156d1eaf290ab711c726069ba8c1432005e84ec9b4e50d57cbf384826e7b",
+      "audited_data_sha256": "32b5385f41b9dbad9582ee11e69f244c168946784c05ef731acff134b394df45",
+      "final_data_sha256": "32b5385f41b9dbad9582ee11e69f244c168946784c05ef731acff134b394df45",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_07.step",
+      "audited_raw_sha256": "956e5e43736d1d886053ac01938110bfdab216bac48ec5e097c5eb11da9a5092",
+      "final_raw_sha256": "02bb91482c497a6e36fdcaa7f5fa08a696e31e213395cb98373dd4de116d5bd4",
+      "audited_data_sha256": "9a7546ebd5acb5febb88f0a235c5bb4c4bfe9d65ee0c2d4795c24f96894776a4",
+      "final_data_sha256": "9a7546ebd5acb5febb88f0a235c5bb4c4bfe9d65ee0c2d4795c24f96894776a4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__input_pin_keeper_08.step",
+      "audited_raw_sha256": "e35bac2d8efbfcb425409253658d4b2d2aeed20a93e1bc1559dc37b670cd05f0",
+      "final_raw_sha256": "bbda100dbe427bb7ed4f2be41ba3805900906aba492a6983e085726f4925dad5",
+      "audited_data_sha256": "461918e767a0e59c889bd28833716b3033cb154fd4501922e182e78e46e9a02d",
+      "final_data_sha256": "461918e767a0e59c889bd28833716b3033cb154fd4501922e182e78e46e9a02d",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/placed/rotor__knob_mean_radius_approximation.step",
+      "audited_raw_sha256": "ba091b1a71e64c9f802b20b72351262f2d080eb9a53b7ff645c6bb3e7fc04117",
+      "final_raw_sha256": "03c6f2af6f0600e2a9ded27a70651a6d5a5babcf5aebbb335ecc391c8c7595be",
+      "audited_data_sha256": "c05ca6fb9866f5822c981d0fdffd301420e5b617269f625d122c9a6bcfb83a24",
+      "final_data_sha256": "c05ca6fb9866f5822c981d0fdffd301420e5b617269f625d122c9a6bcfb83a24",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_00__bored_connecting_rod.step",
+      "audited_raw_sha256": "4fbdcb4a8e3264a1fecdddfda2a6e796ce373450791ebdae27385b6d95637853",
+      "final_raw_sha256": "621731adcb94dec5d2bde4f1d72f4e45c16ea4dae2ac539005df7852b0215f32",
+      "audited_data_sha256": "b280cf9b0b553696396ea46baf27b4ed64129326c5f088c748adb81fdf082e86",
+      "final_data_sha256": "b280cf9b0b553696396ea46baf27b4ed64129326c5f088c748adb81fdf082e86",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_00_subassembly.step",
+      "audited_raw_sha256": "6cefc75d10dc2a7af472139508aa7a8f63f3d61bacd6a9dcc447a5a3ed635764",
+      "final_raw_sha256": "1dcb1668b84df7e94cb2ecad306c6170d2ead6ffba8ea13d38168d25d4a6b70a",
+      "audited_data_sha256": "09d099d1c27891d83a04e3127a9d6f59416ac28dacf9b6c31ed61db23c366344",
+      "final_data_sha256": "09d099d1c27891d83a04e3127a9d6f59416ac28dacf9b6c31ed61db23c366344",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_01__bored_connecting_rod.step",
+      "audited_raw_sha256": "336490c76d41706d577946c2c17f5806bee3a695c6743c20afc513d1a7deecf0",
+      "final_raw_sha256": "a1afd05533917f203b711be0ef270e37809e4840fa9b53ab220a2de158de2019",
+      "audited_data_sha256": "6172434c68a0c5721686981905744c400b3e27c040578966735a27b8206ddd17",
+      "final_data_sha256": "6172434c68a0c5721686981905744c400b3e27c040578966735a27b8206ddd17",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_01_subassembly.step",
+      "audited_raw_sha256": "5c884d95ff43e7b93e701de0aff74a217830f5f5b06b9464acec870bcd29061d",
+      "final_raw_sha256": "129cbe622f43560e96fcd73aecc36ab38611a5a53ac0c5035ae9094bc5737e53",
+      "audited_data_sha256": "2bb8d0d66126faf5d093eea9083d5b67b53fb41f2a8c7dfbaa37f6104e0f6d10",
+      "final_data_sha256": "2bb8d0d66126faf5d093eea9083d5b67b53fb41f2a8c7dfbaa37f6104e0f6d10",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_02__bored_connecting_rod.step",
+      "audited_raw_sha256": "43d66179f61b12911736f9f5cbbdcfccc7eb372643e786d097b8d15c9b891da9",
+      "final_raw_sha256": "4da06f33934681ef81f84054f311b796c95a95d3e1ee42bd900c940910f5863b",
+      "audited_data_sha256": "52b95c32978c363e8cb200672c29cfb152179a26f05a9f3d8eab1dcc5139286a",
+      "final_data_sha256": "52b95c32978c363e8cb200672c29cfb152179a26f05a9f3d8eab1dcc5139286a",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_02_subassembly.step",
+      "audited_raw_sha256": "352e1681a5523002ebe7a377349d0c2087156d5a6382662a38dac3eeb21b02b7",
+      "final_raw_sha256": "0107bddaf4d67ff6ba9b4873b84c62297f17b8962f223b653e78d7a16c1b1655",
+      "audited_data_sha256": "df704c6d8777d5c584b288c19fb0b394306605074429a23e7e39f50794338064",
+      "final_data_sha256": "df704c6d8777d5c584b288c19fb0b394306605074429a23e7e39f50794338064",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_03__bored_connecting_rod.step",
+      "audited_raw_sha256": "511d814cf36d34fafb7ee2a779a24259277e0e6629f61e9258a6451238b3290c",
+      "final_raw_sha256": "ce102a6de01a6eb52681f69633b24f55a712429953b5e48eb2ca67f059c09b21",
+      "audited_data_sha256": "dddf54ff4ec744febc17ac1920722e63376d78be95b913938fc3344436a0773d",
+      "final_data_sha256": "dddf54ff4ec744febc17ac1920722e63376d78be95b913938fc3344436a0773d",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_03_subassembly.step",
+      "audited_raw_sha256": "aa7355af347ed0a615ad12f94829efea26d046be6e01e70a7da0b03f1fb7af8d",
+      "final_raw_sha256": "fc871937360b89482d25f46ac368db460b87befeb7ad3e45036d8ad6d8f5e1e7",
+      "audited_data_sha256": "b3ca3c4e3d7eea2b737acba4e829dfdd1ea564f655fde09130ac629a9a6f26b0",
+      "final_data_sha256": "b3ca3c4e3d7eea2b737acba4e829dfdd1ea564f655fde09130ac629a9a6f26b0",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_04__bored_connecting_rod.step",
+      "audited_raw_sha256": "6b63e9487eb17b5a58d0d49bf4a4152564c92d0277f9957150b0b7b21e72b67d",
+      "final_raw_sha256": "cc159368932a85387ad3addf3b314e1a24f8a04d1622a18cb993f16e61bdf902",
+      "audited_data_sha256": "65232fef779ef3eee70b0731dc9110802a2319ea27331cd7eccd3a841ce603a4",
+      "final_data_sha256": "65232fef779ef3eee70b0731dc9110802a2319ea27331cd7eccd3a841ce603a4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_04_subassembly.step",
+      "audited_raw_sha256": "2e54f9ced09630b5481d5a04e64fa798d5100c928348dbdb9133d29867e9fd2f",
+      "final_raw_sha256": "7c91dd2627449c8ba0e79b791fec268b56e560ea284abfc44a169bf0dc9e9064",
+      "audited_data_sha256": "6988451416433418155967b2c888876a895c418257f490965aa2fd7cbb079ed6",
+      "final_data_sha256": "6988451416433418155967b2c888876a895c418257f490965aa2fd7cbb079ed6",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_05__bored_connecting_rod.step",
+      "audited_raw_sha256": "b360a582a5fd6bceaccaaca90887eb55806e5f9bc1c87718b9a8719914cb4d80",
+      "final_raw_sha256": "684490b7fb776fea11b055146a0b7d249a4836419f71780b0fe9293e3940aef6",
+      "audited_data_sha256": "322c4dc5749a53cba378b170fc4075f93bf80d14b7ec8fb15499c1127eeb633f",
+      "final_data_sha256": "322c4dc5749a53cba378b170fc4075f93bf80d14b7ec8fb15499c1127eeb633f",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_05_subassembly.step",
+      "audited_raw_sha256": "fe522be688659b9ae475f99cc4468460eac9b26989c555046970526b0aff81e5",
+      "final_raw_sha256": "91cb88e5fbe5ecf7438c16fd597963efb7cc84a8934c8faf86e08017e97a5673",
+      "audited_data_sha256": "abee6fdb92eca1c122538a1774dc79097514e10b8c79216883f6511b2803eb69",
+      "final_data_sha256": "abee6fdb92eca1c122538a1774dc79097514e10b8c79216883f6511b2803eb69",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_06__bored_connecting_rod.step",
+      "audited_raw_sha256": "b1aa99254f3ce52e508d6bac23874acc79f7e3269ff9b99813e16e5fdd7b5c71",
+      "final_raw_sha256": "bddc2d0dde1173807d27e448bac499e80ebb3fa6265ceadd0186ad44d33790c2",
+      "audited_data_sha256": "84f073f0dad2ed388d9b11376251467220f9100b18d4532032d94a60fcf4af32",
+      "final_data_sha256": "84f073f0dad2ed388d9b11376251467220f9100b18d4532032d94a60fcf4af32",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_06_subassembly.step",
+      "audited_raw_sha256": "bb0a49b6a7a1f3069eebb35c448a385b9909ed5b016625c993c787d0288551fe",
+      "final_raw_sha256": "99c9d70d327522638faa011b8ac0291060371dcb39167d570e0bd322f72a82ef",
+      "audited_data_sha256": "7026c80dac12932133d965b30b9bbedf807d4d2e660197f6a13e89c0c3c88d8e",
+      "final_data_sha256": "7026c80dac12932133d965b30b9bbedf807d4d2e660197f6a13e89c0c3c88d8e",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_07__bored_connecting_rod.step",
+      "audited_raw_sha256": "d163c9e5419b110c0b85b5c8401c6a0edab413563ad3c7130cea02ce97941dd0",
+      "final_raw_sha256": "d35a3258769b682bd7b17a16f5e450d6f15ecef69d6eef3b4aeff5b86722052d",
+      "audited_data_sha256": "c5c8aa1fdf2443768d9a31af4cb504982962e2d4d65c8f60c86209d8cd7ed20c",
+      "final_data_sha256": "c5c8aa1fdf2443768d9a31af4cb504982962e2d4d65c8f60c86209d8cd7ed20c",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_07_subassembly.step",
+      "audited_raw_sha256": "35d043bf86336c2da35dba325cb4c01727c04a28b609e9ad75edbaebe968c272",
+      "final_raw_sha256": "bc720a932fe238d95c0fd6679d84480f58765aaf37f83aeec7cc189d4c4f2533",
+      "audited_data_sha256": "f979203d28ed344a5d2adbcd71ac7947d672d6603e135b0360e2a71cd072f878",
+      "final_data_sha256": "f979203d28ed344a5d2adbcd71ac7947d672d6603e135b0360e2a71cd072f878",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rod_08__bored_connecting_rod.step",
+      "audited_raw_sha256": "d5759e34e9d0028313f25cd8088472e96760ff572847aecc0e71670323c602aa",
+      "final_raw_sha256": "50b1469089be63fe4f46014a9a28513c632a9da24bdd12dddc17bac377ad3c34",
+      "audited_data_sha256": "8ede1ae73fbec0ad138cc88357f111f0dd34b194acc98b6d30185f3de5d5db97",
+      "final_data_sha256": "8ede1ae73fbec0ad138cc88357f111f0dd34b194acc98b6d30185f3de5d5db97",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rod_08_subassembly.step",
+      "audited_raw_sha256": "3b26e034444852e13e6ce0247934715840bfb51983f996ad612e579d3f806d5c",
+      "final_raw_sha256": "0636619240f1a3f3816710cd12f968a38cadb65451d71bc8575ebf4f1406a02f",
+      "audited_data_sha256": "d9d40150a8f2a99fecde940a69cba61f7b4af626ad8852099b590afc7852ef02",
+      "final_data_sha256": "d9d40150a8f2a99fecde940a69cba61f7b4af626ad8852099b590afc7852ef02",
+      "data_identical": true,
+      "role": "aggregate_assembly"
+    },
+    {
+      "path": "cad/rotor__annular_rotor_and_drive_pins.step",
+      "audited_raw_sha256": "62aefc41d867c82126eeb46581f6a78884727053115d839c942b574e5051a5d0",
+      "final_raw_sha256": "8cd2d9d6bf6e79160935c9f40e05f8ee97cc8b16057313188a8793cbfe519195",
+      "audited_data_sha256": "5e7f158ed5ddc68893ea215745cf7249a583a44e9125a88f9ba5412812ea5bd3",
+      "final_data_sha256": "5e7f158ed5ddc68893ea215745cf7249a583a44e9125a88f9ba5412812ea5bd3",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_00.step",
+      "audited_raw_sha256": "2308d82a32fa5c7a372b8c8561e421250edb8f4acf1377809af249d999ab765a",
+      "final_raw_sha256": "bb0cf244edd50cc8826f39699607e71a29fe51b29eb5ccb698917ac68cde8114",
+      "audited_data_sha256": "46be0e43df58608bfd04afd41ccfc6a7e7564cec7bcdca674181fb51ac112edb",
+      "final_data_sha256": "46be0e43df58608bfd04afd41ccfc6a7e7564cec7bcdca674181fb51ac112edb",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_01.step",
+      "audited_raw_sha256": "68d727fd21e2707238d3921a49be0fd40497723d48d5dd408d985ccc8f514374",
+      "final_raw_sha256": "590acbaeac8302475fd92798565c37f606ced49807f449f66a205afc0d5ad82a",
+      "audited_data_sha256": "2aeabbc96c9c3a560421a0e27c32973b4bd4778707c4a633e426fa9403353201",
+      "final_data_sha256": "2aeabbc96c9c3a560421a0e27c32973b4bd4778707c4a633e426fa9403353201",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_02.step",
+      "audited_raw_sha256": "dee76af6509ce4f5c4607536d67c3fb35520c2f0ddb57c6b62f7d369ebb1f0d3",
+      "final_raw_sha256": "6dfbabceddb2adea1f5d09ea3349465f90d24fabfe200241566af5cef7afe50e",
+      "audited_data_sha256": "d99cc252e15d5ef24454a6cf8b2c0ab53fe76c7b465fc5d4eb003cca43d6920e",
+      "final_data_sha256": "d99cc252e15d5ef24454a6cf8b2c0ab53fe76c7b465fc5d4eb003cca43d6920e",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_03.step",
+      "audited_raw_sha256": "53ae4b33a9625aeaa5b03a652976432ebba401dbd8bdd6a0971c7405cf5dfcb6",
+      "final_raw_sha256": "63da2bebb06759f74deb5d6d6e34fd0af726fd9dcfe7c96493ec6823daace5cc",
+      "audited_data_sha256": "61b91492d3945e99c6ac12399bab3c0b9ec39f5fd5bfdb31699705b20b55c444",
+      "final_data_sha256": "61b91492d3945e99c6ac12399bab3c0b9ec39f5fd5bfdb31699705b20b55c444",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_04.step",
+      "audited_raw_sha256": "656147f35cc9cf8dada07aaf5fceadc23a34c73c093bcf50c9d4abdf88a4bb0f",
+      "final_raw_sha256": "dd851cf5d841b4a6ef80ade21736d6d685c34a61b8ec1232945e972d6e32c45d",
+      "audited_data_sha256": "f9f93cc59f8c5dff45273045c2d6311e5636f8fab6297d938911a014c4009de4",
+      "final_data_sha256": "f9f93cc59f8c5dff45273045c2d6311e5636f8fab6297d938911a014c4009de4",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_05.step",
+      "audited_raw_sha256": "eff41177fcb669454dca50e24e8f7f8914a40532bc0f851d85ac6623c8b62bcb",
+      "final_raw_sha256": "a3e131c6488aecc5557e2cd6f7bf4219159eec0dc1c2ac20450716373ba64b0f",
+      "audited_data_sha256": "43f7a5290bb1935967b5cda1f29f5ad28388a9f523369e55e42cca4f884b6ffc",
+      "final_data_sha256": "43f7a5290bb1935967b5cda1f29f5ad28388a9f523369e55e42cca4f884b6ffc",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_06.step",
+      "audited_raw_sha256": "7bbd672893da407202fc4ca8fcac50ae40e969af3de093a7190c5a7984a75f54",
+      "final_raw_sha256": "c4816a6e5b9f5300c4ea32816f5ddd7576b49f7d52fd3799b1d77bc5f063ba27",
+      "audited_data_sha256": "5dd138f00a82e3e4c253ba2678444eea3d57d7293f22ec95d06a1964a7b622f6",
+      "final_data_sha256": "5dd138f00a82e3e4c253ba2678444eea3d57d7293f22ec95d06a1964a7b622f6",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_07.step",
+      "audited_raw_sha256": "66aeb53b73509688e99d8055820bbccd00331f445042e784fd29e9728ab757c2",
+      "final_raw_sha256": "e55e7b5f86b1eecda26bb8841ce598f0f539e7d8ef236937275c0612a3e9639e",
+      "audited_data_sha256": "cd542fbb55d06bdbe91da1c3330cda44650d0b2c9fc9a1b4968b048a7446dbea",
+      "final_data_sha256": "cd542fbb55d06bdbe91da1c3330cda44650d0b2c9fc9a1b4968b048a7446dbea",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__input_pin_keeper_08.step",
+      "audited_raw_sha256": "6f9c44386622a326761d2edb8be41610562676aab59b74e3a7a4a5cb5bce036b",
+      "final_raw_sha256": "5fc3cc2456ee27ed1ccfbf05264435c46a99ed257f56a0e63e6584395b55eda0",
+      "audited_data_sha256": "540d91daebe5c78944dd8fbeff206b3fc344098f54cb116ac8809cc439814db0",
+      "final_data_sha256": "540d91daebe5c78944dd8fbeff206b3fc344098f54cb116ac8809cc439814db0",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor__knob_mean_radius_approximation.step",
+      "audited_raw_sha256": "3ce78322b70a248ff8f368b668c31c117ab5a6119d80dbeb3c5a80ac2bb0bbbf",
+      "final_raw_sha256": "e610ef6e31c6e5600369f13aadde38e599c0c6b5295a87d2f3e7a09431f5753e",
+      "audited_data_sha256": "14def9ba88a9f88ad94051e9d7a86855dd4c824a27601cfec6d7a89f4cd2ee24",
+      "final_data_sha256": "14def9ba88a9f88ad94051e9d7a86855dd4c824a27601cfec6d7a89f4cd2ee24",
+      "data_identical": true,
+      "role": "registered_or_placed"
+    },
+    {
+      "path": "cad/rotor_subassembly.step",
+      "audited_raw_sha256": "09a502ba2115f6a19ce08917f621ea6a9c2f4b82c10cdb3cb66b9af6246ee867",
+      "final_raw_sha256": "3cff9d98a53d59a3427688d82a65a4579bdb279ae4e3bfe0d9ed0d6d7a966d7b",
+      "audited_data_sha256": "f7af7893fb66280de1ca6875a24d649baeed0adce494ad028f790b633b4b7aac",
+      "final_data_sha256": "53d1e209e267d06bae1621ce7a73b91be50e47cf83518e91e0d080e00bc50ea2",
+      "data_identical": false,
+      "role": "aggregate_assembly",
+      "changed_entities": [
+        {
+          "entity": "12701",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "c6039be6dde46286fcb810ec99dc383a265e30b6dfa5d07cd1341a09b72d365e",
+          "final_entity_sha256": "754c24dc25f965f8ee69f4079ffded7d4df7bebcfb4e3c4e61cd6e17151c0ec7"
+        },
+        {
+          "entity": "12702",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "f5f3987a6e8b0aa47617ab8f23a5aac7cb35196839417971a7b8fbeac256e651",
+          "final_entity_sha256": "a5ef0c79015eb873ef6a0f6d2674b239a20aaaeb502024ab0490bc7589549d03"
+        },
+        {
+          "entity": "12710",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "88b6ef1fd2fba4432f77c03167ac2fea8bf73c17ed71b40a5e195e1c9d957938",
+          "final_entity_sha256": "5ab631a439519c53346f5c8d74e0b8cb2902df06e4784779ae9411bbf3cf9966"
+        },
+        {
+          "entity": "12711",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "5c776a73f5beb6d0a9b5e9697047fd185942b5a1c30c64ac1c316b9a5d017de8",
+          "final_entity_sha256": "58358f045f70c231e4dbc6ba213eddaf1db765e819e16b27ba36ffb2af8dc988"
+        },
+        {
+          "entity": "12718",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "ec6ec643c0b80a2d0395c1aec93456ca2ca81d5e7a93f0820c5ff44e499fb6dd",
+          "final_entity_sha256": "e5f78bf33e106401046f799ce8ff8d302f5ddfa8234239fe8b5843970f12165f"
+        },
+        {
+          "entity": "12719",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "b20187d8cdab608d9103a2bf74a12c0d83d0a894a30e70132520bf0e40f8f206",
+          "final_entity_sha256": "51ad8e1b1443a5d9b25ba8ab799285d0317b6f0b31cc1da30bf05990ed5e1eea"
+        },
+        {
+          "entity": "12726",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "74af841f86b1c203c87d31c49fa3caaf51d6d4e6b1f24c0e676bb49cc8f2ccab",
+          "final_entity_sha256": "a8f1f68a008902c831411d15203dbb23bb2c27b85f0ffbb12ec70c3e7b6dcf27"
+        },
+        {
+          "entity": "12727",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "c1723c46e61e317fafab30b07a3637b082be1a49f4ceb824c225ecb95af6ff2c",
+          "final_entity_sha256": "edb7568a0dbf25a007e39a39bc3bd8b08eccb5fa392c2a981726160671420104"
+        },
+        {
+          "entity": "12734",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "355b22bd97d6124901570e454e4e1b5c1eb6ec12b58beabdca6de8bde9cfc6ec",
+          "final_entity_sha256": "8cda01fb0a2a650e87d8780a09b0b2bf11cfa541890d831c0dd83f87a8e5dada"
+        },
+        {
+          "entity": "12735",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "9d2ecddb5109ad56fde5f68d539755fd4a4d60dc571441769a2a58bea39816be",
+          "final_entity_sha256": "71bd0aacd71ba2cc525c4ab0c1ab5bd83a4466baed07ea6fb618714340a115c8"
+        },
+        {
+          "entity": "12736",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "a003e77bb088fdf979337c1e8e34f302cc43c426755832a31f7150881b7ec464",
+          "final_entity_sha256": "195ce12d908fa68a9de0e70cc2b8ba970a14dab512a4c51f250f73a983601b2e"
+        },
+        {
+          "entity": "12737",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "a44a0fb51dcbd336dea049bcd24d81ce78595a248826d0ffb836dec9051e8dfb",
+          "final_entity_sha256": "ef5fc71ca484232d221392ee535250d43c8239f4b5c27aa561befbf954baad4d"
+        },
+        {
+          "entity": "12738",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "3ef1b4e55a069783cd937bf161be7ff69990dd5348f1e12089fd4b188cbb6906",
+          "final_entity_sha256": "063c11c5cfa53a05f6d5a0660189bc7bc48372b994eec254a326ed92be7a5892"
+        },
+        {
+          "entity": "12739",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "9cdac5f449e0b0ac81cdfcf2919c02297bc4bddba26b5d96f6189cfeeb698c42",
+          "final_entity_sha256": "a14e6947475627922c9360489dd97f81413123a92ca46c82286369f8fde59115"
+        },
+        {
+          "entity": "12740",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "46d5b6afe639fd8e75df869f8a9b5d8016038cf47cefa3ddb55a55fea100fe34",
+          "final_entity_sha256": "ac07e8fce80f1a2320d1ea7655bef40ca57ee5a012d38837f3d1f3db24f84d21"
+        },
+        {
+          "entity": "12741",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "03b0045bd4cabe56b5bdb6223848eea192814d3e43d0d2c50d708e84d13e95ce",
+          "final_entity_sha256": "46eb4c47fc8fdb15266d04974da2cec88189ba4e96aa5227f9bb3957dfae1107"
+        },
+        {
+          "entity": "12742",
+          "audited_type": "COLOUR_RGB",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "05b5ab625cde4f8471760732c611eac22d119f2ab7526658b5b1a537721de3ec",
+          "final_entity_sha256": "f311242de6461c5e194ce2a8a3471f28f3912168fbd53b0698e4651386a94d7b"
+        },
+        {
+          "entity": "12743",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "6d8dc736360ceb6f866c7422f540fad32670a942f7563759a842d30df7d1eadb",
+          "final_entity_sha256": "113fc13226872c330aa91c09b1e14cd524383711b33f8454091ff8581c906e5e"
+        },
+        {
+          "entity": "12744",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "c92cc0c2ebc4c1842aaa8c1689c94488b2db61f37719e44c0c210b7ea7d7b0b2",
+          "final_entity_sha256": "debc416109f40d6a9f9b204338084598db2cb7f48a13bbc6858985f3bb63981c"
+        },
+        {
+          "entity": "12745",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "b12d0f37534e6b1df5cdc751217f639ea3f5abe0aeeface1cc8dbdfa66854323",
+          "final_entity_sha256": "c071f904781b849d256864d067cfa1c5b2136e4968b92febb132704cf058e335"
+        },
+        {
+          "entity": "12746",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "cdf7a4307c8bf3ac0b211fa6c8de3d1505a414385baf343e7e2911b99b23d2a9",
+          "final_entity_sha256": "84a783d22d224ddb8da1f7f3bc4c4be99255394b85d7e682b79ee2f9be4c3f20"
+        },
+        {
+          "entity": "12747",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "ae05bbddde2c3dcaf85b7005636edc4b66556b6ca3683d04d286ef9367a8e516",
+          "final_entity_sha256": "bdf6081382eea18fa7da463f1dc55edf84e8736d957d2829b2f4524de6d6fd87"
+        },
+        {
+          "entity": "12748",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "51fd71d2cd1e56ccfb989341ac7ed533e1e53bee103f0316bed1b1f6f93c1360",
+          "final_entity_sha256": "ca27d278c0015b6aed8e84b8d6caeda39df75416d39d6cecab1ee62d13e61a7b"
+        },
+        {
+          "entity": "12749",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "15f44e0a9c77de8dccc5c6279c7b04d16e797db9aa7d01a9e7c3298d0d0498c5",
+          "final_entity_sha256": "db8fc410a09e2a799deaf2f49edc3b956acc2781fbfe7fa9c0c2c2e9490e1076"
+        },
+        {
+          "entity": "12750",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "d8207dea379fea1f15e465c32a05ce83d6902a0397d9570a3f78d3db497b4860",
+          "final_entity_sha256": "6458fdaaf2e6eda14720c5a00b3d070010ee535ce947ed85881cd0dced72c9bb"
+        },
+        {
+          "entity": "12751",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "fd0d4a103aa138b9e59b6a1a98cc215d6a1b0792fd4a6568e46caad360061b04",
+          "final_entity_sha256": "fdc731af5e75e85f5bcae934b896ced52a4c2402465d6506fddb4ba69ca296d3"
+        },
+        {
+          "entity": "12752",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "3421b5115ef7c4790591b46833017acf883e9ca047a6252931cfe4589a04e429",
+          "final_entity_sha256": "c490ea4a6b62f19a05ff8536f9c529278f2310addd8d7c92e47cbf90fb4502ef"
+        },
+        {
+          "entity": "12753",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "50bda6895b1561790b38949a311f0bf0c9d703c1c3e564563d3b8e6c5a0da687",
+          "final_entity_sha256": "f6bf7de118403f51084038d8eaa064af843cf4625e9dbb5ae6e36ecc52c483d4"
+        },
+        {
+          "entity": "12754",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "cc28e4aad60cff1b15976fdfc5fb7401351318b531dde9ca41eda746faa4d97b",
+          "final_entity_sha256": "0c359fd6b9e202a162129d15f0c547bb4c5d9b272f6786e5dc600a71cf5fdbd4"
+        },
+        {
+          "entity": "12755",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "5390c9b4a2a3a4d54895cbc602e45e488476e6110d993cdd918df461031af6bd",
+          "final_entity_sha256": "65ef89f37cc54e803e9dec5dd4b3aa4c5a49f8b950b7b3b265c52b50a20d509d"
+        },
+        {
+          "entity": "12756",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "51fa3ecc2388f44b345dcb896200bd409dd16dd6fb813bfbe2c1550fc50a0413",
+          "final_entity_sha256": "9204ab12f670095bdc2d1f71381c118041cf38dee79fd06a9ac8be866cfed831"
+        },
+        {
+          "entity": "12757",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "0d2b5464b3265868fa3414f48ce9dccff280c8acb708c84589f757d4124481fc",
+          "final_entity_sha256": "e1020b914f99965ea2b5d0969bc3ac6ba64a804e7a8cf392175829e8e022bba0"
+        },
+        {
+          "entity": "12758",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "d4af927fdf0edc0802d5cb9bc7655ab6af624348f5c3af963455d02bbe60aa24",
+          "final_entity_sha256": "2a3fe1c144b9612f45fbf24325db503c282d70ccbb0e130f9573933e33ef0425"
+        },
+        {
+          "entity": "12759",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "audited_entity_sha256": "00577235c4454423e61dfc3324220abf9ca6d67c17c0ab1a38e8de465a9aebab",
+          "final_entity_sha256": "cf2dc3d722ba30dc3b063b5b4399f7255b0baa5ab429885536f4e7a826f1d1d8"
+        },
+        {
+          "entity": "12760",
+          "audited_type": "PRESENTATION_STYLE_ASSIGNMENT",
+          "final_type": "SURFACE_STYLE_USAGE",
+          "audited_entity_sha256": "5fb4ad1413f889698a5c1e05dd96609f03b4443d0591b3365773d56002a3669c",
+          "final_entity_sha256": "88277a0535f7faf4b48e8b349c5f449ce70774ecb00f4a8f2ce95c5322c1a467"
+        },
+        {
+          "entity": "12761",
+          "audited_type": "SURFACE_STYLE_USAGE",
+          "final_type": "SURFACE_SIDE_STYLE",
+          "audited_entity_sha256": "175370721e385930432fb4c38fc25682d77e7c49005c44bcc2409aecdfe7060f",
+          "final_entity_sha256": "a70dfa9a8c456c3c1593c5c916be09c62bfefb8bc0d41c34b07e8d88561e2600"
+        },
+        {
+          "entity": "12762",
+          "audited_type": "SURFACE_SIDE_STYLE",
+          "final_type": "SURFACE_STYLE_FILL_AREA",
+          "audited_entity_sha256": "67b34b44138594200387f8ae921842bf3780933b601e7b4c85ed466189839cd7",
+          "final_entity_sha256": "c46165f63f80dd931647a545c21e94af825d80a92d85348c776ece5eaaca247b"
+        },
+        {
+          "entity": "12763",
+          "audited_type": "SURFACE_STYLE_FILL_AREA",
+          "final_type": "FILL_AREA_STYLE",
+          "audited_entity_sha256": "d2ccb8ec0f7c71306de79ce79d6be39a0079c09b9ca03e6910f1b222d5d5f6db",
+          "final_entity_sha256": "5a9d3b54f127c4fb308f42442da7eaafb98a8284cd2a879b86d270fb5cbd1787"
+        },
+        {
+          "entity": "12764",
+          "audited_type": "FILL_AREA_STYLE",
+          "final_type": "FILL_AREA_STYLE_COLOUR",
+          "audited_entity_sha256": "389d5bb0d721ba3d08d5473e7a79923f0df7645d44e1c2baa1aaf241025d0bed",
+          "final_entity_sha256": "b0a88b5011b41dae380d164fc74a246bf4934ef251583b837ff749cfb99fa839"
+        },
+        {
+          "entity": "12765",
+          "audited_type": "FILL_AREA_STYLE_COLOUR",
+          "final_type": "COLOUR_RGB",
+          "audited_entity_sha256": "9860df218a1c9d677803181da2d1aca2066b4c774dcef2d853693d4983d6620d",
+          "final_entity_sha256": "86103552e9041c084b349c15cace797ff345ba9497ac851233f5daa187c34e93"
+        },
+        {
+          "entity": "12774",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "4b312be56dd34610483b7db8e1c130678433573fa2fcbea4b930b96429975e11",
+          "final_entity_sha256": "de41ad4a78a69c435628f41dd10c1d2d9d9de943f0f0ea5b5988b58de056ab43"
+        },
+        {
+          "entity": "12775",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "03063e6797d2ea20a44334e67507fc1051ee81829d9c0b82a18de9cf45849532",
+          "final_entity_sha256": "c835ca643fff85aa9cd680f8d899227fc83aa012163702905ac4ff743231789f"
+        },
+        {
+          "entity": "12782",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "196836a7de755f903692292f95b516a4035e61bee9ca2d29b98da317e0666fa7",
+          "final_entity_sha256": "62c90431203eb62ffe95788d09290c5656bd3042e415c1734a1fc278b604764e"
+        },
+        {
+          "entity": "12783",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "7ad472f899515110cec5162e1b96da2afbcca46ea842dca82e3cbf2366d2bf10",
+          "final_entity_sha256": "4ecd617785c9d8fe2df558766e358a8b69679d2a5c1ffce3bd8c141b199ca8d6"
+        },
+        {
+          "entity": "12790",
+          "audited_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "final_type": "MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION_REPRESENTATION",
+          "audited_entity_sha256": "5b10be544f5517f5dadcab89ca78dbbb1e758585545e0490d80a623795aad5b5",
+          "final_entity_sha256": "c39f899683ebbe87ca4af4558e17bdcbcc83ebdd8adef6d8622d1e646c876d62"
+        },
+        {
+          "entity": "12791",
+          "audited_type": "STYLED_ITEM",
+          "final_type": "STYLED_ITEM",
+          "audited_entity_sha256": "62d9134c9ae0cd7680c91b1b5b247e9032c199c4c03b770f7401e9dd133d2bb5",
+          "final_entity_sha256": "9e686de0ae63919ec6d1574d699ec95cfe8ab9725734a66dd86f40c70d583048"
+        }
+      ],
+      "only_presentation_entities_changed": true
+    }
+  ],
+  "audit": {
+    "path": "outputs\\iris-mechanism-audit\\native-clearance.json",
+    "sha256": "6a2e930a01a4e731e163a83c101733683362a2dadf4f16bc8e7c59b24f7866d2",
+    "script_sha256": "3ba53d4164c48b85f141a1687e36d43e473322662c1d0e29e6a2a60e8e2d6d97",
+    "pose_count": 9,
+    "sample_times_s": [
+      0.0,
+      0.9996,
+      1.9992,
+      2.9988,
+      3.9984,
+      4.998,
+      5.9976,
+      6.9972,
+      8.0
+    ]
+  },
+  "bridge_script_sha256": "f11fd2b22a897d5d7a81e073630fa77054257c0bf408726bc30d8e7584fe62b7",
+  "limits": "The original finite sampled scope is unchanged. No new dynamics, continuous articulated-clearance or hardware-qualification claim follows from equivalence."
+}

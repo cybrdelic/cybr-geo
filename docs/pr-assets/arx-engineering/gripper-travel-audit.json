@@ -1,0 +1,258 @@
+{
+  "schema": "cybrgeo-recorded-gripper-travel-audit/1",
+  "cases": [
+    {
+      "case": "nominal",
+      "directory": "outputs\\engineering-arx-sourcebound",
+      "files": {
+        "trace": {
+          "path": "outputs\\engineering-arx-sourcebound\\simulation\\trace.json.gz",
+          "sha256": "83ab3efb974484d96ebfd440d4a4b617abde0e6f208869672f44eba9c73d1e5c"
+        },
+        "physical_source": {
+          "path": "outputs\\engineering-arx-sourcebound\\physical-source.json",
+          "sha256": "a06c39571243aba840f804c08c33dc24ba76be2e74871e2aa10e4d94b79ef892"
+        },
+        "model_xml": {
+          "path": "outputs\\engineering-arx-sourcebound\\model.xml",
+          "sha256": "fd4d50508b3767d04e5cd036c7f6b3fb1874a7f5f64a67d54e0b8a275c16a79e"
+        },
+        "control_source": {
+          "path": "outputs\\engineering-arx-sourcebound\\control-source.json",
+          "sha256": "bb4bbb75d769b6ebd21bb4296dc79d0d08cf416e3e0d7f870ea7e6bb008e6c17"
+        }
+      },
+      "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "3ac5f913fdaad1293e494fb3df5a26ff7f6483c4d99ad83ff37c08b6af4e9516",
+      "native_source_binding_sha256": "52f6276e636788093d0a9a050ae4b85c6effb699eb12fa143773cd6b98934531",
+      "source_repository": "https://github.com/cybrdelic/cybr-arx6-belt",
+      "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+      "mujoco_version_recorded": "3.16.0",
+      "mujoco_version_readback": "3.16.0",
+      "recorded_frames": 1201,
+      "time_range_s": [
+        0.0,
+        10.000000000007999
+      ],
+      "output_interval_s": 0.00833333333334,
+      "integration_timestep_s": 0.000416666666667,
+      "integration_steps": 24000,
+      "jaw_joints": [
+        {
+          "name": "jaw_left",
+          "qpos_address": 6,
+          "limited": true,
+          "declared_range_mm": [
+            10.0,
+            40.0
+          ],
+          "damping_N_s_per_m": 0.4,
+          "frictionloss_N": 2.68704378109,
+          "armature_kg": 0.559674272222,
+          "observed_min_mm": 18.979413060466133,
+          "min_time_s": 0.90833333333406,
+          "observed_max_mm": 38.0,
+          "max_time_s": 0.0,
+          "largest_lower_limit_violation_mm": 0.0,
+          "largest_upper_limit_violation_mm": 0.0,
+          "recorded_frames_outside_limits": 0
+        },
+        {
+          "name": "jaw_right",
+          "qpos_address": 7,
+          "limited": true,
+          "declared_range_mm": [
+            10.0,
+            40.0
+          ],
+          "damping_N_s_per_m": 0.4,
+          "frictionloss_N": 2.68704378109,
+          "armature_kg": 0.559674272222,
+          "observed_min_mm": 18.979448909516186,
+          "min_time_s": 0.90833333333406,
+          "observed_max_mm": 38.0,
+          "max_time_s": 0.0,
+          "largest_lower_limit_violation_mm": 0.0,
+          "largest_upper_limit_violation_mm": 0.0,
+          "recorded_frames_outside_limits": 0
+        }
+      ],
+      "observed_total_opening_mm": [
+        37.95886196998232,
+        76.0
+      ],
+      "maximum_opposed_coordinate_difference_mm": 8.13137646851203e-05,
+      "recorded_travel_within_declared_joint_limits": true,
+      "task_requirements": {
+        "passed": true,
+        "checks": [
+          {
+            "name": "complete nominal transfer cycle recorded",
+            "passed": true,
+            "duration_s": 10.000000000007999,
+            "required_s": 10.0
+          },
+          {
+            "name": "contact-driven placement B",
+            "passed": true,
+            "error_m": 0.00025764829176943367,
+            "limit_m": 0.0015,
+            "time_s": 4.90000000000392
+          },
+          {
+            "name": "contact-driven placement A",
+            "passed": true,
+            "error_m": 0.0003098728598905802,
+            "limit_m": 0.0015,
+            "time_s": 9.90000000000792
+          },
+          {
+            "name": "no externally applied body wrench",
+            "passed": true,
+            "value": 0.0
+          },
+          {
+            "name": "no unexpected fault",
+            "passed": true,
+            "events": []
+          }
+        ],
+        "scope": "Nominal task outcomes only; known adverse cases remain failures. No hardware qualification.",
+        "known_original_failures": [
+          "power_loss_3.2",
+          "weak_spring_double_delay_3.2",
+          "weak_spring_double_delay_7.2"
+        ]
+      }
+    },
+    {
+      "case": "friction_loss",
+      "directory": "outputs\\engineering-arx-sourcebound-frictionloss",
+      "files": {
+        "trace": {
+          "path": "outputs\\engineering-arx-sourcebound-frictionloss\\trace.json.gz",
+          "sha256": "603ae0b9a58eb7ce2e19903c79678e09753e3fd6f87645cc1c63883c058531a5"
+        },
+        "physical_source": {
+          "path": "outputs\\engineering-arx-sourcebound-frictionloss\\physical-source.json",
+          "sha256": "580ffdf7c79de8e6155a810e5892ffda3dbcffd93654378d7a2d99d309b20e4d"
+        },
+        "model_xml": {
+          "path": "outputs\\engineering-arx-sourcebound-frictionloss\\model.xml",
+          "sha256": "fd4d50508b3767d04e5cd036c7f6b3fb1874a7f5f64a67d54e0b8a275c16a79e"
+        },
+        "control_source": {
+          "path": "outputs\\engineering-arx-sourcebound-frictionloss\\control-source.json",
+          "sha256": "bb4bbb75d769b6ebd21bb4296dc79d0d08cf416e3e0d7f870ea7e6bb008e6c17"
+        }
+      },
+      "model_sha256": "627c25b55ae01c5a3498ef568449a892870383c5f067674d5c64ce7bf5797a42",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "3ac5f913fdaad1293e494fb3df5a26ff7f6483c4d99ad83ff37c08b6af4e9516",
+      "native_source_binding_sha256": "52f6276e636788093d0a9a050ae4b85c6effb699eb12fa143773cd6b98934531",
+      "source_repository": "https://github.com/cybrdelic/cybr-arx6-belt",
+      "source_commit": "aabdf8c57a4ee64f77b8a246ad9aca7b51d9cba2",
+      "mujoco_version_recorded": "3.16.0",
+      "mujoco_version_readback": "3.16.0",
+      "recorded_frames": 1201,
+      "time_range_s": [
+        0.0,
+        10.000000000007999
+      ],
+      "output_interval_s": 0.00833333333334,
+      "integration_timestep_s": 0.000416666666667,
+      "integration_steps": 24000,
+      "jaw_joints": [
+        {
+          "name": "jaw_left",
+          "qpos_address": 6,
+          "limited": true,
+          "declared_range_mm": [
+            10.0,
+            40.0
+          ],
+          "damping_N_s_per_m": 0.4,
+          "frictionloss_N": 2.68704378109,
+          "armature_kg": 0.559674272222,
+          "observed_min_mm": 16.991183367934863,
+          "min_time_s": 2.14166666666838,
+          "observed_max_mm": 38.0,
+          "max_time_s": 0.0,
+          "largest_lower_limit_violation_mm": 0.0,
+          "largest_upper_limit_violation_mm": 0.0,
+          "recorded_frames_outside_limits": 0
+        },
+        {
+          "name": "jaw_right",
+          "qpos_address": 7,
+          "limited": true,
+          "declared_range_mm": [
+            10.0,
+            40.0
+          ],
+          "damping_N_s_per_m": 0.4,
+          "frictionloss_N": 2.68704378109,
+          "armature_kg": 0.559674272222,
+          "observed_min_mm": 16.991191498752976,
+          "min_time_s": 2.14166666666838,
+          "observed_max_mm": 38.0,
+          "max_time_s": 0.0,
+          "largest_lower_limit_violation_mm": 0.0,
+          "largest_upper_limit_violation_mm": 0.0,
+          "recorded_frames_outside_limits": 0
+        }
+      ],
+      "observed_total_opening_mm": [
+        33.982374866687834,
+        76.0
+      ],
+      "maximum_opposed_coordinate_difference_mm": 3.584905005382666e-05,
+      "recorded_travel_within_declared_joint_limits": true,
+      "task_requirements": {
+        "passed": false,
+        "checks": [
+          {
+            "name": "complete nominal transfer cycle recorded",
+            "passed": true,
+            "duration_s": 10.000000000007999,
+            "required_s": 10.0
+          },
+          {
+            "name": "contact-driven placement B",
+            "passed": false,
+            "error_m": 0.07823815058798725,
+            "limit_m": 0.0015,
+            "time_s": 4.90000000000392
+          },
+          {
+            "name": "contact-driven placement A",
+            "passed": false,
+            "error_m": 0.19528960157461478,
+            "limit_m": 0.0015,
+            "time_s": 9.90000000000792
+          },
+          {
+            "name": "no externally applied body wrench",
+            "passed": true,
+            "value": 0.0
+          },
+          {
+            "name": "no unexpected fault",
+            "passed": true,
+            "events": []
+          }
+        ],
+        "scope": "Nominal task outcomes only; known adverse cases remain failures. No hardware qualification.",
+        "known_original_failures": [
+          "power_loss_3.2",
+          "weak_spring_double_delay_3.2",
+          "weak_spring_double_delay_7.2"
+        ]
+      }
+    }
+  ],
+  "analysis_script_sha256": "09a50e1593e15dbee4d18d573797c4e8cd0ae6440032569b6cae14df01ea31a0",
+  "scope": "Read-only extrema of existing recorded qpos at 120 Hz, including initial/final frames; no new integration. Does not establish between-frame or all-integration-step extrema.",
+  "comparison_boundary": "These are the pinned ARX belt model and source-bound traces. No result from a newer compact P6 design is attributed to this belt model."
+}

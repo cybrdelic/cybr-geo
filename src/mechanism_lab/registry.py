@@ -4,9 +4,31 @@ from pathlib import Path
 import hashlib,importlib,importlib.util,json
 from .core import Assembly,project_root,save_cache,load_cache,validate
 
-BUILTINS=('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+DEFAULT_RECIPE='arx_belt'
+CONSTRUCTED=('compact_arm','belt_arm','inspection_head')
+BUILTINS=(DEFAULT_RECIPE,'iris09','fourbar_lift')+CONSTRUCTED+('m8325s','nitinol_fiber_actuator','nitinol_fiber_actuator_v2','differential_reference','differential_core','differential_working','drivetrain','example_flange')
+
+def is_mechanism_source(name):
+    if name in CONSTRUCTED:
+        return True
+    if str(name).endswith('.json'):
+        return json.loads(Path(name).read_text(encoding='utf-8')).get('schema') in ('cybrgeo-mechanism/1','cybrgeo-mechanism/2')
+    return False
 
 def factory(name):
+    from .engineering_source import is_engineering_project
+    if is_engineering_project(name):
+        from .physical_replay import pose
+        def build_project():
+            from .engineering_pipeline import generate_project
+            assembly, report = generate_project(name)
+            if not report['passed']:
+                raise RuntimeError('Authored engineering project failed its declared task requirements; inspect engineering.json')
+            return assembly
+        return build_project,pose
+    if name in CONSTRUCTED:
+        from .constructed import build,pose
+        return lambda:build(name),pose
     if name=='m8325s':
         from .models.motor import build,motor_pose
         return build,motor_pose
@@ -27,6 +49,18 @@ def factory(name):
         from .models.example import build
         return build,None
     if name.endswith('.json'):
+        descriptor=json.loads(Path(name).read_text(encoding='utf-8'))
+        if descriptor.get('schema')=='cybrgeo-mechanism/2':
+            from .construction import compile_mechanism
+            from .constructed import build_from_plan,pose
+            def build_document():
+                assembly=build_from_plan(compile_mechanism(descriptor))
+                assembly.name=Path(name).stem
+                return assembly
+            return build_document,pose
+        if descriptor.get('schema')=='cybrgeo-mechanism/1':
+            from .constructed import build,pose
+            return lambda:build(descriptor.get('architecture',DEFAULT_RECIPE),descriptor.get('parameters')),pose
         from .importers import build_descriptor
         return lambda:build_descriptor(name),None
     if name.endswith('.py'):
@@ -40,8 +74,14 @@ def factory(name):
 
 def fingerprint(name):
     root=project_root();h=hashlib.sha256(name.encode())
+    from .engineering_source import is_engineering_project,load_project
+    if is_engineering_project(name):
+        _, source_files=load_project(name)
+        h.update(json.dumps(source_files,sort_keys=True).encode())
     for package in (Path(__file__).parent,Path(__file__).parent.parent/'cybrgeo'):
         for p in sorted(package.rglob('*.py')):
+            h.update(str(p.relative_to(package.parent)).encode());h.update(p.read_bytes())
+        for p in sorted((package/'mechanisms').glob('*.json')):
             h.update(str(p.relative_to(package.parent)).encode());h.update(p.read_bytes())
     if name.endswith('.py'):
         import ast
@@ -54,7 +94,9 @@ def fingerprint(name):
                     file=(recipe.parent/dependency).resolve();h.update(str(file).encode());h.update(file.read_bytes())
     if name.endswith('.json'):
         path=Path(name).resolve();raw=path.read_bytes();h.update(raw)
-        spec=json.loads(raw);source=path.parent/spec['source'];h.update(source.read_bytes())
+        spec=json.loads(raw)
+        if spec.get('schema') in ('cybrgeo-mechanism/1','cybrgeo-mechanism/2','cybrgeo-engineering-project/1'):return h.hexdigest()
+        source=path.parent/spec['source'];h.update(source.read_bytes())
         # External glTF buffers/images also affect geometry/provenance invalidation.
         if source.suffix.lower()=='.gltf':
             gltf=json.loads(source.read_text())
@@ -76,7 +118,16 @@ def cache_directory(name):
 
 def load(name, rebuild=False, analytic=False):
     fn,motion=factory(name);cache=cache_directory(name);sig=fingerprint(name)
+    from .engineering_source import is_engineering_project
+    constructed=is_mechanism_source(name) or is_engineering_project(name)
     valid=(cache/'manifest.json').exists() and (cache/'validation.json').exists() and (cache/'fingerprint.txt').exists() and (cache/'fingerprint.txt').read_text()==sig
+    if valid and constructed:
+        try:
+            hashes=json.loads((cache/'construction-cache.json').read_text())
+            valid=isinstance(hashes,dict) and set(hashes)=={'manifest.json','meshes.npz'} and all(
+                hashlib.sha256((cache/file).read_bytes()).hexdigest()==digest
+                for file,digest in hashes.items())
+        except (OSError,ValueError,TypeError):valid=False
     if valid and not rebuild and not analytic:
         assembly=load_cache(cache)
         assembly.motion_function=motion.bind(assembly) if callable(getattr(motion,'bind',None)) else motion
@@ -85,6 +136,10 @@ def load(name, rebuild=False, analytic=False):
     if not isinstance(assembly,Assembly):raise TypeError('Recipe must return mechanism_lab.Assembly')
     report=validate(assembly);save_cache(assembly,cache)
     (cache/'validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    if constructed:
+        hashes={file:hashlib.sha256((cache/file).read_bytes()).hexdigest()
+                for file in ('manifest.json','meshes.npz')}
+        (cache/'construction-cache.json').write_text(json.dumps(hashes,indent=2)+'\n')
     # Write the completion marker last; interrupted builds cannot be reused.
     (cache/'fingerprint.txt').write_text(sig)
     return assembly

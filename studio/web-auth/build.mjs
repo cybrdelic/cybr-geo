@@ -1,0 +1,11 @@
+import {build} from 'esbuild';
+import {mkdir,copyFile,writeFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+const output=new URL('../public/',import.meta.url);
+await mkdir(new URL('vendor/',output),{recursive:true});await mkdir(new URL('licenses/',output),{recursive:true});
+const externalCAD={name:'external-cad',setup(b){b.onResolve({filter:/^replicad-opencascadejs$/},()=>({path:'./vendor/cad.js',external:true}));}};
+await build({entryPoints:[fileURLToPath(new URL('src/cad-worker.mjs',import.meta.url))],outfile:fileURLToPath(new URL('cad-worker.mjs',output)),bundle:true,format:'esm',platform:'browser',target:'es2022',plugins:[externalCAD]});
+await build({entryPoints:[fileURLToPath(new URL('src/inspector.mjs',import.meta.url))],outfile:fileURLToPath(new URL('inspector.mjs',output)),bundle:true,format:'esm',platform:'browser',target:'es2022'});
+for(const [from,to] of [['src/inspector.html','index.html'],['src/studio.css','studio.css'],['node_modules/replicad-opencascadejs/dist/replicad_single.js','vendor/cad.js'],['node_modules/replicad-opencascadejs/dist/replicad_single.wasm','vendor/cad.wasm'],['../../LICENSE','licenses/CYBR-GEO.txt'],['node_modules/replicad/LICENSE','licenses/Replicad.txt'],['node_modules/replicad-opencascadejs/LICENSE','licenses/OpenCascade.txt'],['node_modules/three/LICENSE','licenses/Three.txt'],['node_modules/fflate/LICENSE','licenses/fflate.txt']])await copyFile(new URL(from,import.meta.url),new URL(to,output));
+await writeFile(new URL('licenses/README.txt',output),'CYBR GEO source: GPL-2.0-only. Replicad, Three.js and fflate: MIT. Replicad OpenCascade JavaScript/WASM: LGPL-2.1-only; package gitHead source and build recipe: https://github.com/sgenoud/replicad/tree/e4b05f67dc4e2393a876ce8c5064a9c93db05bf1/packages/replicad-opencascadejs . The kernel is separately loaded and may be replaced via vendor/cad.js and vendor/cad.wasm. No third-party imagery is used.\n');
+console.log('Built standalone constructive Studio in studio/public. Run python studio/codex_studio.py from the repository.');

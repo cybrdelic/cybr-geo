@@ -1,0 +1,1402 @@
+{
+  "schema": "cybrgeo-arx-source-fault-suite/1",
+  "complete": true,
+  "passed": false,
+  "requested_cases": [
+    "power_loss_3.2--matched-phase--dt-0.5",
+    "power_loss_7.2--matched-phase--dt-0.5",
+    "weak_spring_double_delay_3.2--matched-phase--dt-0.5",
+    "weak_spring_double_delay_7.2--matched-phase--dt-0.5"
+  ],
+  "results": [
+    {
+      "schema": "cybrgeo-arx-source-case-result/1",
+      "case": {
+        "name": "power_loss_3.2",
+        "seconds": 7.300000000000002,
+        "options": {
+          "motorOffTime": 6.100000000000001
+        },
+        "kind": "fault",
+        "deliberate_negative_control": false,
+        "source_seconds": 4.4,
+        "source_options": {
+          "motorOffTime": 3.2
+        },
+        "clock_scope": "matched-phase",
+        "id": "power_loss_3.2--matched-phase--dt-0.5",
+        "source_timestep_s": 0.000416666666667,
+        "timestep_scale": 0.5,
+        "timestep_s": 0.0002083333333335
+      },
+      "checks": [
+        {
+          "name": "all saved exported states finite",
+          "passed": true,
+          "measured": "All saved exported states",
+          "limit": "finite"
+        },
+        {
+          "name": "hard travel bounds respected",
+          "passed": true,
+          "measured": 0.0376777277428364,
+          "limit": -0.0001
+        },
+        {
+          "name": "no structural proxy penetration over 0.1 mm",
+          "passed": true,
+          "measured": 0.0,
+          "limit": 0.0001,
+          "coverage": "initial saved state and every solver step"
+        },
+        {
+          "name": "no imposed force on independent free workpiece",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0
+          ],
+          "limit": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "motor-generated output torque within belt service allowance",
+          "passed": true,
+          "measured": [
+            0.9911691061546879,
+            9.288568508025564,
+            3.9523160522528493,
+            1.0870863226982463,
+            0.18397699416298802,
+            0.07784110958165935
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "configured arm peak current ceilings",
+          "passed": true,
+          "measured": [
+            0.37413833859810336,
+            1.847443944593685,
+            0.7683252013240401,
+            0.4558648045284496,
+            0.07750494069828266,
+            0.03279263591351167
+          ],
+          "limit": [
+            4,
+            4,
+            4,
+            1.4,
+            1.4,
+            1.4
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "motor input speed ratings",
+          "passed": true,
+          "measured": [
+            48.74157628611931,
+            52.553761650744114,
+            99.99391583799817,
+            101.43882291871856,
+            214.92247896727164,
+            276.5243936103854
+          ],
+          "limit": [
+            837.7580409572781,
+            837.7580409572781,
+            837.7580409572781,
+            1256.6370614359173,
+            1256.6370614359173,
+            1256.6370614359173
+          ],
+          "tolerance": 0.0
+        },
+        {
+          "name": "voltage ceilings",
+          "passed": true,
+          "measured": [
+            4.492575925597955,
+            5.9313177072944265,
+            9.326023087722954,
+            7.772633113928385,
+            7.6582685962870585,
+            9.728994427558481
+          ],
+          "limit": [
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2
+          ],
+          "tolerance": 1e-06
+        },
+        {
+          "name": "estimated belt torque including rotor deceleration within service allowance",
+          "passed": true,
+          "measured": [
+            0.959686606625277,
+            9.139043157488386,
+            3.953637826354519,
+            1.0915719289998485,
+            0.2263566061603953,
+            0.017574134753824886
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "method": "Shared runtime: motor torque minus upstream armature times actual step acceleration"
+        },
+        {
+          "name": "configured gripper peak current ceiling",
+          "passed": true,
+          "measured": 0.17817526023929728,
+          "limit": 0.35
+        },
+        {
+          "name": "belt pulley speed within handbook low-speed screen",
+          "passed": true,
+          "measured": [
+            10.85592461811302,
+            6.167496281546893,
+            11.734880334668386,
+            7.576289479322341,
+            16.05218662261452,
+            20.653126621599984
+          ],
+          "limit": 200
+        },
+        {
+          "name": "all drives disabled after emergency",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "limit": 0.0
+        },
+        {
+          "name": "all joints settle below 0.002 rad/s",
+          "passed": true,
+          "measured": [
+            6.520773055624456e-15,
+            1.0514573006887923e-05,
+            5.228106842772315e-06,
+            2.812222918642654e-05,
+            8.751469191246312e-07,
+            5.936805204241017e-09
+          ],
+          "limit": 0.002,
+          "sampling": "source-compatible 120 Hz after fault + 0.5 s"
+        },
+        {
+          "name": "model brake work below catalog event-energy ceiling",
+          "passed": true,
+          "measured": [
+            3.181688679257251e-05,
+            0.1941587333675344,
+            0.0005203701781752852,
+            0.005999531508402378,
+            9.353635095882736e-05,
+            1.5672390139123236e-10
+          ],
+          "limit": [
+            550.0,
+            550.0,
+            550.0,
+            200.0,
+            200.0,
+            200.0
+          ]
+        }
+      ],
+      "numeric_acceptance_passed": true,
+      "original_source_numeric_acceptance_passed": true,
+      "task_outcome_checks": [],
+      "task_outcomes_passed": true,
+      "measurement_coverage_valid": true,
+      "scenario_valid": true,
+      "passed": true,
+      "expected_outcome_observed": true,
+      "events": [
+        {
+          "t": 6.100000000004879,
+          "mode": "EMERGENCY",
+          "reason": "power-loss"
+        }
+      ],
+      "expected_fault_time_s": 6.100000000000001,
+      "actual_fault_time_s": 6.100000000004879,
+      "payload": {
+        "max_observed_fault_drop_m": 0.026136207223108006,
+        "required_by_ordinary_source_fault_checks": false,
+        "scope": "Observed free-payload drop; no fail-safe retention claim"
+      },
+      "max_fault_travel_deg": [
+        0.0020171514363114002,
+        1.2634645984466002,
+        0.04090097428777041,
+        0.43531941247379424,
+        0.12564681672325234,
+        6.922474719761599e-07
+      ],
+      "max_speed_after_fault_deadline_rad_s": [
+        6.520773055624456e-15,
+        1.0514573006887923e-05,
+        5.228106842772315e-06,
+        2.812222918642654e-05,
+        8.751469191246312e-07,
+        5.936805204241017e-09
+      ],
+      "model_sha256": "f308a9d984d3488454059c0cb784e5fd65d41f2464a5934817e76b5d414550a4",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee",
+      "timestep_s": 0.0002083333333335,
+      "duration_s": 7.30000000000584,
+      "source_scenarios_sha256": "4f117753c0e86dd58d6f64575a78975358cfad6fb3f4f4762ae4d5343ab0c828",
+      "qualification": "Numerical model requirements only; no hardware qualification",
+      "trace_sha256": "688ad04d67291ebe2d2f18868fb92f7d49bf2c046cf9f1d1a98eaab92a3b2088",
+      "fault_suite_provenance": {
+        "source_files": {
+          "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+          "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+          "faults.py": "dcb75c486d4beecea85716fe6e55e8e68f0fd7938fb44615042c82692f41a5b6",
+          "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+          "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+          "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+          "project.py": "916fb0bb762aab20290a127586c7e34dc2031644ec07674275726d41d29b8a85",
+          "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+          "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+          "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+          "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+          "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+          "data/default-task.json": "f1d32f1596f6a817edb31ce667aa98533e75bf84ab4dea353cb2023adffa74b7",
+          "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+          "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+          "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+          "data/source-scenarios.json": "d0148801f4b5600c57488454b2413bb15b0921d0a7a467a7d6258695223b3506",
+          "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+        },
+        "engine_files_sha256": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+          "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+          "reference_clock.py": "da76503101f1b8dfc49c0333010cc24ae70405fbe06829960e0030cdf03f7854"
+        },
+        "runner_sha256": "1b207046ec91774e2b9b56e655ff85704fa0e9ee1b2cd682fe20d450c791dece",
+        "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+        "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+        "mass_scope": "verified fresh native build"
+      },
+      "runtime_implementation": {
+        "schema": "cybrgeo-causal-runtime/1",
+        "source_files": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+        },
+        "packages": {
+          "numpy": "2.5.4",
+          "mujoco": "3.16.0"
+        },
+        "runtime": {
+          "python": "3.12.10",
+          "system": "Windows",
+          "machine": "AMD64"
+        },
+        "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+      },
+      "peak_belt_Nm": [
+        0.959686606625277,
+        9.139043157488386,
+        3.953637826354519,
+        1.0915719289998485,
+        0.2263566061603953,
+        0.017574134753824886
+      ],
+      "reference_source_link": {
+        "input_file": "refined-suite-inputs.json.gz",
+        "source_files_pointer": "/source_files",
+        "task_parameters_pointer": "/task_parameters",
+        "semantic_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee"
+      }
+    },
+    {
+      "schema": "cybrgeo-arx-source-case-result/1",
+      "case": {
+        "name": "power_loss_7.2",
+        "seconds": 12.650000000000002,
+        "options": {
+          "motorOffTime": 11.45
+        },
+        "kind": "fault",
+        "deliberate_negative_control": false,
+        "source_seconds": 8.4,
+        "source_options": {
+          "motorOffTime": 7.2
+        },
+        "clock_scope": "matched-phase",
+        "id": "power_loss_7.2--matched-phase--dt-0.5",
+        "source_timestep_s": 0.000416666666667,
+        "timestep_scale": 0.5,
+        "timestep_s": 0.0002083333333335
+      },
+      "checks": [
+        {
+          "name": "all saved exported states finite",
+          "passed": true,
+          "measured": "All saved exported states",
+          "limit": "finite"
+        },
+        {
+          "name": "hard travel bounds respected",
+          "passed": true,
+          "measured": 0.0376777277428364,
+          "limit": -0.0001
+        },
+        {
+          "name": "no structural proxy penetration over 0.1 mm",
+          "passed": true,
+          "measured": 0.0,
+          "limit": 0.0001,
+          "coverage": "initial saved state and every solver step"
+        },
+        {
+          "name": "no imposed force on independent free workpiece",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0
+          ],
+          "limit": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "motor-generated output torque within belt service allowance",
+          "passed": true,
+          "measured": [
+            1.1858071499975784,
+            12.79893333329927,
+            3.9523160522528493,
+            1.451474569255029,
+            0.18397699416298802,
+            0.07784110958165935
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "configured arm peak current ceilings",
+          "passed": true,
+          "measured": [
+            0.4476089423188718,
+            2.545636079074917,
+            0.7683252013240401,
+            0.6114722328988191,
+            0.07750494069828266,
+            0.03279263591351167
+          ],
+          "limit": [
+            4,
+            4,
+            4,
+            1.4,
+            1.4,
+            1.4
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "motor input speed ratings",
+          "passed": true,
+          "measured": [
+            48.74157628611931,
+            52.553761650744114,
+            101.44600761014136,
+            101.43882291871856,
+            214.92247896727164,
+            276.5243936103854
+          ],
+          "limit": [
+            837.7580409572781,
+            837.7580409572781,
+            837.7580409572781,
+            1256.6370614359173,
+            1256.6370614359173,
+            1256.6370614359173
+          ],
+          "tolerance": 0.0
+        },
+        {
+          "name": "voltage ceilings",
+          "passed": true,
+          "measured": [
+            4.492575925597955,
+            6.335187760444125,
+            9.626668898538512,
+            11.037010011381001,
+            7.6582685962870585,
+            9.728994427558481
+          ],
+          "limit": [
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2
+          ],
+          "tolerance": 1e-06
+        },
+        {
+          "name": "estimated belt torque including rotor deceleration within service allowance",
+          "passed": true,
+          "measured": [
+            1.151435198265476,
+            12.685262222374686,
+            3.953637826354519,
+            1.480504993306507,
+            0.666124894531411,
+            0.9615512959378155
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "method": "Shared runtime: motor torque minus upstream armature times actual step acceleration"
+        },
+        {
+          "name": "configured gripper peak current ceiling",
+          "passed": true,
+          "measured": 0.17961342793038454,
+          "limit": 0.35
+        },
+        {
+          "name": "belt pulley speed within handbook low-speed screen",
+          "passed": true,
+          "measured": [
+            10.85592461811302,
+            6.167496281546893,
+            11.905291934596764,
+            7.576289479322341,
+            16.05218662261452,
+            20.653126621599984
+          ],
+          "limit": 200
+        },
+        {
+          "name": "all drives disabled after emergency",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "limit": 0.0
+        },
+        {
+          "name": "all joints settle below 0.002 rad/s",
+          "passed": false,
+          "measured": [
+            4.958518470162618e-07,
+            1.825859434699991e-06,
+            1.6156820950441978e-05,
+            0.2632904644469506,
+            2.82250116409106e-06,
+            4.227467467277102e-08
+          ],
+          "limit": 0.002,
+          "sampling": "source-compatible 120 Hz after fault + 0.5 s"
+        },
+        {
+          "name": "model brake work below catalog event-energy ceiling",
+          "passed": true,
+          "measured": [
+            0.09547612853657093,
+            0.0352999686879196,
+            0.030637955330608063,
+            0.3120883711517864,
+            0.0054368860975804985,
+            0.0014594768172027893
+          ],
+          "limit": [
+            550.0,
+            550.0,
+            550.0,
+            200.0,
+            200.0,
+            200.0
+          ]
+        }
+      ],
+      "numeric_acceptance_passed": false,
+      "original_source_numeric_acceptance_passed": false,
+      "task_outcome_checks": [],
+      "task_outcomes_passed": true,
+      "measurement_coverage_valid": true,
+      "scenario_valid": true,
+      "passed": false,
+      "expected_outcome_observed": false,
+      "events": [
+        {
+          "t": 11.45000000000916,
+          "mode": "EMERGENCY",
+          "reason": "power-loss"
+        }
+      ],
+      "expected_fault_time_s": 11.45,
+      "actual_fault_time_s": 11.45000000000916,
+      "payload": {
+        "max_observed_fault_drop_m": 0.2010375306469967,
+        "required_by_ordinary_source_fault_checks": false,
+        "scope": "Observed free-payload drop; no fail-safe retention claim"
+      },
+      "max_fault_travel_deg": [
+        1.5396871422371636,
+        0.7371403529389993,
+        0.8540400643654888,
+        13.857340603905355,
+        0.4982262502755351,
+        0.640767511886196
+      ],
+      "max_speed_after_fault_deadline_rad_s": [
+        4.958518470162618e-07,
+        1.825859434699991e-06,
+        1.6156820950441978e-05,
+        0.2632904644469506,
+        2.82250116409106e-06,
+        4.227467467277102e-08
+      ],
+      "model_sha256": "f308a9d984d3488454059c0cb784e5fd65d41f2464a5934817e76b5d414550a4",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee",
+      "timestep_s": 0.0002083333333335,
+      "duration_s": 12.650000000010118,
+      "source_scenarios_sha256": "4f117753c0e86dd58d6f64575a78975358cfad6fb3f4f4762ae4d5343ab0c828",
+      "qualification": "Numerical model requirements only; no hardware qualification",
+      "trace_sha256": "3bd0fb238e100414e4b3211b4861249881fee521e5b8f0190120afbb543faf4c",
+      "fault_suite_provenance": {
+        "source_files": {
+          "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+          "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+          "faults.py": "dcb75c486d4beecea85716fe6e55e8e68f0fd7938fb44615042c82692f41a5b6",
+          "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+          "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+          "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+          "project.py": "916fb0bb762aab20290a127586c7e34dc2031644ec07674275726d41d29b8a85",
+          "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+          "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+          "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+          "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+          "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+          "data/default-task.json": "f1d32f1596f6a817edb31ce667aa98533e75bf84ab4dea353cb2023adffa74b7",
+          "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+          "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+          "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+          "data/source-scenarios.json": "d0148801f4b5600c57488454b2413bb15b0921d0a7a467a7d6258695223b3506",
+          "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+        },
+        "engine_files_sha256": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+          "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+          "reference_clock.py": "da76503101f1b8dfc49c0333010cc24ae70405fbe06829960e0030cdf03f7854"
+        },
+        "runner_sha256": "1b207046ec91774e2b9b56e655ff85704fa0e9ee1b2cd682fe20d450c791dece",
+        "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+        "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+        "mass_scope": "verified fresh native build"
+      },
+      "runtime_implementation": {
+        "schema": "cybrgeo-causal-runtime/1",
+        "source_files": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+        },
+        "packages": {
+          "numpy": "2.5.4",
+          "mujoco": "3.16.0"
+        },
+        "runtime": {
+          "python": "3.12.10",
+          "system": "Windows",
+          "machine": "AMD64"
+        },
+        "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+      },
+      "peak_belt_Nm": [
+        1.151435198265476,
+        12.685262222374686,
+        3.953637826354519,
+        1.480504993306507,
+        0.666124894531411,
+        0.9615512959378155
+      ],
+      "reference_source_link": {
+        "input_file": "refined-suite-inputs.json.gz",
+        "source_files_pointer": "/source_files",
+        "task_parameters_pointer": "/task_parameters",
+        "semantic_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee"
+      }
+    },
+    {
+      "schema": "cybrgeo-arx-source-case-result/1",
+      "case": {
+        "name": "weak_spring_double_delay_3.2",
+        "seconds": 7.300000000000002,
+        "options": {
+          "motorOffTime": 6.100000000000001,
+          "springScale": 0.9,
+          "brakeDelayScale": 2
+        },
+        "kind": "fault",
+        "deliberate_negative_control": false,
+        "source_seconds": 4.4,
+        "source_options": {
+          "motorOffTime": 3.2,
+          "springScale": 0.9,
+          "brakeDelayScale": 2
+        },
+        "clock_scope": "matched-phase",
+        "id": "weak_spring_double_delay_3.2--matched-phase--dt-0.5",
+        "source_timestep_s": 0.000416666666667,
+        "timestep_scale": 0.5,
+        "timestep_s": 0.0002083333333335
+      },
+      "checks": [
+        {
+          "name": "all saved exported states finite",
+          "passed": true,
+          "measured": "All saved exported states",
+          "limit": "finite"
+        },
+        {
+          "name": "hard travel bounds respected",
+          "passed": true,
+          "measured": 0.034500420986800506,
+          "limit": -0.0001
+        },
+        {
+          "name": "no structural proxy penetration over 0.1 mm",
+          "passed": true,
+          "measured": 0.0,
+          "limit": 0.0001,
+          "coverage": "initial saved state and every solver step"
+        },
+        {
+          "name": "no imposed force on independent free workpiece",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0
+          ],
+          "limit": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "motor-generated output torque within belt service allowance",
+          "passed": true,
+          "measured": [
+            0.9939033295474848,
+            10.267238245464958,
+            4.3946388912917795,
+            1.0872331885030253,
+            0.17835555219711527,
+            0.07769372814367018
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "configured arm peak current ceilings",
+          "passed": true,
+          "measured": [
+            0.3751704306755376,
+            2.0420958703707415,
+            0.8570864742142905,
+            0.4559206831075447,
+            0.0751367663757656,
+            0.03273054756633415
+          ],
+          "limit": [
+            4,
+            4,
+            4,
+            1.4,
+            1.4,
+            1.4
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "motor input speed ratings",
+          "passed": true,
+          "measured": [
+            48.74239340885273,
+            57.826357953172526,
+            100.23856179791814,
+            101.44340362861927,
+            214.99135786671727,
+            276.5225748633443
+          ],
+          "limit": [
+            837.7580409572781,
+            837.7580409572781,
+            837.7580409572781,
+            1256.6370614359173,
+            1256.6370614359173,
+            1256.6370614359173
+          ],
+          "tolerance": 0.0
+        },
+        {
+          "name": "voltage ceilings",
+          "passed": true,
+          "measured": [
+            4.493020886247814,
+            6.129623752454242,
+            9.471210510494231,
+            7.776472408004928,
+            7.710689932778383,
+            9.728441609429924
+          ],
+          "limit": [
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2
+          ],
+          "tolerance": 1e-06
+        },
+        {
+          "name": "estimated belt torque including rotor deceleration within service allowance",
+          "passed": true,
+          "measured": [
+            0.962419711828207,
+            10.1183129366203,
+            4.3969893583216475,
+            1.0917056925400666,
+            2.1134998645500396,
+            0.01747877069704886
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "method": "Shared runtime: motor torque minus upstream armature times actual step acceleration"
+        },
+        {
+          "name": "configured gripper peak current ceiling",
+          "passed": true,
+          "measured": 0.17996054605417927,
+          "limit": 0.35
+        },
+        {
+          "name": "belt pulley speed within handbook low-speed screen",
+          "passed": true,
+          "measured": [
+            10.856106611053617,
+            6.786266795167484,
+            11.763590992111505,
+            7.576631604587895,
+            16.057331067967908,
+            20.652990782542744
+          ],
+          "limit": 200
+        },
+        {
+          "name": "all drives disabled after emergency",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "limit": 0.0
+        },
+        {
+          "name": "all joints settle below 0.002 rad/s",
+          "passed": true,
+          "measured": [
+            6.047404631132026e-07,
+            9.748706872331585e-06,
+            1.3863287850014059e-05,
+            2.804352626403026e-05,
+            4.3824245715437215e-06,
+            1.8816705563901442e-07
+          ],
+          "limit": 0.002,
+          "sampling": "source-compatible 120 Hz after fault + 0.5 s"
+        },
+        {
+          "name": "model brake work below catalog event-energy ceiling",
+          "passed": true,
+          "measured": [
+            0.00044560828933827936,
+            0.7229997671338031,
+            0.016807788712988027,
+            0.015038850988926508,
+            0.001564695277075548,
+            1.683639173708044e-08
+          ],
+          "limit": [
+            550.0,
+            550.0,
+            550.0,
+            200.0,
+            200.0,
+            200.0
+          ]
+        }
+      ],
+      "numeric_acceptance_passed": true,
+      "original_source_numeric_acceptance_passed": true,
+      "task_outcome_checks": [],
+      "task_outcomes_passed": true,
+      "measurement_coverage_valid": true,
+      "scenario_valid": true,
+      "passed": true,
+      "expected_outcome_observed": true,
+      "events": [
+        {
+          "t": 6.100000000004879,
+          "mode": "EMERGENCY",
+          "reason": "power-loss"
+        }
+      ],
+      "expected_fault_time_s": 6.100000000000001,
+      "actual_fault_time_s": 6.100000000004879,
+      "payload": {
+        "max_observed_fault_drop_m": 0.027432051112569408,
+        "required_by_ordinary_source_fault_checks": false,
+        "scope": "Observed free-payload drop; no fail-safe retention claim"
+      },
+      "max_fault_travel_deg": [
+        0.026496761944106332,
+        4.5329296136481565,
+        0.15435919524711503,
+        1.2701266121813548,
+        0.24689571272852356,
+        1.233318956165742e-05
+      ],
+      "max_speed_after_fault_deadline_rad_s": [
+        6.047404631132026e-07,
+        9.748706872331585e-06,
+        1.3863287850014059e-05,
+        2.804352626403026e-05,
+        4.3824245715437215e-06,
+        1.8816705563901442e-07
+      ],
+      "model_sha256": "f308a9d984d3488454059c0cb784e5fd65d41f2464a5934817e76b5d414550a4",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee",
+      "timestep_s": 0.0002083333333335,
+      "duration_s": 7.30000000000584,
+      "source_scenarios_sha256": "4f117753c0e86dd58d6f64575a78975358cfad6fb3f4f4762ae4d5343ab0c828",
+      "qualification": "Numerical model requirements only; no hardware qualification",
+      "trace_sha256": "864e13f199014d48bd022afaeec4800ae26f217ae4523bb8e4270f0f9964b6ca",
+      "fault_suite_provenance": {
+        "source_files": {
+          "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+          "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+          "faults.py": "dcb75c486d4beecea85716fe6e55e8e68f0fd7938fb44615042c82692f41a5b6",
+          "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+          "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+          "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+          "project.py": "916fb0bb762aab20290a127586c7e34dc2031644ec07674275726d41d29b8a85",
+          "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+          "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+          "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+          "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+          "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+          "data/default-task.json": "f1d32f1596f6a817edb31ce667aa98533e75bf84ab4dea353cb2023adffa74b7",
+          "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+          "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+          "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+          "data/source-scenarios.json": "d0148801f4b5600c57488454b2413bb15b0921d0a7a467a7d6258695223b3506",
+          "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+        },
+        "engine_files_sha256": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+          "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+          "reference_clock.py": "da76503101f1b8dfc49c0333010cc24ae70405fbe06829960e0030cdf03f7854"
+        },
+        "runner_sha256": "1b207046ec91774e2b9b56e655ff85704fa0e9ee1b2cd682fe20d450c791dece",
+        "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+        "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+        "mass_scope": "verified fresh native build"
+      },
+      "runtime_implementation": {
+        "schema": "cybrgeo-causal-runtime/1",
+        "source_files": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+        },
+        "packages": {
+          "numpy": "2.5.4",
+          "mujoco": "3.16.0"
+        },
+        "runtime": {
+          "python": "3.12.10",
+          "system": "Windows",
+          "machine": "AMD64"
+        },
+        "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+      },
+      "peak_belt_Nm": [
+        0.962419711828207,
+        10.1183129366203,
+        4.3969893583216475,
+        1.0917056925400666,
+        2.1134998645500396,
+        0.01747877069704886
+      ],
+      "reference_source_link": {
+        "input_file": "refined-suite-inputs.json.gz",
+        "source_files_pointer": "/source_files",
+        "task_parameters_pointer": "/task_parameters",
+        "semantic_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee"
+      }
+    },
+    {
+      "schema": "cybrgeo-arx-source-case-result/1",
+      "case": {
+        "name": "weak_spring_double_delay_7.2",
+        "seconds": 12.650000000000002,
+        "options": {
+          "motorOffTime": 11.45,
+          "springScale": 0.9,
+          "brakeDelayScale": 2
+        },
+        "kind": "fault",
+        "deliberate_negative_control": false,
+        "source_seconds": 8.4,
+        "source_options": {
+          "motorOffTime": 7.2,
+          "springScale": 0.9,
+          "brakeDelayScale": 2
+        },
+        "clock_scope": "matched-phase",
+        "id": "weak_spring_double_delay_7.2--matched-phase--dt-0.5",
+        "source_timestep_s": 0.000416666666667,
+        "timestep_scale": 0.5,
+        "timestep_s": 0.0002083333333335
+      },
+      "checks": [
+        {
+          "name": "all saved exported states finite",
+          "passed": true,
+          "measured": "All saved exported states",
+          "limit": "finite"
+        },
+        {
+          "name": "hard travel bounds respected",
+          "passed": true,
+          "measured": 0.034500420986800506,
+          "limit": -0.0001
+        },
+        {
+          "name": "no structural proxy penetration over 0.1 mm",
+          "passed": true,
+          "measured": 0.0,
+          "limit": 0.0001,
+          "coverage": "initial saved state and every solver step"
+        },
+        {
+          "name": "no imposed force on independent free workpiece",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0
+          ],
+          "limit": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "motor-generated output torque within belt service allowance",
+          "passed": true,
+          "measured": [
+            1.186223798545869,
+            12.798933333333325,
+            4.406845007103989,
+            1.4519221756818053,
+            0.17835555219711527,
+            0.0778639173554748
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "configured arm peak current ceilings",
+          "passed": true,
+          "measured": [
+            0.44776621546122436,
+            2.5456360791129016,
+            0.8570864742142905,
+            0.6116607990003731,
+            0.0751367663757656,
+            0.03280224429431131
+          ],
+          "limit": [
+            4,
+            4,
+            4,
+            1.4,
+            1.4,
+            1.4
+          ],
+          "tolerance": 1e-05
+        },
+        {
+          "name": "motor input speed ratings",
+          "passed": true,
+          "measured": [
+            48.74239340885273,
+            52.488751563303374,
+            105.38998473281212,
+            121.9581417094005,
+            214.99135786671727,
+            276.5225748633443
+          ],
+          "limit": [
+            837.7580409572781,
+            837.7580409572781,
+            837.7580409572781,
+            1256.6370614359173,
+            1256.6370614359173,
+            1256.6370614359173
+          ],
+          "tolerance": 0.0
+        },
+        {
+          "name": "voltage ceilings",
+          "passed": true,
+          "measured": [
+            4.493020886247814,
+            7.043822797370712,
+            10.050842703132597,
+            11.039151394343378,
+            7.710689932778383,
+            9.728441609429924
+          ],
+          "limit": [
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2,
+            43.2
+          ],
+          "tolerance": 1e-06
+        },
+        {
+          "name": "estimated belt torque including rotor deceleration within service allowance",
+          "passed": true,
+          "measured": [
+            1.1518518911218372,
+            12.722226220452942,
+            4.4068449192579635,
+            1.4809793444477792,
+            0.633515352335862,
+            0.6723493562749676
+          ],
+          "limit": [
+            12.798933333333332,
+            12.798933333333332,
+            12.798933333333332,
+            2.4948,
+            2.4948,
+            2.4948
+          ],
+          "method": "Shared runtime: motor torque minus upstream armature times actual step acceleration"
+        },
+        {
+          "name": "configured gripper peak current ceiling",
+          "passed": true,
+          "measured": 0.17996054605417927,
+          "limit": 0.35
+        },
+        {
+          "name": "belt pulley speed within handbook low-speed screen",
+          "passed": true,
+          "measured": [
+            10.856106611053617,
+            6.159866961400061,
+            12.368141090861368,
+            9.108841756681404,
+            16.057331067967908,
+            20.652990782542744
+          ],
+          "limit": 200
+        },
+        {
+          "name": "all drives disabled after emergency",
+          "passed": true,
+          "measured": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "limit": 0.0
+        },
+        {
+          "name": "all joints settle below 0.002 rad/s",
+          "passed": true,
+          "measured": [
+            3.7518018707758006e-14,
+            7.958298051705539e-07,
+            1.8588905318926043e-05,
+            3.509361544489855e-05,
+            2.779087985519875e-06,
+            2.398371780689383e-08
+          ],
+          "limit": 0.002,
+          "sampling": "source-compatible 120 Hz after fault + 0.5 s"
+        },
+        {
+          "name": "model brake work below catalog event-energy ceiling",
+          "passed": true,
+          "measured": [
+            0.10759325520241561,
+            0.04512186349508959,
+            0.08354446751341868,
+            0.35083233719059803,
+            0.010145319659441925,
+            0.001368414800152696
+          ],
+          "limit": [
+            550.0,
+            550.0,
+            550.0,
+            200.0,
+            200.0,
+            200.0
+          ]
+        }
+      ],
+      "numeric_acceptance_passed": true,
+      "original_source_numeric_acceptance_passed": true,
+      "task_outcome_checks": [],
+      "task_outcomes_passed": true,
+      "measurement_coverage_valid": true,
+      "scenario_valid": true,
+      "passed": true,
+      "expected_outcome_observed": true,
+      "events": [
+        {
+          "t": 11.45000000000916,
+          "mode": "EMERGENCY",
+          "reason": "power-loss"
+        }
+      ],
+      "expected_fault_time_s": 11.45,
+      "actual_fault_time_s": 11.45000000000916,
+      "payload": {
+        "max_observed_fault_drop_m": 0.20125249873138046,
+        "required_by_ordinary_source_fault_checks": false,
+        "scope": "Observed free-payload drop; no fail-safe retention claim"
+      },
+      "max_fault_travel_deg": [
+        2.7848860650678176,
+        1.4730289016182918,
+        2.3300674867287103,
+        16.30007319187761,
+        1.246087695753458,
+        1.1289133167736618
+      ],
+      "max_speed_after_fault_deadline_rad_s": [
+        3.7518018707758006e-14,
+        7.958298051705539e-07,
+        1.8588905318926043e-05,
+        3.509361544489855e-05,
+        2.779087985519875e-06,
+        2.398371780689383e-08
+      ],
+      "model_sha256": "f308a9d984d3488454059c0cb784e5fd65d41f2464a5934817e76b5d414550a4",
+      "control_sha256": "b6162223ac5711f7e55c383b43f255c1d3f2ba72fc55f2c695d0870e2807ec42",
+      "reference_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee",
+      "timestep_s": 0.0002083333333335,
+      "duration_s": 12.650000000010118,
+      "source_scenarios_sha256": "4f117753c0e86dd58d6f64575a78975358cfad6fb3f4f4762ae4d5343ab0c828",
+      "qualification": "Numerical model requirements only; no hardware qualification",
+      "trace_sha256": "00c1e21afd555213c26482fe10ccfb9df827faa33ac29a764db9486e777f86a4",
+      "fault_suite_provenance": {
+        "source_files": {
+          "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+          "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+          "faults.py": "dcb75c486d4beecea85716fe6e55e8e68f0fd7938fb44615042c82692f41a5b6",
+          "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+          "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+          "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+          "project.py": "916fb0bb762aab20290a127586c7e34dc2031644ec07674275726d41d29b8a85",
+          "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+          "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+          "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+          "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+          "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+          "data/default-task.json": "f1d32f1596f6a817edb31ce667aa98533e75bf84ab4dea353cb2023adffa74b7",
+          "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+          "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+          "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+          "data/source-scenarios.json": "d0148801f4b5600c57488454b2413bb15b0921d0a7a467a7d6258695223b3506",
+          "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+        },
+        "engine_files_sha256": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+          "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+          "reference_clock.py": "da76503101f1b8dfc49c0333010cc24ae70405fbe06829960e0030cdf03f7854"
+        },
+        "runner_sha256": "1b207046ec91774e2b9b56e655ff85704fa0e9ee1b2cd682fe20d450c791dece",
+        "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+        "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+        "mass_scope": "verified fresh native build"
+      },
+      "runtime_implementation": {
+        "schema": "cybrgeo-causal-runtime/1",
+        "source_files": {
+          "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+          "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694"
+        },
+        "packages": {
+          "numpy": "2.5.4",
+          "mujoco": "3.16.0"
+        },
+        "runtime": {
+          "python": "3.12.10",
+          "system": "Windows",
+          "machine": "AMD64"
+        },
+        "capture": "Source files and package versions observed at causal_runtime module import; not the complete Python import closure"
+      },
+      "peak_belt_Nm": [
+        1.1518518911218372,
+        12.722226220452942,
+        4.4068449192579635,
+        1.4809793444477792,
+        0.633515352335862,
+        0.6723493562749676
+      ],
+      "reference_source_link": {
+        "input_file": "refined-suite-inputs.json.gz",
+        "source_files_pointer": "/source_files",
+        "task_parameters_pointer": "/task_parameters",
+        "semantic_sha256": "f532b5c7426c0e7287db91a338f607b1c8fdee4464ee7ec42bfad8b31ccea3ee"
+      }
+    }
+  ],
+  "errors": [],
+  "input_sha256": "47898e492b16c82fbc72e6a6f3732df5c79d3877a9be33cbecae3f0b41c956cb",
+  "source_files": {
+    "contacts.py": "359f22d2f73f890e3ce2f006f63c0997b5e68a176a0bdcaf6d814214988abfee",
+    "design.py": "28493da010306f47b79b0a851d9df3b60aff900b6f1835d628d6bed200ea8d39",
+    "faults.py": "dcb75c486d4beecea85716fe6e55e8e68f0fd7938fb44615042c82692f41a5b6",
+    "geometry.py": "0589a68dc583e63cfeeaf4cc9797447e40e61806a43b0c921747180fb7564994",
+    "model.py": "3aed7b52f752ac33eb9db6fa19c8a855293b9a94a7fcd25cf8bc4ed45b80764f",
+    "project.json": "4779211bb4ab82a87c3b341065883a0a552f3da2d0b451c7098d5f1c3d97c5fa",
+    "project.py": "916fb0bb762aab20290a127586c7e34dc2031644ec07674275726d41d29b8a85",
+    "task.py": "e2181316f9c2b211e583dfae64d1dab6239cb8bc9350cb251c6a84c5d0bcf826",
+    "verify_geometry.py": "97e69691c7d13c7fd264dd8c0b5815b955c539407a018bf1dc4623a88d101a69",
+    "data/P2-baseline-parameters.json": "8641f11e92cee6b4ce71e39d822f2f21aea6c45edc850ff37a1ad8b4066fd6c6",
+    "data/P2-baseline.xml": "9d399ed65015f388e70efb18cd0deed41348539bc55a1e1f1f88f52b63fb3f81",
+    "data/P5-component-reference.json": "05bb5488ab7e178f5da4b2de3d1c1be2e94373394f22be01610e061d269beb36",
+    "data/default-task.json": "f1d32f1596f6a817edb31ce667aa98533e75bf84ab4dea353cb2023adffa74b7",
+    "data/folded-transmissions.json": "6714acede528dc3052ef4b91ec45c4f63c78d6ea2aa23a5e4c94393f99921c2e",
+    "data/geometry-meshes.json.gz": "2f4c12ca7d520b5c0984b6c82b4261e5c858c318d92d7d64489bbe443cf76c2d",
+    "data/mass_properties.json": "bb90fb8f104b3503ed999305f90c9fd681e3d5e2e4bbf26b646f37224f77fe11",
+    "data/source-scenarios.json": "d0148801f4b5600c57488454b2413bb15b0921d0a7a467a7d6258695223b3506",
+    "data/spec.json": "c1df4680e4703142bb7798cf2bf6e2d8918e0dee0dde49d66a21146682f0b1ed"
+  },
+  "engine_files_sha256": {
+    "causal_runtime.py": "d5470b5d90f7eb0f0b852838d1940549e7b5f2045e9e43e62c863703905b2e88",
+    "actuation.py": "ac40c5f9c8618ef717fe385b2e0fa3672d81da563a70526b336c7233707a8694",
+    "physical_model.py": "ce5289b357f1ead44a7a919fe149bba32301f46482ec9b5f8c46e94a63cb016a",
+    "reference_clock.py": "da76503101f1b8dfc49c0333010cc24ae70405fbe06829960e0030cdf03f7854"
+  },
+  "runner_sha256": "1b207046ec91774e2b9b56e655ff85704fa0e9ee1b2cd682fe20d450c791dece",
+  "native_build_sha256": "3af38c5643f784bec1909398c1de74587b0d0057922d003bf784f1ad4c30141c",
+  "native_source_binding_sha256": "d31072df011eea6480220acd78d1c3bcca5f2d156fd4bc7c76cb9960de7b3a59",
+  "mass_scope": "verified fresh native build",
+  "friction_prefix_comparisons": [],
+  "qualification": "Source-derived bounded simulation cases; ordinary power-loss checks do not require payload retention; no hardware qualification",
+  "evidence_derivation": {
+    "raw_summary_file": "refined-suite-summary.json.gz",
+    "raw_summary_sha256": "1edda7baf9e750a80fece278ab5f4e52a12c3b0cb455f52b8fdf63f2bb3c1526",
+    "raw_summary_bytes": 1639053,
+    "operation": "Only repeated results[].reference_source objects are replaced with exact input-file pointers; every other original field is preserved.",
+    "reconstruction": "For each row, read the two indicated input fields into {source_files, task_parameters}; verify semantic_sha256, restore reference_source, and remove reference_source_link. The gzip file preserves exact original serialized bytes."
+  }
+}

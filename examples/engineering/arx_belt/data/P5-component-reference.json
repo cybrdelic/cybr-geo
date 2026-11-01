@@ -1,0 +1,352 @@
+{
+  "revision": "P5",
+  "scope": "Candidate purchased-component references retained from the supplied baseline and current P5 specification. Envelope geometry and stated masses are used; configured supplier drawings, current availability, life and manufacturing interfaces are not approved. The exact placed parts and installed masses are indexed separately.",
+  "motors": {
+    "large": {
+      "manufacturer": "maxon",
+      "part_number": "488607",
+      "V": 48,
+      "Kt_Nm_A": 0.091,
+      "R_ohm": 0.994,
+      "L_H": 0.000995,
+      "rotor_inertia_kg_m2": 4.4e-06,
+      "continuous_current_A": 2.41,
+      "peak_current_A": 4,
+      "peak_current_provenance": "Engineering controller cap; duration and thermal validation required",
+      "mass_kg": 0.39,
+      "diameter_mm": 40,
+      "length_contribution_mm": 56.1,
+      "source": "https://www.maxongroup.com/maxon/view/product/488607"
+    },
+    "small": {
+      "manufacturer": "maxon",
+      "part_number": "283860",
+      "V": 48,
+      "Kt_Nm_A": 0.0348,
+      "R_ohm": 13.1,
+      "L_H": 0.000729,
+      "rotor_inertia_kg_m2": 4.45e-07,
+      "continuous_current_A": 0.716,
+      "peak_current_A": 1.4,
+      "peak_current_provenance": "Engineering controller cap; duration and thermal validation required",
+      "mass_kg": 0.11,
+      "diameter_mm": 22,
+      "length_contribution_mm": 48.6,
+      "source": "https://www.maxongroup.us/maxon/view/product/motor/ecmotor/ecmax/ecmax22/283860"
+    }
+  },
+  "gearheads": {
+    "J1": {
+      "part_number": "203120",
+      "ratio": 42.875,
+      "input_inertia_kg_m2": 1.5e-06,
+      "diameter_mm": 42,
+      "length_mm": 70,
+      "mass_kg": 0.46,
+      "continuous_torque_Nm": 15,
+      "intermittent_torque_Nm": 22.5,
+      "max_input_rpm": 8000,
+      "max_catalog_efficiency": 0.72,
+      "simulation_efficiency": 0.7,
+      "backlash_deg": 1,
+      "source": "https://www.maxongroup.com/medias/sys_master/root/9406824972318/GP-42-C.pdf"
+    },
+    "J2": {
+      "part_number": "203124",
+      "ratio": 81.37037037037037,
+      "input_inertia_kg_m2": 9.4e-07,
+      "diameter_mm": 42,
+      "length_mm": 70,
+      "mass_kg": 0.46,
+      "continuous_torque_Nm": 15,
+      "intermittent_torque_Nm": 22.5,
+      "max_input_rpm": 8000,
+      "max_catalog_efficiency": 0.72,
+      "simulation_efficiency": 0.7,
+      "backlash_deg": 1,
+      "source": "https://www.maxongroup.com/medias/sys_master/root/9406824972318/GP-42-C.pdf"
+    },
+    "J3": {
+      "part_number": "203124",
+      "ratio": 81.37037037037037,
+      "input_inertia_kg_m2": 9.4e-07,
+      "diameter_mm": 42,
+      "length_mm": 70,
+      "mass_kg": 0.46,
+      "continuous_torque_Nm": 15,
+      "intermittent_torque_Nm": 22.5,
+      "max_input_rpm": 8000,
+      "max_catalog_efficiency": 0.72,
+      "simulation_efficiency": 0.7,
+      "backlash_deg": 1,
+      "source": "https://www.maxongroup.com/medias/sys_master/root/9406824972318/GP-42-C.pdf"
+    },
+    "J4": {
+      "part_number": "370785",
+      "ratio": 127.85538461538462,
+      "input_inertia_kg_m2": 4e-08,
+      "diameter_mm": 22,
+      "length_mm": 39,
+      "mass_kg": 0.078,
+      "continuous_torque_Nm": 3,
+      "intermittent_torque_Nm": 3.5,
+      "max_input_rpm": 12000,
+      "max_catalog_efficiency": 0.59,
+      "simulation_efficiency": 0.55,
+      "backlash_deg": 1.6,
+      "source": "https://www.maxongroup.com/medias/sys_master/root/9406824251422/Cataloge-Page-EN-423.pdf"
+    },
+    "J5": {
+      "part_number": "370785",
+      "ratio": 127.85538461538462,
+      "input_inertia_kg_m2": 4e-08,
+      "diameter_mm": 22,
+      "length_mm": 39,
+      "mass_kg": 0.078,
+      "continuous_torque_Nm": 3,
+      "intermittent_torque_Nm": 3.5,
+      "max_input_rpm": 12000,
+      "max_catalog_efficiency": 0.59,
+      "simulation_efficiency": 0.55,
+      "backlash_deg": 1.6,
+      "source": "https://www.maxongroup.com/medias/sys_master/root/9406824251422/Cataloge-Page-EN-423.pdf"
+    },
+    "J6": {
+      "part_number": "370785",
+      "ratio": 127.85538461538462,
+      "input_inertia_kg_m2": 4e-08,
+      "diameter_mm": 22,
+      "length_mm": 39,
+      "mass_kg": 0.078,
+      "continuous_torque_Nm": 3,
+      "intermittent_torque_Nm": 3.5,
+      "max_input_rpm": 12000,
+      "max_catalog_efficiency": 0.59,
+      "simulation_efficiency": 0.55,
+      "backlash_deg": 1.6,
+      "source": "https://www.maxongroup.com/medias/sys_master/root/9406824251422/Cataloge-Page-EN-423.pdf"
+    }
+  },
+  "output_bearing_supports": {
+    "large": {
+      "part": "6004-2RSH",
+      "quantity": 6,
+      "bore_mm": 20,
+      "OD_mm": 42,
+      "width_mm": 12,
+      "spacing_mm": 34,
+      "C_N": 9950,
+      "C0_N": 5000,
+      "mass_each_kg": 0.068
+    },
+    "small": {
+      "part": "6001-2RSH",
+      "quantity": 7,
+      "bore_mm": 12,
+      "OD_mm": 28,
+      "width_mm": 8,
+      "spacing_mm": 20,
+      "C_N": 5400,
+      "C0_N": 2360,
+      "mass_each_kg": 0.0201
+    }
+  },
+  "output_brakes": {
+    "large": {
+      "family": "Kendrion PM Line size 09",
+      "proposed_part": "86 61109H00-0050",
+      "source": "https://www.kendrion.com/en/productfinder/group/product/brakes/86-61109h00-0050",
+      "holding_torque_Nm": 22.0,
+      "screening_dynamic_torque_Nm": 13.2,
+      "dynamic_torque_status": "Engineering derating to 60% of M4; not a vendor-certified M1 value",
+      "max_single_stop_energy_J": 550.0,
+      "max_estops": 500,
+      "max_estop_speed_rpm": 3000.0,
+      "mass_kg": 1.1,
+      "coil_voltage_V": 24.0,
+      "coil_power_W": 17.0,
+      "OD_mm": 90.0,
+      "ID_mm": 40.0,
+      "length_mm": 37.6,
+      "coupling_time_s": 0.025,
+      "delay_s": 0.02,
+      "ramp_s": 0.015,
+      "delay_status": "Conservative model delay/ramp; exact installation switching time must be measured",
+      "stack_extension_mm": 60.0,
+      "mount_pcd_mm": 75.0,
+      "mount_count": 6,
+      "mount_clearance_mm": 3.3,
+      "mount_status": "Nominal PM size09 pattern; configured 0050 drawing and hub interface require vendor confirmation"
+    },
+    "small": {
+      "family": "Kendrion PM Line size 04 compact stator",
+      "proposed_part": "86 61104H00 configured shaft/hub",
+      "source": "https://www.kendrion.com/fileadmin/user_upload/Downloads/Datasheets_Operating_instructions/Industrial_Brakes/Operating-Instructions-permanent-magnet-brake-pm-line-BA-86-621..H00-2021.09.pdf",
+      "holding_torque_Nm": 2.2,
+      "screening_dynamic_torque_Nm": 1.32,
+      "dynamic_torque_status": "Engineering derating to 60% of M4; not a vendor-certified M1 value",
+      "max_single_stop_energy_J": 200.0,
+      "max_estops": 500,
+      "max_estop_speed_rpm": 3000.0,
+      "mass_kg": 0.19,
+      "coil_voltage_V": 24.0,
+      "coil_power_W": 8.2,
+      "OD_mm": 39.5,
+      "ID_mm": 13.0,
+      "length_mm": 25.7,
+      "coupling_time_s": 0.014,
+      "delay_s": 0.012,
+      "ramp_s": 0.012,
+      "delay_status": "Conservative model delay/ramp; exact installation switching time must be measured",
+      "stack_extension_mm": 46.0,
+      "mount_pcd_mm": 32.5,
+      "mount_count": 3,
+      "mount_clearance_mm": 2.2,
+      "mount_status": "Compact 611 envelope, NOT the 62.5mm flange envelope of 62104-0018. Configured drawing and hub remain procurement gates"
+    }
+  },
+  "gripper": {
+    "motor_part": "Pololu 5216",
+    "ratio": 100.37,
+    "voltage_V": 12,
+    "continuous_current_A": 0.1875,
+    "peak_current_A": 0.35,
+    "gross_pinion_torque_limit_Nm": 0.05,
+    "R_ohm": 16,
+    "Kt_Nm_A": 0.003090639,
+    "Ke_Vs_rad": 0.003090639,
+    "calibrated_efficiency": 0.61339043,
+    "L_H_assumed": 0.0005,
+    "motor_inertia_kg_m2_assumed": 1e-09,
+    "electrical_provenance": "R, Kt and efficiency inferred from the two catalog operating points; L and inertia are assumed, not measured",
+    "pinion_teeth": 20,
+    "module_mm": 0.3,
+    "pressure_angle_deg": 20,
+    "pinion_pitch_radius_mm": 3,
+    "rack_tooth_count": 50,
+    "rack_toothed_length_mm": 47.1238898038469,
+    "rack_tongue_length_mm": 8,
+    "tooth_face_width_mm": 6,
+    "guide_diameter_mm": 4,
+    "guide_center_y_mm": 193,
+    "guide_z_mm": [
+      -10,
+      10
+    ],
+    "pinion_center_y_mm": 201.5,
+    "pad_dimensions_mm": [
+      1.8,
+      24,
+      18.4
+    ],
+    "normal_working_half_gap_mm": [
+      19,
+      38
+    ],
+    "friction_coefficient_assumed": 0.65,
+    "source": "https://www.pololu.com/product/5216"
+  },
+  "folded_transmission_selection": {
+    "architecture": "Parallel-axis folded motor/reducer with actual 1:1 toothed belt, bolted deck, slotted gearbox carriage and removable belt cover. Full original motor/reducer envelope sizes preserved.",
+    "efficiency_screening": 0.97,
+    "large": {
+      "pitch_mm": 5.0,
+      "pulley_teeth": 36,
+      "belt_width_mm": 25.0,
+      "belt_pitch_length_mm": 400.0,
+      "belt_teeth": 80,
+      "center_distance_mm": 110.0,
+      "belt_overall_thickness_mm": 3.81,
+      "gearhead_front_z_mm": -104.0,
+      "pulley_center_z_mm": -122.0,
+      "output_shaft_tail_z_mm": -144.0,
+      "motor_length_mm": 56.1,
+      "gearhead_length_mm": 70.0
+    },
+    "small": {
+      "pitch_mm": 3.0,
+      "pulley_teeth": 30,
+      "belt_width_mm": 15.0,
+      "belt_pitch_length_mm": 225.0,
+      "belt_teeth": 75,
+      "center_distance_mm": 67.5,
+      "belt_overall_thickness_mm": 2.41,
+      "gearhead_front_z_mm": -70.0,
+      "pulley_center_z_mm": -85.0,
+      "output_shaft_tail_z_mm": -106.0,
+      "motor_length_mm": 48.6,
+      "gearhead_length_mm": 39.0
+    },
+    "tooth_geometry_status": "Nominal rounded tooth/groove screening geometry with explicit clearance, not a manufacturing-certified HTD cutter profile. Supplier belt tension and torque rating required.",
+    "source_urls": [
+      "https://www.gates.com/us/en/power-transmission/synchronous-belts/rubber-synchronous-belts.p.9293-000000-000000.v.9293-00537.html",
+      "https://www.gates.com/content/dam/gatesgatescorporationbeltidchart.pdf",
+      "https://www.sdp-si.com/D265/PDF/D265P1023.pdf"
+    ],
+    "tension_adjustment_mm": [
+      -2,
+      2
+    ],
+    "clocking_degrees": {
+      "J1": -90,
+      "J2": 137.01411391980963,
+      "J3": 0,
+      "J4": 0,
+      "J5": 90,
+      "J6": 0
+    },
+    "rating_screen": {
+      "source_url": "https://sdp-si.com/D820/PDFS/Technical-Section.pdf",
+      "large": {
+        "table": 38,
+        "pdf_page_1_based": 80,
+        "base_9mm_torque_Nm": 7.1,
+        "width_factor_25mm": 3.38,
+        "length_factor_400mm": 0.8,
+        "screening_capacity_Nm": 19.1984,
+        "service_factor": 1.5,
+        "operating_screen_limit_Nm": 12.798933333333332
+      },
+      "small": {
+        "table": 37,
+        "pdf_page_1_based": 78,
+        "base_6mm_torque_Nm": 1.4,
+        "width_factor_15mm": 2.97,
+        "length_factor_225mm": 0.9,
+        "screening_capacity_Nm": 3.7422,
+        "service_factor": 1.5,
+        "operating_screen_limit_Nm": 2.4948
+      },
+      "qualification": "Catalog screening at lowest tabulated speed; low-speed extrapolation, custom tooth shape, pretension, alignment, fatigue and supplier approval remain unqualified."
+    }
+  },
+  "additional_input_support_bearings": {
+    "large": {
+      "bore_mm": 12,
+      "outside_diameter_mm": 28,
+      "width_mm": 8,
+      "status": "Nominal envelope; final series, fits, load capacity, preload and life require supplier approval"
+    },
+    "small": {
+      "bore_mm": 7,
+      "outside_diameter_mm": 22,
+      "width_mm": 6,
+      "status": "Nominal envelope; no exact purchased series is claimed; final supplier selection or support redesign is required"
+    }
+  },
+  "removed_component_families": [
+    "Original inline bellows couplings and their extended cages"
+  ],
+  "references": {
+    "maxon_488607": "https://www.maxongroup.com/maxon/view/product/488607",
+    "GP42C": "https://www.maxongroup.com/medias/sys_master/root/9406824972318/GP-42-C.pdf",
+    "maxon_283860": "https://www.maxongroup.us/maxon/view/product/motor/ecmotor/ecmax/ecmax22/283860",
+    "GP22HP": "https://www.maxongroup.com/medias/sys_master/root/9406824251422/Cataloge-Page-EN-423.pdf",
+    "SKF6004": "https://www.skf.com/my/products/rolling-bearings/ball-bearings/deep-groove-ball-bearings/productid-6004-2RSH",
+    "SKF6001": "https://www.skf.com/id/products/rolling-bearings/ball-bearings/deep-groove-ball-bearings/productid-6001-2RSH",
+    "Pololu5216": "https://www.pololu.com/product/5216",
+    "Pololu_datasheet": "https://www.pololu.com/file/0J1487/pololu-micro-metal-gearmotors-rev-6-2.pdf",
+    "Seeger": "https://www.seeger-orbis.com/fileadmin/assets/pdf_datenblaetter/datenblatt_seeger-ringe_471.pdf",
+    "SKF_fits": "https://www.skf.com/group/products/rolling-bearings/principles-of-rolling-bearing-selection/bearing-selection-process/bearing-interfaces/tolerances-and-resultant-fits"
+  }
+}

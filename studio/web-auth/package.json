@@ -1,0 +1,10 @@
+{
+  "name": "cybr-geo-construction-browser",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-2.0-only",
+  "scripts": {"build": "node build.mjs", "test": "node --test test-preflight.mjs test-native-replay.mjs", "probe": "node probe-cad.mjs"},
+  "dependencies": {"fflate": "0.8.3", "replicad": "1.1.0", "replicad-opencascadejs": "1.1.0", "three": "0.180.0"},
+  "devDependencies": {"esbuild": "0.25.12"}
+}

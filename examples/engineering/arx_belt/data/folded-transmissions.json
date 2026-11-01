@@ -1,0 +1,308 @@
+[
+  {
+    "joint": "J1",
+    "parent": "fixed",
+    "child": "turret",
+    "origin_mm": [
+      0,
+      60,
+      0
+    ],
+    "child_origin_mm": [
+      0,
+      60,
+      0
+    ],
+    "axis": [
+      0,
+      1,
+      0
+    ],
+    "input_offset_canonical_mm": [
+      0,
+      110.0,
+      0
+    ],
+    "clocking_degrees": -90.0,
+    "drive_pulley_name": "J1_drive_pulley",
+    "driven_pulley_name": "J1_driven_pulley",
+    "ratio": 1.0,
+    "pitch_radius_mm": 28.64788975654116,
+    "belt_mass_kg": 0.03615111751373405,
+    "extra_joint_armature_kg_m2": 0.0001021537882965907,
+    "carrier_slot_travel_mm": 4.0,
+    "nominal_tooth_tip_clearance_mm": 0.15000000000000013,
+    "motor_envelope_mm": [
+      40,
+      56.1
+    ],
+    "gearhead_envelope_mm": [
+      42,
+      70.0
+    ],
+    "input_axis_local_offset_mm": [
+      110.0,
+      6.735557395310443e-15,
+      0.0
+    ],
+    "cover_z_mm": [
+      -149.0,
+      -146.0
+    ]
+  },
+  {
+    "joint": "J2",
+    "parent": "turret",
+    "child": "upper",
+    "origin_mm": [
+      0,
+      144,
+      -45
+    ],
+    "child_origin_mm": [
+      0,
+      0,
+      -45
+    ],
+    "axis": [
+      0,
+      0,
+      1
+    ],
+    "input_offset_canonical_mm": [
+      0,
+      110.0,
+      0
+    ],
+    "clocking_degrees": 137.01411391980963,
+    "drive_pulley_name": "J2_drive_pulley",
+    "driven_pulley_name": "J2_driven_pulley",
+    "ratio": 1.0,
+    "pitch_radius_mm": 28.64788975654116,
+    "belt_mass_kg": 0.03615111751373405,
+    "extra_joint_armature_kg_m2": 0.0001021537882965907,
+    "carrier_slot_travel_mm": 4.0,
+    "nominal_tooth_tip_clearance_mm": 0.15000000000000013,
+    "motor_envelope_mm": [
+      40,
+      56.1
+    ],
+    "gearhead_envelope_mm": [
+      42,
+      70.0
+    ],
+    "input_axis_local_offset_mm": [
+      -75.0,
+      -80.46738469715541,
+      0.0
+    ],
+    "cover_z_mm": [
+      -149.0,
+      -146.0
+    ]
+  },
+  {
+    "joint": "J3",
+    "parent": "upper",
+    "child": "fore",
+    "origin_mm": [
+      0,
+      280,
+      45
+    ],
+    "child_origin_mm": [
+      0,
+      0,
+      45
+    ],
+    "axis": [
+      0,
+      0,
+      -1
+    ],
+    "input_offset_canonical_mm": [
+      0,
+      110.0,
+      0
+    ],
+    "clocking_degrees": 0.0,
+    "drive_pulley_name": "J3_drive_pulley",
+    "driven_pulley_name": "J3_driven_pulley",
+    "ratio": 1.0,
+    "pitch_radius_mm": 28.64788975654116,
+    "belt_mass_kg": 0.03615111751373405,
+    "extra_joint_armature_kg_m2": 0.0001021537882965907,
+    "carrier_slot_travel_mm": 4.0,
+    "nominal_tooth_tip_clearance_mm": 0.15000000000000013,
+    "motor_envelope_mm": [
+      40,
+      56.1
+    ],
+    "gearhead_envelope_mm": [
+      42,
+      70.0
+    ],
+    "input_axis_local_offset_mm": [
+      -0.0,
+      110.0,
+      0.0
+    ],
+    "cover_z_mm": [
+      -149.0,
+      -146.0
+    ]
+  },
+  {
+    "joint": "J4",
+    "parent": "fore",
+    "child": "roll",
+    "origin_mm": [
+      0,
+      204,
+      0
+    ],
+    "child_origin_mm": [
+      0,
+      -56,
+      0
+    ],
+    "axis": [
+      0,
+      1,
+      0
+    ],
+    "input_offset_canonical_mm": [
+      0,
+      67.5,
+      0
+    ],
+    "clocking_degrees": 0.0,
+    "drive_pulley_name": "J4_drive_pulley",
+    "driven_pulley_name": "J4_driven_pulley",
+    "ratio": 1.0,
+    "pitch_radius_mm": 14.32394487827058,
+    "belt_mass_kg": 0.00773149744871515,
+    "extra_joint_armature_kg_m2": 4.808336463108478e-06,
+    "carrier_slot_travel_mm": 4.0,
+    "nominal_tooth_tip_clearance_mm": 0.12,
+    "motor_envelope_mm": [
+      22,
+      48.6
+    ],
+    "gearhead_envelope_mm": [
+      22,
+      39.0
+    ],
+    "input_axis_local_offset_mm": [
+      -0.0,
+      67.5,
+      0.0
+    ],
+    "cover_z_mm": [
+      -106.0,
+      -103.0
+    ]
+  },
+  {
+    "joint": "J5",
+    "parent": "roll",
+    "child": "bend",
+    "origin_mm": [
+      0,
+      0,
+      -45
+    ],
+    "child_origin_mm": [
+      0,
+      0,
+      -45
+    ],
+    "axis": [
+      0,
+      0,
+      1
+    ],
+    "input_offset_canonical_mm": [
+      0,
+      67.5,
+      0
+    ],
+    "clocking_degrees": 90.0,
+    "drive_pulley_name": "J5_drive_pulley",
+    "driven_pulley_name": "J5_driven_pulley",
+    "ratio": 1.0,
+    "pitch_radius_mm": 14.32394487827058,
+    "belt_mass_kg": 0.00773149744871515,
+    "extra_joint_armature_kg_m2": 4.808336463108478e-06,
+    "carrier_slot_travel_mm": 4.0,
+    "nominal_tooth_tip_clearance_mm": 0.12,
+    "motor_envelope_mm": [
+      22,
+      48.6
+    ],
+    "gearhead_envelope_mm": [
+      22,
+      39.0
+    ],
+    "input_axis_local_offset_mm": [
+      -67.5,
+      4.133182947122317e-15,
+      0.0
+    ],
+    "cover_z_mm": [
+      -106.0,
+      -103.0
+    ]
+  },
+  {
+    "joint": "J6",
+    "parent": "bend",
+    "child": "tool",
+    "origin_mm": [
+      0,
+      169.6,
+      0
+    ],
+    "child_origin_mm": [
+      0.0,
+      169.6,
+      0.0
+    ],
+    "axis": [
+      0,
+      1,
+      0
+    ],
+    "input_offset_canonical_mm": [
+      0,
+      67.5,
+      0
+    ],
+    "clocking_degrees": 0.0,
+    "drive_pulley_name": "J6_drive_pulley",
+    "driven_pulley_name": "J6_driven_pulley",
+    "ratio": 1.0,
+    "pitch_radius_mm": 14.32394487827058,
+    "belt_mass_kg": 0.00773149744871515,
+    "extra_joint_armature_kg_m2": 4.808336463108478e-06,
+    "carrier_slot_travel_mm": 4.0,
+    "nominal_tooth_tip_clearance_mm": 0.12,
+    "motor_envelope_mm": [
+      22,
+      48.6
+    ],
+    "gearhead_envelope_mm": [
+      22,
+      39.0
+    ],
+    "input_axis_local_offset_mm": [
+      -0.0,
+      67.5,
+      0.0
+    ],
+    "cover_z_mm": [
+      -106.0,
+      -103.0
+    ]
+  }
+]
