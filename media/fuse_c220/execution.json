@@ -1,0 +1,14 @@
+{
+  "tested_commit": "67e3abc3f6f74215782ae2a96dd8ef10191886bf",
+  "run_url": "https://github.com/cybrdelic/cybr-geo/actions/runs/34855721027",
+  "source_sha256": {
+    "examples/fuse_c220/render_delivery.py": "8da46200a76f76c5abb9b5afdfd7f74c9ca9583cffc60918f24409b58c4d80bb",
+    "examples/fuse_c220/verify_hotend.py": "d48ec5aefce6e0fef0b98e78fc50c8c99bc9c973904ddd29bb04986cd7784d50",
+    "examples/fuse_c220/verify_mechanism.py": "c4f2d5935f99bde40fa40d912ef8746fd07b9a2d0da9a118ef143542ed06cfcb",
+    "examples/fuse_c220/verify_edges.py": "f7f6256b2d01f8483ea6a25e3ed3ea230ab5354c440abc39732c42a22a9abd39",
+    "examples/fuse_c220/toolpath.py": "b54cf2b8d82046c797ee651408206584666569e68c92ecd53c868fd8240e9248",
+    "examples/fuse_c220/printer.py": "42a86cdb5c298eeb68e176e2c48292b0e70fb46ffc3ce1e91161c9d88924b7c0",
+    "examples/fuse_c220/inspect_hotend.py": "4a2eed6b67774b43e39ad1bc1cf3962c3f53cd435dd04bc0c829fca982d6f8b0"
+  },
+  "scope": "Fresh numerical and CAD checks. No physical printer, thermal or melt simulation, controller execution or manufacturing release."
+}

@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "file": "FUSE_C220.glb",
+      "bytes": 11566376,
+      "sha256": "73f81b82556f789c442d406ac08191814190aad0f563e2d333d6ed47ce0a5f11"
+    },
+    {
+      "file": "FUSE_C220_analytic.step.zip",
+      "bytes": 11414593,
+      "sha256": "8805e9490f30119d39d25dfb50d8bfa2c82fb55914969d159fdb505383126a27"
+    },
+    {
+      "file": "execution.json",
+      "bytes": 1082,
+      "sha256": "91564261f350f25adf4c918c6ac4fb4f0fc3641425d18df8a02f535fd919d7a3"
+    }
+  ],
+  "source_commit": "d913877447589414137ee97ec670ce2257ecf834",
+  "scope": "Nominal digital assembly only; STEP includes analytic BREP bodies, while GLB includes tessellated and mesh-only components. Not a manufacturing release."
+}

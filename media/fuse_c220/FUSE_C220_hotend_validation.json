@@ -1,0 +1,145 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "continuous feed, taper and nozzle outlet are unobstructed",
+      "passed": true,
+      "detail": {
+        "blocked": [],
+        "feed_diameter_mm": 1.75,
+        "outlet_witness_diameter_mm": 0.38,
+        "feed_start_z_mm": 90.1,
+        "feed_end_z_mm": 217.0
+      }
+    },
+    {
+      "check": "hotend and cooling solids do not interpenetrate",
+      "passed": true,
+      "detail": {
+        "narrow_phase_queries": 39,
+        "collisions": []
+      }
+    },
+    {
+      "check": "nozzle, heatbreak, heatsink and guide meet at nominal interfaces",
+      "passed": true,
+      "detail": [
+        {
+          "parts": [
+            "nozzle_040",
+            "heatbreak"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatbreak",
+            "heatsink_core"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_0"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_1"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_2"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_3"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_4"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_5"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_6"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_7"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_8"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "heatsink_fin_9"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heatsink_core",
+            "filament_guide_sleeve"
+          ],
+          "gap_mm": 0.0
+        }
+      ]
+    },
+    {
+      "check": "heater bore is separate from feed bore and cartridge clears block",
+      "passed": true,
+      "detail": {
+        "nominal_interbore_ligament_mm": 0.9000000000000004,
+        "cartridge_block_intersection_mm3": 0.0,
+        "qualification": "Nominal geometry only; not a thermal or strength margin"
+      }
+    },
+    {
+      "check": "both cooling ducts have open passages to blower outlets",
+      "passed": true,
+      "detail": [
+        {
+          "side": -1,
+          "blocked": []
+        },
+        {
+          "side": 1,
+          "blocked": []
+        }
+      ]
+    }
+  ],
+  "scope": "Nominal analytic passage and intersection checks. No thread-fit, fastener-retention, heater/sensor calibration, thermal, airflow, pressure, melt, adhesion, stiffness or physical printing qualification."
+}

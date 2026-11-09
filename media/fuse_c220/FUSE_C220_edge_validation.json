@@ -1,0 +1,70 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "reject X overflow",
+      "passed": true
+    },
+    {
+      "check": "reject Y overflow",
+      "passed": true
+    },
+    {
+      "check": "reject Z overflow",
+      "passed": true
+    },
+    {
+      "check": "reject NaN",
+      "passed": true
+    },
+    {
+      "check": "x_belt_tooth_2 unit straight-span velocity",
+      "passed": true,
+      "measured": [
+        1.0000000000047748,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "check": "y_belt_tooth_2 unit straight-span velocity",
+      "passed": true,
+      "measured": [
+        0.0,
+        1.0000000000047748,
+        0.0
+      ]
+    },
+    {
+      "check": "both hob contact surfaces feed filament downward for positive E",
+      "passed": true,
+      "velocities_mm_per_mm_E": [
+        [
+          -9.756639940405876e-07,
+          0.0,
+          -1.0000000003174137
+        ],
+        [
+          9.756639940405876e-07,
+          0.0,
+          -1.0000000003174137
+        ]
+      ]
+    },
+    {
+      "check": "spool releases filament toward its front exit for positive E",
+      "passed": true,
+      "velocity_mm_per_mm_E": [
+        0.0,
+        -0.9999999996068708,
+        -5.684341886080801e-08
+      ]
+    },
+    {
+      "check": "four-start right-handed screw phase follows rising nut",
+      "passed": true,
+      "samples": 1000,
+      "maximum_phase_error_turns": 1.4210854715202004e-14
+    }
+  ]
+}

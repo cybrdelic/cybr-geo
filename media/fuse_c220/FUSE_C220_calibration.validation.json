@@ -1,0 +1,65 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "all commanded coordinates lie within 220 mm travel",
+      "passed": true,
+      "detail": {
+        "minimum": [
+          77.9,
+          77.9,
+          0.2
+        ],
+        "maximum": [
+          142.1,
+          142.1,
+          45.0
+        ]
+      }
+    },
+    {
+      "check": "filament-volume equals commanded stadium bead volume",
+      "passed": true,
+      "detail": {
+        "relative_error_max": 8.13759073570175e-06,
+        "extruded_filament_mm": 4244.2741385,
+        "polymer_volume_mm3": 10208.675659582885
+      }
+    },
+    {
+      "check": "conservative flow below 5 mm3/s",
+      "passed": true,
+      "detail": {
+        "max_mm3_per_s": 2.382477796076938
+      }
+    },
+    {
+      "check": "perimeter support from preceding layer",
+      "passed": true,
+      "detail": {
+        "lateral_step_mm": 0.10913994743091794,
+        "layer_height_mm": 0.2
+      }
+    },
+    {
+      "check": "toolpath to machine-coordinate transform closes",
+      "passed": true,
+      "detail": {
+        "samples": 5000,
+        "maximum_nozzle_error_mm": 0
+      }
+    },
+    {
+      "check": "start-stop acceleration timing respects 600 mm/s2",
+      "passed": true,
+      "detail": {
+        "motion_seconds": 7011.159970615729,
+        "timing_model": "each G0/G1 segment accelerates from rest; conservative, no junction lookahead"
+      }
+    }
+  ],
+  "moves": 53494,
+  "extrusion_moves": 52396,
+  "layers": 180,
+  "scope": "G-code kinematics, commanded volume, support and ideal motion timing. No real melt/adhesion/controller execution."
+}

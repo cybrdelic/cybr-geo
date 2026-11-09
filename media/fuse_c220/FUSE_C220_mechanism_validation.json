@@ -1,0 +1,332 @@
+{
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "unique finite named geometry",
+      "passed": true,
+      "detail": {
+        "parts": 1111,
+        "triangles": 590408
+      }
+    },
+    {
+      "check": "all analytic bodies valid with positive volume",
+      "passed": true,
+      "detail": {
+        "analytic_bodies": 1078,
+        "invalid": []
+      }
+    },
+    {
+      "check": "both belt loops close and retain fixed length",
+      "passed": true,
+      "detail": [
+        {
+          "name": "y_belt",
+          "length_mm": 1006.0,
+          "center_distance_mm": 483.0,
+          "pitch_radius_mm": 6.366197723675814,
+          "closure_error_mm": 0.0
+        },
+        {
+          "name": "x_belt",
+          "length_mm": 604.0,
+          "center_distance_mm": 282.0,
+          "pitch_radius_mm": 6.366197723675814,
+          "closure_error_mm": 0.0
+        }
+      ]
+    },
+    {
+      "check": "X carriage remains on supported rail at both travel limits",
+      "passed": true,
+      "detail": {
+        "minimum_end_margin_mm": 24,
+        "rail_ends_mm": [
+          -157,
+          157
+        ]
+      }
+    },
+    {
+      "check": "Y bushes remain on rods at both travel limits",
+      "passed": true,
+      "detail": {
+        "minimum_end_margin_mm": 67.5
+      }
+    },
+    {
+      "check": "Z carriage stays on vertical rail through 220 mm travel",
+      "passed": true,
+      "detail": {
+        "bottom_margin_mm": 48.0,
+        "top_margin_mm": 33.0
+      }
+    },
+    {
+      "check": "belt pitch and screw lead close motor-coordinate conversion",
+      "passed": true,
+      "detail": {
+        "samples": 20000,
+        "max_error_mm": 1.4210854715202004e-14,
+        "rotation_distance_mm": [
+          40,
+          40,
+          8
+        ]
+      }
+    },
+    {
+      "check": "modeled nozzle tip matches print height through 27 poses",
+      "passed": true,
+      "detail": {
+        "max_z_error_mm": 0
+      }
+    },
+    {
+      "check": "selected critical CAD pairs do not collide",
+      "passed": true,
+      "detail": [
+        {
+          "parts": [
+            "x_carriage",
+            "x_rail"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 0.1999999999999602
+        },
+        {
+          "parts": [
+            "hotend_clamp_bridge",
+            "toolhead_backplate"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 8.881784197001252e-16
+        },
+        {
+          "parts": [
+            "x_belt_anchor_bridge",
+            "toolhead_backplate"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 0.0
+        },
+        {
+          "parts": [
+            "x_motor_laminated_body",
+            "x_gantry_beam"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 9.0
+        },
+        {
+          "parts": [
+            "x_motor_laminated_body",
+            "portal_column_-175"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 3.0
+        },
+        {
+          "parts": [
+            "z_motor_-175_laminated_body",
+            "portal_column_-175"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 7.0
+        },
+        {
+          "parts": [
+            "z_motor_175_laminated_body",
+            "portal_column_175"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 7.0
+        },
+        {
+          "parts": [
+            "y_motor_laminated_body",
+            "base_cross_235"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 4.0
+        },
+        {
+          "parts": [
+            "y_idler_mount",
+            "base_cross_-235"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 1.7763568394002505e-14
+        },
+        {
+          "parts": [
+            "extruder_motor_laminated_body",
+            "x_gantry_beam"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 1.5
+        },
+        {
+          "parts": [
+            "extruder_motor_laminated_body",
+            "x_carriage"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 1.5
+        },
+        {
+          "parts": [
+            "toolhead_backplate",
+            "x_gantry_beam"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 27.5
+        },
+        {
+          "parts": [
+            "hotend_clamp_bridge",
+            "x_gantry_beam"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 23.0
+        },
+        {
+          "parts": [
+            "coldend_fan_housing",
+            "x_gantry_beam"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 50.0
+        },
+        {
+          "parts": [
+            "nozzle_040",
+            "removable_PEI_sheet"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 0.20000000000000284
+        },
+        {
+          "parts": [
+            "toolhead_backplate",
+            "heated_aluminium_bed"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 55.19999999999999
+        },
+        {
+          "parts": [
+            "x_gantry_beam",
+            "portal_top"
+          ],
+          "max_intersection_mm3": 0,
+          "minimum_separation_mm": 71.0
+        }
+      ]
+    },
+    {
+      "check": "X belt clears the moving extruder motor in Y",
+      "passed": true,
+      "detail": {
+        "clearance_mm": 1.5
+      }
+    },
+    {
+      "check": "translating bodies clear fixed geometry at five full-travel poses",
+      "passed": true,
+      "detail": {
+        "narrow_phase_queries": 90,
+        "collisions": []
+      }
+    },
+    {
+      "check": "bed stack and toolhead mounting interfaces touch",
+      "passed": true,
+      "detail": [
+        {
+          "parts": [
+            "x_motor_bracket",
+            "x_gantry_beam"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "x_idler_bracket",
+            "x_gantry_beam"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "z_motor_clamp_-175",
+            "base_cross_50"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "y_bed_carrier",
+            "carrier_ear_-98"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "carrier_ear_-98",
+            "bed_standoff_-98_-98"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "bed_standoff_-98_-98",
+            "heated_aluminium_bed"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "heated_aluminium_bed",
+            "magnetic_sheet"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "magnetic_sheet",
+            "removable_PEI_sheet"
+          ],
+          "gap_mm": 1.4210854715202004e-14
+        },
+        {
+          "parts": [
+            "extruder_housing",
+            "toolhead_backplate"
+          ],
+          "gap_mm": 0.0
+        },
+        {
+          "parts": [
+            "x_carriage",
+            "toolhead_backplate"
+          ],
+          "gap_mm": 1.7763568394002505e-15
+        }
+      ]
+    },
+    {
+      "check": "filament endpoint follows extruder inlet",
+      "passed": true,
+      "detail": {
+        "endpoint_mm": [
+          62.0,
+          0.0,
+          357.0
+        ]
+      }
+    }
+  ],
+  "scope": "Nominal CAD interfaces, selected BREP interference checks, full axis envelopes, ideal kinematics. Not an exhaustive tolerance-stack collision certification; no heat/strength/contact/friction/controller or physical print validation."
+}

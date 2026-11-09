@@ -32,8 +32,13 @@ class Move:
  def length(self):return float(np.linalg.norm(self.end-self.start))
  @property
  def deposits(self):return self.e1>self.e0+1e-7 and self.length>1e-7
+ @property
+ def motion_length(self):
+  # E-only moves still consume time and move both feed hobs.
+  return self.length if self.length>1e-9 else abs(self.e1-self.e0)
  def fraction(self,time):
-  t=float(np.clip(time-self.t0,0,self.duration));L=self.length
+  if not math.isfinite(time):raise ValueError('Replay time must be finite')
+  t=float(np.clip(time-self.t0,0,self.duration));L=self.motion_length
   if L<1e-9:return 1.
   a=self.acceleration;v=min(self.feed,math.sqrt(a*L));ta=v/a;da=.5*a*ta*ta
   tc=max(0,(L-2*da)/v)
@@ -44,6 +49,8 @@ class Move:
 
 
 def duration(length,feed,accel=600.):
+ if not all(math.isfinite(v) for v in (length,feed,accel)) or length<0 or feed<=0 or accel<=0:
+  raise ValueError('Motion length must be finite/nonnegative and speed/acceleration finite/positive')
  if length<=1e-9:return 0.
  v=min(feed,math.sqrt(accel*length));return 2*v/accel+max(0,(length-v*v/accel)/v)
 
@@ -57,6 +64,8 @@ def perimeter(layer,wall,segments=96):
 
 
 def generate(path,layers=180):
+ if isinstance(layers,bool) or not isinstance(layers,int) or not 1<=layers<=1075:
+  raise ValueError('Layer count must be an integer from 1 to 1075, leaving a 5 mm park lift')
  lines=['; CYBR FUSE C220 / deterministic six-lobed calibration vessel',
  '; Coordinates mm; 0.20 mm layers, 0.44 mm stadium-section bead; 1.75 mm filament',
  '; Nominal 24 V machine. Review firmware, homing and heater calibration before physical use.',
@@ -86,55 +95,110 @@ def generate(path,layers=180):
      c=np.array(seg.coords)
      if i%2:c=c[::-1]
      travel((*c[0],z));extrude((*c[-1],z));i+=1
- lines+=[';END','G0 Z45 F900','M104 S0','M140 S0','M84']
+ lines+=[';END',f'G0 Z{max(45.,layers*HEIGHT+5):.5f} F900','M104 S0','M140 S0','M84']
  Path(path).write_text('\n'.join(lines)+'\n')
  return parse(path)
 
 
+def _command(code,line_number):
+ """Tokenize the entire line; unknown syntax must never become a no-op."""
+ match=re.fullmatch(r'([GM])([0-9]+)(.*)',code.upper())
+ if match is None:raise ValueError(f'Line {line_number}: unsupported G-code command')
+ command=match[1]+str(int(match[2]));tail=match[3];words={};end=0
+ pattern=r'([A-Z])\s*([+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))?'
+ for word in re.finditer(pattern,tail):
+  if tail[end:word.start()].strip():raise ValueError(f'Line {line_number}: malformed G-code')
+  key=word[1]
+  if key in words:raise ValueError(f'Line {line_number}: duplicate {key} parameter')
+  value=float(word[2]) if word[2] is not None else None
+  if value is not None and not math.isfinite(value):raise ValueError(f'Line {line_number}: non-finite G-code')
+  words[key]=value;end=word.end()
+ if tail[end:].strip():raise ValueError(f'Line {line_number}: malformed G-code')
+ allowed={'G0':'XYZEF','G1':'XYZEF','G21':'','G90':'','G91':'','G28':'XYZ',
+          'G92':'E','M82':'','M83':'','M104':'S','M109':'S','M140':'S','M190':'S',
+          'M84':'','M400':''}
+ if command not in allowed:raise ValueError(f'Line {line_number}: unsupported {command}')
+ if set(words)-set(allowed[command]):raise ValueError(f'Line {line_number}: unsupported parameter for {command}')
+ if command!='G28' and any(v is None for v in words.values()):
+  raise ValueError(f'Line {line_number}: numeric parameter required')
+ return command,words
+
+
 def parse(path):
- pos=np.array([0.,0.,0.]);e=0.;feed=30.;t=0.;layer=-1;moves=[];absxyz=True;abse=True
- temps={'hotend':0.,'bed':0.};heated=False
- for line in Path(path).read_text().splitlines():
-  if line.startswith(';LAYER:'):layer=int(line.split(':')[1])
-  code=line.split(';')[0].strip()
+ """Replay a strict documented linear Klipper-compatible G-code subset.
+
+ M109 is a declared temperature-wait event, not a temperature simulation.
+ G92 E resets the logical register without rewinding the physical feed shaft.
+ Homing is an initial datum assumption; mid-program homing and XYZ G92 are
+ rejected because their physical trajectories/coordinate offsets are not modeled.
+ """
+ pos=np.array([0.,0.,0.]);e=0.;shaft_e=0.;feed=30.;t=0.;layer=-1
+ moves=[];absxyz=True;abse=True;hotend_target=0.;wait_acknowledged=False
+ motors_enabled=True
+ for number,line in enumerate(Path(path).read_text().splitlines(),1):
+  if line.strip().startswith(';LAYER:'):layer=int(line.strip().split(':',1)[1])
+  code=line.split(';',1)[0].strip()
   if not code:continue
-  command=code.split()[0]
-  words={a:float(v) for a,v in re.findall(r'([XYZEFST])\s*(-?\d+(?:\.\d+)?)',code)}
+  command,words=_command(code,number)
   if command=='G90':absxyz=True
   elif command=='G91':absxyz=False
   elif command=='M82':abse=True
   elif command=='M83':abse=False
-  elif command=='G28':pos[:]=0
-  elif command=='G92':
-   e=words.get('E',e)
+  elif command=='G28':
+   if moves:raise ValueError(f'Line {number}: mid-program homing trajectory is unsupported')
    for i,key in enumerate('XYZ'):
-    if key in words:pos[i]=words[key]
-  elif command in ('M104','M109'):temps['hotend']=words.get('S',0)
-  elif command in ('M140','M190'):temps['bed']=words.get('S',0)
+    if not words or key in words:pos[i]=0.
+   motors_enabled=True
+  elif command=='G92':
+   if not words:raise ValueError(f'Line {number}: only explicit G92 E is supported')
+   e=words['E']
+  elif command in ('M104','M109','M140','M190'):
+   if 'S' not in words or words['S']<0:raise ValueError(f'Line {number}: nonnegative S target required')
+   if command in ('M104','M109'):
+    if words['S']!=hotend_target:wait_acknowledged=False
+    hotend_target=words['S']
+    if command=='M109':wait_acknowledged=hotend_target>=170.
+  elif command=='M84':motors_enabled=False
   elif command in ('G0','G1'):
+   if not motors_enabled:raise ValueError(f'Line {number}: motion after motor disable')
    new=pos.copy()
    for i,key in enumerate('XYZ'):
     if key in words:new[i]=words[key] if absxyz else new[i]+words[key]
-   ee=(words['E'] if abse else e+words['E']) if 'E' in words else e
-   if 'F' in words:feed=words['F']/60
-   if feed<=0:raise ValueError('G-code feedrate must be positive')
-   d=float(np.linalg.norm(new-pos));dt=duration(d,feed)
-   if ee>e+1e-6 and temps['hotend']<170:raise ValueError('Positive extrusion before hotend target')
-   if d>0:moves.append(Move(pos.copy(),new.copy(),e,ee,feed,dt,t,layer));t+=dt
-   pos,e=new,ee
+   # Klipper: G91 also makes E relative; M83 forces relative E under G90.
+   ee=(words['E'] if abse and absxyz else e+words['E']) if 'E' in words else e
+   delta_e=ee-e
+   if 'F' in words:feed=words['F']/60.
+   if not math.isfinite(feed) or feed<=0:raise ValueError(f'Line {number}: G-code feedrate must be positive and finite')
+   if abs(delta_e)>1e-9 and (hotend_target<170 or not wait_acknowledged):
+    raise ValueError(f'Line {number}: extrusion requires an acknowledged M109 wait')
+   State(new[0]-110,new[1]-110,new[2],shaft_e+delta_e)
+   length=float(np.linalg.norm(new-pos))
+   if delta_e>1e-7 and length>1e-7 and abs(new[2]-pos[2])>1e-7:
+    raise ValueError(f'Line {number}: nonplanar deposition is unsupported by the bead model')
+   distance=length if length>1e-9 else abs(delta_e)
+   dt=duration(distance,feed)
+   if dt>0:
+    moves.append(Move(pos.copy(),new.copy(),shaft_e,shaft_e+delta_e,feed,dt,t,layer))
+    t+=dt
+   pos,e,shaft_e=new,ee,shaft_e+delta_e
  return Toolpath(moves)
 
 class Toolpath:
  def __init__(self,moves):
+  if not moves:raise ValueError('G-code contains no motion')
   self.moves=moves;self.ends=np.array([m.t0+m.duration for m in moves]);self.total=float(self.ends[-1]);self._beads=None
   self.deposits=[m for m in moves if m.deposits]
-  self.deposition_end=max(m.t0+m.duration for m in self.deposits)
+  self.deposition_end=max((m.t0+m.duration for m in self.deposits),default=0.)
  def state(self,time):
-  i=min(int(np.searchsorted(self.ends,time)),len(self.moves)-1);m=self.moves[i];u=m.fraction(time)
+  if not math.isfinite(time):raise ValueError('Replay time must be finite')
+  i=min(int(np.searchsorted(self.ends,time,side='right')),len(self.moves)-1);m=self.moves[i];u=m.fraction(time)
   p=m.start+(m.end-m.start)*u;e=m.e0+(m.e1-m.e0)*u
   return State(p[0]-110,p[1]-110,p[2],e),i,u
  def prepare_beads(self):
-  """Eight-sided flattened bead cross-section; exact stadium area used for E."""
+  """Twelve-vertex flattened cross-section; commanded E uses stadium area."""
+  if not self.deposits:
+   self._beads=(np.empty((0,3)),np.empty((0,3),dtype=np.int32),np.empty((0,3)),np.empty(0),0,0)
+   return
   vs=[];fs=[];times=[]
   for m in self.deposits:
    v,f=bead(m.start,m.end)
@@ -153,7 +217,7 @@ class Toolpath:
    p=Part('printed_extrusion_beads',verts[:n*nv],faces[:n*nf],normals[:n*nv],8,group='deposition',motion='bed',provenance='physically-derived',role='Completed positive-E G-code segments; imposed bead geometry, not melt CFD')
    parts.append(p)
   state,index,u=self.state(time);m=self.moves[index]
-  if m.deposits and u>1e-7:
+  if m.deposits and 1e-7<u<1.:
    v,f=bead(m.start,m.start+(m.end-m.start)*u)
    parts.append(mesh_part('current_extrusion_bead',v,f,8,group='deposition',motion='bed',provenance='physically-derived',role='Partial current extrusion to actual nozzle location'))
   return parts
@@ -191,7 +255,7 @@ def verify(tp):
   worldbed=bedpoint+np.array([-110,-110-s.y,BED]);worldtip=np.array([s.x,0,BED+s.z]);err=max(err,float(np.linalg.norm(worldbed-worldtip)))
  add('toolpath to machine-coordinate transform closes',err<1e-9,{'samples':5000,'maximum_nozzle_error_mm':err})
  add('start-stop acceleration timing respects 600 mm/s2',all(m.duration>=m.length/m.feed-1e-9 for m in tp.moves),{'motion_seconds':tp.total,'timing_model':'each G0/G1 segment accelerates from rest; conservative, no junction lookahead'})
- return {'all_passed':all(c['passed'] for c in checks),'checks':checks,'moves':len(tp.moves),'extrusion_moves':len(tp.deposits),'layers':180,'scope':'G-code kinematics, commanded volume, support and ideal motion timing. No real melt/adhesion/controller execution.'}
+ return {'all_passed':all(c['passed'] for c in checks),'checks':checks,'moves':len(tp.moves),'extrusion_moves':len(tp.deposits),'layers':len({m.layer for m in tp.deposits}),'scope':'G-code kinematics, commanded volume, support and ideal motion timing. No real melt/adhesion/controller execution.'}
 
 if __name__=='__main__':
  import sys

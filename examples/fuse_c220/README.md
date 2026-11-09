@@ -15,6 +15,37 @@ CAD interfaces, guide support, ideal motor/axis kinematics and G-code deposition
 A physical printer has not been built or tested. The STEP assembly is useful for
 development and part/interface inspection; it is not a released manufacturing pack.
 
+## Functional continuation (2026-09-14)
+
+This revision repairs blocked hotend geometry: the heater block has a central
+bore, the cartridge is offset from that bore, the nozzle has a stepped melt
+passage, and the heatbreak/heatsink/fins have separate mating volumes.
+The cooling ring that intersected the heater has been replaced by two open
+ducts routed around it. These are nominal custom interfaces; component fit,
+retention, thermal performance and physical printing still require engineering.
+
+`verify_hotend.py` performs independent analytic feed/air passage witnesses,
+pairwise hotend intersections and nominal contact checks. Regression tests
+also insert an obstructing solid and require the feed check to fail.
+The workflow records fresh results and produces current-V9 renders only after
+the tests pass. Its status and uploaded evidence determine what actually ran.
+
+The G-code replay accepts a documented linear Klipper-compatible subset:
+G0/G1, G21, G90/G91, initial G28, G92 E, M82/M83, M104/M109,
+M140/M190, M84 and M400. It consumes each complete line, rejects unknown
+commands/parameters and invalid travel, retains timed E-only motion, and
+keeps physical feed continuous across G92 E resets. G91 makes E relative;
+M83 forces relative E in G90 as well. An M109 wait declaration is required
+before extrusion; this is a program-order check, not a temperature measurement.
+Mid-program homing, XYZ G92, arcs and nonplanar deposition are not modeled
+and are rejected. Pure-E purges move the feed mechanism but produce no bead;
+ooze, pressure recovery and retraction effects are not simulated.
+Exact move boundaries no longer add a duplicate completed bead.
+
+The geometry renderer retains the fixed 0.20 mm / 0.44 mm bead approximation.
+Arbitrary sliced jobs are not qualified by accepting their linear commands.
+Use the supplied numerical checks to assess commanded volume and travel.
+
 ## Mechanism
 
 | Subsystem | Model contract |
@@ -51,8 +82,8 @@ envelopes. These distinctions are recorded in the part roles and STEP coverage.
 - Closure and length of both belts; X/Y/Z guide support at full travel limits.
 - 20,000 motor/axis conversion samples; 27 nozzle-datum poses.
 - Boolean interference and minimum-distance queries for selected critical CAD pairs.
-- 90 exact CAD intersection queries for translating bodies against fixed geometry
-  across five full-travel poses, with zero detected collisions.
+- Exact CAD intersection queries for translating bodies against fixed geometry
+  across five full-travel poses.
 - Physical contact at selected bed-stack and carriage-mounting interfaces.
 - The moving filament endpoint at the extruder inlet.
 
@@ -85,6 +116,7 @@ export OMP_NUM_THREADS=8
 python examples/fuse_c220/toolpath.py deliverables/FUSE_C220_calibration.gcode
 python examples/fuse_c220/verify_mechanism.py
 python examples/fuse_c220/verify_edges.py
+python examples/fuse_c220/verify_hotend.py
 python examples/fuse_c220/render_delivery.py preview
 python examples/fuse_c220/render_delivery.py stills
 python examples/fuse_c220/render_delivery.py film

@@ -1,0 +1,221 @@
+{
+  "model": "CYBR FUSE C220",
+  "view": "feed_section",
+  "render_profile": "v9",
+  "renderer": "Mitsuba 3 path + albedo/normal-guided Intel OIDN",
+  "variant": "llvm_ad_rgb",
+  "resolution": [
+    1200,
+    1200
+  ],
+  "spp": 256,
+  "max_depth": 14,
+  "triangles": 10584,
+  "parts": 17,
+  "render_shapes": 7,
+  "geometry_mode": "material-variation-batches-procedural-mesh",
+  "camera": {
+    "origin": [
+      -2.5455063227061768e-14,
+      -136.5709101039558,
+      144.4541561991826
+    ],
+    "target": [
+      0.0,
+      2.0,
+      115.0
+    ],
+    "distance": 141.66666666666669,
+    "focal_length_mm": 75.0,
+    "f_stop": 16.0,
+    "horizontal_fov_degrees": 26.991466561591622
+  },
+  "environment": {
+    "asset": "small_workshop",
+    "resolution": "2k",
+    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/small_workshop_2k.hdr",
+    "md5": "49729aaea6f3328d8264fb7010f3852c",
+    "license": "CC0",
+    "provider": "Poly Haven",
+    "rotation_degrees": 195.0,
+    "scale": 0.72
+  },
+  "bench_surface": {
+    "asset": "blue_metal_plate",
+    "map": "Rough",
+    "resolution": "1k",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_rough_1k.jpg",
+    "md5": "76c3911d8ad2416e4db3104a2ef831c7",
+    "license": "CC0",
+    "provider": "Poly Haven",
+    "geometry": "finite rendered rectangle",
+    "roughness_source": "scanned map"
+  },
+  "post": "Guided OIDN on linear HDR radiance, ACES fitted tone curve, sRGB transfer only; no compositing, image synthesis, frame interpolation, or sharpening",
+  "generated_imagery": false,
+  "aov_channels": [
+    "beauty.R",
+    "beauty.G",
+    "beauty.B",
+    "albedo.R",
+    "albedo.G",
+    "albedo.B",
+    "normal.X",
+    "normal.Y",
+    "normal.Z"
+  ],
+  "truth": {
+    "model": "CYBR FUSE C220",
+    "requested_intent": "auto",
+    "resolved_intent": "concept",
+    "allow_estimates": false,
+    "passed": true,
+    "part_count": 17,
+    "tier_counts": {
+      "designed": 17
+    },
+    "blocked": [],
+    "uncertain": [],
+    "parts": [
+      {
+        "name": "nozzle_040",
+        "group": "hotend",
+        "role": "0.40 mm outlet, tapered transition and 2 mm feed bore; nominal spigot thread envelope; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heater_block",
+        "group": "hotend",
+        "role": "Offset cartridge bore and continuous central hotend bore; thread and retention details still nominal; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heater_cartridge",
+        "group": "hotend",
+        "role": "heater cartridge; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatbreak",
+        "group": "hotend",
+        "role": "Bored heatbreak seats against nozzle at Z+12; thin neck and nominal upper interface; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_core",
+        "group": "hotend",
+        "role": "heatsink core; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_0",
+        "group": "hotend",
+        "role": "heatsink fin 0; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_1",
+        "group": "hotend",
+        "role": "heatsink fin 1; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_2",
+        "group": "hotend",
+        "role": "heatsink fin 2; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_3",
+        "group": "hotend",
+        "role": "heatsink fin 3; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_4",
+        "group": "hotend",
+        "role": "heatsink fin 4; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_5",
+        "group": "hotend",
+        "role": "heatsink fin 5; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_6",
+        "group": "hotend",
+        "role": "heatsink fin 6; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_7",
+        "group": "hotend",
+        "role": "heatsink fin 7; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_8",
+        "group": "hotend",
+        "role": "heatsink fin 8; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "heatsink_fin_9",
+        "group": "hotend",
+        "role": "heatsink fin 9; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "hotend_clamp_bridge",
+        "group": "hotend",
+        "role": "hotend clamp bridge; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      },
+      {
+        "name": "filament_guide_sleeve",
+        "group": "hotend",
+        "role": "filament guide sleeve; inspection-only Y=0 and Z=55 CAD section",
+        "provenance": "designed-concept",
+        "tier": "designed",
+        "allowed": true
+      }
+    ],
+    "claim": "explicitly designed concept geometry; no estimates or unknowns"
+  },
+  "generic_v9_dispatch": "llvm_ad_rgb + exact in-memory procedural Mesh material/variation batches; workshop HDRI with ordinary unbiased importance sampling; V9 lighting/material/camera/AOV/OIDN/color contract unchanged",
+  "inspection_section": "Negative-Y half and material above nozzle Z+55 removed by analytic BREP cuts; not the assembled part."
+}
