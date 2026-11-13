@@ -1,7 +1,8 @@
 # Optional analytic solid construction
 
-Analytic construction is provided through the optional CadQuery backend.
-Install with `python -m pip install -e ".[solid]"`.
+Copy `cybrgeo/solid.py`, `tests/test_solid.py`, and `examples/housing.py` into the
+new GEO package. Do NOT copy the baseline modules in this scratch directory over
+other workers' changes. No new import in `cybrgeo/__init__.py` is necessary:
 
 ```python
 from cybrgeo.solid import Solid

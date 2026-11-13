@@ -18,6 +18,8 @@ def heightfield(x,y,heights):
 
 def _cap(points):
     """Ear-clip a planar simple polygon; reject ambiguous/nonplanar input."""
+    from .profiles import validate_planar_ring
+    validate_planar_ring(points)
     normal=np.sum(np.cross(points,np.roll(points,-1,axis=0)),axis=0)
     if np.linalg.norm(normal)<1e-12: raise ValueError('Degenerate cap outline')
     normal/=np.linalg.norm(normal)

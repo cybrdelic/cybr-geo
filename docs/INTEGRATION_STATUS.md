@@ -1,6 +1,6 @@
 # Expanded core candidate, 13 November 2026
 
-This expanded source extends
+This is a tested local integration candidate, **not a GitHub push**. It extends
 the published small core without deleting its prior operations.
 
 Run `python -m pip install -e '.[profiles,solid]'`, then
@@ -27,6 +27,9 @@ The new topology example's 25 authored lines are all represented in its video.
 Import, selection and reference lines are illustrated as guides/highlights in the
 3D viewport rather than falsely claimed to create geometry. Its final scalloped
 surface is a demonstration of general editing, not a photorealistic asset.
+
+The ZIP includes source/tests/docs and previously published example media.
+The new topology video is delivered separately to keep downloads small.
 
 ## Added mesh LOD
 

@@ -19,3 +19,10 @@ from .spatial import MeshBVH, PointHit, PairHit, ClearanceReport
 from .organic import crease_subdivide, LocalEdit, local_displace, lattice_deform, Multires, transfer_attributes
 from .adaptive import SurfaceAnchor, Refinement, refine, Projection, fit_surface, reproject_anchor
 from .lod import LOD, simplify, sampled_surface_error
+from .mates import Frame, Feature, mate, place
+from .correspondence import Correspondence, CorrespondenceError, Resolution, project_reference
+from .patches import BezierPatch, join_patch, join_metrics, stitch_patches, surface_safety, checked_sweep, offset_surface
+
+from .construction import ConstructionError
+
+from .resolution import refine_to_size

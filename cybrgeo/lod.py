@@ -37,9 +37,9 @@ class LOD:
     source_vertex_groups: tuple
     source_face_indices: np.ndarray
 
-    def rebind(self, anchor, source, max_distance):
-        """Explicit nearest-surface rebinding, not exact semantic ancestry."""
-        return reproject_anchor(anchor,source,self.mesh,max_distance)
+    def rebind(self, anchor, source, max_distance, **policy):
+        """Conservative rebind; ambiguous surface fans require explicit labels."""
+        return reproject_anchor(anchor,source,self.mesh,max_distance,**policy)
 
 
 def simplify(mesh, target_faces, max_error, preserve_boundary=True,

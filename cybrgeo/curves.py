@@ -66,20 +66,23 @@ def resample_polyline(points, count, closed=False):
     return np.column_stack([np.interp(x,s,p[:,k]) for k in range(p.shape[1])])
 
 
-def transport_frames(path, initial_normal=None, twist=0.):
+def transport_frames(path, initial_normal=None, twist=0., *, closed=False):
     """Discrete rotation-minimizing frames (tangent, normal, binormal).
 
 Twist is radians per sample or a scalar total angle, ramped by arc length.
-A 180-degree reversal is ambiguous and rejected. This is an open-path frame;
-closed-loop holonomy is not silently hidden by a forced last-ring rotation.
+A 180-degree reversal is ambiguous and rejected. For closed=True, the path
+has no duplicate endpoint. Closure holonomy is spread continuously by arc length,
+not forced into the last segment. Closed twist must be a scalar whole turn;
+arbitrary per-point twists have no unambiguous periodic endpoint.
 """
     p=np.asarray(path,float)
     if p.ndim!=2 or p.shape[1]!=3 or len(p)<2 or not np.isfinite(p).all():
         raise ValueError('Path must be finite Nx3')
-    d=np.diff(p,axis=0); length=np.linalg.norm(d,axis=1)
+    if closed and len(p)<3: raise ValueError('Closed path needs at least three points')
+    d=np.diff(np.vstack((p,p[0])) if closed else p,axis=0); length=np.linalg.norm(d,axis=1)
     if np.any(length<=1e-12): raise ValueError('Path has duplicate adjacent points')
     edges=d/length[:,None]
-    t=np.vstack((edges[0],edges[:-1]+edges[1:],edges[-1]))
+    t=edges+np.roll(edges,1,axis=0) if closed else np.vstack((edges[0],edges[:-1]+edges[1:],edges[-1]))
     norm=np.linalg.norm(t,axis=1)
     if np.any(norm<1e-8): raise ValueError('Path reverses direction by 180 degrees')
     t/=norm[:,None]
@@ -89,38 +92,67 @@ closed-loop holonomy is not silently hidden by a forced last-ring rotation.
     n[0]=seed-t[0]*np.dot(seed,t[0])
     if np.linalg.norm(n[0])<1e-10: raise ValueError('Initial normal parallel to tangent')
     n[0]/=np.linalg.norm(n[0])
-    for i in range(1,len(t)):
-        axis=np.cross(t[i-1],t[i]); c=np.dot(t[i-1],t[i]); s=np.linalg.norm(axis)
+    def carry(vector, a, b):
+        axis=np.cross(a,b); c=np.dot(a,b); sine=np.linalg.norm(axis)
         if c < -1+1e-8: raise ValueError('Frame reversal is ambiguous')
-        if s < 1e-12: n[i]=n[i-1]
+        if sine < 1e-12: result=vector.copy()
         else:
-            axis/=s
-            n[i]=n[i-1]*c + np.cross(axis,n[i-1])*s + axis*np.dot(axis,n[i-1])*(1-c)
-        n[i]-=t[i]*np.dot(n[i],t[i]); n[i]/=np.linalg.norm(n[i])
+            axis/=sine
+            result=vector*c+np.cross(axis,vector)*sine+axis*np.dot(axis,vector)*(1-c)
+        result-=b*np.dot(result,b)
+        return result/np.linalg.norm(result)
+    for i in range(1,len(t)):
+        n[i]=carry(n[i-1],t[i-1],t[i])
+    distance=np.r_[0,np.cumsum(length)]
+    if closed: distance=distance[:-1]
+    fraction=distance/length.sum()
     b=np.cross(t,n)
     angle=np.asarray(twist,float)
-    if angle.ndim==0: angle=float(angle)*np.r_[0,np.cumsum(length)]/length.sum()
+    if closed:
+        if angle.ndim!=0 or not np.isfinite(angle):
+            raise ValueError('Closed twist must be a scalar whole turn')
+        if not np.isclose(float(angle)/(2*np.pi),round(float(angle)/(2*np.pi)),rtol=0,atol=1e-10):
+            raise ValueError('Closed twist must be a whole number of turns')
+        end=carry(n[-1],t[-1],t[0])
+        correction=np.arctan2(np.dot(t[0],np.cross(end,n[0])),np.dot(end,n[0]))
+        angle=(float(angle)+correction)*fraction
+    elif angle.ndim==0: angle=float(angle)*fraction
     if angle.shape!=(len(p),) or not np.isfinite(angle).all(): raise ValueError('Twist must be scalar or one angle per path point')
     rotated=n*np.cos(angle)[:,None]+b*np.sin(angle)[:,None]
     return t,rotated,np.cross(t,rotated)
 
 
-def sweep(profile, path, scale=1., twist=0., initial_normal=None, caps=True):
+def sweep(profile, path, scale=1., twist=0., initial_normal=None, caps=None, *, closed=False):
     """Sweep a closed 2D profile along a 3D path with transported frames.
 
 Scale is scalar, one isotropic scale per ring, or (rings,2) anisotropic scales.
 Input profile is ordered counterclockwise; caller controls seam/correspondence.
+closed=True connects the last ring to the first with periodic frames, never
+coincident duplicate endpoint vertices. Caps default on for open paths and off
+for closed paths; explicit caps=True on a closed path is an error. This does not
+certify self-intersection freedom for thick profiles or tight path curvature.
 """
     q=np.asarray(profile,float); p=np.asarray(path,float)
     if q.ndim!=2 or q.shape[1]!=2 or len(q)<3 or not np.isfinite(q).all(): raise ValueError('Profile must be finite Nx2')
     if np.linalg.norm(q[0]-q[-1])<1e-12: raise ValueError('Do not repeat the closed profile endpoint')
-    t,n,b=transport_frames(p,initial_normal,twist)
+    from .profiles import validate_profile
+    validate_profile(q)  # Validate without changing seam order or winding.
+    if caps is None: caps=not closed
+    if closed and caps: raise ValueError('A closed sweep has no end caps')
+    t,n,b=transport_frames(p,initial_normal,twist,closed=closed)
     s=np.asarray(scale,float)
     if s.ndim==0: s=np.full((len(p),2),s)
     elif s.shape==(len(p),): s=np.repeat(s[:,None],2,axis=1)
     if s.shape!=(len(p),2) or not np.isfinite(s).all() or np.any(s<=0): raise ValueError('Scale must be positive scalar, N, or Nx2')
     sections=p[:,None,:]+q[None,:,0,None]*s[:,None,0,None]*n[:,None,:]+q[None,:,1,None]*s[:,None,1,None]*b[:,None,:]
-    return loft(sections,caps=caps)
+    if not closed: return loft(sections,caps=caps)
+    rings,samples=len(p),len(q)
+    ids=np.arange(rings*samples).reshape(rings,samples)
+    a=ids.ravel(); b=np.roll(ids,-1,axis=1).ravel()
+    c=np.roll(ids,-1,axis=0).ravel(); d=np.roll(np.roll(ids,-1,axis=0),-1,axis=1).ravel()
+    faces=np.stack((np.column_stack((a,b,d)),np.column_stack((a,d,c))),axis=1).reshape(-1,3)
+    return Mesh(sections.reshape(-1,3),faces,
+                {'section_coordinate':Attribute(np.repeat(np.arange(rings,dtype=float),samples))})
 
 
 def matched_loft(sections, samples=64, align=True, caps=True):
@@ -172,11 +204,16 @@ def sweep_shell(outer, inner, path, scale=1., twist=0., initial_normal=None):
     """Sweep corresponding nested closed profiles into an open-ended solid tube.
 
 Both profiles use the same orientation and vertex count. End annuli connect
-outer and inner walls. Nesting/clearance must be checked by the caller; no
+outer and inner walls. Profile nesting is validated before sweeping; no
 constant physical wall thickness is implied by scaled sections or curvature.
 """
     outer=np.asarray(outer,float); inner=np.asarray(inner,float)
     if outer.shape!=inner.shape: raise ValueError('Inner and outer profiles need corresponding samples')
+    from .profiles import validate_profile
+    validate_profile(outer, [inner])  # Preserve authored seam indices/correspondence.
+    area=lambda q: np.sum(q[:,0]*np.roll(q[:,1],-1)-q[:,1]*np.roll(q[:,0],-1))
+    if np.sign(area(outer))!=np.sign(area(inner)):
+        raise ValueError('Inner and outer sweep profiles must have the same orientation')
     a=sweep(outer,path,scale,twist,initial_normal,caps=False)
     b=sweep(inner,path,scale,twist,initial_normal,caps=False)
     offset=len(a.vertices); n=len(outer); count=len(path)

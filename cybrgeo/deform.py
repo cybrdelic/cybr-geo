@@ -23,7 +23,7 @@ def skin(mesh,weights,transforms):
 
 
 def rotation(axis,angle_degrees,pivot=(0,0,0)):
-    axis=np.asarray(axis,float);pivot=np.asarray(pivot,float)
+    axis=np.array(axis,float,copy=True);pivot=np.asarray(pivot,float)
     if axis.shape!=(3,) or pivot.shape!=(3,) or not np.isfinite(np.r_[axis,pivot,angle_degrees]).all() or np.linalg.norm(axis)<1e-12:
         raise ValueError('Rotation needs a finite nonzero axis and pivot')
     axis/=np.linalg.norm(axis);x,y,z=axis;t=np.deg2rad(angle_degrees)

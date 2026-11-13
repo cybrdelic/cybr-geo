@@ -23,6 +23,17 @@ class SurfaceAnchor:
     face: int
     barycentric: tuple
 
+    def __post_init__(self):
+        b = np.asarray(self.barycentric, float)
+        if not isinstance(self.snapshot, str) or not self.snapshot:
+            raise ValueError('Anchor snapshot must be a nonempty string')
+        if isinstance(self.face, (bool, np.bool_)) or not isinstance(self.face, (int, np.integer)) or self.face < 0:
+            raise ValueError('Anchor face must be a nonnegative integer')
+        if b.shape != (3,) or not np.isfinite(b).all() or b.min() < -1e-12 or abs(b.sum()-1) > 1e-10:
+            raise ValueError('Anchor needs finite nonnegative barycentrics summing to one')
+        object.__setattr__(self, 'face', int(self.face))
+        object.__setattr__(self, 'barycentric', tuple(map(float, b)))
+
     @classmethod
     def on(cls, mesh, face, barycentric):
         b = np.asarray(barycentric, float)
@@ -35,6 +46,7 @@ class SurfaceAnchor:
     def point(self, mesh):
         if self.snapshot != _key(mesh):
             raise ValueError('Anchor belongs to another snapshot; use an explicit correspondence')
+        if self.face >= len(mesh.faces): raise ValueError('Anchor face does not exist in snapshot')
         return np.asarray(self.barycentric) @ mesh.vertices[mesh.faces[self.face]]
 
     def to_dict(self):
@@ -42,7 +54,7 @@ class SurfaceAnchor:
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data['snapshot'], int(data['face']), tuple(data['barycentric']))
+        return cls(data['snapshot'], data['face'], tuple(data['barycentric']))
 
 
 @dataclass(frozen=True)
@@ -165,9 +177,11 @@ def fit_surface(source, topology, max_distance, names=()):
     return Projection(result,ids,bary,distances)
 
 
-def reproject_anchor(anchor, source, replacement, max_distance):
-    """Explicit nearest-surface rebinding; not guaranteed semantic identity."""
-    if not np.isfinite(max_distance) or max_distance<0: raise ValueError('Finite nonnegative limit required')
-    h=MeshBVH(replacement).closest_point(anchor.point(source))
-    if h.distance>max_distance: raise ValueError('Anchor rebind exceeds max_distance')
-    return SurfaceAnchor.on(replacement,h.face,h.barycentric)
+def reproject_anchor(anchor, source, replacement, max_distance, **policy):
+    """Fail-closed correspondence adapter; use project_reference for evidence.
+
+    Ambiguous nearby sheets now raise rather than silently choosing the nearest.
+    Optional region labels / angle and ambiguity limits follow project_reference.
+    """
+    from .correspondence import project_reference
+    return project_reference(anchor, source, replacement, max_distance, **policy).anchor
