@@ -1,0 +1,27 @@
+{
+  "workload": "9 independent 55x55 terrain patches; one height input edit",
+  "vertices": 27225,
+  "triangles": 52488,
+  "repetitions": 7,
+  "initial_build_seconds": 0.06757845999891288,
+  "incremental_seconds_median": 0.001716108999971766,
+  "full_rebuild_seconds_median": 0.014236901999538532,
+  "noop_seconds_median": 2.3644999600946903e-05,
+  "inspect_seconds_median": 0.001675348001299426,
+  "speedup_full_over_incremental": 8.296035974272474,
+  "evaluated": [
+    "patch4"
+  ],
+  "reused": [
+    "patch0",
+    "patch1",
+    "patch2",
+    "patch3",
+    "patch5",
+    "patch6",
+    "patch7",
+    "patch8"
+  ],
+  "full_and_incremental_geometry": "bitwise equal",
+  "scope": "CPU construction only; authored independent patch dependencies, not automatic arbitrary-mesh partitioning"
+}
