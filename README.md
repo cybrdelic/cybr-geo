@@ -1,82 +1,106 @@
 # CYBR GEO
 
-**Procedural CAD, mechanical assemblies and geometry-driven rendering.**
+A small Python geometry core: author surfaces, fields and relationships, then inspect and edit the resulting geometry. No built-in motor, tree or humanoid factories.
 
-One parametric recipe produces named parts, analytic solids, inspection views, motion, drawings and renderable geometry. Built in Python with CadQuery/OpenCascade, with an in-house C++ photographic path tracer and a separate Mitsuba/OIDN rendering backend.
+This rewrite is an experimental mesh-based core, not API-compatible with the previous CAD/`lab` implementation. It does not replace all of that implementation's functionality.
 
-![ORBIT inspection wrist — rendered from the procedural assembly](media/orbit_v3_hero.jpg)
+## See what the code makes
 
-*ORBIT: 148 components, geared wrist, opposed-screw gripper, hollow palm and removable housing.* [Recipe](examples/orbit_inspection_wrist.py) · [Service sequence](docs/ORBIT_SERVICE.md) · [Geometry coverage](docs/ORBIT_SHOWCASE.md)
+[![Brushless motor geometry](media/motor.png)](media/motor_inspection.mp4)
 
-## Selected work
+**Brushless motor:** [step-by-step construction film](media/motor-construction.mp4) · [complete authoring source](examples/motor.py) · [inspection film](media/motor_inspection.mp4) · [scope and limitations](docs/MOTOR_SCOPE.txt). Authored meshes, not a prefab or a validated electrical motor.
 
-| Project | Engineering focus | Source |
-| --- | --- | --- |
-| **ORBIT** | Analytic assemblies, gearing, motion and a 331-operation service sequence | [Wrist recipe](examples/orbit_inspection_wrist.py) |
-| **ROAM** | Seven workshop mechanisms and an articulated mobile workstation | [Workshop](examples/roam/README.md) |
-| **Nitinol actuator** | Twelve SMA fibers, guided carriage and explicit electrical routing | [Actuator recipe](src/mechanism_lab/models/nitinol_actuator.py) |
-| **Motor / belt drive** | Procedural motor construction, pulley/belt geometry and mechanical integration | [Motor](src/mechanism_lab/models/motor.py) · [Drivetrain](src/mechanism_lab/models/drivetrain.py) |
-| **Differential** | Internal inspection, exploded views and prescribed differential kinematics | [Study](examples/differential/README.md) |
-| **CYBR YARD** | A 1,404-part parametric skatepark, timber framing and outdoor rendering | [Recipe](examples/diy_skatepark/recipe.py) |
+[![Vessel construction](media/vessel.jpg)](media/vessel.mp4)
 
-![Exploded differential assembly](media/differential_exploded.jpg)
+**Vessel:** [source](examples/vessel.py) · [animated construction](media/vessel.mp4). Runtime values and geometry explain the program; this is not a manufacturing simulation.
 
-## Run it
+![Authored terrain](media/terrain.png)
 
-Linux or WSL2, Python **3.11–3.13**. On Ubuntu, install the native tools once:
+**More geometry:** [terrain](examples/terrain.py), [woven surfaces](examples/weave.py), [profile/fin](examples/fin.py), [mechanism](examples/crank.py). These are geometry inspection views, not photorealistic output or engineering certification.
 
-```bash
-sudo apt-get update
-sudo apt-get install -y g++ cmake ffmpeg libcairo2 libegl1 libgl1 libopengl0 libglib2.0-0
-git clone https://github.com/cybrdelic/cybr-geo.git
-cd cybr-geo
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-tested.txt
-python -m pip install --no-deps --no-build-isolation -e .
-lab preview --step
+[![Motor source and geometry, animated together](media/motor-code.jpg)](media/motor-construction.mp4)
+
+## Install and run
+
+Python 3.11+. Core dependency: NumPy. Polygon extrusion examples also use SciPy.
+
+```sh
+python -m pip install -e '.[profiles]'
+python -m unittest discover -s tests -v
+python examples/motor.py
 ```
 
-`lab preview` builds an independent flange recipe, checks its geometry, exports a GLB and component list, renders a native 640 × 480 image, reads the exported GLB back and checks the image dimensions. `--step` also exports analytic CAD. Results are in **`outputs/example_flange/preview/`**; `preview.json` is written only after successful completion.
+The motor script builds the assembly in memory. It does not render a video by itself.
 
-This first run uses the in-house renderer and included geometry. It needs no downloaded reference archive, HDRI or denoiser. Sample count is deliberately modest for iteration.
+## A real, small example
 
-```bash
-lab preview nitinol_fiber_actuator --spp 64
-lab preview examples/custom_flange.py --step
-lab build nitinol_fiber_actuator --step --stl
-lab animate nitinol_fiber_actuator --seconds 6
-lab blueprint nitinol_fiber_actuator
+```python
+import numpy as np
+import cybrgeo as geo
+
+# One continuous sampled surface, not separately placed planes.
+x = np.linspace(-2, 2, 65)
+y = np.linspace(-2, 2, 65)
+xx, yy = np.meshgrid(x, y, indexing="ij")
+mesh = geo.heightfield(x, y, np.exp(-(xx**2 + yy**2)))
+
+# A named selection is a continuous vertex attribute.
+mesh = geo.region(mesh, "center", lambda p: np.exp(-3 * (p[:, 0]**2 + p[:, 1]**2)))
+mesh = geo.sculpt(mesh, lambda p: np.tile([0, 0, 0.2], (len(p), 1)), region="center")
+geo.save_snapshot(mesh, "hill.npz")
+print(geo.inspect(mesh))
 ```
 
-For the full photographic workflow, `lab render`, `lab video` and `lab film` use V9 by default. That backend uses Mitsuba, OIDN and downloaded CC0 studio assets; see [rendering setup](docs/SHARED_PHOTOGRAPHY.md). Select `--renderer photoreal` for the in-house native tracer or `--renderer pbr` for the raster preview. [More commands and reference preparation](docs/GETTING_STARTED.md).
+`heightfield` makes the topology; `region` stores a selection; `sculpt` edits those vertices; `save_snapshot` preserves the mesh and its attributes.
 
-## How it works
+## Core, not a catalog of objects
 
-| System | Implementation |
-| --- | --- |
-| Geometry contract | [`Assembly`, `Part`, `Material`, `View`](src/mechanism_lab/core.py); named components and rigid poses |
-| Parametric construction | [CAD helpers](src/mechanism_lab/geometry.py), [advanced geometry](src/mechanism_lab/advanced_geometry.py), [recipes](src/mechanism_lab/models) |
-| Reusable pipeline | [Recipe registry and cache](src/mechanism_lab/registry.py), [one-command preview](src/mechanism_lab/preview.py) |
-| Native photography | [Thin-lens BVH/GGX/MIS tracer](src/mechanism_lab/native/photoreal.cpp), [Python adapter](src/mechanism_lab/photoreal.py) |
-| CAD and interchange | [STEP, STL, GLB and animated glTF](src/mechanism_lab/exporters.py); explicit mm/Z-up → m/Y-up conversion |
-| Drawings | [OpenCascade hidden-line projection and vector drawing export](src/mechanism_lab/whiteprint.py) |
-| Assembly motion | [Service process and clearance checks](src/mechanism_lab/assembly_process.py) |
+| Capability | Interface | Boundary |
+|---|---|---|
+| Signed functions to surfaces | `field`, `sparse_surface` | Sampled approximation, not exact CAD |
+| Explicit surface construction | `loft`, `heightfield`, `parametric_surface` | Author supplies samples/correspondence |
+| Polygon solids with holes | `extrude` | Polygonal boundaries; rejects unresolved triangulation |
+| Connected edits and attributes | `region`, `sculpt`, `subdivide` | Known operation transfer, not arbitrary remesh naming |
+| Skinning and placement | `skin`, `transform`, `rotation`, `Instances` | Explicit bindings, not automatic anatomy |
+| Networks | `CurveNetwork`, `NetworkField` | Simulations can supply network state; no tree preset |
+| Kinematic relationships | `Kinematics` | Point closure/rigid poses, not force dynamics |
+| Incremental builds | `Graph` | Reuses declared dependency nodes, not automatic spatial partitioning |
+| Exchange | `export_obj`, `export_bundle` | Portable geometry; native MATERIAL/LIGHT integration unverified |
 
-Recipes define the object; shared code handles its outputs. Geometry validation runs during recipe creation and its report is retained with the cache. Source, declared recipe dependencies and retained input changes invalidate that cache. The original `cybrgeo` CLI/API remains available alongside `lab`.
+Intersections are not universally forbidden. Separate parts can intentionally overlap; cavities can be described by signed fields or polygon holes. Topological validity is different from collision clearance. A shaft through an actual bore is different from a shaft penetrating solid material.
 
-## Development
+## Construction feedback
 
-```bash
-make test-core       # independent geometry / rendering contracts
-make preview         # real CAD → GLB / STEP → native image
-make test            # complete suite; see prerequisite notes below
+Meshes are immutable. Topology checks report disconnected components, boundary/nonmanifold edges and vertices, degenerate triangles and winding. Open surfaces are explicit. They do **not** detect every geometric self-intersection or prove structural soundness.
+
+The incremental graph retains the previous successful build when a candidate operation fails. Inputs and changing dependencies must be declared; hidden mutable globals are not supported. [Graph contract and measured CPU benchmarks](docs/INCREMENTAL.md).
+
+37 focused tests passed on the current local source. This is not a full certification, GPU benchmark or proof of realistic quality.
+
+## Source map
+
+```text
+cybrgeo/
+  model.py       immutable meshes, attributes and topology reports
+  field.py       signed-field extraction
+  surface.py     loft, terrain patches, selection, sculpt, subdivision
+  profiles.py    polygon extrusion
+  network.py     networks, parametric surfaces, instancing
+  sparse.py      sparse field extraction
+  deform.py      transforms and skinning
+  relations.py   kinematic relationships
+  graph.py       explicit dependency caching and build reports
+  exchange.py    portable exports
+examples/        ordinary author-written Python, with all helpers visible
+tests/           core behavior checks
+benchmarks/      reproducible narrow CPU construction benchmarks
+media/           actual geometry previews and explanatory videos
 ```
 
-[Quickstart CI](.github/workflows/quickstart.yml) exercises the documented install and preview on Python 3.11–3.13. The [complete regression workflow](.github/workflows/recovery-regressions.yml) regenerates the differential inputs before running the full suite. Historical release-output tests can skip when their archives are absent; [test scope and setup](docs/GETTING_STARTED.md#tests) explains the distinction.
+## Limits and continuity
 
-## Scope and license
+Not implemented here: exact CAD Booleans, certified collision-free motion, finite-element structural analysis, electromagnetic motor simulation, production anatomy, automatic high-quality asset generation, or a renderer. Resolution can miss thin features; Loop subdivision can shrink/soften geometry; skinning can self-intersect. Geometry quality still depends on authored construction.
 
-These are parametric geometry, rendering and kinematic studies. Physical load, fatigue, production fits and manufacturing qualification are separate work. Vendor CAD is identified where used; conceptual internals and original geometry retain their provenance. [Sources](docs/MOTOR_SOURCES.md) · [Compatibility](docs/COMPATIBILITY.md) · [Publication inventory](docs/PUBLICATION_INVENTORY.md) · [Architecture](docs/ARCHITECTURE.md).
+This rewrite intentionally does not import the old part library. Replacing its default source tree must not be confused with preserving compatibility with old consumers. Historical work belongs in retained Git history/legacy references, not hidden inside this core.
 
-GPL-2.0-only for project code. Third-party assets retain their own rights. Created by [Alejandro Figueroa / cybrdelic](https://github.com/cybrdelic).
+Project code retains the repository's GPL-2.0-only license. Media here are generated geometry demonstrations from accompanying authoring programs, not licensed stock assets. Third-party dependencies retain their own licenses.

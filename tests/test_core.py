@@ -1,89 +1,71 @@
-from dataclasses import replace
-import json
+import tempfile
+from pathlib import Path
+import unittest
 import numpy as np
-import pytest
-from mechanism_lab.core import validate,save_cache,load_cache,axis_pose,pose_cad
-from mechanism_lab.exporters import export_glb,export_step,export_stls
+from cybrgeo import *
 
+class CoreChecks(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.sphere=field(lambda p:np.linalg.norm(p,axis=1)-1,((-1.3,)*3,(1.3,)*3),16)
 
-def test_independent_recipe_has_real_solids(flange):
-    report=validate(flange,expensive=True)
-    assert report['parts']==2
-    assert all(row['analytic_valid'] and row['watertight'] for row in report['checks'])
+    def test_field_closed_connected_and_root_refinement(self):
+        self.assertEqual(self.sphere.report()['components'],1)
+        self.assertEqual(self.sphere.report()['boundary_edges'],0)
+        self.assertLess(np.max(np.abs(np.linalg.norm(self.sphere.vertices,axis=1)-1)),4e-5)
 
+    def test_positive_field_rescaling_does_not_move_roots(self):
+        other=field(lambda p:(np.linalg.norm(p,axis=1)-1)*np.exp(2*p[:,0]),((-1.3,)*3,(1.3,)*3),16)
+        np.testing.assert_array_equal(self.sphere.vertices,other.vertices)
 
-def test_cache_preserves_mesh_bytes(flange,tmp_path):
-    save_cache(flange,tmp_path)
-    restored=load_cache(tmp_path)
-    for before,after in zip(flange.parts,restored.parts):
-        for key in ['vertices','faces','normals']:
-            assert np.array_equal(getattr(before,key),getattr(after,key))
-        assert after.cad is None  # cache never impersonates analytic geometry
+    def test_disconnected_geometry_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'connected'):
+            field(lambda p:np.minimum(np.linalg.norm(p-[-1,0,0],axis=1),np.linalg.norm(p-[1,0,0],axis=1))-.4,((-2,-1,-1),(2,1,1)),18)
 
+    def test_clipped_solid_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'boundary'):
+            field(lambda p:np.linalg.norm(p,axis=1)-2,((-1,)*3,(1,)*3),12)
 
-def test_rejects_duplicate_names(flange):
-    with pytest.raises(ValueError,match='Duplicate'):
-        validate(replace(flange,parts=[flange.parts[0],flange.parts[0]]))
+    def test_vertex_only_connection_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'topology'):
+            Mesh(np.array([[0,0,0],[1,0,0],[0,1,0],[-1,0,0],[0,-1,0]]),np.array([[0,1,2],[0,3,4]]),closed=False)
 
+    def test_region_sculpt_and_subdivision_transfer(self):
+        m=region(self.sphere,'upper',lambda p:np.clip(p[:,2],0,1))
+        changed=sculpt(m,[0,0,.2],region='upper')
+        weights=m.attributes['region:upper'].values
+        np.testing.assert_allclose(changed.vertices-self.sphere.vertices,weights[:,None]*[0,0,.2],atol=1e-12)
+        refined=subdivide(changed)
+        self.assertEqual(len(refined.faces),4*len(m.faces))
+        w=refined.attributes['region:upper'].values
+        self.assertTrue(np.all((w>=0)&(w<=1)))
+        self.assertEqual(refined.report()['components'],1)
 
-def test_rejects_nonfinite_and_indices(flange):
-    p=flange.parts[0]
-    vertices=p.vertices.copy();vertices[0,0]=float('nan')
-    with pytest.raises(ValueError,match='nonfinite'):
-        validate(replace(flange,parts=[replace(p,vertices=vertices)]))
-    faces=p.faces.copy();faces[0,0]=len(vertices)+1
-    with pytest.raises(ValueError,match='face indices'):
-        validate(replace(flange,parts=[replace(p,faces=faces)]))
+    def test_skin_identity_and_transferred_bindings(self):
+        w=np.column_stack((np.full(len(self.sphere.vertices),.4),np.full(len(self.sphere.vertices),.6)))
+        mesh=Mesh(self.sphere.vertices,self.sphere.faces,{'weights':Attribute(w)})
+        mesh=subdivide(mesh)
+        posed=skin(mesh,'weights',np.array([np.eye(4),np.eye(4)]))
+        np.testing.assert_allclose(posed.vertices,mesh.vertices)
+        np.testing.assert_allclose(mesh.attributes['weights'].values.sum(axis=1),1)
 
+    def test_bad_skin_weights_fail(self):
+        with self.assertRaises(ValueError):skin(self.sphere,np.zeros((len(self.sphere.vertices),2)),[np.eye(4),np.eye(4)])
 
-def test_native_cad_pose_matches_mesh_pose(flange):
-    import cadquery as cq
-    shape=flange.parts[0].cad
-    T=axis_pose(.72,(13,8,-2),(3,9,1),.4)
-    moved=pose_cad(shape,T)
-    before=np.array(shape.Center().toTuple())
-    after=np.array(moved.Center().toTuple())
-    assert np.max(abs(after-(T[:3,:3]@before+T[:3,3])))<1e-8
-    assert moved.isValid()
+    def test_concave_loft_and_heightfield(self):
+        ring=np.array([[0,0],[2,0],[2,1],[1,1],[1,2],[0,2]])
+        sections=np.array([np.column_stack((ring,np.full(6,z))) for z in (0,1)])
+        self.assertEqual(loft(sections).report()['boundary_edges'],0)
+        patch=heightfield(np.arange(4),np.arange(5),np.zeros((4,5)))
+        self.assertEqual(patch.report()['boundary_edges'],14)
+        self.assertEqual(patch.attributes['uv'].values.shape,(20,2))
 
+    def test_snapshot_roundtrip_and_immutable_inputs(self):
+        mesh=region(self.sphere,'upper',lambda p:np.clip(p[:,2],0,1))
+        with tempfile.TemporaryDirectory() as directory:
+            path=save_snapshot(mesh,Path(directory)/'mesh.npz');other=load_snapshot(path)
+            np.testing.assert_array_equal(mesh.vertices,other.vertices)
+            np.testing.assert_array_equal(mesh.attributes['region:upper'].values,other.attributes['region:upper'].values)
+        with self.assertRaises(ValueError):mesh.vertices[0]=0
 
-def test_step_and_stl_are_real_and_units_explicit(flange,tmp_path):
-    import cadquery as cq
-    import trimesh
-    report=export_step(flange,tmp_path/'flange_analytic.step')
-    assert len(report['analytic_components'])==2
-    assert len(cq.importers.importStep(str(tmp_path/'flange_analytic.step')).val().Solids())==2
-    export_stls(flange,tmp_path/'stl')
-    mesh=trimesh.load_mesh(tmp_path/'stl'/f'{flange.parts[0].name}.stl')
-    assert np.allclose(mesh.bounds,flange.parts[0].bounds,atol=1e-5)
-    assert 'millimetres' in (tmp_path/'stl/UNITS.txt').read_text()
-
-
-def test_static_glb_roundtrip_metres_yup(flange,tmp_path):
-    import trimesh
-    from mechanism_lab.exporters import NATIVE_TO_GLTF
-    path=export_glb(flange,tmp_path/'flange.glb')
-    scene=trimesh.load_scene(path,process=False)
-    for p in flange.parts:
-        T,geometry=scene.graph[p.name]
-        assert np.max(abs(T-NATIVE_TO_GLTF@flange.pose(p)))<1e-12
-
-
-def test_geometry_import_unit_contract(flange,tmp_path):
-    from mechanism_lab.importers import import_geometry
-    path=export_glb(flange,tmp_path/'flange.glb')
-    imported=import_geometry(path)
-    assert np.allclose(imported.bounds,flange.bounds,atol=1e-4)
-    export_stls(flange,tmp_path/'stl')
-    stl=tmp_path/'stl'/f'{flange.parts[0].name}.stl'
-    with pytest.raises(ValueError,match='require units'):import_geometry(stl)
-    assert np.allclose(import_geometry(stl,units='mm').bounds,flange.parts[0].bounds,atol=1e-5)
-
-
-def test_plugin_and_cache_invalidation(tmp_path):
-    from mechanism_lab.registry import factory,fingerprint
-    recipe=tmp_path/'recipe.py'
-    recipe.write_text('from mechanism_lab.models.example import build\n')
-    build,motion=factory(str(recipe));assert len(build().parts)==2 and motion is None
-    first=fingerprint(str(recipe));recipe.write_text(recipe.read_text()+'\n# recipe edit\n')
-    assert first!=fingerprint(str(recipe))
+if __name__=='__main__':unittest.main()

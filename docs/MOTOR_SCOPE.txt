@@ -1,0 +1,40 @@
+CYBR GEO / authored brushless outrunner geometry prototype
+
+Run geometry construction from repository root:
+  python -m pip install -e ".[profiles]"
+  python examples/motor.py
+
+Media are recorded explanatory outputs; the standalone recipe builds meshes.
+The external video production tools are not included in this core package.
+
+examples/motor.py exposes all authored geometry code, including helpers, from imports onward.
+No motor prefab or external motor asset is used. Generic CYBR GEO extrude, loft,
+transform and rotation produce the real meshes. Units are millimetres.
+
+97 meshes / 79,756 triangles: mounting base, bearing support, shaft, two simplified
+ball bearings, 24 connected stator laminations, 12 wound coils, 14 magnet segments,
+rotor bell/rim/hub/vented endplate, retaining washer/clip, mounting heads, phase leads.
+
+Inspected assembled, cutaway and exploded views. A sampled vertex test found and
+corrected coil/stator intersections. Final check: zero sampled coil vertices inside
+stator footprint, nominal 0.9 mm radial air gap. This is not a complete triangle
+intersection test or proof of structural/electrical performance.
+
+LIMITS: this is an authored geometry prototype, NOT a finished manufacturable motor.
+Phase leads are illustrative routing, not a validated winding termination network.
+Bearing race grooves/cages, thread detail, fits/tolerances, magnets/coil insulation,
+rotor retention and winding phasing still need engineering. No torque, Kv, efficiency,
+thermal, balancing, strength or service-life validation has been performed.
+Exploded motion and progressive construction are explanatory animations, not physics.
+The endplate spokes/rim/hub are separate contacting/overlapping assembly solids, not
+one Boolean-fused manufacturing solid. The cutaway is a visibility inspection only.
+
+Full-line video: every authored source line appears in overview and runtime source
+panels. Real runtime values are shown, not invented geometry for imports. Mesh faces
+are progressively revealed in construction order. This does not imply machining or
+simulation time. External library implementation is provided in source but is not
+line-by-line runtime animated. The rasterizer is a fast untextured inspection tool.
+
+General arrangement references (not source of our authored dimensions):
+https://www.nidec.com/en/products/small-precision-motors/contents/technology/motor/basic/00018/
+https://www.maxongroup.com/medias/sys_master/8803451338782.pdf?attachment=true
