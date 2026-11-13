@@ -107,6 +107,8 @@ def subdivide(mesh,levels=1,smooth=True):
         faces=np.concatenate([np.stack(t,axis=1) for t in ((a,ab,ca),(b,bc,ab),(c,ca,bc),(ab,bc,ca))])
         attributes={}
         for name,attr in mesh.attributes.items():
+            if attr.domain not in ('vertex','face'):
+                raise ValueError('Subdivision supports vertex/face attributes only; corner/edge transfer is not implemented')
             if attr.domain=='face': values=np.concatenate([attr.values]*4)
             elif attr.interpolation=='linear': values=transfer(attr.values)
             else: values=np.concatenate((attr.values,attr.values[edges[:,0]]))

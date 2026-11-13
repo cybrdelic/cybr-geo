@@ -4,6 +4,32 @@ A small Python geometry core: author surfaces, fields and relationships, then in
 
 This rewrite is an experimental mesh-based core, not API-compatible with the previous CAD/`lab` implementation. It does not replace all of that implementation's functionality.
 
+## New construction examples
+
+Five different subjects, built with the shared operations below. Click an image for its construction video; the complete authoring code is linked alongside it. These are rasterized views of real meshes, not image-generated stand-ins.
+
+| Example | Construction preview | Complete source |
+|---|---|---|
+| Bicycle: hollow frame sweeps, rims, spokes and controls | [![Bicycle](media/bicycle.jpg)](media/bicycle.mp4) | [bicycle.py](examples/bicycle.py) |
+| Mountain reservoir: terrain, basin and authored infrastructure | [![Reservoir](media/reservoir.jpg)](media/reservoir.mp4) | [reservoir.py](examples/reservoir.py) |
+| Botanical forms: stems, petals and explicit surfaces | [![Botanical study](media/botanical.jpg)](media/botanical.mp4) | [botanical.py](examples/botanical.py) |
+| Winter garden: swept frame and repeated architectural members | [![Winter garden](media/winter-garden.jpg)](media/winter-garden.mp4) | [winter_garden.py](examples/winter_garden.py) |
+| Sectional pump: casing, impeller, shaft and bearing geometry | [![Pump](media/pump.jpg)](media/pump.mp4) | [pump.py](examples/pump.py) |
+
+The films explain authored construction, not dynamics. The reservoir is not a hydraulic simulation; the flowers are not a calibrated growth simulation. The winter garden omits glazing for inspection. The bicycle and pump are geometry studies, not mechanically certified products. Per-part closure is not proof of assembly-wide clearance or structural fitness.
+
+## Expanded core
+
+The same general operators now cover:
+
+- **Editable topology:** split edges, inset/extrude patches, bridge equal loops, weld and explicit reference lineage. [Contract](docs/topology.md)
+- **Curves and patches:** Bézier evaluation, adaptive sampling, transported hollow/solid sweeps, matched lofts and Coons patches. [Contract](docs/curves.md)
+- **Optional analytic solids:** CadQuery-backed Boolean, shell, fillet/chamfer and tessellation. This is an explicit backend, not a claim that GEO invented an exact CAD kernel. [Contract](docs/analytic_solids.md)
+- **Spatial queries:** mesh BVH, closest points, rays and pairwise overlap/clearance witnesses. These do not automatically constrain an entire assembly.
+- **Organic edits:** hard-crease refinement, local displacement, lattices, multiresolution detail and bounded attribute projection. [Contract](docs/organic.md)
+- **Local refinement and correspondence:** conforming splits, sample reuse and snapshot-bound surface anchors. [Contract](docs/adaptive.md)
+- **Mesh LOD:** quadric-error collapse with sampled deviation checks, protected vertices and explicit reference rebinding. The face target may be unreachable and the error is not a guaranteed Hausdorff bound. [Contract](docs/lod.md)
+
 ## See what the code makes
 
 [![Brushless motor geometry](media/motor.png)](media/motor_inspection.mp4)
@@ -22,10 +48,10 @@ This rewrite is an experimental mesh-based core, not API-compatible with the pre
 
 ## Install and run
 
-Python 3.11+. Core dependency: NumPy. Polygon extrusion examples also use SciPy.
+Python 3.11+. Core dependency: NumPy. Polygon extrusion examples also use SciPy. The `solid` extra installs the optional CadQuery backend. Omit `solid` if you do not need analytic solids.
 
 ```sh
-python -m pip install -e '.[profiles]'
+python -m pip install -e '.[profiles,solid]'
 python -m unittest discover -s tests -v
 python examples/motor.py
 ```
@@ -75,7 +101,7 @@ Meshes are immutable. Topology checks report disconnected components, boundary/n
 
 The incremental graph retains the previous successful build when a candidate operation fails. Inputs and changing dependencies must be declared; hidden mutable globals are not supported. [Graph contract and measured CPU benchmarks](docs/INCREMENTAL.md).
 
-37 focused tests passed on the current local source. This is not a full certification, GPU benchmark or proof of realistic quality.
+91 focused tests passed on the expanded source with optional solid dependencies installed. This is not a full certification, GPU benchmark or proof of realistic quality.
 
 ## Source map
 
@@ -91,6 +117,13 @@ cybrgeo/
   relations.py   kinematic relationships
   graph.py       explicit dependency caching and build reports
   exchange.py    portable exports
+  topology.py    explicit topology edits and references
+  curves.py      sampled curves, sweeps and patches
+  solid.py       optional CadQuery analytic backend
+  spatial.py     mesh BVH and spatial queries
+  organic.py     creases, lattices, local/multires edits
+  adaptive.py    local refinement and surface anchors
+  lod.py         sampled-error mesh simplification
 examples/        ordinary author-written Python, with all helpers visible
 tests/           core behavior checks
 benchmarks/      reproducible narrow CPU construction benchmarks
@@ -99,7 +132,7 @@ media/           actual geometry previews and explanatory videos
 
 ## Limits and continuity
 
-Not implemented here: exact CAD Booleans, certified collision-free motion, finite-element structural analysis, electromagnetic motor simulation, production anatomy, automatic high-quality asset generation, or a renderer. Resolution can miss thin features; Loop subdivision can shrink/soften geometry; skinning can self-intersect. Geometry quality still depends on authored construction.
+Not implemented here: arbitrary imported-mesh Booleans, certified collision-free motion, finite-element structural analysis, electromagnetic motor simulation, production anatomy, automatic high-quality asset generation, or a renderer. Resolution can miss thin features; Loop subdivision can shrink/soften geometry; skinning can self-intersect. Geometry quality still depends on authored construction.
 
 This rewrite intentionally does not import the old part library. Replacing its default source tree must not be confused with preserving compatibility with old consumers. Historical work belongs in retained Git history/legacy references, not hidden inside this core.
 

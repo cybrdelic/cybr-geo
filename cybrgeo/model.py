@@ -6,6 +6,14 @@ import json
 from functools import lru_cache
 import numpy as np
 
+def mesh_edges(faces):
+    """Canonical edge attribute order: lexicographically sorted undirected pairs.
+
+    Corner attributes use face-major flattened order (3*face + local_corner).
+    """
+    f = np.asarray(faces)
+    return np.unique(np.sort(np.concatenate((f[:,[0,1]], f[:,[1,2]], f[:,[2,0]])),axis=1),axis=0)
+
 @dataclass(frozen=True)
 class Attribute:
     values: np.ndarray
@@ -32,10 +40,11 @@ class Mesh:
             raise ValueError('Faces must reference existing vertices')
         attributes = {}
         for name, attribute in self.attributes.items():
-            if attribute.domain not in ('vertex','face') or attribute.interpolation not in ('linear','nearest'):
+            if attribute.domain not in ('vertex','face','edge','corner') or attribute.interpolation not in ('linear','nearest'):
                 raise ValueError('Attribute domain/interpolation must be explicit and supported')
             values = np.array(attribute.values, copy=True)
-            count = len(v) if attribute.domain == 'vertex' else len(f)
+            count = {'vertex': len(v), 'face': len(f), 'corner': 3*len(f),
+                     'edge': len(mesh_edges(f))}[attribute.domain]
             if not values.ndim or len(values) != count or not np.issubdtype(values.dtype,np.number) or not np.isfinite(values).all():
                 raise ValueError(f'Invalid attribute: {name}')
             values.flags.writeable = False

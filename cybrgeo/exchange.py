@@ -7,15 +7,17 @@ from .model import save_snapshot
 def export_obj(mesh,path):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     uv=mesh.attributes.get('uv')
-    if uv is not None and (uv.domain!='vertex' or uv.values.shape!=(len(mesh.vertices),2)):
-        raise ValueError('OBJ handoff currently supports per-vertex 2D UVs only')
+    if uv is not None:
+        count={'vertex':len(mesh.vertices), 'corner':3*len(mesh.faces)}.get(uv.domain)
+        if count is None or uv.values.shape!=(count,2):
+            raise ValueError('OBJ handoff supports vertex or face-corner 2D UVs')
     with path.open('w') as out:
         out.write('# CYBR GEO evaluated surface; no embedded material authority\n')
         for x,y,z in mesh.vertices:out.write(f'v {x:.12g} {y:.12g} {z:.12g}\n')
         if uv is not None:
             for u,v in uv.values:out.write(f'vt {u:.12g} {v:.12g}\n')
-        for face in mesh.faces:
-            indices=[f'{i+1}/{i+1}' if uv is not None else str(i+1) for i in face]
+        for j,face in enumerate(mesh.faces):
+            indices=[f'{i+1}/{(3*j+k+1) if uv.domain=="corner" else (i+1)}' if uv is not None else str(i+1) for k,i in enumerate(face)]
             out.write('f '+' '.join(indices)+'\n')
     return path
 
