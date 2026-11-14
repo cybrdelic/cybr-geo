@@ -139,7 +139,7 @@ Meshes are immutable. Topology checks report disconnected components, boundary/n
 
 The incremental graph retains the previous successful build when a candidate operation fails. Inputs and changing dependencies must be declared; hidden mutable globals are not supported. [Graph contract and measured CPU benchmarks](docs/INCREMENTAL.md).
 
-235 tests passed on the release source, including three executable workflow examples. This is not a full certification, GPU benchmark or proof of realistic quality.
+251 tests passed on the release source, including three executable workflow examples. This is not a full certification, GPU benchmark or proof of realistic quality.
 
 ## Source map
 
@@ -173,3 +173,11 @@ This rewrite intentionally does not import the old part library. Replacing its d
 
 Project code retains the repository's GPL-2.0-only license. Media here are generated geometry demonstrations from accompanying authoring programs, not licensed stock assets. Third-party dependencies retain their own licenses.
 
+
+### Final physical assemblies
+
+Use [`Assembly`](docs/FINAL_ASSEMBLY.md) to finalize all declared analytic parts
+at one pose, with explicit intended contacts, solid validity/self-interference
+checks, all-pair interference checks, rollback and checked package export.
+This optional OpenCascade-backed path does not certify arbitrary meshes, continuous
+motion, strength or visual quality. General modeling intermediates remain free.

@@ -36,3 +36,9 @@ Read [SURFACE_API.md](SURFACE_API.md) for the additional APIs. Earlier releases
 do not necessarily include these exports; record the actual imported revision. SurfaceNetwork seam constraints
 and joined tessellation are not automatic closed-solid construction or design
 quality guarantees. Preserve returned corner normals and UVs in render/export.
+
+Final analytic physical assemblies must pass `Assembly.build()` and use its
+full-part export, not a hand-picked pair check. Read
+[FINAL_ASSEMBLY.md](docs/FINAL_ASSEMBLY.md). Declare every final Solid and intended
+contact; a contact declaration never waives positive-volume intersection. Raw
+mesh/Graph outputs are not equivalent to this analytic finalization contract.

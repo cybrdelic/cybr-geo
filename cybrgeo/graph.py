@@ -211,6 +211,9 @@ class Graph:
                     mesh=evaluate(name)
                     if not isinstance(mesh, Mesh) or not mesh.closed or mesh.report()['components'] != 1:
                         raise ValueError('Physical part '+name+' must be one connected closed mesh; combine joined material with a real union, not concatenation')
+                    from .spatial import MeshBVH
+                    if MeshBVH(mesh).self_intersections():
+                        raise ValueError('Physical part '+name+' has nonadjacent surface intersections')
             construction = self._construction.stage(evaluate, report, force=force)
             coverage = _coverage(outputs, construction, report['construction'])
             report['coverage'] = coverage

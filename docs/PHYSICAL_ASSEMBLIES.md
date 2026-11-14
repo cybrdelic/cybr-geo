@@ -90,3 +90,12 @@ Separation alone does not reject a detached but noncolliding component. A declar
 it does not establish the whole contact footprint of a strap or stitched panel.
 Such an attachment requires additional geometry/physical semantics not yet
 implemented, and must not be described as certified by this contract.
+
+## Analytic finalization update
+
+For final analytic physical assemblies, use the mandatory
+[Assembly boundary](FINAL_ASSEMBLY.md), retaining Solid values until export.
+Unlike the legacy mesh path above, it supports declared zero-volume contacts,
+checks B-rep validity/self-interference and rejects unresolved inputs. The mesh
+Graph now rejects detected nonadjacent face intersections as well; the earlier
+self-validity assumption still applies to cases its BVH cannot certify.
