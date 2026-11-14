@@ -7,6 +7,11 @@ from .model import save_snapshot
 def export_obj(mesh,path):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     uv=mesh.attributes.get('uv')
+    normal=mesh.attributes.get('normal')
+    if normal is not None:
+        count={'vertex':len(mesh.vertices), 'corner':3*len(mesh.faces)}.get(normal.domain)
+        if count is None or normal.values.shape!=(count,3):
+            raise ValueError('OBJ normal handoff supports vertex or face-corner Nx3 data')
     if uv is not None:
         count={'vertex':len(mesh.vertices), 'corner':3*len(mesh.faces)}.get(uv.domain)
         if count is None or uv.values.shape!=(count,2):
@@ -16,8 +21,14 @@ def export_obj(mesh,path):
         for x,y,z in mesh.vertices:out.write(f'v {x:.12g} {y:.12g} {z:.12g}\n')
         if uv is not None:
             for u,v in uv.values:out.write(f'vt {u:.12g} {v:.12g}\n')
+        if normal is not None:
+            for x,y,z in normal.values:out.write(f'vn {x:.12g} {y:.12g} {z:.12g}\n')
         for j,face in enumerate(mesh.faces):
-            indices=[f'{i+1}/{(3*j+k+1) if uv.domain=="corner" else (i+1)}' if uv is not None else str(i+1) for k,i in enumerate(face)]
+            indices=[]
+            for k,i in enumerate(face):
+                ti=str(3*j+k+1 if uv.domain=='corner' else i+1) if uv is not None else ''
+                ni=str(3*j+k+1 if normal.domain=='corner' else i+1) if normal is not None else ''
+                indices.append(f'{i+1}/{ti}/{ni}' if normal is not None else (f'{i+1}/{ti}' if uv is not None else str(i+1)))
             out.write('f '+' '.join(indices)+'\n')
     return path
 

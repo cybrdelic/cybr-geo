@@ -26,3 +26,4 @@ from .patches import BezierPatch, join_patch, join_metrics, stitch_patches, surf
 from .construction import ConstructionError
 
 from .resolution import refine_to_size
+from .surface_network import Seam, SurfaceNetwork, fit_network, trim_patch, tessellate_network, stitch_network_meshes

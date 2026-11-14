@@ -65,13 +65,15 @@ class Editable:
             return sum(values[i]*t for i,t in w.items())
         ids={};anc={}
         ids['vertex']=[];anc['vertex']=[]
+        emitted_vertex_ids=set()
         for w in weights:
             exact=next(iter(w)) if len(w)==1 and next(iter(w.values()))==1 else None
             # Duplicated source vertices may inherit values, never identities.
             old_id=self._ids['vertex'][exact] if exact is not None else None
-            same=exact is not None and np.array_equal(vertices[len(ids['vertex'])],old.vertices[exact]) and old_id not in ids['vertex']
+            same=exact is not None and np.array_equal(vertices[len(ids['vertex'])],old.vertices[exact]) and old_id not in emitted_vertex_ids
             ident=old_id if same else uuid4().hex
             ids['vertex'].append(ident)
+            emitted_vertex_ids.add(ident)
             anc['vertex'].append(frozenset({ident}).union(*(self._ancestors['vertex'][i] for i in w)))
         ids['face']=[];anc['face']=[]
         for j,p in enumerate(parents):

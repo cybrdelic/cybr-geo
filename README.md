@@ -2,6 +2,31 @@
 
 [Construction workflow](docs/CORE_WORKFLOW.md) · [Protected assemblies](docs/PHYSICAL_ASSEMBLIES.md) · [Surface attachments](docs/surface-attachments.md)
 
+## Surface construction and agent workflow
+
+Start with [AGENTS.md](AGENTS.md) and [the modeling workflow](docs/AGENT_MODELING.md).
+Build primary form, real construction and shared-host relationships before decorative detail.
+Keep asset recipes outside the general-purpose core; use earlier good authoring programs
+as regression cases rather than replacing their construction with simpler panels.
+
+The new [surface-network API](SURFACE_API.md) adds explicit C0/C1/C2 parametric
+seam constraints, constrained fitting, polygonal UV trims with holes, joined tessellation,
+and preserved analytic corner normals and UVs. See [the executable example](examples/surface_contracts.py):
+
+```sh
+python -m examples.surface_contracts
+```
+
+Surface networks protect declared patch seams, not arbitrary closed-solid construction.
+They do not certify global nonintersection, exact curved CAD trimming, physical function
+or production-quality design. The protected assembly graph remains a separate opt-in workflow.
+
+This update also fixes degree-zero Bézier evaluation, preserves OBJ normal attributes,
+recovers authored collinear polygon cap boundaries without moving them, and removes
+quadratic vertex-ID membership work during topology edits. Focused regression tests
+cover these changes. Existing media below are earlier demonstrations, not new renders
+or proof of these additions.
+
 ## New reproducible workflows
 
 These are focused capability examples, not AAA assets or engineering certification.
@@ -114,7 +139,7 @@ Meshes are immutable. Topology checks report disconnected components, boundary/n
 
 The incremental graph retains the previous successful build when a candidate operation fails. Inputs and changing dependencies must be declared; hidden mutable globals are not supported. [Graph contract and measured CPU benchmarks](docs/INCREMENTAL.md).
 
-212 tests passed on the release source, including three executable workflow examples. This is not a full certification, GPU benchmark or proof of realistic quality.
+235 tests passed on the release source, including three executable workflow examples. This is not a full certification, GPU benchmark or proof of realistic quality.
 
 ## Source map
 
@@ -129,6 +154,8 @@ cybrgeo/
   deform.py      transforms and skinning
   relations.py   kinematic relationships
   graph.py       explicit dependency caching and build reports
+  surface_network.py  constrained patch networks, UV trims and joined tessellation
+  solid.py       optional OpenCascade-backed analytic solids
   exchange.py    portable exports
 examples/        ordinary author-written Python, with all helpers visible
 tests/           core behavior checks
@@ -138,8 +165,11 @@ media/           actual geometry previews and explanatory videos
 
 ## Limits and continuity
 
-Not implemented here: exact CAD Booleans, certified collision-free motion, finite-element structural analysis, electromagnetic motor simulation, production anatomy, automatic high-quality asset generation, or a renderer. Resolution can miss thin features; Loop subdivision can shrink/soften geometry; skinning can self-intersect. Geometry quality still depends on authored construction.
+The optional `solid` backend wraps OpenCascade (through CadQuery) for analytic Boolean cuts, shells, fillets and lofts; CYBR GEO does not implement that kernel itself. The default mesh operations remain distinct.
+
+Not implemented here: certified collision-free motion, finite-element structural analysis, electromagnetic motor simulation, production anatomy, automatic high-quality asset generation, or a renderer. Resolution can miss thin features; Loop subdivision can shrink/soften geometry; skinning can self-intersect. Geometry quality still depends on authored construction.
 
 This rewrite intentionally does not import the old part library. Replacing its default source tree must not be confused with preserving compatibility with old consumers. Historical work belongs in retained Git history/legacy references, not hidden inside this core.
 
 Project code retains the repository's GPL-2.0-only license. Media here are generated geometry demonstrations from accompanying authoring programs, not licensed stock assets. Third-party dependencies retain their own licenses.
+

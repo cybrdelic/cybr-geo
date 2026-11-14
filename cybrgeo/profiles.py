@@ -89,6 +89,50 @@ def validate_planar_ring(points):
     return projected
 
 
+def _restore_collinear_boundary(points, triangles, rings):
+    """Restore authored samples omitted from a floating-point convex-hull edge.
+
+    Qhull may cover collinear boundary samples only with near-zero-area triangles.
+    Remove those slivers and split their adjacent valid triangle along the exact
+    authored ring chain. Noncollinear missing constraints still fail normally.
+    """
+    scale=max(1.,np.ptp(points,axis=0).max());tol=np.finfo(float).eps*scale*64
+    a,b,c=points[triangles[:,0]],points[triangles[:,1]],points[triangles[:,2]]
+    area=(b[:,0]-a[:,0])*(c[:,1]-a[:,1])-(b[:,1]-a[:,1])*(c[:,0]-a[:,0])
+    triangles=triangles[np.abs(area)>tol*scale]
+    owner={};offset=0
+    for ring in rings:
+        loop=np.arange(offset,offset+len(ring));offset+=len(ring)
+        for j,index in enumerate(loop):owner[int(index)]=(loop,j)
+    edges={}
+    for k,tri in enumerate(triangles):
+        for a,b in zip(tri,np.roll(tri,-1)):
+            edges.setdefault(tuple(sorted((int(a),int(b)))),[]).append(k)
+    replacements={}
+    for (a,b),adj in edges.items():
+        if len(adj)!=1 or a not in owner or b not in owner:continue
+        loop,ia=owner[a];other,ib=owner[b]
+        if loop is not other:continue
+        for direction in [1,-1]:
+            count=((ib-ia)*direction)%len(loop)
+            if count<2:continue
+            chain=loop[(ia+direction*np.arange(count+1))%len(loop)]
+            d=points[b]-points[a];length=np.linalg.norm(d)
+            q=points[chain]-points[a];t=q@d/(length*length)
+            cross=q[:,0]*d[1]-q[:,1]*d[0]
+            if np.any(np.abs(cross)>tol*length) or np.any(np.diff(t)<=0):continue
+            k=adj[0]
+            # Multiple repaired edges of one triangle are handled successively.
+            candidates=replacements.get(k,[triangles[k]])
+            for j,tri in enumerate(candidates):
+                if a in tri and b in tri:
+                    apex=next(int(x) for x in tri if x!=a and x!=b)
+                    candidates[j:j+1]=[np.array([u,v,apex]) for u,v in zip(chain,chain[1:])]
+                    replacements[k]=candidates;break
+            break
+    return np.array([t for k,tri in enumerate(triangles) for t in replacements.get(k,[tri])],dtype=np.int64)
+
+
 def extrude(outline, height, holes=(), z=0., spacing=None):
     """Extrude a 2D outline and holes; reject unrecovered boundary constraints.
 
@@ -131,7 +175,7 @@ def extrude(outline, height, holes=(), z=0., spacing=None):
         centers=points[triangles].mean(axis=1)
         keep=_inside(centers,rings[0])
         for hole in rings[1:]:keep&=~_inside(centers,hole)
-        triangles=triangles[keep]
+        triangles=_restore_collinear_boundary(points,triangles[keep],rings)
         edges=np.sort(np.concatenate([triangles[:,[0,1]],triangles[:,[1,2]],triangles[:,[2,0]]]),axis=1)
         unique,counts=np.unique(edges,axis=0,return_counts=True)
         boundary={tuple(e) for e in unique[counts==1]}

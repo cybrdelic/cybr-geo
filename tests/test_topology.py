@@ -46,6 +46,23 @@ class TopologyTests(unittest.TestCase):
         self.assertEqual(len(r.mesh.vertices),4)
         self.assertEqual(r.mesh.report()['components'],1)
         with self.assertRaises(ValueError):e.weld([(0,1)])
+    def test_duplicate_vertex_sources_do_not_duplicate_identity(self):
+        v=np.array([[0,0,0],[1,0,0],[0,1,0]],float)
+        e=Editable(Mesh(v,[[0,1,2]],closed=False,connected=False))
+        r=e._finish(np.concatenate((v,v)),[[0,1,2],[3,4,5]],
+                    [{i:1.} for i in range(3)]*2,[0,0],[True,False])
+        self.assertEqual(len(set(r._ids['vertex'])),6)
+        for i in range(3):
+            ref=e.ref('vertex',i)
+            self.assertEqual(r.resolve(ref),i)
+            self.assertEqual(r.descendants(ref),(i,i+3))
+        np.testing.assert_array_equal(r.mesh.vertices,np.concatenate((v,v)))
+        # Moving an exact-weight vertex must still replace its identity.
+        moved=v.copy();moved[0,2]=1
+        r=e._finish(moved,[[0,1,2]],[{i:1.} for i in range(3)],[0],[False])
+        with self.assertRaises(KeyError):r.resolve(e.ref('vertex',0))
+        self.assertEqual(r.descendants(e.ref('vertex',0)),(0,))
+
     def test_snapshot_domains(self):
         import tempfile, pathlib
         m=self.cube(); attrs={'uv':Attribute(np.zeros((3*len(m.faces),2)),'corner'), 'crease':Attribute(np.ones(len(mesh_edges(m.faces))),'edge')}

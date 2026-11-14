@@ -12,8 +12,8 @@ def bezier(control, t):
     """Evaluate a Bézier curve of any degree using stable de Casteljau steps."""
     p = np.asarray(control, float)
     t = np.asarray(t, float)
-    if p.ndim != 2 or p.shape[1] != 3 or len(p) < 2 or not np.isfinite(p).all():
-        raise ValueError('Control points must be finite Nx3, N >= 2')
+    if p.ndim != 2 or p.shape[1] != 3 or len(p) < 1 or not np.isfinite(p).all():
+        raise ValueError('Control points must be finite Nx3, N >= 1')
     if not np.isfinite(t).all() or np.any((t < 0) | (t > 1)):
         raise ValueError('Curve parameters must be in [0,1]')
     q = np.broadcast_to(p, t.shape + p.shape).copy()
